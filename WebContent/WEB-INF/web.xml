@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>escritoriovirtualalabastrum</display-name>
+  <filter>
+    <filter-name>vraptor</filter-name>
+    <filter-class>br.com.caelum.vraptor.VRaptor</filter-class>
+  </filter>
+  <session-config>  
+   <session-timeout>30</session-timeout>
+   </session-config>  
+  <filter-mapping>
+    <filter-name>vraptor</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/erro500.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/erro404.jsp</location>
+  </error-page>
+  <context-param>
+    <param-name>br.com.caelum.vraptor.packages</param-name>
+    <param-value>br.com.caelum.vraptor.converter.l10n</param-value>
+  </context-param>
+  <context-param>
+    <param-name>br.com.caelum.vraptor.encoding</param-name>
+    <param-value>UTF-8</param-value>
+  </context-param>
+</web-app>

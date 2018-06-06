@@ -1,0 +1,209 @@
+html {
+	background-color: #ece8e8;
+}
+
+.bem-vindo {
+	margin-left: 3%;
+}
+
+.topo {
+	background-color: #2d2b2b;
+	width: 100%;
+	padding-top: 10px;
+	padding-bottom: 5px;
+}
+
+.topo p {
+	color: white;
+	text-align: right;
+	margin-right: 10px;
+}
+
+.emails {
+	background-image: url("images/emails.jpg");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	width: 500px;
+	height: 423px;
+}
+
+.kitIngresso {
+	background-image: url("images/kits-ingresso.jpg");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	width: 800px;
+	height: 700px;
+}
+
+.qualificacao {
+	background-image: url("images/qualificacao.jpg");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	width: 800px;
+	height: 700px;
+}
+
+.download {
+	background-image: url("images/download.png");
+	background-repeat: no-repeat;
+	background-size: 5%;
+	height: 50px;
+	margin-top: 10px;
+}
+
+.link-content {
+	margin-left: 70px;
+	padding-top: 18px;
+}
+
+.trocarSenha {
+	width: 479px;
+	height: 223px;
+	background-image: url("images/trocarSenha.jpg");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	border: 1px solid rgb(152, 160, 233);
+	border-radius: 5px;
+}
+
+.trocaSenhaPrimeiroAcesso {
+	width: 530px;
+	height: 400px;
+	background-image: url("images/troca-senha-primeiro-acesso.jpg");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	border: 1px solid rgb(152, 160, 233);
+	border-radius: 5px;
+}
+
+.tituloTrocarSenha {
+	padding-left: 20px;
+	padding-top: 7px;
+	font-weight: bold;
+	color: rgb(114, 114, 187);
+}
+
+.labelTrocarSenha {
+	margin-left: -30px;
+	color: rgb(41, 28, 109) !important;
+	font-weight: bold;
+	font-size: 13px;
+}
+
+.senhaAntiga {
+	margin-top: 5px;
+	margin-left: -40px;
+	height: 17px !important;
+	width: 90px;
+}
+
+.quadradinho-alinhado {
+	height: 100px;
+	background-size: 150px;
+	background-repeat: no-repeat;
+	display: inline-block;
+	min-width: 160px;
+}
+
+.quadradinho-alinhado h5 {
+	margin-left: 10px;
+	margin-top: 10px;
+	font-weight: bold;
+}
+
+.quadradinho-alinhado span {
+	margin-left: 20px;
+	font-size: 25px;
+}
+
+.grupo {
+	background-image: url("images/grupo.jpg");
+}
+
+.cifrao {
+	background-image: url("images/cifrao.jpg");
+}
+
+.nota {
+	background-image: url("images/nota.jpg");
+}
+
+.letra-branca {
+	color: white;
+}
+
+.novaSenha {
+	margin-top: 15px;
+	margin-left: -40px;
+	height: 17px !important;
+	width: 90px;
+}
+
+.inputTelaPrimeiroAcesso {
+	margin-left: -40px;
+	height: 17px !important;
+	width: 150px;
+}
+
+.menu {
+	float: left;
+	width: 230px;
+	min-width: 200px;
+	margin-left: 1%;
+	margin-top: 20px;
+	margin-bottom: 50px;
+}
+
+.conteudo {
+	float: right;
+	width: 80%;
+}
+
+.chekboxTabela {
+	margin-right: 10px !important;
+}
+
+.fundo-branco {
+	padding: 10px;
+	background-color: white;
+	border-radius: 5px;
+}
+
+.centralizado {
+	text-align: center !important;
+}
+
+.imagensLink {
+	margin-top: 50px;
+	margin-bottom: 100px;
+}
+
+.imagemLink {
+	margin-right: 50px;
+}
+
+.data-hora-observacoes {
+	width: 100%;
+	height: 150px !important;
+}
+
+#dicas-html {
+	display: none;
+}
+
+.negrito {
+	font-weight: bold;
+}
+
+@media print {
+	.topo, .menu, .bem-vindo, #sair, .btn {
+		display: none;
+	}
+	.menu {
+		width: 0px;
+		min-width: 0px;
+	}
+	.conteudo {
+		width: 94%;
+	}
+}

@@ -1,0 +1,45 @@
+
+
+.table tbody tr:hover td,
+.table tbody tr:hover th {
+  background-color: #E0FFFF;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  background-image: url("images/glyphicons-halflings.png");
+}
+
+.icon-white,
+.nav-pills > .active > a > [class^="icon-"],
+.nav-pills > .active > a > [class*=" icon-"],
+.nav-list > .active > a > [class^="icon-"],
+.nav-list > .active > a > [class*=" icon-"],
+.navbar-inverse .nav > .active > a > [class^="icon-"],
+.navbar-inverse .nav > .active > a > [class*=" icon-"],
+.dropdown-menu > li > a:hover > [class^="icon-"],
+.dropdown-menu > li > a:focus > [class^="icon-"],
+.dropdown-menu > li > a:hover > [class*=" icon-"],
+.dropdown-menu > li > a:focus > [class*=" icon-"],
+.dropdown-menu > .active > a > [class^="icon-"],
+.dropdown-menu > .active > a > [class*=" icon-"],
+.dropdown-submenu:hover > a > [class^="icon-"],
+.dropdown-submenu:focus > a > [class^="icon-"],
+.dropdown-submenu:hover > a > [class*=" icon-"],
+.dropdown-submenu:focus > a > [class*=" icon-"] {
+  background-image: url("images/glyphicons-halflings-white.png");
+}
+
+th {
+	text-align: center !important;
+}
+
+.alert{
+	
+	margin-top: 20px;
+}
+
+.alert-alerta {
+  color: rgb(100, 100, 100);
+  background-color: #FAFA08;
+}
