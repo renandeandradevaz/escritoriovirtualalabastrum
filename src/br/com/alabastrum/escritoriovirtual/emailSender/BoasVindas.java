@@ -58,7 +58,7 @@ public class BoasVindas {
 				textoEmail += "<br> O seu código de distribuidor na Alabastrum é:  <b> " + usuario.getId_Codigo() + "</b>";
 				textoEmail += "<br> Você já pode acessar o Escritório Virtual da Alabastrum ";
 				textoEmail += "<br> Você só precisa acessar o seguinte link: <a href='http://escritoriovirtual.alabastrum.com.br' > http://escritoriovirtual.alabastrum.com.br </a> ";
-				textoEmail += "<br> Deverá ter em mãos o seu código, email e cpf.  ";
+				textoEmail += "<br> Deverá ter em mãos o seu código, email e cpf (o mesmo utilizado no cadastro).  ";
 				textoEmail += "<br> A primeira vez que acessar o sistema. Deverá utilizar o seu código e a senha <b> alabastrum </b> ";
 				textoEmail += "<br> Você será redirecionado para uma nova tela para trocar a sua senha. ";
 				textoEmail += "<br> Qualquer dúvida, envie um e-mail para atendimento@alabastrum.com.br ";
