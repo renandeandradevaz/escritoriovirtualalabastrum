@@ -2,13 +2,13 @@
 <div class="fundo-branco">
 	<form action="<c:url value="/configuracao/salvarConfiguracoes"/>" method="post">
 		<fieldset>
-			<legend>ConfiguraÃ§Ãµes</legend>
+			<legend>Configurações</legend>
 			<div class="control-group warning">
 				<label class="control-label">Direcionamento de novos cadastros</label>
 				<div class="controls">
 					<select id='direcionamentoNovosCadastros' name="configuracaoDTO.direcionamentoNovosCadastros" style="width: 160px;">
 						<option value="">Selecione</option>
-						<option value="todas">Todas posiÃ§Ãµes</option>
+						<option value="todas">Todas posições</option>
 						<option value="esquerda">Esquerda</option>
 						<option value="meio">Meio</option>
 						<option value="direita">Direita</option>
