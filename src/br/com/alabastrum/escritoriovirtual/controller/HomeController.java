@@ -31,7 +31,7 @@ public class HomeController {
 
 	@Path("/home")
 	@Funcionalidade
-	public void home() {
+	public void home() throws Exception {
 
 		Usuario usuario = this.sessaoUsuario.getUsuario();
 

@@ -31,15 +31,14 @@
 		<div></div>
 		<h3 class="menu-accordion" onclick="goTo('<c:url value="/configuracao/acessarTelaConfiguracao"/>')">Configurações</h3>
 		<div></div>
+		<h3 class="menu-accordion has-child">Redes</h3>
+		<div>
+			<a href="<c:url value="/equipe/acessarTelaEquipe"/>" class="submenu-accordion"> Equipe </a>
+		</div>
 		<h3 class="menu-accordion has-child">Financeiro</h3>
 		<div>
 			<a href="#" class="submenu-accordion"> Saldo (Em breve) </a>
 			<a href="#" class="submenu-accordion"> Extrato detalhado (Em breve) </a>
-		</div>
-		<h3 class="menu-accordion has-child">Redes</h3>
-		<div>
-			<a href="#" class="submenu-accordion"> Equipe (Em breve) </a>
-			<a href="#" class="submenu-accordion"> Matriz (Em breve) </a>
 		</div>
 		<h3 class="menu-accordion">Pontuação (Em breve)</h3>
 		<div></div>

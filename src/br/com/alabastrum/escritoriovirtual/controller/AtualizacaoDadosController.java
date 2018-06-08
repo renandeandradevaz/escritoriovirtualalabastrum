@@ -134,7 +134,7 @@ public class AtualizacaoDadosController {
 	}
 
 	@Funcionalidade
-	public void salvarAtualizacaoDados(SessaoAtualizacaoDados sessaoAtualizacaoDados) {
+	public void salvarAtualizacaoDados(SessaoAtualizacaoDados sessaoAtualizacaoDados) throws Exception {
 
 		this.sessaoAtualizacaoDados = sessaoAtualizacaoDados;
 

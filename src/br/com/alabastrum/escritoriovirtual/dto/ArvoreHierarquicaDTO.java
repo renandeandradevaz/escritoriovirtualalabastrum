@@ -5,9 +5,9 @@ import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 public class ArvoreHierarquicaDTO {
 
 	private Usuario usuario;
-	private int nivel;
+	private Integer nivel;
 
-	public ArvoreHierarquicaDTO(Usuario usuario, int nivel) {
+	public ArvoreHierarquicaDTO(Usuario usuario, Integer nivel) {
 
 		this.usuario = usuario;
 		this.nivel = nivel;
@@ -21,12 +21,11 @@ public class ArvoreHierarquicaDTO {
 		this.usuario = usuario;
 	}
 
-	public int getNivel() {
+	public Integer getNivel() {
 		return nivel;
 	}
 
-	public void setNivel(int nivel) {
+	public void setNivel(Integer nivel) {
 		this.nivel = nivel;
 	}
-
 }

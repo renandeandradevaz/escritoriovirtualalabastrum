@@ -29,7 +29,7 @@ public class AssumirIdentidadeController {
 	}
 
 	@Funcionalidade(administrativa = "true")
-	public void assumirIdentidade(Integer codigo) {
+	public void assumirIdentidade(Integer codigo) throws Exception {
 
 		Usuario usuario = new Usuario();
 		usuario.setId_Codigo(codigo);

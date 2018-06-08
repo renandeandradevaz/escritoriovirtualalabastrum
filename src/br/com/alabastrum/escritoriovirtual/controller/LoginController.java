@@ -44,7 +44,7 @@ public class LoginController {
 	}
 
 	@Public
-	public void efetuarLogin(Usuario usuario) {
+	public void efetuarLogin(Usuario usuario) throws Exception {
 
 		if (Util.vazio(usuario.getId_Codigo()) || usuario.getId_Codigo().equals(0) || Util.vazio(usuario.getInformacoesFixasUsuario().getSenha())) {
 

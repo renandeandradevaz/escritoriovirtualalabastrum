@@ -18,7 +18,7 @@ public class HierarquiaService {
 		this.hibernateUtil = hibernateUtil;
 	}
 
-	public Map<Integer, ArvoreHierarquicaDTO> obterArvoreHierarquicaTodosOsNiveis(Integer codigoUsuario) {
+	public Map<Integer, ArvoreHierarquicaDTO> obterArvoreHierarquicaTodosOsNiveis(Integer codigoUsuario) throws Exception {
 
 		Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new HashMap<Integer, ArvoreHierarquicaDTO>();
 
@@ -27,25 +27,13 @@ public class HierarquiaService {
 		return arvoreHierarquica;
 	}
 
-	private void pesquisarComRecursividade(Integer codigo, Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquica, int nivel) {
+	private void pesquisarComRecursividade(Integer codigo, Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivel) throws Exception {
 
-		Usuario usuario = new Usuario();
-
-		try {
-
-			Field field = usuario.getClass().getDeclaredField("id_lider");
-
-			field.setAccessible(true);
-
-			field.set(usuario, codigo);
-		}
-
-		catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		List<Usuario> usuariosFromDatabase = hibernateUtil.buscar(usuario);
+		Usuario filtro = new Usuario();
+		Field field = filtro.getClass().getDeclaredField("id_lider");
+		field.setAccessible(true);
+		field.set(filtro, codigo);
+		List<Usuario> usuariosFromDatabase = hibernateUtil.buscar(filtro);
 
 		for (Usuario usuarioFromDatabase : usuariosFromDatabase) {
 
