@@ -1,46 +1,34 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <br>
 <br>
 <br>
-√öltima atualiza√ß√£o do sistema: ${ultimaAtualizacaoSistema}
-<br>
-Sess√µes tomcat: ${sessoesTomcat}
-<br>
-Sess√µes abertas hibernate: ${sessoesAbertasHibernate}
-<br>
-Sess√µes fechadas hibernate: ${sessoesFechadasHibernate}
-
+⁄ltima atualizaÁ„o do sistema: ${ultimaAtualizacaoSistema}
 <br>
 <br>
-
-<h4> Total de acessos (In√≠cio da contagem em 01/03/2015): &nbsp;&nbsp;   ${total}  </h4>
-
-<h4> M√©dia di√°ria: ${mediaDiaria}  </h4>
-
+Sessıes abertas hibernate: ${sessoesAbertasHibernate}
+<br>
+Sessıes fechadas hibernate: ${sessoesFechadasHibernate}
 <br>
 <br>
-
-<h3 style="text-align: center"> Usu√°rios que mais acessam </h3>
-
+<h4>Total de acessos (InÌcio da contagem em 07/06/2018): &nbsp;&nbsp; ${total}</h4>
+<h4>MÈdia di·ria: ${mediaDiaria}</h4>
 <br>
-
+<br>
+<h3 style="text-align: center">Usu·rios que mais acessam</h3>
+<br>
 <table style="width: 100%">
-
 	<thead>
 		<tr>
-			<th> Usu√°rio </th>
-			<th> Quantidade de acessos </th>
+			<th>Usu·rio</th>
+			<th>Quantidade de acessos</th>
 		</tr>
 	</thead>
-	
 	<tbody>
 		<c:forEach var="acesso" items="${acessosUsuariosOrdenadosPorMaisAtivos}">
 			<tr>
-				<td style="text-align: center"> ${acesso.usuario.codigoFormatado} - ${acesso.usuario.vNome} </td>
-				<td style="text-align: center"> ${acesso.contagemAcessos} </td>
+				<td style="text-align: center">${acesso.usuario.id_Codigo} - ${acesso.usuario.vNome}</td>
+				<td style="text-align: center">${acesso.contagemAcessos}</td>
 			</tr>
 		</c:forEach>
 	</tbody>
-
 </table>
