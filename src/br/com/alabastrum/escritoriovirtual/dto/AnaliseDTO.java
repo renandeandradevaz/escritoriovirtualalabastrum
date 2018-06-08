@@ -12,7 +12,7 @@ public class AnaliseDTO {
 
 		HibernateUtil hibernateUtil = new HibernateUtil();
 
-		Usuario usuario = new Usuario();
+		Usuario usuario = new Usuario(codigoUsuario);
 
 		usuario = hibernateUtil.selecionar(usuario);
 
