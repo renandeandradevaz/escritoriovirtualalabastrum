@@ -40,7 +40,7 @@ public class HomeController {
 		result.include("ultimosQualificados", new QualificacaoService(hibernateUtil).obterUltimosQualificados(arvoreHierarquica));
 		result.include("ultimosCadastros", new QualificacaoService(hibernateUtil).obterUltimosCadastros(arvoreHierarquica));
 		result.include("ganhosNoMes", new BigDecimal("0"));
-		result.include("recebidoAteHoje", new BigDecimal("324.90"));
+		result.include("recebidoAteHoje", new BigDecimal("0"));
 		result.include("posicaoAtual", usuario.getPosAtual().replaceAll(" ", "").toLowerCase());
 		result.include("proximaPosicao", new PosicoesService(hibernateUtil).obterProximaPosicao(usuario.getPosAtual()).replaceAll(" ", "").toLowerCase());
 	}

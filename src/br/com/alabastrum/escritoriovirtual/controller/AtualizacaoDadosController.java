@@ -67,14 +67,6 @@ public class AtualizacaoDadosController {
 	}
 
 	@Public
-	public void acessarTelaAtualizacaoDadosPeloSite(boolean exibirMensagemAgradecimento) {
-
-		this.sessaoAtualizacaoDados = new SessaoAtualizacaoDados();
-
-		result.include("exibirMensagemAgradecimento", exibirMensagemAgradecimento);
-	}
-
-	@Public
 	public void salvarPreCadastroDistribuidorPeloSite(SessaoAtualizacaoDados sessaoAtualizacaoDados) {
 
 		this.sessaoAtualizacaoDados = sessaoAtualizacaoDados;
@@ -83,7 +75,7 @@ public class AtualizacaoDadosController {
 
 		JavaMailApp.enviarEmail("Pré-cadastro de distribuidor pelo site", "atendimento@alabastrum.com.br", montarTextoEmail());
 
-		result.forwardTo(this).acessarTelaAtualizacaoDadosPeloSite(true);
+		result.redirectTo("https://alabastrum.com.br/sucesso");
 	}
 
 	private String montarTextoEmail() {
