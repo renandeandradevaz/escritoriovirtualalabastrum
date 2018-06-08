@@ -25,9 +25,6 @@ import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class AtualizacaoArquivosService {
 
-	public static final String PASTA_RAIZ = "/root/";
-	public static final String PASTA_ATUALIZACAO_CSV = PASTA_RAIZ + "Dropbox/do-desktop-para-o-escritorio";
-
 	private HibernateUtil hibernateUtil;
 
 	public AtualizacaoArquivosService(HibernateUtil hibernateUtil) {
@@ -89,7 +86,7 @@ public class AtualizacaoArquivosService {
 
 	private CSVReader lerArquivo(String nomeCsv) throws IOException, FileNotFoundException {
 
-		String caminho = PASTA_ATUALIZACAO_CSV;
+		String caminho = ArquivoService.PASTA_ATUALIZACAO_CSV;
 
 		String caminhoCompletoArquivo = caminho + File.separator + nomeCsv;
 

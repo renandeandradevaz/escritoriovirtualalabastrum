@@ -4,6 +4,7 @@ import java.io.File;
 
 import br.com.alabastrum.escritoriovirtual.emailSender.BoasVindas;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.service.AtualizacaoArquivosService;
 import it.sauronsoftware.cron4j.Scheduler;
 
@@ -23,7 +24,7 @@ public class AtualizacaoArquivosAutomaticamente implements Runnable {
 
 	private void apagarArquivos() {
 
-		File folder = new File(AtualizacaoArquivosService.PASTA_ATUALIZACAO_CSV);
+		File folder = new File(ArquivoService.PASTA_ATUALIZACAO_CSV);
 
 		File[] files = folder.listFiles();
 

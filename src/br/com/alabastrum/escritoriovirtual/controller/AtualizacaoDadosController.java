@@ -1,16 +1,14 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
-import java.io.PrintWriter;
 import java.lang.reflect.Field;
 
 import org.hibernate.criterion.MatchMode;
-import org.joda.time.DateTime;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Public;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
-import br.com.alabastrum.escritoriovirtual.service.AtualizacaoArquivosService;
+import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoAtualizacaoDados;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.JavaMailApp;
@@ -20,8 +18,6 @@ import br.com.caelum.vraptor.Result;
 
 @Resource
 public class AtualizacaoDadosController {
-
-	public static final String CAMINHO_PASTA_PRE_CADASTRO = AtualizacaoArquivosService.PASTA_RAIZ + "Dropbox/do-escritorio-para-o-desktop/pre-cadastro-de-distribuidor-pelo-site/";
 
 	private Result result;
 	private SessaoAtualizacaoDados sessaoAtualizacaoDados;
@@ -67,14 +63,11 @@ public class AtualizacaoDadosController {
 	}
 
 	@Public
-	public void salvarPreCadastroDistribuidorPeloSite(SessaoAtualizacaoDados sessaoAtualizacaoDados) {
+	public void salvarPreCadastroDistribuidorPeloSite(SessaoAtualizacaoDados sessaoAtualizacaoDados) throws Exception {
 
 		this.sessaoAtualizacaoDados = sessaoAtualizacaoDados;
-
-		criarArquivoNoDisco(montarTextoArquivo());
-
+		ArquivoService.criarArquivoNoDisco(montarTextoArquivo(), ArquivoService.CAMINHO_PASTA_PRE_CADASTRO);
 		JavaMailApp.enviarEmail("Pré-cadastro de distribuidor pelo site", "atendimento@alabastrum.com.br", montarTextoEmail());
-
 		result.redirectTo("https://alabastrum.com.br/sucesso");
 	}
 
@@ -138,23 +131,6 @@ public class AtualizacaoDadosController {
 		textoArquivo += "apelido: \'" + this.sessaoAtualizacaoDados.getApelido() + "\'\r\n";
 
 		return textoArquivo;
-	}
-
-	private void criarArquivoNoDisco(String textoEmail) {
-
-		PrintWriter writer = null;
-
-		try {
-
-			writer = new PrintWriter(CAMINHO_PASTA_PRE_CADASTRO + new DateTime().toString("dd-MM-YYYY_HH-mm-ss") + ".txt", "UTF-8");
-
-			writer.println(textoEmail);
-			writer.close();
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
 	}
 
 	@Funcionalidade

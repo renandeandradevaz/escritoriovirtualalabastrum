@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.Index;
+
 import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.caelum.vraptor.Resource;
@@ -16,8 +18,13 @@ public class Configuracao implements Entidade {
 	@GeneratedValue
 	private Integer id;
 
+	@Index(name = "index_chave_configuracao")
 	private String chave;
+
 	private String valor;
+
+	@Index(name = "index_id_Codigo_configuracao")
+	private Integer id_Codigo;
 
 	public String retornarConfiguracao(String chave) {
 
@@ -55,5 +62,13 @@ public class Configuracao implements Entidade {
 
 	public void setValor(String valor) {
 		this.valor = valor;
+	}
+
+	public Integer getId_Codigo() {
+		return id_Codigo;
+	}
+
+	public void setId_Codigo(Integer id_Codigo) {
+		this.id_Codigo = id_Codigo;
 	}
 }

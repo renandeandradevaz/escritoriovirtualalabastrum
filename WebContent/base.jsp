@@ -23,12 +23,13 @@
 	<div class="topo">
 		<p>Olá, ${sessaoUsuario.usuario.vNome} (${sessaoUsuario.usuario.id_Codigo})</p>
 	</div>
-
 	<a id="sair" style="float: right; padding-right: 15px; font-weight: bold; font-size: 12px; cursor: pointer;" href="https://alabastrum.com.br"> Sair </a>
 	<div class="menu" data-collapse="persist">
 		<h3 class="menu-accordion" onclick="goTo('<c:url value="/home"/>')">Início</h3>
 		<div></div>
 		<h3 class="menu-accordion" onclick="goTo('<c:url value="/atualizacaoDados/acessarTelaAtualizacaoDados"/>')">Dados cadastrais</h3>
+		<div></div>
+		<h3 class="menu-accordion" onclick="goTo('<c:url value="/configuracao/acessarTelaConfiguracao"/>')">Configurações</h3>
 		<div></div>
 		<h3 class="menu-accordion has-child">Financeiro</h3>
 		<div>
