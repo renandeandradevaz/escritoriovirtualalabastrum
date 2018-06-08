@@ -1,6 +1,5 @@
 package br.com.alabastrum.escritoriovirtual.service;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +29,7 @@ public class HierarquiaService {
 	private void pesquisarComRecursividade(Integer codigo, Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivel) throws Exception {
 
 		Usuario filtro = new Usuario();
-		Field field = filtro.getClass().getDeclaredField("id_lider");
-		field.setAccessible(true);
-		field.set(filtro, codigo);
+		filtro.setId_lider(codigo);
 		List<Usuario> usuariosFromDatabase = hibernateUtil.buscar(filtro);
 
 		for (Usuario usuarioFromDatabase : usuariosFromDatabase) {

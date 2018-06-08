@@ -34,6 +34,7 @@
 		<h3 class="menu-accordion has-child">Redes</h3>
 		<div>
 			<a href="<c:url value="/equipe/acessarTelaEquipe"/>" class="submenu-accordion"> Equipe </a>
+			<a href="<c:url value="/matriz/acessarTelaMatriz"/>" class="submenu-accordion"> Matriz </a>
 		</div>
 		<h3 class="menu-accordion has-child">Financeiro</h3>
 		<div>
