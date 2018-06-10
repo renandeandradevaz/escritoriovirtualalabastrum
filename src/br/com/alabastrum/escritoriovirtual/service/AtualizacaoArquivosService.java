@@ -1,7 +1,6 @@
 package br.com.alabastrum.escritoriovirtual.service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -18,6 +17,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import au.com.bytecode.opencsv.CSVReader;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.modelo.Pontuacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
 import br.com.alabastrum.escritoriovirtual.modelo.Qualificacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
@@ -37,63 +37,56 @@ public class AtualizacaoArquivosService {
 		processarCSVRelacionamentos();
 		processarCSVPosicoes();
 		processarCSVQualificacao();
+		processarCSVPontuacao();
 	}
 
 	private void processarCSVRelacionamentos() throws Exception {
 
 		CSVReader reader = lerArquivo("tblRelacionamentos.csv");
-
 		List<Usuario> usuarios = new ArrayList<Usuario>();
-
 		String nomeDaPrimeiraColuna = "id_Codigo";
-
 		preencherObjeto(reader, usuarios, nomeDaPrimeiraColuna, "Usuario");
-
 		this.hibernateUtil.executarSQL("delete from usuario");
-
 		this.hibernateUtil.salvarOuAtualizar(usuarios);
 	}
 
 	private void processarCSVPosicoes() throws Exception {
 
 		CSVReader reader = lerArquivo("tblPosicoes.csv");
-
 		List<Posicao> posicoes = new ArrayList<Posicao>();
-
 		String nomeDaPrimeiraColuna = "posicao";
-
 		preencherObjeto(reader, posicoes, nomeDaPrimeiraColuna, "Posicao");
-
 		this.hibernateUtil.executarSQL("delete from posicao");
-
 		this.hibernateUtil.salvarOuAtualizar(posicoes);
 	}
 
 	private void processarCSVQualificacao() throws Exception {
 
 		CSVReader reader = lerArquivo("tblQualificacoes.csv");
-
 		List<Qualificacao> qualificacoes = new ArrayList<Qualificacao>();
-
 		String nomeDaPrimeiraColuna = "id_Codigo";
-
 		preencherObjeto(reader, qualificacoes, nomeDaPrimeiraColuna, "Qualificacao");
-
 		this.hibernateUtil.executarSQL("delete from qualificacao");
-
 		this.hibernateUtil.salvarOuAtualizar(qualificacoes);
 	}
 
-	private CSVReader lerArquivo(String nomeCsv) throws IOException, FileNotFoundException {
+	private void processarCSVPontuacao() throws Exception {
+
+		CSVReader reader = lerArquivo("tblPontuacao.csv");
+		List<Pontuacao> pontuacoes = new ArrayList<Pontuacao>();
+		String nomeDaPrimeiraColuna = "id_Codigo";
+		preencherObjeto(reader, pontuacoes, nomeDaPrimeiraColuna, "Pontuacao");
+		this.hibernateUtil.executarSQL("delete from pontuacao");
+		this.hibernateUtil.salvarOuAtualizar(pontuacoes);
+	}
+
+	private CSVReader lerArquivo(String nomeCsv) throws Exception {
 
 		String caminho = ArquivoService.PASTA_ATUALIZACAO_CSV;
-
 		String caminhoCompletoArquivo = caminho + File.separator + nomeCsv;
-
 		File arquivoNoDisco = new File(caminhoCompletoArquivo);
 		String content = FileUtils.readFileToString(arquivoNoDisco, "ISO8859_1");
 		FileUtils.write(arquivoNoDisco, content, "UTF-8");
-
 		return new CSVReader(new FileReader(new File(caminhoCompletoArquivo)), '\t');
 	}
 

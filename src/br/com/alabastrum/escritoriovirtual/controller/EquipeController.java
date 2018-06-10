@@ -10,6 +10,7 @@ import br.com.alabastrum.escritoriovirtual.dto.PesquisaEquipeDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
+import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
 import br.com.alabastrum.escritoriovirtual.service.HierarquiaService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
@@ -139,8 +140,22 @@ public class EquipeController {
 		return arvoreHierarquica;
 	}
 
-	private Collection<ArvoreHierarquicaDTO> filtrarPorAtividade(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Boolean ativos) {
+	private Collection<ArvoreHierarquicaDTO> filtrarPorAtividade(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Boolean ativosFiltro) {
 
+		if (Util.preenchido(ativosFiltro)) {
+
+			List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+
+			for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+
+				boolean usuarioAtivo = new AtividadeService(hibernateUtil).isAtivo(arvoreHierarquicaDTO.getUsuario().getId_Codigo());
+
+				if ((ativosFiltro && usuarioAtivo) || (!ativosFiltro && !usuarioAtivo)) {
+					arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
+				}
+			}
+			return arvoreHierarquicaFiltrada;
+		}
 		return arvoreHierarquica;
 	}
 }

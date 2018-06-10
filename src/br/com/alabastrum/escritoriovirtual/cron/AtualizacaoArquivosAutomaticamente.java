@@ -1,6 +1,8 @@
 package br.com.alabastrum.escritoriovirtual.cron;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.emailSender.BoasVindas;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
@@ -12,13 +14,21 @@ public class AtualizacaoArquivosAutomaticamente implements Runnable {
 
 	public void run() {
 
-		try {
-			HibernateUtil hibernateUtil = new HibernateUtil();
-			new AtualizacaoArquivosService(hibernateUtil).processarArquivos();
-			apagarArquivos();
-			BoasVindas.enviarEmail();
-			hibernateUtil.fecharSessao();
-		} catch (Exception e) {
+		List<String> pastaAtualizacaoCSV = Arrays.asList(new File(ArquivoService.PASTA_ATUALIZACAO_CSV).list());
+
+		if (pastaAtualizacaoCSV.contains("tblRelacionamentos.csv") //
+				&& pastaAtualizacaoCSV.contains("tblPosicoes.csv") //
+				&& pastaAtualizacaoCSV.contains("tblQualificacoes.csv") //
+				&& pastaAtualizacaoCSV.contains("tblPontuacao.csv")) {
+
+			try {
+				HibernateUtil hibernateUtil = new HibernateUtil();
+				new AtualizacaoArquivosService(hibernateUtil).processarArquivos();
+				apagarArquivos();
+				BoasVindas.enviarEmail();
+				hibernateUtil.fecharSessao();
+			} catch (Exception e) {
+			}
 		}
 	}
 
