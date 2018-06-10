@@ -5,6 +5,8 @@ public class PesquisaEquipeDTO {
 	private Integer idCodigo;
 	private Integer nivel;
 	private String posicao;
+	private Boolean apenasIndicados;
+	private Boolean ativos;
 
 	public Integer getIdCodigo() {
 		return idCodigo;
@@ -28,5 +30,21 @@ public class PesquisaEquipeDTO {
 
 	public void setPosicao(String posicao) {
 		this.posicao = posicao;
+	}
+
+	public Boolean getApenasIndicados() {
+		return apenasIndicados;
+	}
+
+	public void setApenasIndicados(Boolean apenasIndicados) {
+		this.apenasIndicados = apenasIndicados;
+	}
+
+	public Boolean getAtivos() {
+		return ativos;
+	}
+
+	public void setAtivos(Boolean ativos) {
+		this.ativos = ativos;
 	}
 }

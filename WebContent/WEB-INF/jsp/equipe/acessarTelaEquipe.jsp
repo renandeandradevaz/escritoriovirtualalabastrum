@@ -14,6 +14,12 @@
 				</div>
 			</div>
 			<div class="control-group">
+				<label class="control-label">Por nível</label>
+				<div class="controls">
+					<input type="text" name="pesquisaEquipeDTO.nivel" value="${pesquisaEquipeDTO.nivel}">
+				</div>
+			</div>
+			<div class="control-group">
 				<label class="control-label">Por posição</label>
 				<div class="controls">
 					<select id='posicao' name="pesquisaEquipeDTO.posicao">
@@ -25,11 +31,21 @@
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label">Por nível</label>
+				<label class="control-label">Ativos</label>
 				<div class="controls">
-					<input type="text" name="pesquisaEquipeDTO.nivel" value="${pesquisaEquipeDTO.nivel}">
+					<select id='ativos' name="pesquisaEquipeDTO.ativos">
+						<option value="">Selecione</option>
+						<option value="true">Sim</option>
+						<option value="false">Não</option>
+					</select>
 				</div>
 			</div>
+			<br>
+			<div class="control-group">
+				<input type="checkbox" name="pesquisaEquipeDTO.apenasIndicados">
+				<span> Apenas indicados </span>
+			</div>
+			<br>
 			<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Pesquisar</button>
 		</fieldset>
 	</form>
@@ -66,4 +82,5 @@
 </div>
 <script>
 	$('#posicao').val('${pesquisaEquipeDTO.posicao}');
+	$('#ativos').val('${pesquisaEquipeDTO.ativos}');
 </script>

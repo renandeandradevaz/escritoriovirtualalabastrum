@@ -41,9 +41,21 @@ public class EquipeController {
 			pesquisaEquipeDTO = new PesquisaEquipeDTO();
 		}
 
+		
+		
+		
+		
+		System.out.println(pesquisaEquipeDTO.getAtivos());
+
+		
+		
+		
+		
+		
 		arvoreHierarquica = filtrarPorCodigo(arvoreHierarquica, pesquisaEquipeDTO.getIdCodigo());
 		arvoreHierarquica = filtrarPorNivel(arvoreHierarquica, pesquisaEquipeDTO.getNivel());
 		arvoreHierarquica = filtrarPorPosicao(arvoreHierarquica, pesquisaEquipeDTO.getPosicao());
+		arvoreHierarquica = filtrarPorApenasIndicados(arvoreHierarquica, pesquisaEquipeDTO.getApenasIndicados());
 
 		result.include("posicoes", hibernateUtil.buscar(new Posicao()));
 		result.include("pesquisaEquipeDTO", pesquisaEquipeDTO);
@@ -67,9 +79,10 @@ public class EquipeController {
 
 	private Collection<ArvoreHierarquicaDTO> filtrarPorNivel(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivelFiltro) {
 
-		List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
-
 		if (Util.preenchido(nivelFiltro)) {
+
+			List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+
 			for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
 				if (arvoreHierarquicaDTO.getNivel().equals(nivelFiltro)) {
 					arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
@@ -82,11 +95,28 @@ public class EquipeController {
 
 	private Collection<ArvoreHierarquicaDTO> filtrarPorPosicao(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, String posicaoFiltro) {
 
-		List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
-
 		if (Util.preenchido(posicaoFiltro)) {
+
+			List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+
 			for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
 				if (arvoreHierarquicaDTO.getUsuario().getPosAtual().equals(posicaoFiltro)) {
+					arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
+				}
+			}
+			return arvoreHierarquicaFiltrada;
+		}
+		return arvoreHierarquica;
+	}
+
+	private Collection<ArvoreHierarquicaDTO> filtrarPorApenasIndicados(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Boolean apenasIndicados) {
+
+		if (Util.preenchido(apenasIndicados) && apenasIndicados) {
+
+			List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+
+			for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+				if (arvoreHierarquicaDTO.getUsuario().getId_Indicante().equals(this.sessaoUsuario.getUsuario().getId_Codigo())) {
 					arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
 				}
 			}

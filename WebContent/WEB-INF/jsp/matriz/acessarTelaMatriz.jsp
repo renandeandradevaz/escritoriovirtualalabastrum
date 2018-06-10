@@ -4,7 +4,9 @@
 </div>
 <br>
 <div class="fundo-branco">
-	<p>Clique em algum distribuidor para ver detalhes de sua rede
+	<p>Clique em algum distribuidor para ver detalhes de sua rede</p>
+	<br>
+	<a href="<c:url value="/matriz/acessarTelaMatriz"/>"> Voltar ao topo </a>
 	<div class="chart" id="matriz"></div>
 </div>
 <link type="text/css" href="<c:url value="/css/treant.css"/>" rel="stylesheet" />
