@@ -31,7 +31,7 @@ public class EquipeController {
 	}
 
 	@Funcionalidade
-	public void acessarTelaEquipe(PesquisaEquipeDTO pesquisaEquipeDTO) throws Exception {
+	public void acessarTelaEquipe(PesquisaEquipeDTO pesquisaEquipeDTO, boolean pesquisa) throws Exception {
 
 		Usuario usuario = this.sessaoUsuario.getUsuario();
 
@@ -41,25 +41,23 @@ public class EquipeController {
 			pesquisaEquipeDTO = new PesquisaEquipeDTO();
 		}
 
-		
-		
-		
-		
-		System.out.println(pesquisaEquipeDTO.getAtivos());
-
-		
-		
-		
-		
-		
 		arvoreHierarquica = filtrarPorCodigo(arvoreHierarquica, pesquisaEquipeDTO.getIdCodigo());
 		arvoreHierarquica = filtrarPorNivel(arvoreHierarquica, pesquisaEquipeDTO.getNivel());
 		arvoreHierarquica = filtrarPorPosicao(arvoreHierarquica, pesquisaEquipeDTO.getPosicao());
 		arvoreHierarquica = filtrarPorApenasIndicados(arvoreHierarquica, pesquisaEquipeDTO.getApenasIndicados());
+		arvoreHierarquica = filtrarPorAtividade(arvoreHierarquica, pesquisaEquipeDTO.getAtivos());
+		arvoreHierarquica = filtrarPorMesAniversario(arvoreHierarquica, pesquisaEquipeDTO.getMesAniversario());
 
+		result.include("pesquisa", pesquisa);
 		result.include("posicoes", hibernateUtil.buscar(new Posicao()));
 		result.include("pesquisaEquipeDTO", pesquisaEquipeDTO);
 		result.include("arvoreHierarquica", arvoreHierarquica);
+	}
+
+	@Funcionalidade
+	public void pesquisar(PesquisaEquipeDTO pesquisaEquipeDTO) throws Exception {
+
+		result.forwardTo(this).acessarTelaEquipe(pesquisaEquipeDTO, true);
 	}
 
 	private Collection<ArvoreHierarquicaDTO> filtrarPorCodigo(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Integer idCodigoFiltro) {
@@ -122,6 +120,27 @@ public class EquipeController {
 			}
 			return arvoreHierarquicaFiltrada;
 		}
+		return arvoreHierarquica;
+	}
+
+	private Collection<ArvoreHierarquicaDTO> filtrarPorMesAniversario(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, String mesAniversario) {
+
+		if (Util.preenchido(mesAniversario)) {
+
+			List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+
+			for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+				if (arvoreHierarquicaDTO.getUsuario().getDt_Nasc().contains("/" + mesAniversario + "/")) {
+					arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
+				}
+			}
+			return arvoreHierarquicaFiltrada;
+		}
+		return arvoreHierarquica;
+	}
+
+	private Collection<ArvoreHierarquicaDTO> filtrarPorAtividade(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Boolean ativos) {
+
 		return arvoreHierarquica;
 	}
 }

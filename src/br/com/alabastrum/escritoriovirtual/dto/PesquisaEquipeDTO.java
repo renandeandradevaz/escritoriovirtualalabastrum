@@ -7,6 +7,7 @@ public class PesquisaEquipeDTO {
 	private String posicao;
 	private Boolean apenasIndicados;
 	private Boolean ativos;
+	private String mesAniversario;
 
 	public Integer getIdCodigo() {
 		return idCodigo;
@@ -46,5 +47,13 @@ public class PesquisaEquipeDTO {
 
 	public void setAtivos(Boolean ativos) {
 		this.ativos = ativos;
+	}
+
+	public String getMesAniversario() {
+		return mesAniversario;
+	}
+
+	public void setMesAniversario(String mesAniversario) {
+		this.mesAniversario = mesAniversario;
 	}
 }

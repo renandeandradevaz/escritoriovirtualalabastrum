@@ -4,7 +4,10 @@
 </div>
 <br>
 <div class="fundo-branco">
-	<form action="<c:url value="/equipe/acessarTelaEquipe"/>" method="post">
+	<c:if test="${pesquisa}">
+		<button class="btn btn-basic" onclick="$('#form-pesquisa').show()">Exibir filtros de pesquisa</button>
+	</c:if>
+	<form id="form-pesquisa" action="<c:url value="/equipe/pesquisar"/>" method="post" <c:if test="${pesquisa}"> style="display:none"  </c:if>>
 		<fieldset>
 			<legend>Pesquisa</legend>
 			<div class="control-group" style="margin-top: 5px;">
@@ -31,6 +34,26 @@
 				</div>
 			</div>
 			<div class="control-group">
+				<label class="control-label">Por mês de aniversário</label>
+				<div class="controls">
+					<select id='mesAniversario' name="pesquisaEquipeDTO.mesAniversario">
+						<option value="">Selecione</option>
+						<option value="01">Janeiro</option>
+						<option value="02">Fevereiro</option>
+						<option value="03">Março</option>
+						<option value="04">Abril</option>
+						<option value="05">Maio</option>
+						<option value="06">Junho</option>
+						<option value="07">Julho</option>
+						<option value="08">Agosto</option>
+						<option value="09">Setembro</option>
+						<option value="10">Outubro</option>
+						<option value="11">Novembro</option>
+						<option value="12">Dezembro</option>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
 				<label class="control-label">Ativos</label>
 				<div class="controls">
 					<select id='ativos' name="pesquisaEquipeDTO.ativos">
@@ -42,7 +65,7 @@
 			</div>
 			<br>
 			<div class="control-group">
-				<input type="checkbox" name="pesquisaEquipeDTO.apenasIndicados">
+				<input <c:if test="${pesquisaEquipeDTO.apenasIndicados}"> checked="checked" </c:if> type="checkbox" name="pesquisaEquipeDTO.apenasIndicados">
 				<span> Apenas indicados </span>
 			</div>
 			<br>
@@ -83,4 +106,5 @@
 <script>
 	$('#posicao').val('${pesquisaEquipeDTO.posicao}');
 	$('#ativos').val('${pesquisaEquipeDTO.ativos}');
+	$('#mesAniversario').val('${pesquisaEquipeDTO.mesAniversario}');
 </script>
