@@ -7,6 +7,7 @@
 	<p>Clique em algum distribuidor para ver detalhes de sua rede</p>
 	<br>
 	<a href="<c:url value="/matriz/acessarTelaMatriz"/>"> Voltar ao topo </a>
+	<a class="btn btn-basic" style="float: right;" href="<c:url value="/configuracao/acessarTelaConfiguracao"/>"> Direcionamento de novos cadastros </a>
 	<div class="chart" id="matriz"></div>
 </div>
 <link type="text/css" href="<c:url value="/css/treant.css"/>" rel="stylesheet" />
