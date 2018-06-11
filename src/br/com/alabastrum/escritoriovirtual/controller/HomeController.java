@@ -1,7 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.TreeMap;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
@@ -35,7 +35,7 @@ public class HomeController {
 
 		Usuario usuario = this.sessaoUsuario.getUsuario();
 
-		Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo());
+		TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo());
 		result.include("quantidadeAfiliados", arvoreHierarquica.size());
 		result.include("ultimosQualificados", new QualificacaoService(hibernateUtil).obterUltimosQualificados(arvoreHierarquica));
 		result.include("ultimosCadastros", new QualificacaoService(hibernateUtil).obterUltimosCadastros(arvoreHierarquica));

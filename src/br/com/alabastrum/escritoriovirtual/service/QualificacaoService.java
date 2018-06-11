@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
 import br.com.alabastrum.escritoriovirtual.dto.QualificacaoDTO;
@@ -22,7 +22,7 @@ public class QualificacaoService {
 		this.hibernateUtil = hibernateUtil;
 	}
 
-	public List<QualificacaoDTO> obterUltimosQualificados(Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
+	public List<QualificacaoDTO> obterUltimosQualificados(TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
 
 		List<QualificacaoDTO> qualificacoes = new ArrayList<QualificacaoDTO>();
 
@@ -49,7 +49,7 @@ public class QualificacaoService {
 		return qualificacoes;
 	}
 
-	public List<QualificacaoDTO> obterUltimosCadastros(Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
+	public List<QualificacaoDTO> obterUltimosCadastros(TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
 
 		List<QualificacaoDTO> qualificacoes = new ArrayList<QualificacaoDTO>();
 

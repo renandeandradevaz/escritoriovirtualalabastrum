@@ -1,8 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.TreeMap;
 
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
@@ -17,16 +16,14 @@ public class HierarquiaService {
 		this.hibernateUtil = hibernateUtil;
 	}
 
-	public Map<Integer, ArvoreHierarquicaDTO> obterArvoreHierarquicaTodosOsNiveis(Integer codigoUsuario) throws Exception {
+	public TreeMap<Integer, ArvoreHierarquicaDTO> obterArvoreHierarquicaTodosOsNiveis(Integer codigoUsuario) throws Exception {
 
-		Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new HashMap<Integer, ArvoreHierarquicaDTO>();
-
+		TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new TreeMap<Integer, ArvoreHierarquicaDTO>();
 		pesquisarComRecursividade(codigoUsuario, arvoreHierarquica, 1);
-
 		return arvoreHierarquica;
 	}
 
-	private void pesquisarComRecursividade(Integer codigo, Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivel) throws Exception {
+	private void pesquisarComRecursividade(Integer codigo, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivel) throws Exception {
 
 		Usuario filtro = new Usuario();
 		filtro.setId_lider(codigo);
@@ -34,14 +31,11 @@ public class HierarquiaService {
 
 		for (Usuario usuarioFromDatabase : usuariosFromDatabase) {
 
-			if (!codigo.equals(usuarioFromDatabase.getId_Codigo())) {
+			if (!codigo.equals(usuarioFromDatabase.getId_Codigo()) && !arvoreHierarquica.containsKey(usuarioFromDatabase.getId_Codigo())) {
 
-				if (!arvoreHierarquica.containsKey(usuarioFromDatabase.getId_Codigo())) {
+				arvoreHierarquica.put(usuarioFromDatabase.getId_Codigo(), new ArvoreHierarquicaDTO(usuarioFromDatabase, nivel));
 
-					arvoreHierarquica.put(usuarioFromDatabase.getId_Codigo(), new ArvoreHierarquicaDTO(usuarioFromDatabase, nivel));
-
-					pesquisarComRecursividade(usuarioFromDatabase.getId_Codigo(), arvoreHierarquica, nivel + 1);
-				}
+				pesquisarComRecursividade(usuarioFromDatabase.getId_Codigo(), arvoreHierarquica, nivel + 1);
 			}
 		}
 	}

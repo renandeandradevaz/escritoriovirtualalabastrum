@@ -2,7 +2,7 @@ package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.TreeMap;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
@@ -34,9 +34,9 @@ public class MatrizController {
 
 		Usuario usuario = this.sessaoUsuario.getUsuario();
 
-		Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo());
+		TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo());
 
-		if (arvoreHierarquicaCompleta.containsKey(codigo)) {
+		if (codigo != null && arvoreHierarquicaCompleta.containsKey(codigo)) {
 			arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(codigo);
 			usuario = hibernateUtil.selecionar(new Usuario(codigo));
 		}
