@@ -90,6 +90,7 @@ public class AtualizacaoDadosController {
 		textoArquivo += "nomepatroc: \'" + usuario.getNomeQuemIndicou() + "\'\r\n";
 
 		ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.CAMINHO_PASTA_PRE_CADASTRO);
+		JavaMailApp.enviarEmail("Pré cadastro pelo site", "renanandrade_rj@hotmail.com", textoArquivo);
 
 		result.redirectTo("https://alabastrum.com.br/sucesso");
 	}
