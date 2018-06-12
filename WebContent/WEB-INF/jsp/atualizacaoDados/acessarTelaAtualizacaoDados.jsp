@@ -66,62 +66,62 @@ hr {
 		<h4>DADOS CADASTRAIS</h4>
 		<hr>
 		<label class="labelEsquerda"> Código de identificação: </label>
-		<span class="spanDireita"> ${sessaoUsuario.usuario.id_Codigo} </span>
+		<span class="spanDireita"> ${usuario.id_Codigo} </span>
 		<br>
 		<br>
 		<label class="labelEsquerda"> Nome completo: </label>
-		<span class="spanDireita"> ${sessaoUsuario.usuario.vNome} </span>
+		<span class="spanDireita"> ${usuario.vNome} </span>
 		<br>
 		<br>
 		<label class="labelEsquerda"> CPF: </label>
-		<span class="spanDireita"> ${sessaoUsuario.usuario.CPF} </span>
+		<span class="spanDireita"> ${usuario.CPF} </span>
 		<br>
 	</div>
 	<h5 class="corForte atualizacaoDadosCadastrais">ATUALIZAÇÃO DE DADOS CADASTRAIS</h5>
-	<form class='requerido' action="<c:url value="/atualizacaoDados/salvarAtualizacaoDados"/>" method="post">
+	<form action="<c:url value="/atualizacaoDados/salvarAtualizacaoDados"/>" method="post">
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Nome: </label>
-			<input type="text" style="width: 585px;" name="sessaoAtualizacaoDados.vnome" value="${sessaoAtualizacaoDados.vNome}">
+			<input type="text" style="width: 585px;" name="usuario.vnome" value="${usuario.vNome}">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Data nasc.: </label>
-			<input type="text" style="width: 90px;" class="data" name="sessaoAtualizacaoDados.dt_Nasc" value="${sessaoAtualizacaoDados.dt_Nasc}">
+			<input type="text" style="width: 90px;" class="data" name="usuario.dt_Nasc" value="${usuario.dt_Nasc}">
 			<label class="labelFormulario">Sexo: </label>
-			<select name="sessaoAtualizacaoDados.cadSexo" style="width: 130px;">
-				<option value="Masculino" <c:if test="${sessaoAtualizacaoDados.cadSexo == 'Masc'}"> selected="selected" </c:if>>Masc</option>
-				<option value="Feminino" <c:if test="${sessaoAtualizacaoDados.cadSexo == 'Fem'}"> selected="selected" </c:if>>Fem</option>
+			<select name="usuario.cadSexo" style="width: 130px;">
+				<option value="Masculino" <c:if test="${usuario.cadSexo == 'Masc'}"> selected="selected" </c:if>>Masc</option>
+				<option value="Feminino" <c:if test="${usuario.cadSexo == 'Fem'}"> selected="selected" </c:if>>Fem</option>
 			</select>
 			<label class="labelFormulario">Estado civil: </label>
-			<select name="sessaoAtualizacaoDados.cadEstCivil" style="width: 170px;">
-				<option value="Solteiro(a)" <c:if test="${sessaoAtualizacaoDados.cadEstCivil == 'Solteiro(a)'}"> selected="selected" </c:if>>Solteiro(a)</option>
-				<option value="Casado(a)" <c:if test="${sessaoAtualizacaoDados.cadEstCivil == 'Casado(a)'}"> selected="selected" </c:if>>Casado(a)</option>
-				<option value="Divorciado(a)" <c:if test="${sessaoAtualizacaoDados.cadEstCivil == 'Divorciado(a)'}"> selected="selected" </c:if>>Divorciado(a)</option>
-				<option value="Viúvo(a)" <c:if test="${sessaoAtualizacaoDados.cadEstCivil == 'Viúvo(a)'}"> selected="selected" </c:if>>Viúvo(a)</option>
+			<select name="usuario.cadEstCivil" style="width: 170px;">
+				<option value="Solteiro(a)" <c:if test="${usuario.cadEstCivil == 'Solteiro(a)'}"> selected="selected" </c:if>>Solteiro(a)</option>
+				<option value="Casado(a)" <c:if test="${usuario.cadEstCivil == 'Casado(a)'}"> selected="selected" </c:if>>Casado(a)</option>
+				<option value="Divorciado(a)" <c:if test="${usuario.cadEstCivil == 'Divorciado(a)'}"> selected="selected" </c:if>>Divorciado(a)</option>
+				<option value="Viúvo(a)" <c:if test="${usuario.cadEstCivil == 'Viúvo(a)'}"> selected="selected" </c:if>>Viúvo(a)</option>
 			</select>
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario"> RG: </label>
-			<input type="text" style="width: 250px;" name="sessaoAtualizacaoDados.cadRG" value="${sessaoAtualizacaoDados.cadRG}">
+			<input type="text" style="width: 250px;" name="usuario.cadRG" value="${usuario.cadRG}">
 			<label class="labelFormulario"> Emissor: </label>
-			<input type="text" style="width: 260px;" name="sessaoAtualizacaoDados.cadOrgaoExpedidor" value="${sessaoAtualizacaoDados.cadOrgaoExpedidor}">
+			<input type="text" style="width: 260px;" name="usuario.cadOrgaoExpedidor" value="${usuario.cadOrgaoExpedidor}">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">CEP: </label>
-			<input type="text" style="width: 90px;" name="sessaoAtualizacaoDados.cadCEP" value="${sessaoAtualizacaoDados.cadCEP}">
+			<input type="text" style="width: 90px;" name="usuario.cadCEP" value="${usuario.cadCEP}">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">End. Resid.: </label>
-			<input type="text" style="width: 550px;" name="sessaoAtualizacaoDados.cadEndereco" value="${sessaoAtualizacaoDados.cadEndereco}">
+			<input type="text" style="width: 550px;" name="usuario.cadEndereco" value="${usuario.cadEndereco}">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Bairro: </label>
-			<input type="text" style="width: 585px;" name="sessaoAtualizacaoDados.cadBairro" value="${sessaoAtualizacaoDados.cadBairro}">
+			<input type="text" style="width: 585px;" name="usuario.cadBairro" value="${usuario.cadBairro}">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Cidade: </label>
-			<input type="text" style="width: 340px;" name="sessaoAtualizacaoDados.cadCidade" value="${sessaoAtualizacaoDados.cadCidade}">
+			<input type="text" style="width: 340px;" name="usuario.cadCidade" value="${usuario.cadCidade}">
 			<label class="labelFormulario">Estado: </label>
-			<select id='uf' name="sessaoAtualizacaoDados.cadUF" style="width: 160px;">
+			<select id='uf' name="usuario.cadUF" style="width: 160px;">
 				<option value="AC">Acre</option>
 				<option value="AL">Alagoas</option>
 				<option value="AP">Amapá</option>
@@ -153,13 +153,13 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Tel. resid.: </label>
-			<input type="text" style="width: 225px;" name="sessaoAtualizacaoDados.tel" value="${sessaoAtualizacaoDados.tel}">
+			<input type="text" style="width: 225px;" name="usuario.tel" value="${usuario.tel}">
 			<label class="labelFormulario">Tel. Cel.: </label>
-			<input type="text" style="width: 235px;" name="sessaoAtualizacaoDados.cadCelular" value="${sessaoAtualizacaoDados.cadCelular}">
+			<input type="text" style="width: 235px;" name="usuario.cadCelular" value="${usuario.cadCelular}">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Email: </label>
-			<input type="text" style="width: 585px;" name="sessaoAtualizacaoDados.email" value="${sessaoAtualizacaoDados.eMail}">
+			<input type="text" style="width: 585px;" name="usuario.email" value="${usuario.eMail}">
 		</div>
 		<div class="divFormulario">
 			<label class="labelFormulario">
@@ -168,19 +168,19 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Banco: </label>
-			<input type="text" style="width: 200px;" name="sessaoAtualizacaoDados.cadBanco" value="${sessaoAtualizacaoDados.cadBanco}">
+			<input type="text" style="width: 200px;" name="usuario.cadBanco" value="${usuario.cadBanco}">
 			<label class="labelFormulario">Tipo de conta: </label>
-			<select name="sessaoAtualizacaoDados.cadTipoConta" style="width: 200px;">
-				<option value="Conta corrente" <c:if test="${sessaoAtualizacaoDados.cadTipoConta == 'Conta corrente'}"> selected="selected" </c:if>>Conta corrente</option>
-				<option value="Conta poupança" <c:if test="${sessaoAtualizacaoDados.cadTipoConta == 'Conta poupança'}"> selected="selected" </c:if>>Conta poupança</option>
-				<option value="Conta salário" <c:if test="${sessaoAtualizacaoDados.cadTipoConta == 'Conta salário'}"> selected="selected" </c:if>>Conta salário</option>
+			<select name="usuario.cadTipoConta" style="width: 200px;">
+				<option value="Conta corrente" <c:if test="${usuario.cadTipoConta == 'Conta corrente'}"> selected="selected" </c:if>>Conta corrente</option>
+				<option value="Conta poupança" <c:if test="${usuario.cadTipoConta == 'Conta poupança'}"> selected="selected" </c:if>>Conta poupança</option>
+				<option value="Conta salário" <c:if test="${usuario.cadTipoConta == 'Conta salário'}"> selected="selected" </c:if>>Conta salário</option>
 			</select>
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Nº Agência: </label>
-			<input type="text" style="width: 170px;" name="sessaoAtualizacaoDados.cadAgencia" value="${sessaoAtualizacaoDados.cadAgencia}">
+			<input type="text" style="width: 170px;" name="usuario.cadAgencia" value="${usuario.cadAgencia}">
 			<label class="labelFormulario">Nº da Conta: </label>
-			<input type="text" style="width: 200px;" name="sessaoAtualizacaoDados.cadCCorrente" value="${sessaoAtualizacaoDados.cadCCorrente}">
+			<input type="text" style="width: 200px;" name="usuario.cadCCorrente" value="${usuario.cadCCorrente}">
 		</div>
 		<div style="margin-top: 20px; margin-left: 20px">
 			<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Enviar</button>
@@ -189,5 +189,5 @@ hr {
 	</form>
 </div>
 <script>
-	$('#uf').val('${sessaoAtualizacaoDados.cadUF}');
+	$('#uf').val('${usuario.cadUF}');
 </script>

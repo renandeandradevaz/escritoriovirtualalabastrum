@@ -5,6 +5,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.criterion.MatchMode;
@@ -55,6 +56,12 @@ public class Usuario implements Entidade {
 
 	@Index(name = "index_id_Indicante")
 	private Integer id_Indicante;
+
+	@Transient
+	private Integer codigoQuemIndicou;
+
+	@Transient
+	private Integer nomeQuemIndicou;
 
 	public Usuario() {
 
@@ -306,5 +313,21 @@ public class Usuario implements Entidade {
 
 	public void setId_Indicante(Integer id_Indicante) {
 		this.id_Indicante = id_Indicante;
+	}
+
+	public Integer getCodigoQuemIndicou() {
+		return codigoQuemIndicou;
+	}
+
+	public void setCodigoQuemIndicou(Integer codigoQuemIndicou) {
+		this.codigoQuemIndicou = codigoQuemIndicou;
+	}
+
+	public Integer getNomeQuemIndicou() {
+		return nomeQuemIndicou;
+	}
+
+	public void setNomeQuemIndicou(Integer nomeQuemIndicou) {
+		this.nomeQuemIndicou = nomeQuemIndicou;
 	}
 }

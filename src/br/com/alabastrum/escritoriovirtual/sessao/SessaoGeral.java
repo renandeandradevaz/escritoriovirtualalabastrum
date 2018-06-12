@@ -21,10 +21,6 @@ public class SessaoGeral {
 		return hashSessao;
 	}
 
-	public HashMap<String, Object> getValor() {
-		return getHashSessao();
-	}
-
 	public Object getValor(String chave) {
 
 		HashMap<String, Object> hashSessao = getHashSessao();
