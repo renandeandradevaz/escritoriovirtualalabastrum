@@ -17,8 +17,11 @@ import org.joda.time.format.DateTimeFormatter;
 
 import au.com.bytecode.opencsv.CSVReader;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
+import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.Pontuacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
+import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 import br.com.alabastrum.escritoriovirtual.modelo.Qualificacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
@@ -38,14 +41,16 @@ public class AtualizacaoArquivosService {
 		processarCSVPosicoes();
 		processarCSVQualificacao();
 		processarCSVPontuacao();
+		processarCSVFranquia();
+		processarCSVCategoria();
+		processarCSVProduto();
 	}
 
 	private void processarCSVRelacionamentos() throws Exception {
 
 		CSVReader reader = lerArquivo("tblRelacionamentos.csv");
 		List<Usuario> usuarios = new ArrayList<Usuario>();
-		String nomeDaPrimeiraColuna = "id_Codigo";
-		preencherObjeto(reader, usuarios, nomeDaPrimeiraColuna, "Usuario");
+		preencherObjeto(reader, usuarios, "Usuario");
 		this.hibernateUtil.executarSQL("delete from usuario");
 		this.hibernateUtil.salvarOuAtualizar(usuarios);
 	}
@@ -54,8 +59,7 @@ public class AtualizacaoArquivosService {
 
 		CSVReader reader = lerArquivo("tblPosicoes.csv");
 		List<Posicao> posicoes = new ArrayList<Posicao>();
-		String nomeDaPrimeiraColuna = "posicao";
-		preencherObjeto(reader, posicoes, nomeDaPrimeiraColuna, "Posicao");
+		preencherObjeto(reader, posicoes, "Posicao");
 		this.hibernateUtil.executarSQL("delete from posicao");
 		this.hibernateUtil.salvarOuAtualizar(posicoes);
 	}
@@ -64,8 +68,7 @@ public class AtualizacaoArquivosService {
 
 		CSVReader reader = lerArquivo("tblQualificacoes.csv");
 		List<Qualificacao> qualificacoes = new ArrayList<Qualificacao>();
-		String nomeDaPrimeiraColuna = "id_Codigo";
-		preencherObjeto(reader, qualificacoes, nomeDaPrimeiraColuna, "Qualificacao");
+		preencherObjeto(reader, qualificacoes, "Qualificacao");
 		this.hibernateUtil.executarSQL("delete from qualificacao");
 		this.hibernateUtil.salvarOuAtualizar(qualificacoes);
 	}
@@ -74,10 +77,36 @@ public class AtualizacaoArquivosService {
 
 		CSVReader reader = lerArquivo("tblPontuacao.csv");
 		List<Pontuacao> pontuacoes = new ArrayList<Pontuacao>();
-		String nomeDaPrimeiraColuna = "id_Codigo";
-		preencherObjeto(reader, pontuacoes, nomeDaPrimeiraColuna, "Pontuacao");
+		preencherObjeto(reader, pontuacoes, "Pontuacao");
 		this.hibernateUtil.executarSQL("delete from pontuacao");
 		this.hibernateUtil.salvarOuAtualizar(pontuacoes);
+	}
+
+	private void processarCSVFranquia() throws Exception {
+
+		CSVReader reader = lerArquivo("tblCDA.csv");
+		List<Franquia> franquias = new ArrayList<Franquia>();
+		preencherObjeto(reader, franquias, "Franquia");
+		this.hibernateUtil.executarSQL("delete from franquia");
+		this.hibernateUtil.salvarOuAtualizar(franquias);
+	}
+
+	private void processarCSVCategoria() throws Exception {
+
+		CSVReader reader = lerArquivo("tblCategorias.csv");
+		List<Categoria> categorias = new ArrayList<Categoria>();
+		preencherObjeto(reader, categorias, "Categoria");
+		this.hibernateUtil.executarSQL("delete from categoria");
+		this.hibernateUtil.salvarOuAtualizar(categorias);
+	}
+
+	private void processarCSVProduto() throws Exception {
+
+		CSVReader reader = lerArquivo("tblProdutos.csv");
+		List<Produto> produtos = new ArrayList<Produto>();
+		preencherObjeto(reader, produtos, "Produto");
+		this.hibernateUtil.executarSQL("delete from produto");
+		this.hibernateUtil.salvarOuAtualizar(produtos);
 	}
 
 	private CSVReader lerArquivo(String nomeCsv) throws Exception {
@@ -91,12 +120,16 @@ public class AtualizacaoArquivosService {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void preencherObjeto(CSVReader reader, List listaDeEntidades, String nomeDaPrimeiraColuna, String nomeDaClasse) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+	private void preencherObjeto(CSVReader reader, List listaDeEntidades, String nomeDaClasse) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 
 		HashMap<Integer, String> hashColunas = new HashMap<Integer, String>();
 
+		int line = 0;
+
 		String[] nextLine;
 		while ((nextLine = reader.readNext()) != null) {
+
+			line++;
 
 			String[] colunas = nextLine[0].split(";");
 
@@ -105,7 +138,7 @@ public class AtualizacaoArquivosService {
 				colunas[i] = colunas[i].replaceAll("\"", "");
 			}
 
-			if (!colunas[0].contains(nomeDaPrimeiraColuna)) {
+			if (line > 1) {
 
 				Object entidade = Class.forName("br.com.alabastrum.escritoriovirtual.modelo." + nomeDaClasse).newInstance();
 

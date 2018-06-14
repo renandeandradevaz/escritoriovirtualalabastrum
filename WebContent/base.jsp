@@ -36,20 +36,14 @@
 			<a href="<c:url value="/equipe/acessarTelaEquipe"/>" class="submenu-accordion"> Equipe </a>
 			<a href="<c:url value="/matriz/acessarTelaMatriz"/>" class="submenu-accordion"> Matriz </a>
 		</div>
-		<h3 class="menu-accordion has-child">Financeiro</h3>
+		<h3 class="menu-accordion has-child">Pedidos</h3>
 		<div>
-			<a href="#" class="submenu-accordion"> Saldo (Em breve) </a>
-			<a href="#" class="submenu-accordion"> Extrato detalhado (Em breve) </a>
-		</div>
-		<h3 class="menu-accordion">Pontuação (Em breve)</h3>
-		<div></div>
-		<h3 class="menu-accordion has-child">Loja virtual (Em breve)</h3>
-		<div>
-			<a href="#" class="submenu-accordion"> Meu carrinho (Em breve) </a>
-			<a href="#" class="submenu-accordion"> Meus pedidos (Em breve) </a>
+			<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="submenu-accordion"> Produtos </a>
+			<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="submenu-accordion"> Meu carrinho </a>
+			<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="submenu-accordion"> Meus pedidos </a>
 		</div>
 		<c:if test="${sessaoUsuario.usuario.informacoesFixasUsuario.administrador}">
-			<h3 class="menu-accordion has-child">ADMINISTRATIVO</h3>
+			<h3 class="menu-accordion has-child">Administrativo</h3>
 			<div>
 				<a href="<c:url value="/assumirIdentidade/acessarTelaAssumirIdentidade"/>" class="submenu-accordion"> Assumir identidade </a>
 			</div>
