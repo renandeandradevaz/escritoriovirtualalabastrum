@@ -44,7 +44,7 @@
 				</p>
 				<p>Pontos:
 				<p>${item.prdPontos}</p>
-				<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Flag_of_Syrian_Democratic_Forces.svg/300px-Flag_of_Syrian_Democratic_Forces.svg.png">
+				<img src="<c:url value="/download/imagem/produto/${item.id_Produtos}"/>">
 			</div>
 		</c:forEach>
 	</div>

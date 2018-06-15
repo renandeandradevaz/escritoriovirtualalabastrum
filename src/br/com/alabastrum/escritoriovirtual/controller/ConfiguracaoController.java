@@ -54,7 +54,7 @@ public class ConfiguracaoController {
 			salvarConfiguracao(configuracaoDTO, id_Codigo, field.getName());
 		}
 
-		ArquivoService.criarArquivoNoDisco(montarTextoArquivo(configuracaoDTO, id_Codigo), ArquivoService.CAMINHO_PASTA_CONFIGURACOES);
+		ArquivoService.criarArquivoNoDisco(montarTextoArquivo(configuracaoDTO, id_Codigo), ArquivoService.PASTA_CONFIGURACOES);
 
 		result.include("sucesso", "Configurações salvas com sucesso");
 
