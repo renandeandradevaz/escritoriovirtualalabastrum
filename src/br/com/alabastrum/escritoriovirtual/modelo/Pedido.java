@@ -1,8 +1,11 @@
 package br.com.alabastrum.escritoriovirtual.modelo;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Index;
 
@@ -20,6 +23,9 @@ public class Pedido implements Entidade {
 
 	@Index(name = "index_idCodigo_pedido")
 	private Integer idCodigo;
+
+	@OneToMany
+	private List<ItemPedido> itens;
 
 	public Integer getId() {
 		return id;
@@ -51,5 +57,13 @@ public class Pedido implements Entidade {
 
 	public void setIdCodigo(Integer idCodigo) {
 		this.idCodigo = idCodigo;
+	}
+
+	public List<ItemPedido> getItens() {
+		return itens;
+	}
+
+	public void setItens(List<ItemPedido> itens) {
+		this.itens = itens;
 	}
 }

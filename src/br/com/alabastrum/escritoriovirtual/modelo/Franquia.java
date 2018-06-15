@@ -24,6 +24,13 @@ public class Franquia implements Entidade {
 	private String estqTelefone;
 	private String estqEmail;
 
+	public Franquia() {
+	}
+
+	public Franquia(Integer idCodigo) {
+		this.id_Codigo = idCodigo;
+	}
+
 	public Integer getId() {
 		return id;
 	}

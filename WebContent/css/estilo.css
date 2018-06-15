@@ -169,6 +169,28 @@ html {
 	border-radius: 5px;
 }
 
+.fundo-azul {
+	padding: 10px;
+	background-color: #0498AC;
+	border-radius: 5px;
+}
+
+.fundo-preto {
+	padding: 10px;
+	background-color: #444444;
+	border-radius: 5px;
+}
+
+.categorias-menu {
+	padding: 5px;
+	display: inline-block;
+	color: white;
+}
+
+.categorias-menu:hover {
+	text-decoration: underline;
+}
+
 .centralizado {
 	text-align: center !important;
 }

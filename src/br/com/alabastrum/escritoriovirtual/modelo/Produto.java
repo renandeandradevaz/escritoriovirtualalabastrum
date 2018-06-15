@@ -19,6 +19,14 @@ public class Produto implements Entidade {
 	private Integer id_Categoria;
 	private String prdNome;
 	private BigDecimal prdPreco_Unit;
+	private Integer prdPontos;
+
+	public Produto() {
+	}
+
+	public Produto(String id_Produtos) {
+		this.id_Produtos = id_Produtos;
+	}
 
 	public Integer getId() {
 		return id;
@@ -30,6 +38,14 @@ public class Produto implements Entidade {
 
 	public String getId_Produtos() {
 		return id_Produtos;
+	}
+
+	public Integer getPrdPontos() {
+		return prdPontos;
+	}
+
+	public void setPrdPontos(Integer prdPontos) {
+		this.prdPontos = prdPontos;
 	}
 
 	public void setId_Produtos(String id_Produtos) {
