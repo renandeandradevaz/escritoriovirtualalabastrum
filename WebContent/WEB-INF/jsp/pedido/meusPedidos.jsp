@@ -7,7 +7,7 @@
 	<table class="table table-striped table-bordered">
 		<thead>
 			<tr>
-				<th>Número</th>
+				<th>Código</th>
 				<th>Franquia</th>
 				<th>Data</th>
 				<th>Valor</th>

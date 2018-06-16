@@ -44,7 +44,7 @@
 		<a href="<c:url value="/pedido/concluirPedido"/>" class="btn btn-success" style="float: right;">Concluir</a>
 	</c:if>
 	<c:if test="${empty itensPedidoDTO}">
-		<h2>Seu carrinho está vazio.</h2>
+		<h4>Seu carrinho está vazio.</h4>
 	</c:if>
 	<a class="btn btn-info" href="<c:url value="/pedido/escolherProdutos"/>"> Escolher mais produtos</a>
 </div>

@@ -153,7 +153,7 @@ public class PedidoController {
 		}
 
 		ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
-		JavaMailApp.enviarEmail("Pedido feito pelo EV", "financeiro@alabastrum.com.b", textoArquivo.replaceAll("\\r\\n", "<br>"));
+		JavaMailApp.enviarEmail("Pedido feito pelo EV", "financeiro@alabastrum.com.br", textoArquivo.replaceAll("\\r\\n", "<br>"));
 
 		pedido.setCompleted(true);
 		pedido.setData(new GregorianCalendar());
