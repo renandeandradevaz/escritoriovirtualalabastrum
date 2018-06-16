@@ -13,7 +13,6 @@ public class Franquia implements Entidade {
 	@GeneratedValue
 	private Integer id;
 
-	private Integer id_Codigo;
 	private Integer id_Estoque;
 	private String estqNome;
 	private String estqEndereco;
@@ -27,8 +26,8 @@ public class Franquia implements Entidade {
 	public Franquia() {
 	}
 
-	public Franquia(Integer idCodigo) {
-		this.id_Codigo = idCodigo;
+	public Franquia(Integer id_Estoque) {
+		this.id_Estoque = id_Estoque;
 	}
 
 	public Integer getId() {
@@ -37,14 +36,6 @@ public class Franquia implements Entidade {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public Integer getId_Codigo() {
-		return id_Codigo;
-	}
-
-	public void setId_Codigo(Integer id_Codigo) {
-		this.id_Codigo = id_Codigo;
 	}
 
 	public Integer getId_Estoque() {

@@ -1,5 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.modelo;
 
+import java.util.GregorianCalendar;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,6 +17,7 @@ public class Pedido implements Entidade {
 	@GeneratedValue
 	private Integer id;
 
+	private GregorianCalendar data;
 	private Boolean completed;
 	private Integer idFranquia;
 
@@ -51,5 +54,13 @@ public class Pedido implements Entidade {
 
 	public void setIdCodigo(Integer idCodigo) {
 		this.idCodigo = idCodigo;
+	}
+
+	public GregorianCalendar getData() {
+		return data;
+	}
+
+	public void setData(GregorianCalendar data) {
+		this.data = data;
 	}
 }

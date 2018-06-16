@@ -2,6 +2,7 @@ package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.hibernate.criterion.Order;
@@ -15,7 +16,9 @@ import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.ItemPedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Pedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
+import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
+import br.com.alabastrum.escritoriovirtual.util.JavaMailApp;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Post;
@@ -116,11 +119,7 @@ public class PedidoController {
 
 		if (pedido != null) {
 
-			ItemPedido filtro = new ItemPedido();
-			filtro.setPedido(pedido);
-			List<ItemPedido> itensPedido = hibernateUtil.buscar(filtro);
-
-			for (ItemPedido itemPedido : itensPedido) {
+			for (ItemPedido itemPedido : listarItensPedido(pedido)) {
 				Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()));
 				Integer quantidade = itemPedido.getQuantidade();
 				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade));
@@ -140,15 +139,58 @@ public class PedidoController {
 		result.forwardTo(this).acessarCarrinho();
 	}
 
+	@Funcionalidade
+	public void concluirPedido() throws Exception {
+
+		Pedido pedido = selecionarPedidoAberto();
+		List<ItemPedido> itens = listarItensPedido(pedido);
+
+		String textoArquivo = "id_Codigo=" + sessaoUsuario.getUsuario().getId_Codigo() + "\r\n";
+		textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
+
+		for (ItemPedido itemPedido : itens) {
+			textoArquivo += itemPedido.getIdProduto() + "=" + itemPedido.getQuantidade() + "\r\n";
+		}
+
+		ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
+		JavaMailApp.enviarEmail("Pedido feito pelo EV", "financeiro@alabastrum.com.b", textoArquivo.replaceAll("\\r\\n", "<br>"));
+
+		pedido.setCompleted(true);
+		pedido.setData(new GregorianCalendar());
+		hibernateUtil.salvarOuAtualizar(pedido);
+
+		result.include("sucesso", "Pedido feito com sucesso. Você pode buscar no endereço escolhido. De segunda a sexta-feira. De 9h as 17h.");
+		result.forwardTo(this).meusPedidos();
+	}
+
+	@Funcionalidade
+	public void meusPedidos() throws Exception {
+
+		Pedido filtro = new Pedido();
+		filtro.setIdCodigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+		filtro.setCompleted(true);
+		List<Pedido> pedidos = hibernateUtil.buscar(filtro);
+		List<PedidoDTO> pedidosDTO = new ArrayList<PedidoDTO>();
+		for (Pedido pedido : pedidos) {
+			pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), calcularTotais(pedido).getValorTotal()));
+		}
+
+		result.include("pedidosDTO", pedidosDTO);
+	}
+
+	@Funcionalidade
+	public void verItens() throws Exception {
+
+		// TODO
+	}
+
 	private PedidoDTO calcularTotais(Pedido pedido) {
 
 		BigDecimal valorTotal = BigDecimal.ZERO;
 		Integer totalItens = 0;
 		Integer totalPontos = 0;
 
-		ItemPedido filtro = new ItemPedido();
-		filtro.setPedido(pedido);
-		List<ItemPedido> itens = hibernateUtil.buscar(filtro);
+		List<ItemPedido> itens = listarItensPedido(pedido);
 
 		for (ItemPedido itemPedido : itens) {
 
@@ -161,6 +203,13 @@ public class PedidoController {
 		}
 
 		return new PedidoDTO(valorTotal, totalItens, totalPontos);
+	}
+
+	private List<ItemPedido> listarItensPedido(Pedido pedido) {
+
+		ItemPedido filtro = new ItemPedido();
+		filtro.setPedido(pedido);
+		return hibernateUtil.buscar(filtro);
 	}
 
 	private Pedido selecionarPedidoAberto() {

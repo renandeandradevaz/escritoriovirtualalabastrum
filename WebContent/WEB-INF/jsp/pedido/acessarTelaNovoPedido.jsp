@@ -9,7 +9,7 @@
 		<select name='idFranquia'>
 			<option value="">Selecione</option>
 			<c:forEach items="${franquias}" var="item">
-				<option value="${item.id_Codigo}">${item.estqUF}-${item.estqCidade}- ${item.estqBairro}</option>
+				<option value="${item.id_Estoque}">${item.estqUF}-${item.estqCidade}- ${item.estqBairro}</option>
 			</c:forEach>
 		</select>
 		<br>
