@@ -163,6 +163,15 @@ html {
 	margin-right: 10px !important;
 }
 
+.produto {
+	border: 1px solid #bdb7b7;
+	padding: 10px;
+	border-radius: 5px;
+	max-width: 200px;
+	display: inline-table;
+	margin: 10px;
+}
+
 .fundo-branco {
 	padding: 10px;
 	background-color: white;

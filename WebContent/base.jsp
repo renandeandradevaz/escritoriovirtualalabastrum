@@ -39,7 +39,7 @@
 		<h3 class="menu-accordion has-child">Pedidos</h3>
 		<div>
 			<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="submenu-accordion"> Produtos </a>
-			<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="submenu-accordion"> Meu carrinho </a>
+			<a href="<c:url value="/pedido/acessarCarrinho"/>" class="submenu-accordion"> Meu carrinho </a>
 			<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="submenu-accordion"> Meus pedidos </a>
 		</div>
 		<c:if test="${sessaoUsuario.usuario.informacoesFixasUsuario.administrador}">

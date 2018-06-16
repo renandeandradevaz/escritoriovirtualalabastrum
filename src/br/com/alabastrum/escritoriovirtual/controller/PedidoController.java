@@ -1,10 +1,13 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.criterion.Order;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
+import br.com.alabastrum.escritoriovirtual.dto.ItemPedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.PedidoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
@@ -15,6 +18,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Get;
+import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 
@@ -39,7 +43,7 @@ public class PedidoController {
 	@Funcionalidade
 	public void escolherProdutos(Integer idFranquia) {
 
-		Pedido pedido = selecionarPedido();
+		Pedido pedido = selecionarPedidoAberto();
 
 		if (Util.vazio(pedido)) {
 			pedido = new Pedido();
@@ -47,10 +51,12 @@ public class PedidoController {
 			pedido.setCompleted(false);
 		}
 
-		pedido.setIdFranquia(idFranquia);
-		hibernateUtil.salvarOuAtualizar(pedido);
+		if (idFranquia != null && idFranquia != 0) {
+			pedido.setIdFranquia(idFranquia);
+			hibernateUtil.salvarOuAtualizar(pedido);
+		}
 
-		result.include("franquia", hibernateUtil.selecionar(new Franquia(idFranquia)));
+		result.include("franquia", hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())));
 		result.include("categorias", hibernateUtil.buscar(new Categoria(), Order.asc("catNome")));
 	}
 
@@ -60,11 +66,78 @@ public class PedidoController {
 
 		Produto filtro = new Produto();
 		filtro.setId_Categoria(idCategoria);
-		result.include("produtos", hibernateUtil.buscar(filtro));
+		List<Produto> produtos = hibernateUtil.buscar(filtro);
+		List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
+		for (Produto produto : produtos) {
+			ItemPedido itemPedido = selecionarItemPedido(produto.getId_Produtos(), selecionarPedidoAberto());
+			Integer quantidade = 0;
+			if (itemPedido != null) {
+				quantidade = itemPedido.getQuantidade();
+			}
+			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade));
+		}
+		result.include("itensPedidoDTO", itensPedidoDTO);
 
-		Pedido pedido = selecionarPedido();
+		Pedido pedido = selecionarPedidoAberto();
 		result.include("totais", calcularTotais(pedido));
 		result.forwardTo(this).escolherProdutos(pedido.getIdFranquia());
+	}
+
+	@Funcionalidade
+	@Post("/pedido/adicionarProduto/{idProduto}")
+	public void adicionarProduto(String idProduto, Integer quantidade) {
+
+		Pedido pedido = selecionarPedidoAberto();
+		ItemPedido itemPedido = selecionarItemPedido(idProduto, pedido);
+
+		if (Util.vazio(itemPedido)) {
+			itemPedido = new ItemPedido();
+			itemPedido.setPedido(pedido);
+			itemPedido.setIdProduto(idProduto);
+		}
+
+		itemPedido.setQuantidade(quantidade);
+		hibernateUtil.salvarOuAtualizar(itemPedido);
+
+		if (quantidade <= 0) {
+			hibernateUtil.deletar(itemPedido);
+		}
+
+		Produto produto = hibernateUtil.selecionar(new Produto(idProduto));
+		result.forwardTo(this).selecionarCategoria(produto.getId_Categoria());
+	}
+
+	@Funcionalidade
+	public void acessarCarrinho() {
+
+		List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
+
+		Pedido pedido = selecionarPedidoAberto();
+
+		if (pedido != null) {
+
+			ItemPedido filtro = new ItemPedido();
+			filtro.setPedido(pedido);
+			List<ItemPedido> itensPedido = hibernateUtil.buscar(filtro);
+
+			for (ItemPedido itemPedido : itensPedido) {
+				Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()));
+				Integer quantidade = itemPedido.getQuantidade();
+				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade));
+			}
+		}
+		result.include("itensPedidoDTO", itensPedidoDTO);
+		result.include("totais", calcularTotais(pedido));
+	}
+
+	@Funcionalidade
+	@Get("/pedido/removerProduto/{idProduto}")
+	public void removerProduto(String idProduto) {
+
+		Pedido pedido = selecionarPedidoAberto();
+		ItemPedido itemPedido = selecionarItemPedido(idProduto, pedido);
+		hibernateUtil.deletar(itemPedido);
+		result.forwardTo(this).acessarCarrinho();
 	}
 
 	private PedidoDTO calcularTotais(Pedido pedido) {
@@ -73,7 +146,11 @@ public class PedidoController {
 		Integer totalItens = 0;
 		Integer totalPontos = 0;
 
-		for (ItemPedido itemPedido : pedido.getItens()) {
+		ItemPedido filtro = new ItemPedido();
+		filtro.setPedido(pedido);
+		List<ItemPedido> itens = hibernateUtil.buscar(filtro);
+
+		for (ItemPedido itemPedido : itens) {
 
 			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()));
 			Integer quantidade = itemPedido.getQuantidade();
@@ -86,11 +163,19 @@ public class PedidoController {
 		return new PedidoDTO(valorTotal, totalItens, totalPontos);
 	}
 
-	private Pedido selecionarPedido() {
+	private Pedido selecionarPedidoAberto() {
 
 		Pedido pedido = new Pedido();
 		pedido.setIdCodigo(sessaoUsuario.getUsuario().getId_Codigo());
 		pedido.setCompleted(false);
 		return hibernateUtil.selecionar(pedido);
+	}
+
+	private ItemPedido selecionarItemPedido(String idProduto, Pedido pedido) {
+
+		ItemPedido itemPedido = new ItemPedido();
+		itemPedido.setPedido(pedido);
+		itemPedido.setIdProduto(idProduto);
+		return hibernateUtil.selecionar(itemPedido);
 	}
 }

@@ -20,32 +20,38 @@
 </div>
 <br>
 <c:if test="${not empty totais}">
-	<div class="fundo-preto letra-branca">
+	<div class="fundo-preto letra-branca" id='totais' style="height: 100px">
 		<h4>
 			Valor: R$
 			<fmt:formatNumber value="${totais.valorTotal}" pattern="#,##0.00" />
 			- Total de itens: ${totais.totalItens} - Pontos: ${totais.totalPontos}
 		</h4>
 		<br>
-		<a href="<c:url value="/pedido/acessarCarrinho"/>">
-			<span style="border: 1px solid; border-color: white; padding: 5px; color: white; border-radius: 3px;"> Ir para carrinho</span>
+		<a href="<c:url value="/pedido/acessarCarrinho"/>" style="float: right;">
+			<span style="border: 1px solid; border-color: white; padding: 10px; color: white; border-radius: 3px; font-size: 15px; background-color: #5f5d5d;"> Ir para carrinho</span>
 		</a>
 	</div>
 </c:if>
 <br>
-<c:if test="${not empty produtos}">
+<c:if test="${not empty itensPedidoDTO}">
 	<div class="fundo-branco">
-		<c:forEach items="${produtos}" var="item">
-			<div>
-				<p>${item.prdNome}</p>
+		<c:forEach items="${itensPedidoDTO}" var="item">
+			<div class="produto">
+				<img src="<c:url value="/download/imagem/produto/${item.produto.id_Produtos}.jpg"/>">
+				<p style="height: 50px; font-weight: bold">${item.produto.prdNome}</p>
 				<p>
 					Preço: R$
-					<fmt:formatNumber value="${item.prdPreco_Unit}" pattern="#,##0.00" />
+					<fmt:formatNumber value="${item.produto.prdPreco_Unit}" pattern="#,##0.00" />
 				</p>
-				<p>Pontos:
-				<p>${item.prdPontos}</p>
-				<img src="<c:url value="/download/imagem/produto/${item.id_Produtos}"/>">
+				<p>Pontos: ${item.produto.prdPontos}</p>
+				<form action="<c:url value="/pedido/adicionarProduto/${item.produto.id_Produtos}"/>" method="post">
+					<input type="number" min="0" name="quantidade" style="width: 90px; margin-top: 10px" placeholder="Quantidade" value="${item.quantidade}">
+					<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Adicionar</button>
+				</form>
 			</div>
 		</c:forEach>
 	</div>
 </c:if>
+<script>
+	$(document).scrollTop($("#totais").offset().top);
+</script>

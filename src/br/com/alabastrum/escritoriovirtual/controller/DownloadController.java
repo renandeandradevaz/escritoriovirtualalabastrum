@@ -13,6 +13,12 @@ public class DownloadController {
 	@Funcionalidade
 	@Get("/download/imagem/produto/{idProduto}")
 	public File downloadImagemProduto(String idProduto) {
-		return new File(ArquivoService.PASTA_IMAGEM_PRODUTOS + idProduto + ".jpg");
+
+		File file = new File(ArquivoService.PASTA_IMAGEM_PRODUTOS + idProduto);
+
+		if (file.exists()) {
+			return file;
+		}
+		return new File(ArquivoService.PASTA_IMAGEM_PRODUTOS + "imagem-nao-disponivel.jpg");
 	}
 }
