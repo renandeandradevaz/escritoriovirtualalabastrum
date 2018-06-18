@@ -157,6 +157,7 @@ html {
 .conteudo {
 	float: right;
 	width: 80%;
+	margin-top: 20px;
 }
 
 .chekboxTabela {
@@ -226,15 +227,8 @@ html {
 	font-weight: bold;
 }
 
-@media print {
-	.topo, .menu, .bem-vindo, #sair, .btn {
-		display: none;
-	}
-	.menu {
-		width: 0px;
-		min-width: 0px;
-	}
+@media only screen and (max-width: 1200px) {
 	.conteudo {
-		width: 94%;
+		width: 65%;
 	}
 }

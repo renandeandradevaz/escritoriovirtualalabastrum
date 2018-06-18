@@ -6,7 +6,7 @@ import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
-import br.com.alabastrum.escritoriovirtual.util.JavaMailApp;
+import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 
@@ -59,7 +59,7 @@ public class AtualizacaoDadosController {
 		textoEmail += "<br> <b> Número da agência: </b> " + usuario.getCadAgencia();
 		textoEmail += "<br> <b> Número da conta: </b> " + usuario.getCadCCorrente();
 
-		JavaMailApp.enviarEmail("Atualização de dados de usuário", "atualizacaocadastro@alabastrum.com.br", textoEmail);
+		Mail.enviarEmail("Atualização de dados de usuário", textoEmail);
 
 		result.include("sucesso", "Foi enviado um email para a Alabastrum solicitando a atualização dos seus dados cadastrais. Você receberá um email assim que a atualização for concluída.");
 
@@ -90,7 +90,7 @@ public class AtualizacaoDadosController {
 		textoArquivo += "nomepatroc: \'" + usuario.getNomeQuemIndicou() + "\'\r\n";
 
 		ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PRE_CADASTRO);
-		JavaMailApp.enviarEmail("Pré cadastro pelo site", "renanandrade_rj@hotmail.com", textoArquivo);
+		Mail.enviarEmail("Pré cadastro pelo site", textoArquivo);
 
 		result.redirectTo("https://alabastrum.com.br/sucesso");
 	}

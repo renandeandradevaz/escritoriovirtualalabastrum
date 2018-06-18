@@ -5,7 +5,7 @@ import java.io.StringWriter;
 
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
-import br.com.alabastrum.escritoriovirtual.util.JavaMailApp;
+import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Result;
@@ -38,19 +38,23 @@ public class HibernateInterceptor implements Interceptor {
 			hibernateUtil.fecharSessao();
 		}
 
-		catch (RuntimeException e) {
+		catch (RuntimeException e1) {
 
 			hibernateUtil.fecharSessao();
 
 			StringWriter writerStack = new StringWriter();
 			PrintWriter printWriterStack = new PrintWriter(writerStack);
-			e.printStackTrace(printWriterStack);
+			e1.printStackTrace(printWriterStack);
 			String errorString = writerStack.toString();
 
 			result.include("exception", errorString);
-			JavaMailApp.enviarEmail("Exception no EV para o usuario com codigo = " + sessaoUsuario.getUsuario().getId_Codigo(), "renanandrade_rj@hotmail.com", errorString);
 
-			throw e;
+			try {
+				Mail.enviarEmail("Exception no EV para o usuario com codigo = " + sessaoUsuario.getUsuario().getId_Codigo(), errorString);
+			} catch (Exception e2) {
+			}
+
+			throw e1;
 		}
 
 	}

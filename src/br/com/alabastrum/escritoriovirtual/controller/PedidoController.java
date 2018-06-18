@@ -18,7 +18,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.Pedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
-import br.com.alabastrum.escritoriovirtual.util.JavaMailApp;
+import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Post;
@@ -153,7 +153,7 @@ public class PedidoController {
 		}
 
 		ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
-		JavaMailApp.enviarEmail("Pedido feito pelo EV", "financeiro@alabastrum.com.br", textoArquivo.replaceAll("\\r\\n", "<br>"));
+		Mail.enviarEmail("Pedido feito pelo EV", textoArquivo);
 
 		pedido.setCompleted(true);
 		pedido.setData(new GregorianCalendar());
@@ -179,9 +179,18 @@ public class PedidoController {
 	}
 
 	@Funcionalidade
-	public void verItens() throws Exception {
+	@Get("/pedido/verItens/{idPedido}")
+	public void verItens(Integer idPedido) {
 
-		// TODO
+		List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
+
+		for (ItemPedido itemPedido : listarItensPedido((Pedido) hibernateUtil.selecionar(new Pedido(idPedido)))) {
+			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()));
+			Integer quantidade = itemPedido.getQuantidade();
+			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade));
+		}
+
+		result.include("itensPedidoDTO", itensPedidoDTO);
 	}
 
 	private PedidoDTO calcularTotais(Pedido pedido) {

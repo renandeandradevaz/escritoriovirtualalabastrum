@@ -24,6 +24,13 @@ public class Pedido implements Entidade {
 	@Index(name = "index_idCodigo_pedido")
 	private Integer idCodigo;
 
+	public Pedido() {
+	}
+
+	public Pedido(Integer id) {
+		this.id = id;
+	}
+
 	public Integer getId() {
 		return id;
 	}

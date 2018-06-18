@@ -12,7 +12,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.GeradorDeMd5;
-import br.com.alabastrum.escritoriovirtual.util.JavaMailApp;
+import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Resource;
@@ -144,7 +144,7 @@ public class LoginController {
 	}
 
 	@Public
-	public void salvarTrocarSenhaPrimeiroAcesso(String senhaNova, String confirmacaoSenhaNova, String cpf, String email) {
+	public void salvarTrocarSenhaPrimeiroAcesso(String senhaNova, String confirmacaoSenhaNova, String cpf, String email) throws Exception {
 
 		if (!senhaNova.equals(confirmacaoSenhaNova)) {
 
@@ -182,7 +182,7 @@ public class LoginController {
 			if (!usuarioBanco.getCPF().equals(cpf)) {
 
 				String mensagem = "O usuário " + usuarioBanco.getId_Codigo() + " - " + usuarioBanco.getvNome() + " tentou acessar o EV pela primeira vez utilizando o CPF " + cpf + " e não obteve sucesso.";
-				JavaMailApp.enviarEmail("CPF incorreto no primeiro acesso", "suporte@alabastrum.com.br", mensagem);
+				Mail.enviarEmail("CPF incorreto no primeiro acesso", mensagem);
 
 				validator.add(new ValidationMessage("O CPF informado não é igual ao CPF existente no banco de dados da Alabastrum. Informe o CPF corretamente ou entre em contato com a Alabastrum através do email suporte@alabastrum.com.br informando sobre o problema e peça para editar o seu CPF na base de dados.", "Erro"));
 				validator.onErrorRedirectTo(this).trocarSenhaPrimeiroAcesso();
@@ -205,7 +205,7 @@ public class LoginController {
 
 		this.hibernateUtil.salvarOuAtualizar(informacoesFixasUsuario);
 
-		JavaMailApp.enviarEmail("Troca de senha de usuário", "trocadesenha@alabastrum.com.br", "O usuário " + usuarioBanco.getId_Codigo() + " - " + usuarioBanco.getvNome() + " efetuou a troca de senha no escritório virtual. <br><br>Email informado: " + email + " <br>CPF informado: " + cpf);
+		Mail.enviarEmail("Troca de senha de usuário", "O usuário " + usuarioBanco.getId_Codigo() + " - " + usuarioBanco.getvNome() + " efetuou a troca de senha no escritório virtual. <br><br>Email informado: " + email + " <br>CPF informado: " + cpf);
 
 		colocarUsuarioNaSessao(usuarioBanco);
 
@@ -223,12 +223,12 @@ public class LoginController {
 		this.hibernateUtil.salvarOuAtualizar(historicoAcesso);
 	}
 
-	private void validarAcessoBloqueado(Usuario usuarioBanco) {
+	private void validarAcessoBloqueado(Usuario usuarioBanco) throws Exception {
 
 		if (Util.vazio(usuarioBanco.getEV()) || usuarioBanco.getEV().equals("0")) {
 
 			String mensagem = "O usuário " + usuarioBanco.getId_Codigo() + " - " + usuarioBanco.getvNome() + " tentou acessar o EV mas o acesso está bloqueado para ele.";
-			JavaMailApp.enviarEmail("Código não habilitado para acessar o escritório virtual", "suporte@alabastrum.com.br", mensagem);
+			Mail.enviarEmail("Código não habilitado para acessar o escritório virtual", mensagem);
 
 			validator.add(new ValidationMessage("Código não habilitado para acessar o escritório virtual. Entre em contato com a Alabastrum através do email suporte@alabastrum.com.br", "Erro"));
 			validator.onErrorRedirectTo(this).telaLogin();
