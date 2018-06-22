@@ -16,14 +16,14 @@ public class HierarquiaService {
 		this.hibernateUtil = hibernateUtil;
 	}
 
-	public TreeMap<Integer, ArvoreHierarquicaDTO> obterArvoreHierarquicaTodosOsNiveis(Integer codigoUsuario) throws Exception {
+	public TreeMap<Integer, ArvoreHierarquicaDTO> obterArvoreHierarquicaTodosOsNiveis(Integer codigoUsuario) {
 
 		TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new TreeMap<Integer, ArvoreHierarquicaDTO>();
 		pesquisarComRecursividade(codigoUsuario, arvoreHierarquica, 1);
 		return arvoreHierarquica;
 	}
 
-	private void pesquisarComRecursividade(Integer codigo, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivel) throws Exception {
+	private void pesquisarComRecursividade(Integer codigo, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivel) {
 
 		Usuario filtro = new Usuario();
 		filtro.setId_lider(codigo);

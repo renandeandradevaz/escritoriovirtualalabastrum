@@ -27,6 +27,12 @@
 					<input type="text" name="configuracaoAdministrativaDTO.pontuacaoMinimaPorLinhaEmPorcentagem" value="${configuracaoAdministrativaDTO.pontuacaoMinimaPorLinhaEmPorcentagem}">
 				</div>
 			</div>
+			<div class="control-group">
+				<label class="control-label"> Quantidade de meses para somatório de pontuação </label>
+				<div class="controls">
+					<input type="text" name="configuracaoAdministrativaDTO.quantidadeDeMesesSomatorioPontuacao" value="${configuracaoAdministrativaDTO.quantidadeDeMesesSomatorioPontuacao}">
+				</div>
+			</div>
 			<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Salvar</button>
 		</fieldset>
 	</form>

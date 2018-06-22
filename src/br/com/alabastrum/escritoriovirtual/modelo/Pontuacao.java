@@ -21,6 +21,8 @@ public class Pontuacao implements Entidade {
 	private GregorianCalendar Dt_Pontos;
 	private BigDecimal ParametroAtividade;
 	private BigDecimal PntAtividade;
+	private BigDecimal PntIngresso;
+	private BigDecimal PntProduto;
 
 	@Index(name = "index_id_Codigo_pontuacao")
 	private Integer id_Codigo;
@@ -63,5 +65,21 @@ public class Pontuacao implements Entidade {
 
 	public void setId_Codigo(Integer id_Codigo) {
 		this.id_Codigo = id_Codigo;
+	}
+
+	public BigDecimal getPntIngresso() {
+		return PntIngresso;
+	}
+
+	public void setPntIngresso(BigDecimal pntIngresso) {
+		PntIngresso = pntIngresso;
+	}
+
+	public BigDecimal getPntProduto() {
+		return PntProduto;
+	}
+
+	public void setPntProduto(BigDecimal pntProduto) {
+		PntProduto = pntProduto;
 	}
 }
