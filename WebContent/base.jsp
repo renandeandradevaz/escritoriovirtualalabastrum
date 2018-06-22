@@ -46,6 +46,7 @@
 			<h3 class="menu-accordion has-child">Administrativo</h3>
 			<div>
 				<a href="<c:url value="/assumirIdentidade/acessarTelaAssumirIdentidade"/>" class="submenu-accordion"> Assumir identidade </a>
+				<a href="<c:url value="/configuracao/acessarTelaConfiguracaoAdministrativa"/>" class="submenu-accordion"> Configurações administrativas </a>
 			</div>
 		</c:if>
 	</div>

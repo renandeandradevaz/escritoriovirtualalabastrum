@@ -1,7 +1,5 @@
 package br.com.alabastrum.escritoriovirtual.modelo;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,8 +13,9 @@ public class Posicao implements Entidade {
 	@GeneratedValue
 	private Integer id;
 
-	private BigDecimal posicao;
+	private Integer posicao;
 	private String nome;
+	private Integer pontuacao;
 
 	public Integer getId() {
 		return id;
@@ -26,11 +25,11 @@ public class Posicao implements Entidade {
 		this.id = id;
 	}
 
-	public BigDecimal getPosicao() {
+	public Integer getPosicao() {
 		return posicao;
 	}
 
-	public void setPosicao(BigDecimal posicao) {
+	public void setPosicao(Integer posicao) {
 		this.posicao = posicao;
 	}
 
@@ -40,5 +39,13 @@ public class Posicao implements Entidade {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public Integer getPontuacao() {
+		return pontuacao;
+	}
+
+	public void setPontuacao(Integer pontuacao) {
+		this.pontuacao = pontuacao;
 	}
 }

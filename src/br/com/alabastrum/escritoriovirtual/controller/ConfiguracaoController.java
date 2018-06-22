@@ -4,11 +4,13 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
+import br.com.alabastrum.escritoriovirtual.dto.ConfiguracaoAdministrativaDTO;
 import br.com.alabastrum.escritoriovirtual.dto.ConfiguracaoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Configuracao;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
+import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 
@@ -45,13 +47,33 @@ public class ConfiguracaoController {
 		result.include("configuracaoDTO", configuracaoDTO);
 	}
 
+	@Funcionalidade(administrativa = "true")
+	public void acessarTelaConfiguracaoAdministrativa() throws Exception {
+
+		List<Configuracao> configuracoes = hibernateUtil.buscar(new Configuracao());
+
+		ConfiguracaoAdministrativaDTO configuracaoAdministrativaDTO = new ConfiguracaoAdministrativaDTO();
+
+		for (Configuracao configuracao : configuracoes) {
+
+			if (Util.vazio(configuracao.getId_Codigo())) {
+
+				Field field = configuracaoAdministrativaDTO.getClass().getDeclaredField(configuracao.getChave());
+				field.setAccessible(true);
+				field.set(configuracaoAdministrativaDTO, configuracao.getValor());
+			}
+		}
+
+		result.include("configuracaoAdministrativaDTO", configuracaoAdministrativaDTO);
+	}
+
 	@Funcionalidade()
 	public void salvarConfiguracoes(ConfiguracaoDTO configuracaoDTO) throws Exception {
 
 		Integer id_Codigo = sessaoUsuario.getUsuario().getId_Codigo();
 
 		for (Field field : configuracaoDTO.getClass().getDeclaredFields()) {
-			salvarConfiguracao(configuracaoDTO, id_Codigo, field.getName());
+			salvarConfiguracaoDoUsuario(configuracaoDTO, id_Codigo, field.getName());
 		}
 
 		ArquivoService.criarArquivoNoDisco(montarTextoArquivo(configuracaoDTO, id_Codigo), ArquivoService.PASTA_CONFIGURACOES);
@@ -61,7 +83,20 @@ public class ConfiguracaoController {
 		result.forwardTo(this).acessarTelaConfiguracao();
 	}
 
-	private void salvarConfiguracao(ConfiguracaoDTO configuracaoDTO, Integer id_Codigo, String chave) throws Exception {
+	@Funcionalidade(administrativa = "true")
+	public void salvarConfiguracoesAdministrativas(ConfiguracaoAdministrativaDTO configuracaoAdministrativaDTO) throws Exception {
+
+		for (Field field : configuracaoAdministrativaDTO.getClass().getDeclaredFields()) {
+			salvarConfiguracaoAdministrativa(configuracaoAdministrativaDTO, field.getName());
+		}
+
+		result.include("sucesso", "Configurações salvas com sucesso");
+
+		result.forwardTo(this).acessarTelaConfiguracaoAdministrativa();
+		;
+	}
+
+	private void salvarConfiguracaoDoUsuario(ConfiguracaoDTO configuracaoDTO, Integer id_Codigo, String chave) throws Exception {
 
 		Configuracao filtro = new Configuracao();
 		filtro.setId_Codigo(id_Codigo);
@@ -77,6 +112,24 @@ public class ConfiguracaoController {
 		Field field = configuracaoDTO.getClass().getDeclaredField(chave);
 		field.setAccessible(true);
 		configuracao.setValor((String) field.get(configuracaoDTO));
+
+		hibernateUtil.salvarOuAtualizar(configuracao);
+	}
+
+	private void salvarConfiguracaoAdministrativa(ConfiguracaoAdministrativaDTO configuracaoAdministrativaDTO, String chave) throws Exception {
+
+		Configuracao filtro = new Configuracao();
+		filtro.setChave(chave);
+		Configuracao configuracao = hibernateUtil.selecionar(filtro);
+
+		if (configuracao == null) {
+			configuracao = new Configuracao();
+			configuracao.setChave(chave);
+		}
+
+		Field field = configuracaoAdministrativaDTO.getClass().getDeclaredField(chave);
+		field.setAccessible(true);
+		configuracao.setValor((String) field.get(configuracaoAdministrativaDTO));
 
 		hibernateUtil.salvarOuAtualizar(configuracao);
 	}
