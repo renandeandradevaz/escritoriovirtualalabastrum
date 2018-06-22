@@ -38,6 +38,12 @@ public class PontuacaoService {
 
 		List<Integer> pontuacoesPessoais = new ArrayList<Integer>();
 		List<Integer> pontuacoesPessoaisParaQualificacao = new ArrayList<Integer>();
+		List<Integer> pontuacoesLinhaDaEsquerda = new ArrayList<Integer>();
+		List<Integer> pontuacoesLinhaDaEsquerdaParaQualificacao = new ArrayList<Integer>();
+		List<Integer> pontuacoesLinhaDoMeio = new ArrayList<Integer>();
+		List<Integer> pontuacoesLinhaDoMeioParaQualificacao = new ArrayList<Integer>();
+		List<Integer> pontuacoesLinhaDaDireita = new ArrayList<Integer>();
+		List<Integer> pontuacoesLinhaDaDireitaParaQualificacao = new ArrayList<Integer>();
 
 		for (int mesesAtras = quantidadeDeMesesSomatorioPontuacao - 1; mesesAtras >= 0; mesesAtras--) {
 
@@ -83,9 +89,22 @@ public class PontuacaoService {
 			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEsquerda = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(codigoLiderEsquerda);
 			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMeio = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(codigoLiderMeio);
 			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicadireita = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(codigoLiderDireita);
+
+			pontuacoesLinhaDaEsquerda.add(calcularPontuacaoRede(codigoLiderEsquerda, primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaEsquerda));
 		}
 
 		return pontuacaoDTO;
+	}
+
+	private Integer calcularPontuacaoRede(Integer idCodigo, GregorianCalendar inicio, GregorianCalendar fim, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
+
+		Integer pontuacaoRede = calcularPontuacao(idCodigo, inicio, fim);
+
+		for (Entry<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEntry : arvoreHierarquica.entrySet()) {
+			pontuacaoRede += calcularPontuacao(arvoreHierarquicaEntry.getValue().getUsuario().getId_Codigo(), inicio, fim);
+		}
+
+		return pontuacaoRede;
 	}
 
 	private Integer calcularPontuacao(Integer idCodigo, GregorianCalendar inicio, GregorianCalendar fim) {
