@@ -91,4 +91,12 @@ public class QualificacaoService {
 
 		return qualificacoes;
 	}
+
+	public Qualificacao obterUltimaQualificacao(Integer idCodigo) {
+
+		Qualificacao qualificacaoFiltro = new Qualificacao();
+		qualificacaoFiltro.setId_Codigo(idCodigo);
+		List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
+		return qualificacoesDoDistribuidor.get(qualificacoesDoDistribuidor.size() - 1);
+	}
 }

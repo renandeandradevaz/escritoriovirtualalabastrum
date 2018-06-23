@@ -42,6 +42,6 @@ public class HomeController {
 		result.include("ganhosNoMes", new BigDecimal("0"));
 		result.include("recebidoAteHoje", new BigDecimal("0"));
 		result.include("posicaoAtual", usuario.getPosAtual().replaceAll(" ", "").toLowerCase());
-		result.include("proximaPosicao", new PosicoesService(hibernateUtil).obterProximaPosicao(usuario.getPosAtual()).replaceAll(" ", "").toLowerCase());
+		result.include("proximaPosicao", new PosicoesService(hibernateUtil).obterNomeProximaPosicao(usuario.getPosAtual()).replaceAll(" ", "").toLowerCase());
 	}
 }

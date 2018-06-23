@@ -15,19 +15,24 @@ public class PosicoesService {
 		this.hibernateUtil = hibernateUtil;
 	}
 
-	public String obterProximaPosicao(String posicaoAtual) {
+	public String obterNomeProximaPosicao(String posicaoAtual) {
 
-		Posicao filtro = new Posicao();
-		filtro.setNome(posicaoAtual);
-		Posicao posicao = this.hibernateUtil.selecionar(filtro, MatchMode.EXACT);
-		filtro = new Posicao();
-		filtro.setPosicao(posicao.getPosicao() + 1);
-		Posicao proximaPosicao = this.hibernateUtil.selecionar(filtro);
+		Posicao proximaPosicao = obterProximaPosicao(posicaoAtual);
 
 		if (Util.preenchido(proximaPosicao)) {
 			return proximaPosicao.getNome();
 		}
 
 		return "";
+	}
+
+	public Posicao obterProximaPosicao(String posicaoAtual) {
+
+		Posicao filtro = new Posicao();
+		filtro.setNome(posicaoAtual);
+		Posicao posicao = this.hibernateUtil.selecionar(filtro, MatchMode.EXACT);
+		filtro = new Posicao();
+		filtro.setPosicao(posicao.getPosicao() + 1);
+		return this.hibernateUtil.selecionar(filtro);
 	}
 }
