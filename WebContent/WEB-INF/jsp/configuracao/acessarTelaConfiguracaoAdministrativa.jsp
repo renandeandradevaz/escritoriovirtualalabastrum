@@ -16,13 +16,13 @@
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label"> Pontuação máxima por linhao</label>
+				<label class="control-label"> Pontuação máxima por linha (%)</label>
 				<div class="controls">
 					<input type="text" name="configuracaoAdministrativaDTO.pontuacaoMaximaPorLinhaEmPorcentagem" value="${configuracaoAdministrativaDTO.pontuacaoMaximaPorLinhaEmPorcentagem}">
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label"> Pontuação mínima por linha </label>
+				<label class="control-label"> Pontuação mínima por linha (%) </label>
 				<div class="controls">
 					<input type="text" name="configuracaoAdministrativaDTO.pontuacaoMinimaPorLinhaEmPorcentagem" value="${configuracaoAdministrativaDTO.pontuacaoMinimaPorLinhaEmPorcentagem}">
 				</div>
