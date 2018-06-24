@@ -35,6 +35,6 @@ public class PontuacaoController {
 		Usuario usuario = this.sessaoUsuario.getUsuario();
 
 
-		result.include("arvoreHierarquica", arvoreHierarquicaFiltrada);
+		//result.include("arvoreHierarquica", arvoreHierarquicaFiltrada);
 	}
 }

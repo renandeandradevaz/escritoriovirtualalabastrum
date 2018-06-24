@@ -24,6 +24,8 @@ import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.Validator;
+import br.com.caelum.vraptor.validator.ValidationMessage;
 
 @Resource
 public class PedidoController {
@@ -31,11 +33,13 @@ public class PedidoController {
 	private Result result;
 	private HibernateUtil hibernateUtil;
 	private SessaoUsuario sessaoUsuario;
+	private Validator validator;
 
-	public PedidoController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario) {
+	public PedidoController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario, Validator validator) {
 		this.result = result;
 		this.hibernateUtil = hibernateUtil;
 		this.sessaoUsuario = sessaoUsuario;
+		this.validator = validator;
 	}
 
 	@Funcionalidade
@@ -46,6 +50,11 @@ public class PedidoController {
 	@Funcionalidade
 	public void escolherProdutos(Integer idFranquia) {
 
+		if (idFranquia == null || idFranquia == 0) {
+			validator.add(new ValidationMessage("Selecione uma franquia", "Erro"));
+			validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
+		}
+
 		Pedido pedido = selecionarPedidoAberto();
 
 		if (Util.vazio(pedido)) {
@@ -54,10 +63,8 @@ public class PedidoController {
 			pedido.setCompleted(false);
 		}
 
-		if (idFranquia != null && idFranquia != 0) {
-			pedido.setIdFranquia(idFranquia);
-			hibernateUtil.salvarOuAtualizar(pedido);
-		}
+		pedido.setIdFranquia(idFranquia);
+		hibernateUtil.salvarOuAtualizar(pedido);
 
 		result.include("franquia", hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())));
 		result.include("categorias", hibernateUtil.buscar(new Categoria(), Order.asc("catNome")));
