@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Util {
@@ -59,5 +60,25 @@ public class Util {
 		tempoCorrenteAMeiaNoite.set(Calendar.SECOND, 0);
 		tempoCorrenteAMeiaNoite.set(Calendar.MILLISECOND, 0);
 		return tempoCorrenteAMeiaNoite;
+	}
+
+	public static String getMesString(Integer mes) {
+
+		HashMap<Integer, String> meses = new HashMap<Integer, String>();
+
+		meses.put(0, "Jan");
+		meses.put(1, "Fev");
+		meses.put(2, "Mar");
+		meses.put(3, "Abr");
+		meses.put(4, "Mai");
+		meses.put(5, "Jun");
+		meses.put(6, "Jul");
+		meses.put(7, "Ago");
+		meses.put(8, "Set");
+		meses.put(9, "Out");
+		meses.put(10, "Nov");
+		meses.put(11, "Dez");
+
+		return meses.get(mes);
 	}
 }

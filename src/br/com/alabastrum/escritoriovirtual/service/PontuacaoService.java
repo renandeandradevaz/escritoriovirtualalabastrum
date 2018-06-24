@@ -58,6 +58,8 @@ public class PontuacaoService {
 		List<Integer> pontuacoesLinhaDoMeioParaQualificacao = new ArrayList<Integer>();
 		List<Integer> pontuacoesLinhaDaDireita = new ArrayList<Integer>();
 		List<Integer> pontuacoesLinhaDaDireitaParaQualificacao = new ArrayList<Integer>();
+		List<Integer> pontuacoesTotais = new ArrayList<Integer>();
+		Integer total = 0;
 
 		for (int mesesAtras = quantidadeDeMesesSomatorioPontuacao - 1; mesesAtras >= 0; mesesAtras--) {
 
@@ -66,25 +68,23 @@ public class PontuacaoService {
 			primeiroDiaDoMes.set(Calendar.DAY_OF_MONTH, 1);
 
 			GregorianCalendar ultimoDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
-			primeiroDiaDoMes.add(Calendar.MONTH, -mesesAtras);
+			ultimoDiaDoMes.add(Calendar.MONTH, -mesesAtras);
 			ultimoDiaDoMes.set(Calendar.DAY_OF_MONTH, Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH));
 
 			if (primeiroDiaDoMes.before(dataUltimaQualificacao)) {
 				primeiroDiaDoMes = dataUltimaQualificacao;
 			}
 
+			meses.add(Util.getMesString(ultimoDiaDoMes.get(Calendar.MONTH)));
+
 			pontuacoesPessoais.add(calcularPontuacao(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes));
-			pontuacoesPessoais.add(calcularPontuacao(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes) - valorMinimoPontuacaoPessoalParaQualificacao);
-
-			pontuacaoDTO.setPontuacoesPessoais(pontuacoesPessoais);
-			pontuacaoDTO.setPontuacoesPessoaisParaQualificacao(pontuacoesPessoaisParaQualificacao);
-
-			List<Integer> distribuidoresPrimeiroNivel = new ArrayList<Integer>();
-			for (Entry<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEntry : arvoreHierarquica.entrySet()) {
-				if (arvoreHierarquicaEntry.getValue().getNivel() == 1) {
-					distribuidoresPrimeiroNivel.add(arvoreHierarquicaEntry.getValue().getUsuario().getId_Codigo());
-				}
+			int pontuacaoPessoalParaQualificacao = calcularPontuacao(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes) - valorMinimoPontuacaoPessoalParaQualificacao;
+			if (pontuacaoPessoalParaQualificacao < 0) {
+				pontuacaoPessoalParaQualificacao = 0;
 			}
+			pontuacoesPessoaisParaQualificacao.add(pontuacaoPessoalParaQualificacao);
+
+			List<Integer> distribuidoresPrimeiroNivel = obterDistribuidoresPrimeiroNivel(arvoreHierarquica);
 
 			if (distribuidoresPrimeiroNivel.size() < 3) {
 				return null;
@@ -123,6 +123,10 @@ public class PontuacaoService {
 			pontuacoesLinhaDaEsquerdaParaQualificacao.add(pontuacaoLinhaDaEsquerdaParaQualificacao);
 			pontuacoesLinhaDoMeioParaQualificacao.add(pontuacaoLinhaDoMeioParaQualificacao);
 			pontuacoesLinhaDaDireitaParaQualificacao.add(pontuacaoLinhaDaDireitaParaQualificacao);
+
+			int pontuacaoTotal = pontuacaoPessoalParaQualificacao + pontuacaoLinhaDaEsquerdaParaQualificacao + pontuacaoLinhaDoMeioParaQualificacao + pontuacaoLinhaDaDireitaParaQualificacao;
+			pontuacoesTotais.add(pontuacaoTotal);
+			total += pontuacaoTotal;
 		}
 
 		pontuacaoDTO.setMeses(meses);
@@ -137,8 +141,22 @@ public class PontuacaoService {
 		pontuacaoDTO.setPontuacoesLinhaDaDireitaParaQualificacao(pontuacoesLinhaDaDireitaParaQualificacao);
 		pontuacaoDTO.setPontuacoesPessoais(pontuacoesPessoais);
 		pontuacaoDTO.setPontuacoesPessoaisParaQualificacao(pontuacoesPessoaisParaQualificacao);
+		pontuacaoDTO.setPontuacoesTotais(pontuacoesTotais);
+		pontuacaoDTO.setTotal(total);
+		pontuacaoDTO.setValorMinimoPontuacaoPessoalParaQualificacao(valorMinimoPontuacaoPessoalParaQualificacao);
 
 		return pontuacaoDTO;
+	}
+
+	private List<Integer> obterDistribuidoresPrimeiroNivel(TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
+
+		List<Integer> distribuidoresPrimeiroNivel = new ArrayList<Integer>();
+		for (Entry<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEntry : arvoreHierarquica.entrySet()) {
+			if (arvoreHierarquicaEntry.getValue().getNivel() == 1) {
+				distribuidoresPrimeiroNivel.add(arvoreHierarquicaEntry.getValue().getUsuario().getId_Codigo());
+			}
+		}
+		return distribuidoresPrimeiroNivel;
 	}
 
 	private Integer calcularPontuacaoRede(Integer idCodigo, GregorianCalendar inicio, GregorianCalendar fim, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
