@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
@@ -114,7 +115,7 @@ public class PedidoController {
 			hibernateUtil.deletar(itemPedido);
 		}
 
-		Produto produto = hibernateUtil.selecionar(new Produto(idProduto));
+		Produto produto = hibernateUtil.selecionar(new Produto(idProduto), MatchMode.EXACT);
 		result.forwardTo(this).selecionarCategoria(produto.getId_Categoria());
 	}
 
@@ -128,7 +129,7 @@ public class PedidoController {
 		if (pedido != null) {
 
 			for (ItemPedido itemPedido : listarItensPedido(pedido)) {
-				Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()));
+				Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 				Integer quantidade = itemPedido.getQuantidade();
 				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade));
 			}
@@ -193,7 +194,7 @@ public class PedidoController {
 		List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
 
 		for (ItemPedido itemPedido : listarItensPedido((Pedido) hibernateUtil.selecionar(new Pedido(idPedido)))) {
-			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()));
+			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 			Integer quantidade = itemPedido.getQuantidade();
 			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade));
 		}
@@ -211,7 +212,7 @@ public class PedidoController {
 
 		for (ItemPedido itemPedido : itens) {
 
-			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()));
+			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 			Integer quantidade = itemPedido.getQuantidade();
 
 			totalItens += quantidade;
