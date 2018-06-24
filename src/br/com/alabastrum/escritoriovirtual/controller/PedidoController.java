@@ -53,6 +53,7 @@ public class PedidoController {
 		if (idFranquia == null || idFranquia == 0) {
 			validator.add(new ValidationMessage("Selecione uma franquia", "Erro"));
 			validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
+			return;
 		}
 
 		Pedido pedido = selecionarPedidoAberto();
