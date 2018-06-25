@@ -1,6 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.service;
 
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
@@ -14,6 +15,22 @@ public class HierarquiaService {
 	public HierarquiaService(HibernateUtil hibernateUtil) {
 
 		this.hibernateUtil = hibernateUtil;
+	}
+
+	public TreeMap<Integer, ArvoreHierarquicaDTO> obterArvoreHierarquicaAteNivelEspecifico(Integer codigoUsuario, Integer nivel) {
+
+		TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaTodosOsNiveis = obterArvoreHierarquicaTodosOsNiveis(codigoUsuario);
+
+		TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaAteNivelEspecifico = new TreeMap<Integer, ArvoreHierarquicaDTO>();
+
+		for (Entry<Integer, ArvoreHierarquicaDTO> usuarioEntry : arvoreHierarquicaTodosOsNiveis.entrySet()) {
+
+			if (usuarioEntry.getValue().getNivel() <= nivel) {
+				arvoreHierarquicaAteNivelEspecifico.put(usuarioEntry.getKey(), usuarioEntry.getValue());
+			}
+		}
+
+		return arvoreHierarquicaAteNivelEspecifico;
 	}
 
 	public TreeMap<Integer, ArvoreHierarquicaDTO> obterArvoreHierarquicaTodosOsNiveis(Integer codigoUsuario) {

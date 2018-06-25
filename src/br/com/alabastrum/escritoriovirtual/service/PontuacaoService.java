@@ -23,6 +23,8 @@ import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class PontuacaoService {
 
+	private static final Integer NIVEL_MAXIMO_PONTUACAO = 10;
+
 	private HibernateUtil hibernateUtil;
 
 	public PontuacaoService(HibernateUtil hibernateUtil) {
@@ -38,7 +40,7 @@ public class PontuacaoService {
 		Integer valorMinimoPontuacaoPessoalParaQualificacao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPontuacaoPessoalParaQualificacao"));
 		Integer pontuacaoMaximaPorLinhaEmPorcentagem = Integer.valueOf(new Configuracao().retornarConfiguracao("pontuacaoMaximaPorLinhaEmPorcentagem"));
 		Integer pontuacaoMinimaPorLinhaEmPorcentagem = Integer.valueOf(new Configuracao().retornarConfiguracao("pontuacaoMinimaPorLinhaEmPorcentagem"));
-		TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(idCodigo);
+		Integer[] distribuidoresPrimeiroNivel = (Integer[]) new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(idCodigo, 1).values().toArray();
 
 		Qualificacao ultimaQualificao = new QualificacaoService(hibernateUtil).obterUltimaQualificacao(idCodigo);
 		GregorianCalendar dataUltimaQualificacao = ultimaQualificao.getData();
@@ -84,19 +86,17 @@ public class PontuacaoService {
 			}
 			pontuacoesPessoaisParaQualificacao.add(pontuacaoPessoalParaQualificacao);
 
-			List<Integer> distribuidoresPrimeiroNivel = obterDistribuidoresPrimeiroNivel(arvoreHierarquica);
-
-			if (distribuidoresPrimeiroNivel.size() < 3) {
+			if (distribuidoresPrimeiroNivel.length < 3) {
 				return null;
 			}
 
-			Integer codigoLiderEsquerda = distribuidoresPrimeiroNivel.get(0);
-			Integer codigoLiderMeio = distribuidoresPrimeiroNivel.get(1);
-			Integer codigoLiderDireita = distribuidoresPrimeiroNivel.get(2);
+			Integer codigoLiderEsquerda = distribuidoresPrimeiroNivel[0];
+			Integer codigoLiderMeio = distribuidoresPrimeiroNivel[1];
+			Integer codigoLiderDireita = distribuidoresPrimeiroNivel[2];
 
-			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEsquerda = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(codigoLiderEsquerda);
-			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMeio = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(codigoLiderMeio);
-			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaDireita = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(codigoLiderDireita);
+			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEsquerda = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(codigoLiderEsquerda, NIVEL_MAXIMO_PONTUACAO - 1);
+			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMeio = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(codigoLiderMeio, NIVEL_MAXIMO_PONTUACAO - 1);
+			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaDireita = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(codigoLiderDireita, NIVEL_MAXIMO_PONTUACAO - 1);
 
 			Integer pontuacaoRedeEsquerda = calcularPontuacaoRede(codigoLiderEsquerda, primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaEsquerda);
 			Integer pontuacaoRedeMeio = calcularPontuacaoRede(codigoLiderMeio, primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaMeio);
@@ -146,17 +146,6 @@ public class PontuacaoService {
 		pontuacaoDTO.setValorMinimoPontuacaoPessoalParaQualificacao(valorMinimoPontuacaoPessoalParaQualificacao);
 
 		return pontuacaoDTO;
-	}
-
-	private List<Integer> obterDistribuidoresPrimeiroNivel(TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
-
-		List<Integer> distribuidoresPrimeiroNivel = new ArrayList<Integer>();
-		for (Entry<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEntry : arvoreHierarquica.entrySet()) {
-			if (arvoreHierarquicaEntry.getValue().getNivel() == 1) {
-				distribuidoresPrimeiroNivel.add(arvoreHierarquicaEntry.getValue().getUsuario().getId_Codigo());
-			}
-		}
-		return distribuidoresPrimeiroNivel;
 	}
 
 	private Integer calcularPontuacaoRede(Integer idCodigo, GregorianCalendar inicio, GregorianCalendar fim, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
