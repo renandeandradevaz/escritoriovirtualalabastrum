@@ -40,7 +40,7 @@ public class PontuacaoService {
 		Integer valorMinimoPontuacaoPessoalParaQualificacao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPontuacaoPessoalParaQualificacao"));
 		Integer pontuacaoMaximaPorLinhaEmPorcentagem = Integer.valueOf(new Configuracao().retornarConfiguracao("pontuacaoMaximaPorLinhaEmPorcentagem"));
 		Integer pontuacaoMinimaPorLinhaEmPorcentagem = Integer.valueOf(new Configuracao().retornarConfiguracao("pontuacaoMinimaPorLinhaEmPorcentagem"));
-		ArvoreHierarquicaDTO[] distribuidoresPrimeiroNivel = (ArvoreHierarquicaDTO[]) new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(idCodigo, 1).values().toArray();
+		Object[] distribuidoresPrimeiroNivel = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(idCodigo, 1).values().toArray();
 
 		Qualificacao ultimaQualificao = new QualificacaoService(hibernateUtil).obterUltimaQualificacao(idCodigo);
 		GregorianCalendar dataUltimaQualificacao = ultimaQualificao.getData();
@@ -90,17 +90,17 @@ public class PontuacaoService {
 				return null;
 			}
 
-			Integer codigoLiderEsquerda = distribuidoresPrimeiroNivel[0].getUsuario().getId_Codigo();
-			Integer codigoLiderMeio = distribuidoresPrimeiroNivel[1].getUsuario().getId_Codigo();
-			Integer codigoLiderDireita = distribuidoresPrimeiroNivel[2].getUsuario().getId_Codigo();
+			ArvoreHierarquicaDTO liderEsquerda = (ArvoreHierarquicaDTO) distribuidoresPrimeiroNivel[0];
+			ArvoreHierarquicaDTO liderMeio = (ArvoreHierarquicaDTO) distribuidoresPrimeiroNivel[1];
+			ArvoreHierarquicaDTO liderDireita = (ArvoreHierarquicaDTO) distribuidoresPrimeiroNivel[2];
 
-			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEsquerda = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(codigoLiderEsquerda, NIVEL_MAXIMO_PONTUACAO - 1);
-			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMeio = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(codigoLiderMeio, NIVEL_MAXIMO_PONTUACAO - 1);
-			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaDireita = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(codigoLiderDireita, NIVEL_MAXIMO_PONTUACAO - 1);
+			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEsquerda = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(liderEsquerda.getUsuario().getId_Codigo(), NIVEL_MAXIMO_PONTUACAO - 1);
+			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMeio = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(liderMeio.getUsuario().getId_Codigo(), NIVEL_MAXIMO_PONTUACAO - 1);
+			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaDireita = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(liderDireita.getUsuario().getId_Codigo(), NIVEL_MAXIMO_PONTUACAO - 1);
 
-			Integer pontuacaoRedeEsquerda = calcularPontuacaoRede(codigoLiderEsquerda, primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaEsquerda);
-			Integer pontuacaoRedeMeio = calcularPontuacaoRede(codigoLiderMeio, primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaMeio);
-			Integer pontuacaoRedeDireita = calcularPontuacaoRede(codigoLiderDireita, primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDireita);
+			Integer pontuacaoRedeEsquerda = calcularPontuacaoRede(liderEsquerda.getUsuario().getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaEsquerda);
+			Integer pontuacaoRedeMeio = calcularPontuacaoRede(liderMeio.getUsuario().getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaMeio);
+			Integer pontuacaoRedeDireita = calcularPontuacaoRede(liderDireita.getUsuario().getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDireita);
 			pontuacoesLinhaDaEsquerda.add(pontuacaoRedeEsquerda);
 			pontuacoesLinhaDoMeio.add(pontuacaoRedeMeio);
 			pontuacoesLinhaDaDireita.add(pontuacaoRedeDireita);
