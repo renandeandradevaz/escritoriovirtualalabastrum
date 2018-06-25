@@ -40,7 +40,7 @@ public class PontuacaoService {
 		Integer valorMinimoPontuacaoPessoalParaQualificacao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPontuacaoPessoalParaQualificacao"));
 		Integer pontuacaoMaximaPorLinhaEmPorcentagem = Integer.valueOf(new Configuracao().retornarConfiguracao("pontuacaoMaximaPorLinhaEmPorcentagem"));
 		Integer pontuacaoMinimaPorLinhaEmPorcentagem = Integer.valueOf(new Configuracao().retornarConfiguracao("pontuacaoMinimaPorLinhaEmPorcentagem"));
-		Integer[] distribuidoresPrimeiroNivel = (Integer[]) new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(idCodigo, 1).values().toArray();
+		Object[] distribuidoresPrimeiroNivel = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(idCodigo, 1).values().toArray();
 
 		Qualificacao ultimaQualificao = new QualificacaoService(hibernateUtil).obterUltimaQualificacao(idCodigo);
 		GregorianCalendar dataUltimaQualificacao = ultimaQualificao.getData();
@@ -90,9 +90,9 @@ public class PontuacaoService {
 				return null;
 			}
 
-			Integer codigoLiderEsquerda = distribuidoresPrimeiroNivel[0];
-			Integer codigoLiderMeio = distribuidoresPrimeiroNivel[1];
-			Integer codigoLiderDireita = distribuidoresPrimeiroNivel[2];
+			Integer codigoLiderEsquerda = (Integer) distribuidoresPrimeiroNivel[0];
+			Integer codigoLiderMeio = (Integer) distribuidoresPrimeiroNivel[1];
+			Integer codigoLiderDireita = (Integer) distribuidoresPrimeiroNivel[2];
 
 			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEsquerda = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(codigoLiderEsquerda, NIVEL_MAXIMO_PONTUACAO - 1);
 			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMeio = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(codigoLiderMeio, NIVEL_MAXIMO_PONTUACAO - 1);
