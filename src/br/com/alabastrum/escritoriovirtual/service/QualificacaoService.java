@@ -36,13 +36,26 @@ public class QualificacaoService {
 			qualificacaoFiltro.setId_Codigo(usuario.getId_Codigo());
 			List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
 
-			if (qualificacoesDoDistribuidor.size() == posicao) {
-				Qualificacao ultimaQualificacao = qualificacoesDoDistribuidor.get(qualificacoesDoDistribuidor.size() - 1);
-				qualificacoes.add(new QualificacaoDTO(usuario, ultimaQualificacao));
+			if (qualificacoesDoDistribuidor.size() >= posicao) {
+				Qualificacao qualificacaoNaPosicao = qualificacoesDoDistribuidor.get(posicao - 1);
+				qualificacoes.add(new QualificacaoDTO(usuario, qualificacaoNaPosicao));
 			}
 		}
 
 		return qualificacoes;
+	}
+
+	public Qualificacao obterQualificacaoNaPosicao(Integer idCodigo, Integer posicao) {
+
+		Qualificacao qualificacaoFiltro = new Qualificacao();
+		qualificacaoFiltro.setId_Codigo(idCodigo);
+		List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
+
+		if (qualificacoesDoDistribuidor.size() >= posicao) {
+			return qualificacoesDoDistribuidor.get(posicao - 1);
+		}
+
+		return null;
 	}
 
 	public List<QualificacaoDTO> obterUltimosQualificados(TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {

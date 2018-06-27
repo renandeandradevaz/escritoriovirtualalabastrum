@@ -1,5 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.service;
 
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -38,6 +40,30 @@ public class HierarquiaService {
 		TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new TreeMap<Integer, ArvoreHierarquicaDTO>();
 		pesquisarComRecursividade(codigoUsuario, arvoreHierarquica, 1);
 		return arvoreHierarquica;
+	}
+
+	public void obterArvoreHierarquicaAtivaAscendente(Integer idCodigo, GregorianCalendar data) {
+
+		List<Integer> arvoreHierarquicaAtivaAscendente = new ArrayList<Integer>();
+		arvoreHierarquicaAtivaAscendente.add(idCodigo);
+
+		montarArvoreHierarquicaAtivaAscendenteComRecursividade(arvoreHierarquicaAtivaAscendente, idCodigo, data);
+	}
+
+	private void montarArvoreHierarquicaAtivaAscendenteComRecursividade(List<Integer> arvoreHierarquicaAtivaAscendente, Integer idCodigo, GregorianCalendar data) {
+
+		Usuario usuario = hibernateUtil.selecionar(new Usuario(idCodigo));
+		Usuario lider = hibernateUtil.selecionar(new Usuario(usuario.getId_lider()));
+
+		if (usuario.getId_Codigo().equals(lider.getId_Codigo())) {
+			return;
+		}
+
+		if (new AtividadeService(hibernateUtil).isAtivo(lider.getId_Codigo(), data)) {
+			arvoreHierarquicaAtivaAscendente.add(lider.getId_Codigo());
+		}
+
+		montarArvoreHierarquicaAtivaAscendenteComRecursividade(arvoreHierarquicaAtivaAscendente, lider.getId_Codigo(), data);
 	}
 
 	private void pesquisarComRecursividade(Integer codigo, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivel) {

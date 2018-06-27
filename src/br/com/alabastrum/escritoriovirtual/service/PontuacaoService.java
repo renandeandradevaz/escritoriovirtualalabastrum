@@ -178,13 +178,13 @@ public class PontuacaoService {
 	public BigDecimal getValorIngresso(Integer codigo, GregorianCalendar data) {
 
 		GregorianCalendar primeiroDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
-		primeiroDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
 		primeiroDiaDoMes.set(Calendar.YEAR, data.get(Calendar.YEAR));
+		primeiroDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
 		primeiroDiaDoMes.set(Calendar.DAY_OF_MONTH, 1);
 
 		GregorianCalendar ultimoDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
-		ultimoDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
 		ultimoDiaDoMes.set(Calendar.YEAR, data.get(Calendar.YEAR));
+		ultimoDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
 		ultimoDiaDoMes.set(Calendar.DAY_OF_MONTH, ultimoDiaDoMes.getActualMaximum(Calendar.DAY_OF_MONTH));
 
 		List<Pontuacao> pontuacoes = buscarPontuacoes(codigo, primeiroDiaDoMes, ultimoDiaDoMes);
