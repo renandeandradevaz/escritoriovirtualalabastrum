@@ -42,12 +42,14 @@ public class HierarquiaService {
 		return arvoreHierarquica;
 	}
 
-	public void obterArvoreHierarquicaAtivaAscendente(Integer idCodigo, GregorianCalendar data) {
+	public List<Integer> obterArvoreHierarquicaAtivaAscendente(Integer idCodigo, GregorianCalendar data) {
 
 		List<Integer> arvoreHierarquicaAtivaAscendente = new ArrayList<Integer>();
 		arvoreHierarquicaAtivaAscendente.add(idCodigo);
 
 		montarArvoreHierarquicaAtivaAscendenteComRecursividade(arvoreHierarquicaAtivaAscendente, idCodigo, data);
+
+		return arvoreHierarquicaAtivaAscendente;
 	}
 
 	private void montarArvoreHierarquicaAtivaAscendenteComRecursividade(List<Integer> arvoreHierarquicaAtivaAscendente, Integer idCodigo, GregorianCalendar data) {

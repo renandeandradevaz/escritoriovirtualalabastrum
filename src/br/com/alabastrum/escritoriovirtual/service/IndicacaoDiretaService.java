@@ -2,7 +2,6 @@ package br.com.alabastrum.escritoriovirtual.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.QualificacaoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroIngresso;
-import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class IndicacaoDiretaService {
 
@@ -32,15 +30,7 @@ public class IndicacaoDiretaService {
 
 			GregorianCalendar data = qualificacaoDTO.getQualificacao().getData();
 
-			GregorianCalendar primeiroDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
-			primeiroDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
-			primeiroDiaDoMes.set(Calendar.YEAR, data.get(Calendar.YEAR));
-			primeiroDiaDoMes.set(Calendar.DAY_OF_MONTH, 1);
-
-			ParametroIngresso parametroIngressoFiltro = new ParametroIngresso();
-			parametroIngressoFiltro.setData(primeiroDiaDoMes);
-			parametroIngressoFiltro.setNivel(INDICACAO_DIRETA_NIVEL);
-			ParametroIngresso parametroIngresso = hibernateUtil.selecionar(parametroIngressoFiltro);
+			ParametroIngresso parametroIngresso = new ParametroIngressoService(hibernateUtil).buscarParametroIngresso(data, INDICACAO_DIRETA_NIVEL);
 
 			if (parametroIngresso == null) {
 				continue;
