@@ -22,6 +22,29 @@ public class QualificacaoService {
 		this.hibernateUtil = hibernateUtil;
 	}
 
+	public List<QualificacaoDTO> obterIndicadosDiretosNaPosicao(Integer idCodigo, Integer posicao) {
+
+		Usuario usuarioFiltro = new Usuario();
+		usuarioFiltro.setId_Indicante(idCodigo);
+		List<Usuario> usuarios = hibernateUtil.buscar(usuarioFiltro);
+
+		List<QualificacaoDTO> qualificacoes = new ArrayList<QualificacaoDTO>();
+
+		for (Usuario usuario : usuarios) {
+
+			Qualificacao qualificacaoFiltro = new Qualificacao();
+			qualificacaoFiltro.setId_Codigo(usuario.getId_Codigo());
+			List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
+
+			if (qualificacoesDoDistribuidor.size() == posicao) {
+				Qualificacao ultimaQualificacao = qualificacoesDoDistribuidor.get(qualificacoesDoDistribuidor.size() - 1);
+				qualificacoes.add(new QualificacaoDTO(usuario, ultimaQualificacao));
+			}
+		}
+
+		return qualificacoes;
+	}
+
 	public List<QualificacaoDTO> obterUltimosQualificados(TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
 
 		List<QualificacaoDTO> qualificacoes = new ArrayList<QualificacaoDTO>();
@@ -76,6 +99,14 @@ public class QualificacaoService {
 		return qualificacoes;
 	}
 
+	public Qualificacao obterUltimaQualificacao(Integer idCodigo) {
+
+		Qualificacao qualificacaoFiltro = new Qualificacao();
+		qualificacaoFiltro.setId_Codigo(idCodigo);
+		List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
+		return qualificacoesDoDistribuidor.get(qualificacoesDoDistribuidor.size() - 1);
+	}
+
 	private List<QualificacaoDTO> ordenarQualificacoesPorDataDescrescente(List<QualificacaoDTO> qualificacoes) {
 
 		Collections.sort(qualificacoes, new Comparator<QualificacaoDTO>() {
@@ -90,13 +121,5 @@ public class QualificacaoService {
 		});
 
 		return qualificacoes;
-	}
-
-	public Qualificacao obterUltimaQualificacao(Integer idCodigo) {
-
-		Qualificacao qualificacaoFiltro = new Qualificacao();
-		qualificacaoFiltro.setId_Codigo(idCodigo);
-		List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
-		return qualificacoesDoDistribuidor.get(qualificacoesDoDistribuidor.size() - 1);
 	}
 }

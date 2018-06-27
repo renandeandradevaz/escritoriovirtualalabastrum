@@ -23,6 +23,7 @@ public class Pontuacao implements Entidade {
 	private BigDecimal PntAtividade;
 	private BigDecimal PntIngresso;
 	private BigDecimal PntProduto;
+	private BigDecimal valorIngresso;
 
 	@Index(name = "index_id_Codigo_pontuacao")
 	private Integer id_Codigo;
@@ -81,5 +82,13 @@ public class Pontuacao implements Entidade {
 
 	public void setPntProduto(BigDecimal pntProduto) {
 		PntProduto = pntProduto;
+	}
+
+	public BigDecimal getValorIngresso() {
+		return valorIngresso;
+	}
+
+	public void setValorIngresso(BigDecimal valorIngresso) {
+		this.valorIngresso = valorIngresso;
 	}
 }

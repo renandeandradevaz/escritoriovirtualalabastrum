@@ -28,6 +28,7 @@
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.HistoricoAcesso" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.InformacoesFixasUsuario" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ItemPedido" />
+		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ParametroIngresso" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Pedido" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Pontuacao" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Posicao" />

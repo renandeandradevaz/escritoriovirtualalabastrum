@@ -32,7 +32,7 @@ public class PontuacaoService {
 		this.hibernateUtil = hibernateUtil;
 	}
 
-	public PontuacaoDTO calcularPontuacoes(Integer idCodigo) {
+	public PontuacaoDTO calcularPontuacoesRelatorio(Integer idCodigo) {
 
 		Usuario usuario = hibernateUtil.selecionar(new Usuario(idCodigo));
 
@@ -71,7 +71,7 @@ public class PontuacaoService {
 
 			GregorianCalendar ultimoDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
 			ultimoDiaDoMes.add(Calendar.MONTH, -mesesAtras);
-			ultimoDiaDoMes.set(Calendar.DAY_OF_MONTH, Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH));
+			ultimoDiaDoMes.set(Calendar.DAY_OF_MONTH, ultimoDiaDoMes.getActualMaximum(Calendar.DAY_OF_MONTH));
 
 			if (primeiroDiaDoMes.before(dataUltimaQualificacao)) {
 				primeiroDiaDoMes = dataUltimaQualificacao;
@@ -173,5 +173,38 @@ public class PontuacaoService {
 		}
 
 		return somaPontuacao.intValue();
+	}
+
+	public BigDecimal getValorIngresso(Integer codigo, GregorianCalendar data) {
+
+		GregorianCalendar primeiroDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
+		primeiroDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
+		primeiroDiaDoMes.set(Calendar.YEAR, data.get(Calendar.YEAR));
+		primeiroDiaDoMes.set(Calendar.DAY_OF_MONTH, 1);
+
+		GregorianCalendar ultimoDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
+		ultimoDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
+		ultimoDiaDoMes.set(Calendar.YEAR, data.get(Calendar.YEAR));
+		ultimoDiaDoMes.set(Calendar.DAY_OF_MONTH, ultimoDiaDoMes.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+		List<Pontuacao> pontuacoes = buscarPontuacoes(codigo, primeiroDiaDoMes, ultimoDiaDoMes);
+
+		for (Pontuacao pontuacao : pontuacoes) {
+
+			if (pontuacao.getValorIngresso().compareTo(BigDecimal.ZERO) > 0) {
+				return pontuacao.getValorIngresso();
+			}
+		}
+
+		return BigDecimal.ZERO;
+	}
+
+	public List<Pontuacao> buscarPontuacoes(Integer codigo, GregorianCalendar dataInicial, GregorianCalendar dataFinal) {
+
+		List<Criterion> restricoes = new ArrayList<Criterion>();
+		restricoes.add(Restrictions.between("Dt_Pontos", dataInicial, dataFinal));
+		Pontuacao filtro = new Pontuacao();
+		filtro.setId_Codigo(codigo);
+		return hibernateUtil.buscar(filtro, restricoes);
 	}
 }

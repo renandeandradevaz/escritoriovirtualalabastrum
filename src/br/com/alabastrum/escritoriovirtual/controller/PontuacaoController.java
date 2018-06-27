@@ -24,6 +24,6 @@ public class PontuacaoController {
 	@Funcionalidade
 	public void acessarTelaPontuacao() {
 
-		result.include("pontuacaoDTO", new PontuacaoService(hibernateUtil).calcularPontuacoes(this.sessaoUsuario.getUsuario().getId_Codigo()));
+		result.include("pontuacaoDTO", new PontuacaoService(hibernateUtil).calcularPontuacoesRelatorio(this.sessaoUsuario.getUsuario().getId_Codigo()));
 	}
 }

@@ -19,6 +19,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
+import br.com.alabastrum.escritoriovirtual.modelo.ParametroIngresso;
 import br.com.alabastrum.escritoriovirtual.modelo.Pontuacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
@@ -41,6 +42,7 @@ public class AtualizacaoArquivosService {
 		processarCSVPosicoes();
 		processarCSVQualificacao();
 		processarCSVPontuacao();
+		processarCSVParametroIngresso();
 		processarCSVFranquia();
 		processarCSVCategoria();
 		processarCSVProduto();
@@ -80,6 +82,15 @@ public class AtualizacaoArquivosService {
 		preencherObjeto(reader, pontuacoes, "Pontuacao");
 		this.hibernateUtil.executarSQL("delete from pontuacao");
 		this.hibernateUtil.salvarOuAtualizar(pontuacoes);
+	}
+
+	private void processarCSVParametroIngresso() throws Exception {
+
+		CSVReader reader = lerArquivo("tblParametrosIngresso.csv");
+		List<ParametroIngresso> parametrosIngresso = new ArrayList<ParametroIngresso>();
+		preencherObjeto(reader, parametrosIngresso, "ParametroIngresso");
+		this.hibernateUtil.executarSQL("delete from parametroingresso");
+		this.hibernateUtil.salvarOuAtualizar(parametrosIngresso);
 	}
 
 	private void processarCSVFranquia() throws Exception {
