@@ -23,6 +23,7 @@ public class AtualizacaoArquivosAutomaticamente implements Runnable {
 				&& pastaAtualizacaoCSV.contains("tblCategorias.csv") //
 				&& pastaAtualizacaoCSV.contains("tblProdutos.csv") //
 				&& pastaAtualizacaoCSV.contains("tblParametrosIngresso.csv") //
+				&& pastaAtualizacaoCSV.contains("tblAtividade.csv") //
 				&& pastaAtualizacaoCSV.contains("tblPontuacao.csv")) {
 
 			try {
