@@ -17,9 +17,9 @@ import org.joda.time.format.DateTimeFormatter;
 
 import au.com.bytecode.opencsv.CSVReader;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
-import br.com.alabastrum.escritoriovirtual.modelo.Atividade;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
+import br.com.alabastrum.escritoriovirtual.modelo.ParametroAtividade;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroIngresso;
 import br.com.alabastrum.escritoriovirtual.modelo.Pontuacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
@@ -44,7 +44,7 @@ public class AtualizacaoArquivosService {
 		processarCSVQualificacao();
 		processarCSVPontuacao();
 		processarCSVParametroIngresso();
-		processarCSVAtividade();
+		processarCSVParametroAtividade();
 		processarCSVFranquia();
 		processarCSVCategoria();
 		processarCSVProduto();
@@ -95,13 +95,13 @@ public class AtualizacaoArquivosService {
 		this.hibernateUtil.salvarOuAtualizar(parametrosIngresso);
 	}
 
-	private void processarCSVAtividade() throws Exception {
+	private void processarCSVParametroAtividade() throws Exception {
 
 		CSVReader reader = lerArquivo("tblAtividade.csv");
-		List<Atividade> atividades = new ArrayList<Atividade>();
-		preencherObjeto(reader, atividades, "Atividade");
-		this.hibernateUtil.executarSQL("delete from atividade");
-		this.hibernateUtil.salvarOuAtualizar(atividades);
+		List<ParametroAtividade> parametrosAtividades = new ArrayList<ParametroAtividade>();
+		preencherObjeto(reader, parametrosAtividades, "ParametroAtividade");
+		this.hibernateUtil.executarSQL("delete from parametroatividade");
+		this.hibernateUtil.salvarOuAtualizar(parametrosAtividades);
 	}
 
 	private void processarCSVFranquia() throws Exception {

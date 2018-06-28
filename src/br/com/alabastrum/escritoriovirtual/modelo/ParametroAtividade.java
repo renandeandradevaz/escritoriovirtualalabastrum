@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
 
 @Entity
-public class Atividade implements Entidade {
+public class ParametroAtividade implements Entidade {
 
 	@Id
 	@GeneratedValue

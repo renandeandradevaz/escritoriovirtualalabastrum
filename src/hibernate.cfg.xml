@@ -22,13 +22,13 @@
 		<property name="hibernate.c3p0.max_statements">50</property>
 		<property name="hibernate.c3p0.idle_test_period">600</property>
       
-      	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Atividade" />
       	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Categoria" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Configuracao" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Franquia" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.HistoricoAcesso" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.InformacoesFixasUsuario" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ItemPedido" />
+      	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ParametroAtividade" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ParametroIngresso" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Pedido" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Pontuacao" />
