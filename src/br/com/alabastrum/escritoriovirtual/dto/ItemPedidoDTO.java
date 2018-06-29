@@ -1,15 +1,19 @@
 package br.com.alabastrum.escritoriovirtual.dto;
 
+import java.math.BigDecimal;
+
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 
 public class ItemPedidoDTO {
 
 	private Produto produto;
 	private Integer quantidade;
+	private BigDecimal precoUnitario;
 
-	public ItemPedidoDTO(Produto produto, Integer quantidade) {
+	public ItemPedidoDTO(Produto produto, Integer quantidade, BigDecimal precoUnitario) {
 		this.produto = produto;
 		this.quantidade = quantidade;
+		this.precoUnitario = precoUnitario;
 	}
 
 	public Produto getProduto() {
@@ -26,5 +30,13 @@ public class ItemPedidoDTO {
 
 	public void setQuantidade(Integer quantidade) {
 		this.quantidade = quantidade;
+	}
+
+	public BigDecimal getPrecoUnitario() {
+		return precoUnitario;
+	}
+
+	public void setPrecoUnitario(BigDecimal precoUnitario) {
+		this.precoUnitario = precoUnitario;
 	}
 }

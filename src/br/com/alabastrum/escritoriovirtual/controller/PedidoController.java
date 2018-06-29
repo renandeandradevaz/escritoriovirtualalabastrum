@@ -87,8 +87,9 @@ public class PedidoController {
 			if (itemPedido != null) {
 				quantidade = itemPedido.getQuantidade();
 			}
-			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade));
+			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit()));
 		}
+
 		result.include("itensPedidoDTO", itensPedidoDTO);
 
 		Pedido pedido = selecionarPedidoAberto();
@@ -133,9 +134,10 @@ public class PedidoController {
 			for (ItemPedido itemPedido : listarItensPedido(pedido)) {
 				Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 				Integer quantidade = itemPedido.getQuantidade();
-				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade));
+				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit()));
 			}
 		}
+
 		result.include("itensPedidoDTO", itensPedidoDTO);
 		result.include("totais", calcularTotais(pedido));
 	}
@@ -198,7 +200,7 @@ public class PedidoController {
 		for (ItemPedido itemPedido : listarItensPedido((Pedido) hibernateUtil.selecionar(new Pedido(idPedido)))) {
 			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 			Integer quantidade = itemPedido.getQuantidade();
-			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade));
+			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit()));
 		}
 
 		result.include("itensPedidoDTO", itensPedidoDTO);
