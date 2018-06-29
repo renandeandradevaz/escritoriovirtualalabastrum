@@ -78,6 +78,7 @@ public class PedidoController {
 
 		Produto filtro = new Produto();
 		filtro.setId_Categoria(idCategoria);
+		filtro.setDisponivel("1");
 		List<Produto> produtos = hibernateUtil.buscar(filtro);
 		List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
 		for (Produto produto : produtos) {
@@ -101,11 +102,13 @@ public class PedidoController {
 
 		Pedido pedido = selecionarPedidoAberto();
 		ItemPedido itemPedido = selecionarItemPedido(idProduto, pedido);
+		Produto produto = hibernateUtil.selecionar(new Produto(idProduto), MatchMode.EXACT);
 
 		if (Util.vazio(itemPedido)) {
 			itemPedido = new ItemPedido();
 			itemPedido.setPedido(pedido);
 			itemPedido.setIdProduto(idProduto);
+			itemPedido.setPrecoUnitario(produto.getPrdPreco_Unit());
 		}
 
 		itemPedido.setQuantidade(quantidade);
@@ -115,7 +118,6 @@ public class PedidoController {
 			hibernateUtil.deletar(itemPedido);
 		}
 
-		Produto produto = hibernateUtil.selecionar(new Produto(idProduto), MatchMode.EXACT);
 		result.forwardTo(this).selecionarCategoria(produto.getId_Categoria());
 	}
 
@@ -216,7 +218,7 @@ public class PedidoController {
 			Integer quantidade = itemPedido.getQuantidade();
 
 			totalItens += quantidade;
-			valorTotal = valorTotal.add(produto.getPrdPreco_Unit().multiply(BigDecimal.valueOf(quantidade)));
+			valorTotal = valorTotal.add(itemPedido.getPrecoUnitario().multiply(BigDecimal.valueOf(quantidade)));
 			totalPontos += produto.getPrdPontos() * quantidade;
 		}
 

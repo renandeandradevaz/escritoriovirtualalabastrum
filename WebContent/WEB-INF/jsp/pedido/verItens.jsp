@@ -19,7 +19,7 @@
 					<td class="centralizado">${item.quantidade}</td>
 					<td class="centralizado">
 						R$
-						<fmt:formatNumber value="${item.produto.prdPreco_Unit}" pattern="#,##0.00" />
+						<fmt:formatNumber value="${item.precoUnitario}" pattern="#,##0.00" />
 					</td>
 				</tr>
 			</c:forEach>

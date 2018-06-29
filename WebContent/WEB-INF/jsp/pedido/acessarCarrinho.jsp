@@ -21,7 +21,7 @@
 						<td class="centralizado">${item.quantidade}</td>
 						<td class="centralizado">
 							R$
-							<fmt:formatNumber value="${item.produto.prdPreco_Unit}" pattern="#,##0.00" />
+							<fmt:formatNumber value="${item.precoUnitario}" pattern="#,##0.00" />
 						</td>
 						<td style="text-align: center;">
 							<a class="btn btn-danger" href="<c:url value="/pedido/removerProduto/${item.produto.id_Produtos}"/>"> Remover </a>

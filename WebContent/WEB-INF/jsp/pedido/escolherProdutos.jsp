@@ -41,7 +41,7 @@
 				<p style="height: 50px; font-weight: bold">${item.produto.prdNome}</p>
 				<p>
 					Preço: R$
-					<fmt:formatNumber value="${item.produto.prdPreco_Unit}" pattern="#,##0.00" />
+					<fmt:formatNumber value="${item.precoUnitario}" pattern="#,##0.00" />
 				</p>
 				<p>Pontos: ${item.produto.prdPontos}</p>
 				<form action="<c:url value="/pedido/adicionarProduto/${item.produto.id_Produtos}"/>" method="post">

@@ -1,5 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.modelo;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,6 +21,7 @@ public class ItemPedido implements Entidade {
 
 	private String idProduto;
 	private Integer quantidade;
+	private BigDecimal precoUnitario;
 
 	public Integer getId() {
 		return id;
@@ -50,5 +53,13 @@ public class ItemPedido implements Entidade {
 
 	public void setQuantidade(Integer quantidade) {
 		this.quantidade = quantidade;
+	}
+
+	public BigDecimal getPrecoUnitario() {
+		return precoUnitario;
+	}
+
+	public void setPrecoUnitario(BigDecimal precoUnitario) {
+		this.precoUnitario = precoUnitario;
 	}
 }
