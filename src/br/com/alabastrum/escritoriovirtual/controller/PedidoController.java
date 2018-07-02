@@ -18,6 +18,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.ItemPedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Pedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
+import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.alabastrum.escritoriovirtual.util.Util;
@@ -34,12 +35,14 @@ public class PedidoController {
 	private Result result;
 	private HibernateUtil hibernateUtil;
 	private SessaoUsuario sessaoUsuario;
+	private SessaoGeral sessaoGeral;
 	private Validator validator;
 
-	public PedidoController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario, Validator validator) {
+	public PedidoController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario, Validator validator, SessaoGeral sessaoGeral) {
 		this.result = result;
 		this.hibernateUtil = hibernateUtil;
 		this.sessaoUsuario = sessaoUsuario;
+		this.sessaoGeral = sessaoGeral;
 		this.validator = validator;
 	}
 
@@ -49,7 +52,12 @@ public class PedidoController {
 	}
 
 	@Funcionalidade
-	public void escolherProdutos(Integer idFranquia) {
+	public void escolherProdutos(Integer idFranquia, Integer idCodigo) {
+
+		if (idCodigo == null || idCodigo == 0) {
+			idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
+		}
+		this.sessaoGeral.adicionar("idUsuarioPedido", idCodigo);
 
 		if (idFranquia == null || idFranquia == 0) {
 			validator.add(new ValidationMessage("Selecione uma franquia", "Erro"));
@@ -61,7 +69,7 @@ public class PedidoController {
 
 		if (Util.vazio(pedido)) {
 			pedido = new Pedido();
-			pedido.setIdCodigo(sessaoUsuario.getUsuario().getId_Codigo());
+			pedido.setIdCodigo(idCodigo);
 			pedido.setCompleted(false);
 		}
 
@@ -94,7 +102,7 @@ public class PedidoController {
 
 		Pedido pedido = selecionarPedidoAberto();
 		result.include("totais", calcularTotais(pedido));
-		result.forwardTo(this).escolherProdutos(pedido.getIdFranquia());
+		result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), pedido.getIdCodigo());
 	}
 
 	@Funcionalidade
@@ -158,7 +166,7 @@ public class PedidoController {
 		Pedido pedido = selecionarPedidoAberto();
 		List<ItemPedido> itens = listarItensPedido(pedido);
 
-		String textoArquivo = "id_Codigo=" + sessaoUsuario.getUsuario().getId_Codigo() + "\r\n";
+		String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
 		textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
 
 		for (ItemPedido itemPedido : itens) {
@@ -179,8 +187,14 @@ public class PedidoController {
 	@Funcionalidade
 	public void meusPedidos() throws Exception {
 
+		Integer idCodigo = (Integer) this.sessaoGeral.getValor("idUsuarioPedido");
+
+		if (idCodigo == null || idCodigo == 0) {
+			idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
+		}
+
 		Pedido filtro = new Pedido();
-		filtro.setIdCodigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+		filtro.setIdCodigo(idCodigo);
 		filtro.setCompleted(true);
 		List<Pedido> pedidos = hibernateUtil.buscar(filtro);
 		List<PedidoDTO> pedidosDTO = new ArrayList<PedidoDTO>();
@@ -237,7 +251,7 @@ public class PedidoController {
 	private Pedido selecionarPedidoAberto() {
 
 		Pedido pedido = new Pedido();
-		pedido.setIdCodigo(sessaoUsuario.getUsuario().getId_Codigo());
+		pedido.setIdCodigo((Integer) this.sessaoGeral.getValor("idUsuarioPedido"));
 		pedido.setCompleted(false);
 		return hibernateUtil.selecionar(pedido);
 	}

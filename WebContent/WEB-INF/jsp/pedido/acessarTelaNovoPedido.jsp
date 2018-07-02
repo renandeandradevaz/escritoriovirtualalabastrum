@@ -4,14 +4,19 @@
 </div>
 <br>
 <div class="fundo-branco">
-	<h5>Escolha a franquia para retirada</h5>
 	<form action="<c:url value="/pedido/escolherProdutos"/>" method="post">
+		<h5>Escolha a franquia para retirada</h5>
 		<select name='idFranquia'>
 			<option value="">Selecione</option>
 			<c:forEach items="${franquias}" var="item">
-				<option value="${item.id_Estoque}">${item.estqUF}-${item.estqCidade}- ${item.estqBairro}</option>
+				<option value="${item.id_Estoque}">${item.estqUF}-${item.estqCidade}-${item.estqBairro}</option>
 			</c:forEach>
 		</select>
+		<br>
+		<c:if test="${sessaoUsuario.usuario.informacoesFixasUsuario.administrador}">
+			<h5>Escolha o código do distribuidor que irá realizar o pedido (Opção habilitada apenas para administrador)</h5>
+			<input type="number" min="1" name="idCodigo" placeholder="idCodigo" value="${sessaoUsuario.usuario.id_Codigo}">
+		</c:if>
 		<br>
 		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Selecionar</button>
 	</form>
