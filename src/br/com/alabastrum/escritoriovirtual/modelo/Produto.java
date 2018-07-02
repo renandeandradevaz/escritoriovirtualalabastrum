@@ -21,6 +21,8 @@ public class Produto implements Entidade {
 	private BigDecimal prdPreco_Unit;
 	private Integer prdPontos;
 	private String disponivel;
+	private String prdComissionado;
+	private String prdPromocao;
 
 	public Produto() {
 	}
@@ -83,5 +85,21 @@ public class Produto implements Entidade {
 
 	public void setDisponivel(String disponivel) {
 		this.disponivel = disponivel;
+	}
+
+	public String getPrdComissionado() {
+		return prdComissionado;
+	}
+
+	public void setPrdComissionado(String prdComissionado) {
+		this.prdComissionado = prdComissionado;
+	}
+
+	public String getPrdPromocao() {
+		return prdPromocao;
+	}
+
+	public void setPrdPromocao(String prdPromocao) {
+		this.prdPromocao = prdPromocao;
 	}
 }
