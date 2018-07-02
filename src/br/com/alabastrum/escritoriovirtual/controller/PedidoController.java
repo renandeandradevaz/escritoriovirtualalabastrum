@@ -32,6 +32,8 @@ import br.com.caelum.vraptor.validator.ValidationMessage;
 @Resource
 public class PedidoController {
 
+	private static final String ID_USUARIO_PEDIDO = "idUsuarioPedido";
+
 	private Result result;
 	private HibernateUtil hibernateUtil;
 	private SessaoUsuario sessaoUsuario;
@@ -57,7 +59,7 @@ public class PedidoController {
 		if (idCodigo == null || idCodigo == 0) {
 			idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
 		}
-		this.sessaoGeral.adicionar("idUsuarioPedido", idCodigo);
+		this.sessaoGeral.adicionar(ID_USUARIO_PEDIDO, idCodigo);
 
 		if (idFranquia == null || idFranquia == 0) {
 			validator.add(new ValidationMessage("Selecione uma franquia", "Erro"));
@@ -187,7 +189,7 @@ public class PedidoController {
 	@Funcionalidade
 	public void meusPedidos() throws Exception {
 
-		Integer idCodigo = (Integer) this.sessaoGeral.getValor("idUsuarioPedido");
+		Integer idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_PEDIDO);
 
 		if (idCodigo == null || idCodigo == 0) {
 			idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
@@ -251,7 +253,7 @@ public class PedidoController {
 	private Pedido selecionarPedidoAberto() {
 
 		Pedido pedido = new Pedido();
-		pedido.setIdCodigo((Integer) this.sessaoGeral.getValor("idUsuarioPedido"));
+		pedido.setIdCodigo((Integer) this.sessaoGeral.getValor(ID_USUARIO_PEDIDO));
 		pedido.setCompleted(false);
 		return hibernateUtil.selecionar(pedido);
 	}
