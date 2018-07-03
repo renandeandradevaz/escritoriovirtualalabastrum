@@ -21,6 +21,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroAtividade;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroIngresso;
+import br.com.alabastrum.escritoriovirtual.modelo.ParametroUnilevel;
 import br.com.alabastrum.escritoriovirtual.modelo.Pontuacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
@@ -45,6 +46,7 @@ public class AtualizacaoArquivosService {
 		processarCSVPontuacao();
 		processarCSVParametroIngresso();
 		processarCSVParametroAtividade();
+		processarCSVParametroUnilevel();
 		processarCSVFranquia();
 		processarCSVCategoria();
 		processarCSVProduto();
@@ -102,6 +104,15 @@ public class AtualizacaoArquivosService {
 		preencherObjeto(reader, parametrosAtividades, "ParametroAtividade");
 		this.hibernateUtil.executarSQL("delete from parametroatividade");
 		this.hibernateUtil.salvarOuAtualizar(parametrosAtividades);
+	}
+
+	private void processarCSVParametroUnilevel() throws Exception {
+
+		CSVReader reader = lerArquivo("tblUnilevel.csv");
+		List<ParametroUnilevel> parametrosUnilevel = new ArrayList<ParametroUnilevel>();
+		preencherObjeto(reader, parametrosUnilevel, "ParametroUnilevel");
+		this.hibernateUtil.executarSQL("delete from parametrounilevel");
+		this.hibernateUtil.salvarOuAtualizar(parametrosUnilevel);
 	}
 
 	private void processarCSVFranquia() throws Exception {

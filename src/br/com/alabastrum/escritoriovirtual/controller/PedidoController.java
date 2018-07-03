@@ -207,7 +207,7 @@ public class PedidoController {
 
 		Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 
-		if (status.equals(PAGO)) {
+		if (pedido.getStatus().equals(PENDENTE) && status.equals(PAGO)) {
 
 			String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
 			textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";

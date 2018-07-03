@@ -11,6 +11,7 @@ import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.service.BonusAtivacaoService;
+import br.com.alabastrum.escritoriovirtual.service.BonusUnilevelService;
 import br.com.alabastrum.escritoriovirtual.service.IndicacaoDiretaService;
 import br.com.alabastrum.escritoriovirtual.service.IndicacaoIndiretaService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
@@ -53,6 +54,7 @@ public class ExtratoController {
 		extratoCompleto.addAll(new IndicacaoDiretaService(hibernateUtil).obterIndicacoesDiretas(idCodigo));
 		extratoCompleto.addAll(new IndicacaoIndiretaService(hibernateUtil).obterIndicacoesIndiretas(idCodigo));
 		extratoCompleto.addAll(new BonusAtivacaoService(hibernateUtil).obterBonificacoesPorAtivacao(idCodigo));
+		extratoCompleto.addAll(new BonusUnilevelService(hibernateUtil).obterBonificacoesUnilevel(idCodigo));
 		extratoCompleto = ordenarExtratoPorDataCrescente(extratoCompleto);
 
 		BigDecimal saldo = BigDecimal.ZERO;
