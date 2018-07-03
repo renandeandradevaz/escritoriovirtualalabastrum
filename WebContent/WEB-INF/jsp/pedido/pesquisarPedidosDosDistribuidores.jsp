@@ -5,7 +5,7 @@
 <br>
 <div class="fundo-branco">
 	<form action="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" method="post">
-		<h6>Escolha a franquia para retirada</h6>
+		<h6>Status do pedido</h6>
 		<select name='status' id='status'>
 			<option value="PENDENTE">PENDENTE</option>
 			<option value="PAGO">PAGO</option>
