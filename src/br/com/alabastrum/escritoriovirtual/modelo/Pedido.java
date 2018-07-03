@@ -20,6 +20,7 @@ public class Pedido implements Entidade {
 	private GregorianCalendar data;
 	private Boolean completed;
 	private Integer idFranquia;
+	private String status;
 
 	@Index(name = "index_idCodigo_pedido")
 	private Integer idCodigo;
@@ -69,5 +70,13 @@ public class Pedido implements Entidade {
 
 	public void setData(GregorianCalendar data) {
 		this.data = data;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }

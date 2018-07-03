@@ -11,6 +11,7 @@
 				<th>Franquia</th>
 				<th>Data</th>
 				<th>Valor</th>
+				<th>Status</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -26,6 +27,7 @@
 						R$
 						<fmt:formatNumber value="${item.valorTotal}" pattern="#,##0.00" />
 					</td>
+					<td class="centralizado">${item.pedido.status}</td>
 					<td style="text-align: center;">
 						<a class="btn btn-info" href="<c:url value="/pedido/verItens/${item.pedido.id}"/>"> Detalhar </a>
 					</td>

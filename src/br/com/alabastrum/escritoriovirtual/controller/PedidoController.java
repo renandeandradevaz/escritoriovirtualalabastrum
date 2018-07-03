@@ -20,7 +20,6 @@ import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
-import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Post;
@@ -33,6 +32,8 @@ import br.com.caelum.vraptor.validator.ValidationMessage;
 public class PedidoController {
 
 	private static final String ID_USUARIO_PEDIDO = "idUsuarioPedido";
+	private static final String PENDENTE = "PENDENTE";
+	private static final String PAGO = "PAGO";
 
 	private Result result;
 	private HibernateUtil hibernateUtil;
@@ -73,6 +74,7 @@ public class PedidoController {
 			pedido = new Pedido();
 			pedido.setIdCodigo(idCodigo);
 			pedido.setCompleted(false);
+			pedido.setStatus(PENDENTE);
 		}
 
 		pedido.setIdFranquia(idFranquia);
@@ -166,18 +168,6 @@ public class PedidoController {
 	public void concluirPedido() throws Exception {
 
 		Pedido pedido = selecionarPedidoAberto();
-		List<ItemPedido> itens = listarItensPedido(pedido);
-
-		String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
-		textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
-
-		for (ItemPedido itemPedido : itens) {
-			textoArquivo += itemPedido.getIdProduto() + "=" + itemPedido.getQuantidade() + "\r\n";
-		}
-
-		ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
-		Mail.enviarEmail("Pedido feito pelo EV", textoArquivo);
-
 		pedido.setCompleted(true);
 		pedido.setData(new GregorianCalendar());
 		hibernateUtil.salvarOuAtualizar(pedido);
@@ -195,16 +185,42 @@ public class PedidoController {
 			idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
 		}
 
-		Pedido filtro = new Pedido();
-		filtro.setIdCodigo(idCodigo);
-		filtro.setCompleted(true);
-		List<Pedido> pedidos = hibernateUtil.buscar(filtro);
-		List<PedidoDTO> pedidosDTO = new ArrayList<PedidoDTO>();
-		for (Pedido pedido : pedidos) {
-			pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), calcularTotais(pedido).getValorTotal()));
+		montarPedidosDTO(null, idCodigo);
+	}
+
+	@Funcionalidade(administrativa = "true")
+	public void pesquisarPedidosDosDistribuidores(String status, Integer idCodigo) {
+
+		if (Util.vazio(status)) {
+			status = PENDENTE;
 		}
 
-		result.include("pedidosDTO", pedidosDTO);
+		montarPedidosDTO(status, idCodigo);
+
+		result.include("idCodigo", idCodigo);
+		result.include("status", status);
+	}
+
+	@Funcionalidade(administrativa = "true")
+	@Get("/pedido/alterarStatus/{idPedido}/{status}")
+	public void alterarStatus(String status, Integer idPedido) throws Exception {
+
+		Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+
+		if (status.equals(PAGO)) {
+
+			String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
+			textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
+			for (ItemPedido itemPedido : listarItensPedido(pedido)) {
+				textoArquivo += itemPedido.getIdProduto() + "=" + itemPedido.getQuantidade() + "\r\n";
+			}
+			ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
+		}
+
+		pedido.setStatus(status);
+		hibernateUtil.salvarOuAtualizar(pedido);
+
+		result.forwardTo(this).pesquisarPedidosDosDistribuidores(null, null);
 	}
 
 	@Funcionalidade
@@ -220,6 +236,20 @@ public class PedidoController {
 		}
 
 		result.include("itensPedidoDTO", itensPedidoDTO);
+	}
+
+	private void montarPedidosDTO(String status, Integer idCodigo) {
+
+		Pedido pedidoFiltro = new Pedido();
+		pedidoFiltro.setIdCodigo(idCodigo);
+		pedidoFiltro.setStatus(status);
+		pedidoFiltro.setCompleted(true);
+		List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro);
+		List<PedidoDTO> pedidosDTO = new ArrayList<PedidoDTO>();
+		for (Pedido pedido : pedidos) {
+			pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), calcularTotais(pedido).getValorTotal()));
+		}
+		result.include("pedidosDTO", pedidosDTO);
 	}
 
 	private PedidoDTO calcularTotais(Pedido pedido) {

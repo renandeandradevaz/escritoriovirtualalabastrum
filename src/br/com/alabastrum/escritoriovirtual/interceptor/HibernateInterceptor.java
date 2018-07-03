@@ -56,7 +56,6 @@ public class HibernateInterceptor implements Interceptor {
 
 			throw e1;
 		}
-
 	}
 
 	public boolean accepts(ResourceMethod method) {
