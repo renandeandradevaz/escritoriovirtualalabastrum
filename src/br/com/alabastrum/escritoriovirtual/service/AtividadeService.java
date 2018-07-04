@@ -30,15 +30,8 @@ public class AtividadeService {
 
 	public boolean isAtivo(Integer codigo, GregorianCalendar data) {
 
-		GregorianCalendar primeiroDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
-		primeiroDiaDoMes.set(Calendar.YEAR, data.get(Calendar.YEAR));
-		primeiroDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
-		primeiroDiaDoMes.set(Calendar.DAY_OF_MONTH, 1);
-
-		GregorianCalendar ultimoDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
-		ultimoDiaDoMes.set(Calendar.YEAR, data.get(Calendar.YEAR));
-		ultimoDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
-		ultimoDiaDoMes.set(Calendar.DAY_OF_MONTH, ultimoDiaDoMes.getActualMaximum(Calendar.DAY_OF_MONTH));
+		GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(data);
+		GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(data);
 
 		return isAtivo(codigo, primeiroDiaDoMes, ultimoDiaDoMes);
 	}

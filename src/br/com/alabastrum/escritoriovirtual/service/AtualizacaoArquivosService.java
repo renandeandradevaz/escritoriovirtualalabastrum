@@ -20,8 +20,10 @@ import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroAtividade;
+import br.com.alabastrum.escritoriovirtual.modelo.ParametroDivisaoLucro;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroIngresso;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroUnilevel;
+import br.com.alabastrum.escritoriovirtual.modelo.ParametroVip;
 import br.com.alabastrum.escritoriovirtual.modelo.Pontuacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
@@ -47,6 +49,8 @@ public class AtualizacaoArquivosService {
 		processarCSVParametroIngresso();
 		processarCSVParametroAtividade();
 		processarCSVParametroUnilevel();
+		processarCSVParametroDivisaoLucro();
+		processarCSVParametroVip();
 		processarCSVFranquia();
 		processarCSVCategoria();
 		processarCSVProduto();
@@ -113,6 +117,24 @@ public class AtualizacaoArquivosService {
 		preencherObjeto(reader, parametrosUnilevel, "ParametroUnilevel");
 		this.hibernateUtil.executarSQL("delete from parametrounilevel");
 		this.hibernateUtil.salvarOuAtualizar(parametrosUnilevel);
+	}
+
+	private void processarCSVParametroDivisaoLucro() throws Exception {
+
+		CSVReader reader = lerArquivo("tblDivisaoLucro.csv");
+		List<ParametroDivisaoLucro> parametrosDivisaoLucro = new ArrayList<ParametroDivisaoLucro>();
+		preencherObjeto(reader, parametrosDivisaoLucro, "ParametroDivisaoLucro");
+		this.hibernateUtil.executarSQL("delete from parametrodivisaolucro");
+		this.hibernateUtil.salvarOuAtualizar(parametrosDivisaoLucro);
+	}
+
+	private void processarCSVParametroVip() throws Exception {
+
+		CSVReader reader = lerArquivo("tblVIP.csv");
+		List<ParametroVip> parametrosVip = new ArrayList<ParametroVip>();
+		preencherObjeto(reader, parametrosVip, "ParametroVip");
+		this.hibernateUtil.executarSQL("delete from parametrovip");
+		this.hibernateUtil.salvarOuAtualizar(parametrosVip);
 	}
 
 	private void processarCSVFranquia() throws Exception {

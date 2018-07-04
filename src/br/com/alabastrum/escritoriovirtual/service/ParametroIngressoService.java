@@ -1,6 +1,5 @@
 package br.com.alabastrum.escritoriovirtual.service;
 
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
@@ -18,10 +17,7 @@ public class ParametroIngressoService {
 
 	public ParametroIngresso buscarParametroIngresso(GregorianCalendar data, Integer nivel) {
 
-		GregorianCalendar primeiroDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
-		primeiroDiaDoMes.set(Calendar.YEAR, data.get(Calendar.YEAR));
-		primeiroDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
-		primeiroDiaDoMes.set(Calendar.DAY_OF_MONTH, 1);
+		GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(data);
 
 		ParametroIngresso parametroIngressoFiltro = new ParametroIngresso();
 		parametroIngressoFiltro.setData(primeiroDiaDoMes);

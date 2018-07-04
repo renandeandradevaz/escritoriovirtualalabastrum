@@ -29,7 +29,9 @@
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.InformacoesFixasUsuario" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ItemPedido" />
       	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ParametroAtividade" />
+      	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ParametroDivisaoLucro" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ParametroIngresso" />
+		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ParametroVip" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ParametroUnilevel" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Pedido" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Pontuacao" />

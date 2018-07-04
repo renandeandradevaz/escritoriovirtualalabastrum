@@ -3,6 +3,7 @@ package br.com.alabastrum.escritoriovirtual.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -118,6 +119,24 @@ public class QualificacaoService {
 		qualificacaoFiltro.setId_Codigo(idCodigo);
 		List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
 		return qualificacoesDoDistribuidor.get(qualificacoesDoDistribuidor.size() - 1);
+	}
+
+	public String obterPosicaoNaData(Integer idCodigo, GregorianCalendar data) {
+
+		Qualificacao qualificacaoFiltro = new Qualificacao();
+		qualificacaoFiltro.setId_Codigo(idCodigo);
+		List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
+
+		List<Qualificacao> qualificacoesAntesDaData = new ArrayList<Qualificacao>();
+
+		for (Qualificacao qualificacao : qualificacoesDoDistribuidor) {
+
+			if (qualificacao.getData().before(data)) {
+				qualificacoesAntesDaData.add(qualificacao);
+			}
+		}
+
+		return new PosicoesService(hibernateUtil).obterNomeDaPosicao(qualificacoesAntesDaData.size());
 	}
 
 	private List<QualificacaoDTO> ordenarQualificacoesPorDataDescrescente(List<QualificacaoDTO> qualificacoes) {

@@ -23,6 +23,7 @@ public class Produto implements Entidade {
 	private String disponivel;
 	private String prdComissionado;
 	private String prdPromocao;
+	private String prdMatApoio;
 
 	public Produto() {
 	}
@@ -101,5 +102,13 @@ public class Produto implements Entidade {
 
 	public void setPrdPromocao(String prdPromocao) {
 		this.prdPromocao = prdPromocao;
+	}
+
+	public String getPrdMatApoio() {
+		return prdMatApoio;
+	}
+
+	public void setPrdMatApoio(String prdMatApoio) {
+		this.prdMatApoio = prdMatApoio;
 	}
 }

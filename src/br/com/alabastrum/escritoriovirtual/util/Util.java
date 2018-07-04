@@ -62,6 +62,24 @@ public class Util {
 		return tempoCorrenteAMeiaNoite;
 	}
 
+	public static GregorianCalendar getPrimeiroDiaDoMes(GregorianCalendar data) {
+
+		GregorianCalendar primeiroDiaDoMes = getTempoCorrenteAMeiaNoite();
+		primeiroDiaDoMes.set(Calendar.YEAR, data.get(Calendar.YEAR));
+		primeiroDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
+		primeiroDiaDoMes.set(Calendar.DAY_OF_MONTH, 1);
+		return primeiroDiaDoMes;
+	}
+
+	public static GregorianCalendar getUltimoDiaDoMes(GregorianCalendar data) {
+
+		GregorianCalendar ultimoDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
+		ultimoDiaDoMes.set(Calendar.YEAR, data.get(Calendar.YEAR));
+		ultimoDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
+		ultimoDiaDoMes.set(Calendar.DAY_OF_MONTH, ultimoDiaDoMes.getActualMaximum(Calendar.DAY_OF_MONTH));
+		return ultimoDiaDoMes;
+	}
+
 	public static String getMesString(Integer mes) {
 
 		HashMap<Integer, String> meses = new HashMap<Integer, String>();
