@@ -29,6 +29,7 @@ public class PedidoService {
 		restricoes.add(Restrictions.between("data", primeiroDiaDoMes, ultimoDiaDoMes));
 		Pedido pedidoFiltro = new Pedido();
 		pedidoFiltro.setIdCodigo(idCodigo);
+		pedidoFiltro.setStatus("PAGO");
 		return hibernateUtil.buscar(pedidoFiltro, restricoes);
 	}
 
@@ -37,6 +38,7 @@ public class PedidoService {
 		List<Criterion> restricoes = new ArrayList<Criterion>();
 		restricoes.add(Restrictions.between("data", primeiroDiaDoMes, ultimoDiaDoMes));
 		Pedido pedidoFiltro = new Pedido();
+		pedidoFiltro.setStatus("PAGO");
 		return hibernateUtil.buscar(pedidoFiltro, restricoes);
 	}
 
