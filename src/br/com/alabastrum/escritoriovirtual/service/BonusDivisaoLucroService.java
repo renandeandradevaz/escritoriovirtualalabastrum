@@ -55,7 +55,7 @@ public class BonusDivisaoLucroService {
 
 					BigDecimal lucroASerDividido = totalPedidosTodaRede.multiply(PORCENTAGEM_LUCRO_A_SER_DIVIDIDA).divide(new BigDecimal(100));
 
-					extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), bonus, "xxxxxxxxxxxxxxxxxxx"));
+				//	extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), bonus, "xxxxxxxxxxxxxxxxxxx"));
 				}
 			}
 		}
