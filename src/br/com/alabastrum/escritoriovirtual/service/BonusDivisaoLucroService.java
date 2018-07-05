@@ -3,7 +3,10 @@ package br.com.alabastrum.escritoriovirtual.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
@@ -35,60 +38,111 @@ public class BonusDivisaoLucroService {
 			GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(parametroVip.getData());
 			GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(parametroVip.getData());
 
-			if (new AtividadeService(hibernateUtil).isAtivo(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes)) {
+			if (isHabilitado(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes, parametroVip)) {
 
-				BigDecimal totalPedidosDistribuidor = calcularTotalPedidosDistribuidor(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes);
+				Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(new QualificacaoService(hibernateUtil).obterPosicaoNaData(idCodigo, parametroVip.getData()));
 
-				if (totalPedidosDistribuidor.compareTo(parametroVip.getValor()) >= 0) {
+				BigDecimal bonificacao = BigDecimal.ZERO;
 
-					String nomePosicao = new QualificacaoService(hibernateUtil).obterPosicaoNaData(idCodigo, parametroVip.getData());
+				Map<Integer, BigDecimal> valoresPorPosicao = obterValoresPorPosicao(parametroVip, primeiroDiaDoMes, ultimoDiaDoMes);
 
-					ParametroDivisaoLucro parametroDivisaoLucro = new ParametroDivisaoLucroService(hibernateUtil).buscarParametroDivisaoLucro(parametroVip.getData(), nomePosicao);
-					if (parametroDivisaoLucro == null) {
-						continue;
+				for (Entry<Integer, BigDecimal> valoresPorPosicaoEntry : valoresPorPosicao.entrySet()) {
+
+					if (valoresPorPosicaoEntry.getKey() <= posicao.getPosicao()) {
+
+						bonificacao = bonificacao.add(valoresPorPosicaoEntry.getValue());
 					}
-
-					BigDecimal valorNaPosicao = getValorNaPosicao(parametroDivisaoLucro, primeiroDiaDoMes, ultimoDiaDoMes);
-
-					int quantidadeCotas = calcularQuantidadeDeCotas(primeiroDiaDoMes, ultimoDiaDoMes, parametroVip, obterPosicoesAcima(nomePosicao));
-
 				}
+
+				extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(idCodigo)), parametroVip.getData(), bonificacao, "Divisão de lucro"));
 			}
 		}
 
-		// extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new
-		// Usuario(pedido.getIdCodigo())), pedido.getData(), bonus,
-		// "xxxxxxxxxxxxxxxxxxx"));
 		return extratos;
 	}
 
-	private Integer calcularQuantidadeDeCotas(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, ParametroVip parametroVip, List<String> posicoesAcima) {
+	private Map<Integer, BigDecimal> obterValoresPorPosicao(ParametroVip parametroVip, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
+
+		List<Usuario> distribuidoresHabilitados = obterDistribuidoresHabilitados(parametroVip, primeiroDiaDoMes, ultimoDiaDoMes);
+
+		Map<Integer, BigDecimal> valoresPorPosicao = new HashMap<Integer, BigDecimal>();
+
+		List<Posicao> todasPosicoes = hibernateUtil.buscar(new Posicao());
+		for (Posicao posicao : todasPosicoes) {
+
+			ParametroDivisaoLucro parametroDivisaoLucro = new ParametroDivisaoLucroService(hibernateUtil).buscarParametroDivisaoLucro(parametroVip.getData(), posicao.getNome());
+			if (parametroDivisaoLucro == null) {
+				continue;
+			}
+
+			int quantidadeCotas = calcularQuantidadeDeCotas(parametroVip, distribuidoresHabilitados, todasPosicoes, posicao);
+
+			if (quantidadeCotas == 0) {
+				continue;
+			}
+
+			BigDecimal valorNaPosicao = getValorNaPosicao(parametroDivisaoLucro, primeiroDiaDoMes, ultimoDiaDoMes).divide(BigDecimal.valueOf(quantidadeCotas));
+
+			valoresPorPosicao.put(posicao.getPosicao(), valorNaPosicao);
+		}
+		return valoresPorPosicao;
+	}
+
+	private int calcularQuantidadeDeCotas(ParametroVip parametroVip, List<Usuario> distribuidoresHabilitados, List<Posicao> todasPosicoes, Posicao posicao) {
+
+		List<String> posicoesAcima = obterPosicoesAcima(todasPosicoes, posicao);
 
 		int quantidadeCotas = 0;
 
+		for (Usuario distribuidor : distribuidoresHabilitados) {
+
+			String nomePosicao = new QualificacaoService(hibernateUtil).obterPosicaoNaData(distribuidor.getId_Codigo(), parametroVip.getData());
+
+			if (posicoesAcima.contains(nomePosicao)) {
+				quantidadeCotas++;
+			}
+		}
+		return quantidadeCotas;
+	}
+
+	private List<String> obterPosicoesAcima(List<Posicao> todasPosicoes, Posicao posicao) {
+
+		List<String> posicoesAcima = new ArrayList<String>();
+
+		for (Posicao pos : todasPosicoes) {
+
+			if (pos.getPosicao() >= posicao.getPosicao()) {
+				posicoesAcima.add(pos.getNome());
+			}
+		}
+		return posicoesAcima;
+	}
+
+	private List<Usuario> obterDistribuidoresHabilitados(ParametroVip parametroVip, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
+
+		List<Usuario> distribuidoresHabilitados = new ArrayList<Usuario>();
+
 		List<Usuario> todosDistribuidores = hibernateUtil.buscar(new Usuario());
-
 		for (Usuario distribuidor : todosDistribuidores) {
+			if (isHabilitado(distribuidor.getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes, parametroVip)) {
+				distribuidoresHabilitados.add(distribuidor);
+			}
+		}
+		return distribuidoresHabilitados;
+	}
 
-			if (distribuidor.getId_Codigo() > 1) {
+	private boolean isHabilitado(Integer idCodigo, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, ParametroVip parametroVip) {
 
-				if (new AtividadeService(hibernateUtil).isAtivo(distribuidor.getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes)) {
+		if (new AtividadeService(hibernateUtil).isAtivo(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes)) {
 
-					BigDecimal totalPedidosDistribuidor = calcularTotalPedidosDistribuidor(distribuidor.getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes);
+			BigDecimal totalPedidosDistribuidor = calcularTotalPedidosDistribuidor(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes);
 
-					if (totalPedidosDistribuidor.compareTo(parametroVip.getValor()) >= 0) {
-
-						String nomePosicao = new QualificacaoService(hibernateUtil).obterPosicaoNaData(distribuidor.getId_Codigo(), parametroVip.getData());
-
-						if (posicoesAcima.contains(nomePosicao)) {
-							quantidadeCotas++;
-						}
-					}
-				}
+			if (totalPedidosDistribuidor.compareTo(parametroVip.getValor()) >= 0) {
+				return true;
 			}
 		}
 
-		return quantidadeCotas;
+		return false;
 	}
 
 	private BigDecimal calcularTotalPedidosDistribuidor(Integer idCodigo, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
@@ -117,22 +171,5 @@ public class BonusDivisaoLucroService {
 		BigDecimal lucroASerDividido = totalPedidosTodaRede.multiply(PORCENTAGEM_LUCRO_A_SER_DIVIDIDA).divide(new BigDecimal(100));
 
 		return lucroASerDividido.multiply(parametroDivisaoLucro.getValor()).divide(new BigDecimal(100));
-	}
-
-	private List<String> obterPosicoesAcima(String nomePosicao) {
-
-		List<String> posicoesAcima = new ArrayList<String>();
-
-		List<Posicao> todasPosicoes = hibernateUtil.buscar(new Posicao());
-
-		Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(nomePosicao);
-
-		for (Posicao pos : todasPosicoes) {
-			if (pos.getPosicao() >= posicao.getPosicao()) {
-				posicoesAcima.add(pos.getNome());
-			}
-		}
-
-		return posicoesAcima;
 	}
 }
