@@ -240,7 +240,7 @@ public class HibernateUtil {
 
 	public <E extends Entidade> List<E> buscar(Entidade filtro) {
 
-		return buscar(filtro, null, null, MatchMode.ANYWHERE);
+		return buscar(filtro, null, null, MatchMode.EXACT);
 	}
 
 	public <E extends Entidade> List<E> buscar(Entidade filtro, Integer pagina) {
@@ -461,7 +461,7 @@ public class HibernateUtil {
 		Criteria criteria = session.createCriteria(filtro.getClass());
 
 		if (Util.vazio(matchMode)) {
-			matchMode = MatchMode.ANYWHERE;
+			matchMode = MatchMode.EXACT;
 		}
 
 		UtilReflection.nullifyStrings(filtro);
@@ -505,7 +505,7 @@ public class HibernateUtil {
 
 							UtilReflection.nullifyStrings(entidadeSegundoNivel);
 
-							criteria.createCriteria(nomeEntidadeSegundoNivelDiminutivo).add(Example.create(entidadeSegundoNivel).enableLike(MatchMode.ANYWHERE).ignoreCase());
+							criteria.createCriteria(nomeEntidadeSegundoNivelDiminutivo).add(Example.create(entidadeSegundoNivel).enableLike(MatchMode.EXACT).ignoreCase());
 
 							Method[] metodosEntidadeSegundoNivel = entidadeSegundoNivel.getClass().getMethods();
 
@@ -533,7 +533,7 @@ public class HibernateUtil {
 
 												UtilReflection.nullifyStrings(entidadeTerceiroNivel);
 
-												criteria.createCriteria(nomeEntidadeSegundoNivelDiminutivo + "." + nomeEntidadeTerceiroNivelDiminutivo).add(Example.create(entidadeTerceiroNivel).enableLike(MatchMode.ANYWHERE).ignoreCase());
+												criteria.createCriteria(nomeEntidadeSegundoNivelDiminutivo + "." + nomeEntidadeTerceiroNivelDiminutivo).add(Example.create(entidadeTerceiroNivel).enableLike(MatchMode.EXACT).ignoreCase());
 											}
 
 										}

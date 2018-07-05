@@ -21,7 +21,7 @@ public class ParametroUnilevelService {
 
 		ParametroUnilevel parametroUnilevelFiltro = new ParametroUnilevel();
 		parametroUnilevelFiltro.setData(primeiroDiaDoMes);
-		parametroUnilevelFiltro.setPosicao(posicao.toLowerCase());
+		parametroUnilevelFiltro.setPosicao(posicao);
 		parametroUnilevelFiltro.setNivel(nivel);
 		return hibernateUtil.selecionar(parametroUnilevelFiltro);
 	}

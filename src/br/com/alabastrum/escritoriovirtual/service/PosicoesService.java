@@ -42,4 +42,11 @@ public class PosicoesService {
 		filtro.setPosicao(posicao);
 		return ((Posicao) this.hibernateUtil.selecionar(filtro)).getNome();
 	}
+
+	public Posicao obterPosicaoPorNome(String nome) {
+
+		Posicao filtro = new Posicao();
+		filtro.setNome(nome);
+		return this.hibernateUtil.selecionar(filtro);
+	}
 }
