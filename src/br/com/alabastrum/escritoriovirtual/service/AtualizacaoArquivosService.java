@@ -259,7 +259,7 @@ public class AtualizacaoArquivosService {
 
 				for (int i = 0; i < colunas.length; i++) {
 
-					hashColunas.put(i, colunas[i]);
+					hashColunas.put(i, colunas[i].replaceAll(" ", ""));
 				}
 			}
 		}
