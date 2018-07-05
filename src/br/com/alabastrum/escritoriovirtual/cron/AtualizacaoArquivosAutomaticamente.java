@@ -32,7 +32,7 @@ public class AtualizacaoArquivosAutomaticamente implements Runnable {
 			try {
 				HibernateUtil hibernateUtil = new HibernateUtil();
 				new AtualizacaoArquivosService(hibernateUtil).processarArquivos();
-				apagarArquivos();
+				moverArquivos();
 				BoasVindas.enviarEmail();
 				hibernateUtil.fecharSessao();
 			} catch (Exception e) {
@@ -40,15 +40,13 @@ public class AtualizacaoArquivosAutomaticamente implements Runnable {
 		}
 	}
 
-	private void apagarArquivos() {
+	private void moverArquivos() {
 
 		File folder = new File(ArquivoService.PASTA_ATUALIZACAO_CSV);
 
-		File[] files = folder.listFiles();
+		for (File file : folder.listFiles()) {
 
-		for (File file : files) {
-
-			file.delete();
+			file.renameTo(new File(ArquivoService.PASTA_BACKUP_CSV + file.getName()));
 		}
 	}
 
