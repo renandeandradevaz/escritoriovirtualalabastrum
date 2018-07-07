@@ -61,7 +61,7 @@ public class Usuario implements Entidade {
 	private Integer codigoQuemIndicou;
 
 	@Transient
-	private Integer nomeQuemIndicou;
+	private String nomeQuemIndicou;
 
 	public Usuario() {
 
@@ -323,11 +323,11 @@ public class Usuario implements Entidade {
 		this.codigoQuemIndicou = codigoQuemIndicou;
 	}
 
-	public Integer getNomeQuemIndicou() {
+	public String getNomeQuemIndicou() {
 		return nomeQuemIndicou;
 	}
 
-	public void setNomeQuemIndicou(Integer nomeQuemIndicou) {
+	public void setNomeQuemIndicou(String nomeQuemIndicou) {
 		this.nomeQuemIndicou = nomeQuemIndicou;
 	}
 }
