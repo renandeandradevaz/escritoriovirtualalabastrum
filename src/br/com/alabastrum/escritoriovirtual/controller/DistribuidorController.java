@@ -18,6 +18,11 @@ public class DistribuidorController {
 		this.result = result;
 		this.hibernateUtil = hibernateUtil;
 	}
+	
+	@Public
+	public void teste(Integer codigo) {
+
+	}
 
 	@Public
 	public void obterNomeDistribuidor(Integer codigo) {
@@ -25,7 +30,7 @@ public class DistribuidorController {
 		Usuario usuario = hibernateUtil.selecionar(new Usuario(codigo));
 
 		if (usuario == null) {
-			result.use(json()).from("").serialize();
+			result.use(json()).from("Código inexistente").serialize();
 
 		} else {
 			result.use(json()).from(usuario.getvNome()).serialize();
