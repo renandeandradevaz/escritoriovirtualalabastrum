@@ -86,6 +86,7 @@
 				<th>Celular</th>
 				<th>Email</th>
 				<th>Nivel</th>
+				<th>Pré-cadastro</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -99,6 +100,7 @@
 					<td class="centralizado">${item.usuario.cadCelular}</td>
 					<td class="centralizado">${item.usuario.eMail}</td>
 					<td class="centralizado">${item.nivel}</td>
+					<td class="centralizado">${item.preCadastro}</td>
 			</c:forEach>
 		</tbody>
 	</table>
