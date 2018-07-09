@@ -112,6 +112,13 @@ public class QualificacaoService {
 
 		return qualificacoes;
 	}
+	
+	public List<Qualificacao> obterQualificacoes(Integer idCodigo) {
+
+		Qualificacao qualificacaoFiltro = new Qualificacao();
+		qualificacaoFiltro.setId_Codigo(idCodigo);
+		return hibernateUtil.buscar(qualificacaoFiltro);
+	}
 
 	public Qualificacao obterUltimaQualificacao(Integer idCodigo) {
 

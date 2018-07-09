@@ -89,7 +89,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach items="${arvoreHierarquica}" var="item">
+			<c:forEach items="${equipe}" var="item">
 				<tr>
 					<td class="centralizado">${item.usuario.id_Codigo}</td>
 					<td class="centralizado">${item.usuario.posAtual}</td>

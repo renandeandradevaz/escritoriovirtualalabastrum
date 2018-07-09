@@ -6,12 +6,14 @@ import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
+import br.com.alabastrum.escritoriovirtual.dto.EquipeDTO;
 import br.com.alabastrum.escritoriovirtual.dto.PesquisaEquipeDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
 import br.com.alabastrum.escritoriovirtual.service.HierarquiaService;
+import br.com.alabastrum.escritoriovirtual.service.QualificacaoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Resource;
@@ -48,11 +50,32 @@ public class EquipeController {
 		arvoreHierarquica = filtrarPorApenasIndicados(arvoreHierarquica, pesquisaEquipeDTO.getApenasIndicados());
 		arvoreHierarquica = filtrarPorAtividade(arvoreHierarquica, pesquisaEquipeDTO.getAtivos());
 		arvoreHierarquica = filtrarPorMesAniversario(arvoreHierarquica, pesquisaEquipeDTO.getMesAniversario());
+		List<EquipeDTO> equipe = gerarEquipe(arvoreHierarquica);
 
 		result.include("pesquisa", pesquisa);
 		result.include("posicoes", hibernateUtil.buscar(new Posicao()));
 		result.include("pesquisaEquipeDTO", pesquisaEquipeDTO);
-		result.include("arvoreHierarquica", arvoreHierarquica);
+		result.include("equipe", equipe);
+	}
+
+	private List<EquipeDTO> gerarEquipe(Collection<ArvoreHierarquicaDTO> arvoreHierarquica) {
+
+		List<EquipeDTO> equipe = new ArrayList<EquipeDTO>();
+
+		for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+
+			EquipeDTO equipeDTO = new EquipeDTO();
+			equipeDTO.setUsuario(arvoreHierarquicaDTO.getUsuario());
+			equipeDTO.setNivel(arvoreHierarquicaDTO.getNivel());
+
+			if (new QualificacaoService(hibernateUtil).obterQualificacoes(arvoreHierarquicaDTO.getUsuario().getId_Codigo()).size() == 1)
+				equipeDTO.setPreCadastro("Sim");
+			else
+				equipeDTO.setPreCadastro("Não");
+
+			equipe.add(equipeDTO);
+		}
+		return equipe;
 	}
 
 	@Funcionalidade
