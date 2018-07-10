@@ -1,20 +1,11 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
-import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
+import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
-import br.com.alabastrum.escritoriovirtual.service.BonusAtivacaoService;
-import br.com.alabastrum.escritoriovirtual.service.BonusDivisaoLucroService;
-import br.com.alabastrum.escritoriovirtual.service.BonusUnilevelService;
-import br.com.alabastrum.escritoriovirtual.service.IndicacaoDiretaService;
-import br.com.alabastrum.escritoriovirtual.service.IndicacaoIndiretaService;
+import br.com.alabastrum.escritoriovirtual.service.ExtratoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Resource;
@@ -51,45 +42,10 @@ public class ExtratoController {
 
 		Integer idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
 
-		List<ExtratoDTO> extratoCompleto = new ArrayList<ExtratoDTO>();
-		extratoCompleto.addAll(new IndicacaoDiretaService(hibernateUtil).obterIndicacoesDiretas(idCodigo));
-		extratoCompleto.addAll(new IndicacaoIndiretaService(hibernateUtil).obterIndicacoesIndiretas(idCodigo));
-		extratoCompleto.addAll(new BonusAtivacaoService(hibernateUtil).obterBonificacoesPorAtivacao(idCodigo));
-		extratoCompleto.addAll(new BonusUnilevelService(hibernateUtil).obterBonificacoesUnilevel(idCodigo));
-		extratoCompleto.addAll(new BonusDivisaoLucroService(hibernateUtil).obterBonificacoesDivisaoLucro(idCodigo));
-		extratoCompleto = ordenarExtratoPorDataCrescente(extratoCompleto);
+		SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(idCodigo, mes, ano);
 
-		BigDecimal saldo = BigDecimal.ZERO;
-
-		List<ExtratoDTO> extratoDoMes = new ArrayList<ExtratoDTO>();
-		for (ExtratoDTO extratoDTO : extratoCompleto) {
-
-			saldo = saldo.add(extratoDTO.getValor());
-
-			if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) > 0 && extratoDTO.getData().get(Calendar.MONTH) == mes && extratoDTO.getData().get(Calendar.YEAR) == ano) {
-				extratoDTO.setSaldo(saldo);
-				extratoDoMes.add(extratoDTO);
-			}
-		}
-
-		result.include("saldo", saldo);
-		result.include("extratoDoMes", extratoDoMes);
+		result.include("saldo", saldoDTO.getSaldoAtual());
+		result.include("extratoDoMes", saldoDTO.getExtratoDoMes());
 		result.forwardTo(this).acessarTelaExtrato(mes, ano);
-	}
-
-	private List<ExtratoDTO> ordenarExtratoPorDataCrescente(List<ExtratoDTO> extrato) {
-
-		Collections.sort(extrato, new Comparator<ExtratoDTO>() {
-
-			public int compare(ExtratoDTO e1, ExtratoDTO e2) {
-
-				if (e1.getData().getTimeInMillis() < e2.getData().getTimeInMillis()) {
-					return -1;
-				}
-				return 1;
-			}
-		});
-
-		return extrato;
 	}
 }

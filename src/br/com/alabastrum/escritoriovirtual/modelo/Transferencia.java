@@ -14,6 +14,9 @@ import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
 @Entity
 public class Transferencia implements Entidade {
 
+	public static final String TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR = "Transferência para outro distribuidor";
+	public static final String TRANSFERENCIA_PARA_ALABASTRUM_CARD = "Transferência para Alabastrum Card";
+
 	@Id
 	@GeneratedValue
 	private Integer id;
