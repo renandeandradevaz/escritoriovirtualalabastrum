@@ -9,28 +9,28 @@
 <table>
 	<tr>
 		<td>
-			<div class="fundo-branco letra-branca" style="width: 500px; padding: 10px">
-				<div class="grupo quadradinho-alinhado">
+			<div class="fundo-branco letra-branca" style="width: 450px; padding: 10px">
+				<div class="grupo quadradinho-alinhado" style="margin-left: 50px;">
 					<h5>Afiliados</h5>
 					<span> ${quantidadeAfiliados} </span>
 				</div>
-				<div class="cifrao quadradinho-alinhado">
-					<h5>Ganhos este mês</h5>
+				<!-- 				<div class="cifrao quadradinho-alinhado"> -->
+				<!-- 					<h5>Ganhos este mês</h5> -->
+				<!-- 					<span> -->
+				<!-- 						R$ -->
+				<%-- 						<fmt:formatNumber value="${ganhosNoMes}" pattern="#,##0.00" /> --%>
+				<!-- 					</span> -->
+				<!-- 				</div> -->
+				<div class="nota quadradinho-alinhado" style="margin-left: 20px;">
+					<h5>Saldo atual</h5>
 					<span>
 						R$
-						<fmt:formatNumber value="${ganhosNoMes}" pattern="#,##0.00" />
-					</span>
-				</div>
-				<div class="nota quadradinho-alinhado">
-					<h5>Recebido até hoje</h5>
-					<span>
-						R$
-						<fmt:formatNumber value="${recebidoAteHoje}" pattern="#,##0.00" />
+						<fmt:formatNumber value="${saldoAtual}" pattern="#,##0.00" />
 					</span>
 				</div>
 			</div>
 			<br>
-			<div class="fundo-branco" style="width: 500px; padding: 10px; height: 200px;">
+			<div class="fundo-branco" style="width: 450px; padding: 10px; height: 200px;">
 				<h4>Minha qualificação</h4>
 				<div class="quadradinho-alinhado" style="margin-left: 100px;">
 					<h5 style="margin-left: 30px;">Atual</h5>
@@ -71,7 +71,7 @@
 	</tr>
 	<tr>
 		<td>
-			<div class="fundo-branco" style="width: 500px; padding: 10px; margin-top: 15px;">
+			<div class="fundo-branco" style="width: 450px; padding: 10px; margin-top: 15px;">
 				<h4>ÚLTIMOS CADASTROS</h4>
 				<table class="table table-striped table-bordered">
 					<thead>

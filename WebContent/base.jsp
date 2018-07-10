@@ -54,6 +54,7 @@
 			<div>
 				<a href="<c:url value="/assumirIdentidade/acessarTelaAssumirIdentidade"/>" class="submenu-accordion"> Assumir identidade </a>
 				<a href="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" class="submenu-accordion"> Gerenciar pedidos </a>
+				<a href="<c:url value="/transferencia/acessarTelaTransferenciasParaAlabastrumCardAdministrativa"/>" class="submenu-accordion"> Transferências para Alabastrum Card </a>
 				<a href="<c:url value="/configuracao/acessarTelaConfiguracaoAdministrativa"/>" class="submenu-accordion"> Configurações administrativas </a>
 			</div>
 		</c:if>

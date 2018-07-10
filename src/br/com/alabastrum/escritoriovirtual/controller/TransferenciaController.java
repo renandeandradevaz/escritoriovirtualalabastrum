@@ -118,6 +118,14 @@ public class TransferenciaController {
 		result.redirectTo(ExtratoController.class).gerarExtrato(Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
 	}
 
+	@Funcionalidade(administrativa = "true")
+	public void acessarTelaTransferenciasParaAlabastrumCardAdministrativa() {
+
+		Transferencia transferenciaFiltro = new Transferencia();
+		transferenciaFiltro.setTipo(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD);
+		result.include("transferencias", hibernateUtil.buscar(transferenciaFiltro));
+	}
+
 	private BigDecimal gerarSaldoAtual() {
 
 		Integer idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
