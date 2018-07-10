@@ -41,6 +41,8 @@ public class TransferenciaController {
 
 	@Funcionalidade
 	public void acessarTelaTransferenciaParaAlabastrumCard() {
+		result.include("diaMaximo", DIA_MAXIMO_TRANSFERENCIA_ALABASTRUM_CARD);
+		result.include("valorMinimo", VALOR_MINIMO_TRANSFERENCIA_ALABASTRUM_CARD);
 		result.include("saldo", gerarSaldoAtual());
 	}
 

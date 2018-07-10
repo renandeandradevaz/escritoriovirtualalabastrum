@@ -19,4 +19,7 @@
 		<br>
 		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Transferir</button>
 	</form>
+	<br>
+	<h5>Período do mês habilitado para transferência: do dia 01 ao dia 0${diaMaximo}</h5>
+	<h5>Valor mínimo para transferência: R$ ${valorMinimo}</h5>
 </div>
