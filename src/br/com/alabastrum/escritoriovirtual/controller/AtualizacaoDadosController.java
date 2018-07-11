@@ -34,10 +34,10 @@ public class AtualizacaoDadosController {
 	@Funcionalidade
 	public void salvarAtualizacaoDados(Usuario usuario) throws Exception {
 
-		String textoArquivo = "id_codigo: \'" + usuario.getId_Codigo() + "\'\r\n";
+		String textoArquivo = "id_codigo: \'" + this.sessaoUsuario.getUsuario().getId_Codigo() + "\'\r\n";
+		textoArquivo += "CPF: \'" + this.sessaoUsuario.getUsuario().getCPF() + "\'\r\n";
 		textoArquivo += "Nome: \'" + usuario.getvNome() + "\'\r\n";
 		textoArquivo += "Data_de_nascimento: \'" + usuario.getDt_Nasc() + "\'\r\n";
-		textoArquivo += "CPF: \'" + usuario.getCPF() + "\'\r\n";
 		textoArquivo += "RG: \'" + usuario.getCadRG() + "\'\r\n";
 		textoArquivo += "Emissor: \'" + usuario.getCadOrgaoExpedidor() + "\'\r\n";
 		textoArquivo += "Sexo: \'" + usuario.getCadSexo() + "\'\r\n";
