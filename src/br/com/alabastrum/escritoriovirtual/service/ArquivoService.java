@@ -11,6 +11,7 @@ public class ArquivoService {
 	public static final String PASTA_BACKUP_CSV = PASTA_RAIZ + "backup-csvs/";
 	public static final String PASTA_IMAGEM_PRODUTOS = PASTA_RAIZ + "do-desktop-para-o-escritorio/imagens-produtos/";
 	public static final String PASTA_PRE_CADASTRO = PASTA_RAIZ + "do-escritorio-para-o-desktop/pre-cadastro-de-distribuidor-pelo-site/";
+	public static final String PASTA_ATUALIZACAO_DADOS = PASTA_RAIZ + "do-escritorio-para-o-desktop/atualizacao-dados/";
 	public static final String PASTA_CONFIGURACOES = PASTA_RAIZ + "do-escritorio-para-o-desktop/configuracoes/";
 	public static final String PASTA_PEDIDOS = PASTA_RAIZ + "do-escritorio-para-o-desktop/pedidos/";
 

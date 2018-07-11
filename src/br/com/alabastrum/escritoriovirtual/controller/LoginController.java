@@ -179,6 +179,8 @@ public class LoginController {
 
 		else {
 
+			cpf = cpf.replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", "");
+
 			if (!usuarioBanco.getCPF().equals(cpf)) {
 
 				String mensagem = "O usuário " + usuarioBanco.getId_Codigo() + " - " + usuarioBanco.getvNome() + " tentou acessar o EV pela primeira vez utilizando o CPF " + cpf + " e não obteve sucesso.";
@@ -204,8 +206,6 @@ public class LoginController {
 		informacoesFixasUsuario.setSenha(GeradorDeMd5.converter(senhaNova));
 
 		this.hibernateUtil.salvarOuAtualizar(informacoesFixasUsuario);
-
-		Mail.enviarEmail("Troca de senha de usuário", "O usuário " + usuarioBanco.getId_Codigo() + " - " + usuarioBanco.getvNome() + " efetuou a troca de senha no escritório virtual. <br><br>Email informado: " + email + " <br>CPF informado: " + cpf);
 
 		colocarUsuarioNaSessao(usuarioBanco);
 
