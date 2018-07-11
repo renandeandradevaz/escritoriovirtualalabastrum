@@ -282,8 +282,14 @@ public class PedidoController {
 
 	private Pedido selecionarPedidoAberto() {
 
+		Integer idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_PEDIDO);
+
+		if (idCodigo == null || idCodigo == 0) {
+			idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
+		}
+
 		Pedido pedido = new Pedido();
-		pedido.setIdCodigo((Integer) this.sessaoGeral.getValor(ID_USUARIO_PEDIDO));
+		pedido.setIdCodigo(idCodigo);
 		pedido.setCompleted(false);
 		return hibernateUtil.selecionar(pedido);
 	}
