@@ -28,6 +28,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.Pontuacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 import br.com.alabastrum.escritoriovirtual.modelo.Qualificacao;
+import br.com.alabastrum.escritoriovirtual.modelo.ReceitaDivisaoLucro;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 
@@ -50,6 +51,7 @@ public class AtualizacaoArquivosService {
 		processarCSVParametroAtividade();
 		processarCSVParametroUnilevel();
 		processarCSVParametroDivisaoLucro();
+		processarCSVReceitaDivisaoLucro();
 		processarCSVParametroVip();
 		processarCSVFranquia();
 		processarCSVCategoria();
@@ -126,6 +128,15 @@ public class AtualizacaoArquivosService {
 		preencherObjeto(reader, parametrosDivisaoLucro, "ParametroDivisaoLucro");
 		this.hibernateUtil.executarSQL("delete from parametrodivisaolucro");
 		this.hibernateUtil.salvarOuAtualizar(parametrosDivisaoLucro);
+	}
+
+	private void processarCSVReceitaDivisaoLucro() throws Exception {
+
+		CSVReader reader = lerArquivo("tblReceitaDivisaoLucro.csv");
+		List<ReceitaDivisaoLucro> receitasDivisaoLucro = new ArrayList<ReceitaDivisaoLucro>();
+		preencherObjeto(reader, receitasDivisaoLucro, "ReceitaDivisaoLucro");
+		this.hibernateUtil.executarSQL("delete from receitadivisaolucro");
+		this.hibernateUtil.salvarOuAtualizar(receitasDivisaoLucro);
 	}
 
 	private void processarCSVParametroVip() throws Exception {

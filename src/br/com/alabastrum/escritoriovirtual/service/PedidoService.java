@@ -33,15 +33,6 @@ public class PedidoService {
 		return hibernateUtil.buscar(pedidoFiltro, restricoes);
 	}
 
-	public List<Pedido> getPedidosTodaRede(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
-
-		List<Criterion> restricoes = new ArrayList<Criterion>();
-		restricoes.add(Restrictions.between("data", primeiroDiaDoMes, ultimoDiaDoMes));
-		Pedido pedidoFiltro = new Pedido();
-		pedidoFiltro.setStatus("PAGO");
-		return hibernateUtil.buscar(pedidoFiltro, restricoes);
-	}
-
 	public BigDecimal calcularTotalPedidoParaBonificacao(Pedido pedido) {
 
 		BigDecimal totalPedido = BigDecimal.ZERO;
@@ -55,26 +46,6 @@ public class PedidoService {
 			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 
 			if (produto.getPrdComissionado().equals("1") || produto.getPrdPromocao().equals("1")) {
-				totalPedido = totalPedido.add(itemPedido.getPrecoUnitario().multiply(BigDecimal.valueOf(itemPedido.getQuantidade())));
-			}
-		}
-
-		return totalPedido;
-	}
-
-	public BigDecimal calcularTotalPedidoIgnorandoMaterialDeApoio(Pedido pedido) {
-
-		BigDecimal totalPedido = BigDecimal.ZERO;
-
-		ItemPedido itemPedidoFiltro = new ItemPedido();
-		itemPedidoFiltro.setPedido(pedido);
-		List<ItemPedido> itensPedido = hibernateUtil.buscar(itemPedidoFiltro);
-
-		for (ItemPedido itemPedido : itensPedido) {
-
-			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
-
-			if (produto.getPrdMatApoio().equals("0")) {
 				totalPedido = totalPedido.add(itemPedido.getPrecoUnitario().multiply(BigDecimal.valueOf(itemPedido.getQuantidade())));
 			}
 		}

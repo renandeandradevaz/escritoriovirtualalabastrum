@@ -14,12 +14,11 @@ import br.com.alabastrum.escritoriovirtual.modelo.ParametroDivisaoLucro;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroVip;
 import br.com.alabastrum.escritoriovirtual.modelo.Pedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
+import br.com.alabastrum.escritoriovirtual.modelo.ReceitaDivisaoLucro;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class BonusDivisaoLucroService {
-
-	private static final BigDecimal PORCENTAGEM_LUCRO_A_SER_DIVIDIDA = BigDecimal.valueOf(15);
 
 	private HibernateUtil hibernateUtil;
 
@@ -81,7 +80,7 @@ public class BonusDivisaoLucroService {
 				continue;
 			}
 
-			BigDecimal valorNaPosicao = getValorNaPosicao(parametroDivisaoLucro, primeiroDiaDoMes, ultimoDiaDoMes).divide(BigDecimal.valueOf(quantidadeCotas));
+			BigDecimal valorNaPosicao = getValorNaPosicao(parametroDivisaoLucro, primeiroDiaDoMes).divide(BigDecimal.valueOf(quantidadeCotas));
 
 			valoresPorPosicao.put(posicao.getPosicao(), valorNaPosicao);
 		}
@@ -155,17 +154,15 @@ public class BonusDivisaoLucroService {
 		return totalPedidosDistribuidor;
 	}
 
-	private BigDecimal getValorNaPosicao(ParametroDivisaoLucro parametroDivisaoLucro, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
+	private BigDecimal getValorNaPosicao(ParametroDivisaoLucro parametroDivisaoLucro, GregorianCalendar data) {
 
-		List<Pedido> pedidosTodaRede = new PedidoService(hibernateUtil).getPedidosTodaRede(primeiroDiaDoMes, ultimoDiaDoMes);
+		ReceitaDivisaoLucro receitaDivisaoLucro = new ReceitaDivisaoLucroService(hibernateUtil).buscarReceitaDivisaoLucro(data);
 
-		BigDecimal totalPedidosTodaRede = BigDecimal.ZERO;
+		BigDecimal lucroASerDividido = BigDecimal.ZERO;
 
-		for (Pedido pedido : pedidosTodaRede) {
-			totalPedidosTodaRede = totalPedidosTodaRede.add(new PedidoService(hibernateUtil).calcularTotalPedidoIgnorandoMaterialDeApoio(pedido));
+		if (receitaDivisaoLucro != null) {
+			lucroASerDividido = receitaDivisaoLucro.getValor();
 		}
-
-		BigDecimal lucroASerDividido = totalPedidosTodaRede.multiply(PORCENTAGEM_LUCRO_A_SER_DIVIDIDA).divide(new BigDecimal(100));
 
 		return lucroASerDividido.multiply(parametroDivisaoLucro.getValor()).divide(new BigDecimal(100));
 	}
