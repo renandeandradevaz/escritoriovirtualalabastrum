@@ -52,7 +52,7 @@ public class HierarquiaService {
 		return arvoreHierarquicaAscendente;
 	}
 
-	private void montarArvoreHierarquicaAscendenteComRecursividade(List<Integer> arvoreHierarquicaAtivaAscendente, Integer idCodigo, GregorianCalendar data) {
+	private void montarArvoreHierarquicaAscendenteComRecursividade(List<Integer> arvoreHierarquicaAscendente, Integer idCodigo, GregorianCalendar data) {
 
 		Usuario usuario = hibernateUtil.selecionar(new Usuario(idCodigo));
 		Usuario lider = hibernateUtil.selecionar(new Usuario(usuario.getId_lider()));
@@ -68,9 +68,9 @@ public class HierarquiaService {
 		// arvoreHierarquicaAtivaAscendente.add(lider.getId_Codigo());
 		// }
 
-		arvoreHierarquicaAtivaAscendente.add(lider.getId_Codigo());
+		arvoreHierarquicaAscendente.add(lider.getId_Codigo());
 
-		montarArvoreHierarquicaAscendenteComRecursividade(arvoreHierarquicaAtivaAscendente, lider.getId_Codigo(), data);
+		montarArvoreHierarquicaAscendenteComRecursividade(arvoreHierarquicaAscendente, lider.getId_Codigo(), data);
 	}
 
 	private void pesquisarComRecursividade(Integer codigo, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivel) {
