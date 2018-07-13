@@ -10,6 +10,7 @@ import java.util.List;
 import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class ExtratoService {
 
@@ -32,20 +33,46 @@ public class ExtratoService {
 		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaAlabastrumCard(idCodigo));
 		extratoCompleto = ordenarExtratoPorDataCrescente(extratoCompleto);
 
-		BigDecimal saldoAtual = BigDecimal.ZERO;
+		int mesAtual = Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH);
+		int anoAtual = Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR);
+
+		BigDecimal saldoPrevisto = BigDecimal.ZERO;
+		BigDecimal saldoLiberado = BigDecimal.ZERO;
+		BigDecimal ganhosAteHoje = BigDecimal.ZERO;
 
 		List<ExtratoDTO> extratoDoMes = new ArrayList<ExtratoDTO>();
 		for (ExtratoDTO extratoDTO : extratoCompleto) {
 
-			saldoAtual = saldoAtual.add(extratoDTO.getValor());
+			if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) != 0) {
 
-			if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) != 0 && extratoDTO.getData().get(Calendar.MONTH) == mes && extratoDTO.getData().get(Calendar.YEAR) == ano) {
-				extratoDTO.setSaldo(saldoAtual);
-				extratoDoMes.add(extratoDTO);
+				if (new AtividadeService(hibernateUtil).isAtivo(idCodigo, extratoDTO.getData())) {
+					saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
+					adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
+
+					if (!extratoDTO.getDiscriminador().contains("Transferência")) {
+						ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
+					}
+
+				} else {
+					if (extratoDTO.getData().get(Calendar.MONTH) == mesAtual && extratoDTO.getData().get(Calendar.YEAR) == anoAtual) {
+						saldoPrevisto = saldoPrevisto.add(extratoDTO.getValor());
+						adicionarNoExtratoDoMes(mes, ano, saldoPrevisto, extratoDoMes, extratoDTO);
+					}
+				}
 			}
 		}
 
-		return new SaldoDTO(saldoAtual, extratoDoMes);
+		BigDecimal saldoPrevistoFinal = saldoPrevisto.add(saldoLiberado);
+
+		return new SaldoDTO(saldoPrevistoFinal, saldoLiberado, ganhosAteHoje, extratoDoMes);
+	}
+
+	private void adicionarNoExtratoDoMes(Integer mes, Integer ano, BigDecimal saldo, List<ExtratoDTO> extratoDoMes, ExtratoDTO extratoDTO) {
+
+		if (extratoDTO.getData().get(Calendar.MONTH) == mes && extratoDTO.getData().get(Calendar.YEAR) == ano) {
+			extratoDTO.setSaldo(saldo);
+			extratoDoMes.add(extratoDTO);
+		}
 	}
 
 	private List<ExtratoDTO> ordenarExtratoPorDataCrescente(List<ExtratoDTO> extrato) {

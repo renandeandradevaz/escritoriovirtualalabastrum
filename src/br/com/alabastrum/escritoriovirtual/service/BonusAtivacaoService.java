@@ -35,11 +35,11 @@ public class BonusAtivacaoService {
 
 				if (pontuacao.getParametroAtividade().compareTo(BigDecimal.ZERO) > 0 && pontuacao.getPntAtividade().compareTo(pontuacao.getParametroAtividade()) >= 0) {
 
-					List<Integer> arvoreHierarquicaAtivaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAtivaAscendente(pontuacao.getId_Codigo(), pontuacao.getDt_Pontos());
+					List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(pontuacao.getId_Codigo(), pontuacao.getDt_Pontos());
 
-					if (arvoreHierarquicaAtivaAscendente.contains(idCodigo)) {
+					if (arvoreHierarquicaAscendente.contains(idCodigo)) {
 
-						ParametroAtividade parametroAtividade = new ParametroAtividadeService(hibernateUtil).buscarParametroAtividade(pontuacao.getDt_Pontos(), arvoreHierarquicaAtivaAscendente.indexOf(idCodigo));
+						ParametroAtividade parametroAtividade = new ParametroAtividadeService(hibernateUtil).buscarParametroAtividade(pontuacao.getDt_Pontos(), arvoreHierarquicaAscendente.indexOf(idCodigo));
 
 						if (parametroAtividade == null) {
 							continue;

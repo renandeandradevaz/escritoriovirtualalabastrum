@@ -124,7 +124,7 @@ public class BonusDivisaoLucroService {
 
 		List<Usuario> todosDistribuidores = hibernateUtil.buscar(new Usuario());
 		for (Usuario distribuidor : todosDistribuidores) {
-			if (isHabilitado(distribuidor.getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes, parametroVip)) {
+			if (isHabilitado(distribuidor.getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes, parametroVip) && new AtividadeService(hibernateUtil).isAtivo(distribuidor.getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes)) {
 				distribuidoresHabilitados.add(distribuidor);
 			}
 		}
@@ -133,13 +133,10 @@ public class BonusDivisaoLucroService {
 
 	private boolean isHabilitado(Integer idCodigo, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, ParametroVip parametroVip) {
 
-		if (new AtividadeService(hibernateUtil).isAtivo(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes)) {
+		BigDecimal totalPedidosDistribuidor = calcularTotalPedidosDistribuidor(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes);
 
-			BigDecimal totalPedidosDistribuidor = calcularTotalPedidosDistribuidor(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes);
-
-			if (totalPedidosDistribuidor.compareTo(parametroVip.getValor()) >= 0) {
-				return true;
-			}
+		if (totalPedidosDistribuidor.compareTo(parametroVip.getValor()) >= 0) {
+			return true;
 		}
 
 		return false;

@@ -10,23 +10,9 @@
 	<tr>
 		<td>
 			<div class="fundo-branco letra-branca" style="width: 450px; padding: 10px">
-				<div class="grupo quadradinho-alinhado" style="margin-left: 50px;">
+				<div class="grupo quadradinho-alinhado" style="margin-left: 150px;">
 					<h5>Afiliados</h5>
 					<span> ${quantidadeAfiliados} </span>
-				</div>
-				<!-- 				<div class="cifrao quadradinho-alinhado"> -->
-				<!-- 					<h5>Ganhos este mês</h5> -->
-				<!-- 					<span> -->
-				<!-- 						R$ -->
-				<%-- 						<fmt:formatNumber value="${ganhosNoMes}" pattern="#,##0.00" /> --%>
-				<!-- 					</span> -->
-				<!-- 				</div> -->
-				<div class="nota quadradinho-alinhado" style="margin-left: 20px;">
-					<h5>Saldo atual</h5>
-					<span>
-						R$
-						<fmt:formatNumber value="${saldoAtual}" pattern="#,##0.00" />
-					</span>
 				</div>
 			</div>
 			<br>

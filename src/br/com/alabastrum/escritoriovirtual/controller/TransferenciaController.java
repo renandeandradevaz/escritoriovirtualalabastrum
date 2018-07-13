@@ -21,7 +21,7 @@ import br.com.caelum.vraptor.validator.ValidationMessage;
 public class TransferenciaController {
 
 	private static final Integer DIA_MAXIMO_TRANSFERENCIA_ALABASTRUM_CARD = 5;
-	private static final BigDecimal VALOR_MINIMO_TRANSFERENCIA_ALABASTRUM_CARD = new BigDecimal(150);
+	private static final BigDecimal VALOR_MINIMO_TRANSFERENCIA_ALABASTRUM_CARD = new BigDecimal(200);
 
 	private Result result;
 	private HibernateUtil hibernateUtil;
@@ -43,21 +43,21 @@ public class TransferenciaController {
 	public void acessarTelaTransferenciaParaAlabastrumCard() {
 		result.include("diaMaximo", DIA_MAXIMO_TRANSFERENCIA_ALABASTRUM_CARD);
 		result.include("valorMinimo", VALOR_MINIMO_TRANSFERENCIA_ALABASTRUM_CARD);
-		result.include("saldo", gerarSaldoAtual());
+		result.include("saldoLiberado", gerarSaldoLiberado());
 	}
 
 	@Funcionalidade
 	public void acessarTelaTransferenciaParaOutroDistribuidor() {
-		result.include("saldo", gerarSaldoAtual());
+		result.include("saldoLiberado", gerarSaldoLiberado());
 	}
 
 	@Funcionalidade
 	public void transferirParaOutroDistribuidor(Integer codigoOutroDistribuidor, BigDecimal valor) {
 
-		BigDecimal saldo = gerarSaldoAtual();
+		BigDecimal saldoLiberado = gerarSaldoLiberado();
 
-		if (valor.compareTo(saldo) > 0 || valor.compareTo(BigDecimal.ZERO) <= 0) {
-			validator.add(new ValidationMessage("O valor a ser transferido não pode ser maior do que o seu saldo atual", "Erro"));
+		if (valor.compareTo(saldoLiberado) > 0 || valor.compareTo(BigDecimal.ZERO) <= 0) {
+			validator.add(new ValidationMessage("O valor a ser transferido não pode ser maior do que o seu saldo liberado atual", "Erro"));
 			validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaOutroDistribuidor();
 			return;
 		}
@@ -90,9 +90,9 @@ public class TransferenciaController {
 	@Funcionalidade
 	public void transferirParaAlabastrumCard(BigDecimal valor) {
 
-		BigDecimal saldo = gerarSaldoAtual();
+		BigDecimal saldoLiberado = gerarSaldoLiberado();
 
-		if (valor.compareTo(saldo) > 0) {
+		if (valor.compareTo(saldoLiberado) > 0) {
 			validator.add(new ValidationMessage("O valor a ser transferido não pode ser maior do que o seu saldo atual", "Erro"));
 			validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaAlabastrumCard();
 			return;
@@ -128,10 +128,10 @@ public class TransferenciaController {
 		result.include("transferencias", hibernateUtil.buscar(transferenciaFiltro));
 	}
 
-	private BigDecimal gerarSaldoAtual() {
+	private BigDecimal gerarSaldoLiberado() {
 
 		Integer idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
 		SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(idCodigo, Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
-		return saldoDTO.getSaldoAtual();
+		return saldoDTO.getSaldoLiberado();
 	}
 }

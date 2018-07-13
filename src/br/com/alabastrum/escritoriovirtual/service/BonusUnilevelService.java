@@ -34,13 +34,13 @@ public class BonusUnilevelService {
 
 			for (Pedido pedido : pedidos) {
 
-				List<Integer> arvoreHierarquicaAtivaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAtivaAscendente(arvoreHierarquicaDTOEntry.getKey(), pedido.getData());
+				List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(arvoreHierarquicaDTOEntry.getKey(), pedido.getData());
 
-				if (arvoreHierarquicaAtivaAscendente.contains(idCodigo)) {
+				if (arvoreHierarquicaAscendente.contains(idCodigo)) {
 
 					String posicao = new QualificacaoService(hibernateUtil).obterPosicaoNaData(idCodigo, pedido.getData());
 
-					ParametroUnilevel parametroUnilevel = new ParametroUnilevelService(hibernateUtil).buscarParametroUnilevel(pedido.getData(), posicao, arvoreHierarquicaAtivaAscendente.indexOf(idCodigo));
+					ParametroUnilevel parametroUnilevel = new ParametroUnilevelService(hibernateUtil).buscarParametroUnilevel(pedido.getData(), posicao, arvoreHierarquicaAscendente.indexOf(idCodigo));
 
 					if (parametroUnilevel == null) {
 						continue;

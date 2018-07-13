@@ -33,11 +33,11 @@ public class IndicacaoIndiretaService {
 
 			if (qualificacao != null && !arvoreHierarquicaDTOEntry.getValue().getUsuario().getId_Indicante().equals(idCodigo)) {
 
-				List<Integer> arvoreHierarquicaAtivaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAtivaAscendente(qualificacao.getId_Codigo(), qualificacao.getData());
+				List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(qualificacao.getId_Codigo(), qualificacao.getData());
 
-				if (arvoreHierarquicaAtivaAscendente.contains(idCodigo)) {
+				if (arvoreHierarquicaAscendente.contains(idCodigo)) {
 
-					ParametroIngresso parametroIngresso = new ParametroIngressoService(hibernateUtil).buscarParametroIngresso(qualificacao.getData(), arvoreHierarquicaAtivaAscendente.indexOf(idCodigo));
+					ParametroIngresso parametroIngresso = new ParametroIngressoService(hibernateUtil).buscarParametroIngresso(qualificacao.getData(), arvoreHierarquicaAscendente.indexOf(idCodigo));
 
 					if (parametroIngresso == null) {
 						continue;

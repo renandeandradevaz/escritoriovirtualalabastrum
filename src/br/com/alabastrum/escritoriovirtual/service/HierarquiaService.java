@@ -42,17 +42,17 @@ public class HierarquiaService {
 		return arvoreHierarquica;
 	}
 
-	public List<Integer> obterArvoreHierarquicaAtivaAscendente(Integer idCodigo, GregorianCalendar data) {
+	public List<Integer> obterArvoreHierarquicaAscendente(Integer idCodigo, GregorianCalendar data) {
 
-		List<Integer> arvoreHierarquicaAtivaAscendente = new ArrayList<Integer>();
-		arvoreHierarquicaAtivaAscendente.add(idCodigo);
+		List<Integer> arvoreHierarquicaAscendente = new ArrayList<Integer>();
+		arvoreHierarquicaAscendente.add(idCodigo);
 
-		montarArvoreHierarquicaAtivaAscendenteComRecursividade(arvoreHierarquicaAtivaAscendente, idCodigo, data);
+		montarArvoreHierarquicaAscendenteComRecursividade(arvoreHierarquicaAscendente, idCodigo, data);
 
-		return arvoreHierarquicaAtivaAscendente;
+		return arvoreHierarquicaAscendente;
 	}
 
-	private void montarArvoreHierarquicaAtivaAscendenteComRecursividade(List<Integer> arvoreHierarquicaAtivaAscendente, Integer idCodigo, GregorianCalendar data) {
+	private void montarArvoreHierarquicaAscendenteComRecursividade(List<Integer> arvoreHierarquicaAtivaAscendente, Integer idCodigo, GregorianCalendar data) {
 
 		Usuario usuario = hibernateUtil.selecionar(new Usuario(idCodigo));
 		Usuario lider = hibernateUtil.selecionar(new Usuario(usuario.getId_lider()));
@@ -61,11 +61,16 @@ public class HierarquiaService {
 			return;
 		}
 
-		if (new AtividadeService(hibernateUtil).isAtivo(lider.getId_Codigo(), data)) {
-			arvoreHierarquicaAtivaAscendente.add(lider.getId_Codigo());
-		}
+		// REGRA ANTERIOR QUE VERIFICAVA A ATIVIDADE PRA ADICIONAR NA ARVORE ASCENDENTE
+		// ATIVA
+		// if (new AtividadeService(hibernateUtil).isAtivo(lider.getId_Codigo(), data))
+		// {
+		// arvoreHierarquicaAtivaAscendente.add(lider.getId_Codigo());
+		// }
 
-		montarArvoreHierarquicaAtivaAscendenteComRecursividade(arvoreHierarquicaAtivaAscendente, lider.getId_Codigo(), data);
+		arvoreHierarquicaAtivaAscendente.add(lider.getId_Codigo());
+
+		montarArvoreHierarquicaAscendenteComRecursividade(arvoreHierarquicaAtivaAscendente, lider.getId_Codigo(), data);
 	}
 
 	private void pesquisarComRecursividade(Integer codigo, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivel) {
