@@ -8,5 +8,7 @@ public class GerenciadorDeRotinas {
 
 		ThreadRestartHibernate.iniciarThread();
 		new AtualizacaoArquivosAutomaticamente().iniciarRotina();
+		new CancelarPedidosPendentes().iniciarRotina();
+		new CompressaoDeBonus().iniciarRotina();
 	}
 }
