@@ -118,6 +118,8 @@ html {
 
 .grupo {
 	background-image: url("images/grupo.jpg");
+	background-size: 250px;
+	width: 250px;
 }
 
 .cifrao {

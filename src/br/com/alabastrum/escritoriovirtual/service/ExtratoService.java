@@ -61,18 +61,21 @@ public class ExtratoService {
 			if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) != 0) {
 
 				if (new AtividadeService(hibernateUtil).isAtivo(idCodigo, extratoDTO.getData())) {
-
+					
+					CORRIGIR ISTO AQUI TAMBÉM. O SALDO LIBERADO DEVE CONSIDERAR MOVIMENTAÇÕES QUE NÃO SEJAM BONIFICAÇÃO
 					saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
 					adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
 
-					if (verificarTransferenciasIgnoradas(extratoDTO)) {
+					if (!extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR) //
+							&& !extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD) //
+							&& !extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO)) {
 						ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
 					}
 
 				} else {
 					if (extratoDTO.getData().get(Calendar.MONTH) == mesAtual && extratoDTO.getData().get(Calendar.YEAR) == anoAtual) {
 
-						if (verificarTransferenciasIgnoradas(extratoDTO)) {
+						if (CORRIGIR ESTA CONDIÇÃO AQUI) {
 							saldoPrevistoNoMes = saldoPrevistoNoMes.add(extratoDTO.getValor());
 							adicionarNoExtratoDoMes(mes, ano, saldoPrevistoNoMes, extratoDoMes, extratoDTO);
 						}
@@ -83,13 +86,6 @@ public class ExtratoService {
 
 		BigDecimal saldoPrevistoTotal = saldoPrevistoNoMes.add(saldoLiberado);
 		return new SaldoDTO(saldoPrevistoNoMes, saldoPrevistoTotal, saldoLiberado, ganhosAteHoje, extratoDoMes);
-	}
-
-	private boolean verificarTransferenciasIgnoradas(ExtratoDTO extratoDTO) {
-
-		return !extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR) //
-				&& !extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD) //
-				&& !extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO);
 	}
 
 	private void adicionarNoExtratoDoMes(Integer mes, Integer ano, BigDecimal saldo, List<ExtratoDTO> extratoDoMes, ExtratoDTO extratoDTO) {

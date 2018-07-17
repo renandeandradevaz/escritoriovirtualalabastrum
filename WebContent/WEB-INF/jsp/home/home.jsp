@@ -10,7 +10,7 @@
 	<tr>
 		<td>
 			<div class="fundo-branco letra-branca" style="width: 450px; padding: 10px">
-				<div class="grupo quadradinho-alinhado" style="margin-left: 150px;">
+				<div class="grupo quadradinho-alinhado" style="margin-left: 100px;">
 					<h5>Afiliados</h5>
 					<span> ${quantidadeAfiliados} </span>
 				</div>

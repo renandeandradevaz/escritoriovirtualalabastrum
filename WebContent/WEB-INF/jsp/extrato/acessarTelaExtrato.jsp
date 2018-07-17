@@ -52,7 +52,6 @@
 					<th>Histórico</th>
 					<th>Distribuidor</th>
 					<th>Valor</th>
-					<th>Saldo</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -67,10 +66,6 @@
 							R$
 							<fmt:formatNumber value="${item.valor}" pattern="#,##0.00" />
 						</td>
-						<td class="centralizado">
-							R$
-							<fmt:formatNumber value="${item.saldo}" pattern="#,##0.00" />
-						</td>
 				</c:forEach>
 			</tbody>
 		</table>
@@ -78,34 +73,22 @@
 </c:if>
 <c:if test="${not empty saldoLiberado}">
 	<div class="fundo-branco">
-		<h3>
+		<h4>
 			Saldo liberado atual: R$
 			<fmt:formatNumber value="${saldoLiberado}" pattern="#,##0.00" />
-		</h3>
-	</div>
-</c:if>
-<c:if test="${not empty saldoPrevistoNoMes}">
-	<div class="fundo-branco">
-		<h3>
+		</h4>
+		<h4>
 			Saldo previsto no mês atual: R$
 			<fmt:formatNumber value="${saldoPrevistoNoMes}" pattern="#,##0.00" />
-		</h3>
-	</div>
-</c:if>
-<c:if test="${not empty saldoPrevistoTotal}">
-	<div class="fundo-branco">
-		<h3>
+		</h4>
+		<h4>
 			Saldo previsto total atual: R$
 			<fmt:formatNumber value="${saldoPrevistoTotal}" pattern="#,##0.00" />
-		</h3>
-	</div>
-</c:if>
-<c:if test="${not empty ganhosAteHoje}">
-	<div class="fundo-branco">
-		<h3>
+		</h4>
+		<h4>
 			Ganhos até hoje: R$
 			<fmt:formatNumber value="${ganhosAteHoje}" pattern="#,##0.00" />
-		</h3>
+		</h4>
 	</div>
 </c:if>
 <script>

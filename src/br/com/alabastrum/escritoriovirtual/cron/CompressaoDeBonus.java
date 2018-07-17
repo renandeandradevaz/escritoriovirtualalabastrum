@@ -19,12 +19,8 @@ public class CompressaoDeBonus implements Runnable {
 	public void iniciarRotina() {
 
 		CompressaoDeBonus task = new CompressaoDeBonus();
-
 		Scheduler scheduler = new Scheduler();
-
-		// scheduler.schedule("30 4 1 * *", task);
-		scheduler.schedule("23 13 16 * *", task);
-
+		scheduler.schedule("30 4 1 * *", task);
 		scheduler.start();
 	}
 }
