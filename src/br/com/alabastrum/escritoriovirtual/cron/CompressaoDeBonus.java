@@ -1,12 +1,19 @@
 package br.com.alabastrum.escritoriovirtual.cron;
 
+import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.service.CompressaoDeBonusService;
 import it.sauronsoftware.cron4j.Scheduler;
 
 public class CompressaoDeBonus implements Runnable {
 
 	public void run() {
 
-		System.out.println("rodou compressão de bonus");
+		HibernateUtil hibernateUtil = new HibernateUtil();
+		try {
+			new CompressaoDeBonusService(hibernateUtil).gerarCompressao();
+		} catch (Exception e) {
+		}
+		hibernateUtil.fecharSessao();
 	}
 
 	public void iniciarRotina() {

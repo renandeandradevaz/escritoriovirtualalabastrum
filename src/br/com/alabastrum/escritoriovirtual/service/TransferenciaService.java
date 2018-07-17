@@ -18,17 +18,17 @@ public class TransferenciaService {
 		this.hibernateUtil = hibernateUtil;
 	}
 
-	public List<ExtratoDTO> obterTransferenciasParaOutroDistribuidor(Integer idCodigo) {
+	public List<ExtratoDTO> obterTransferenciasPorCompressaoDeBonus(Integer idCodigo) {
 
 		List<ExtratoDTO> extratos = new ArrayList<ExtratoDTO>();
 
 		Transferencia transferenciaFiltro = new Transferencia();
-		transferenciaFiltro.setDe(idCodigo);
-		transferenciaFiltro.setTipo(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR);
+		transferenciaFiltro.setPara(idCodigo);
+		transferenciaFiltro.setTipo(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS);
 		List<Transferencia> transferencias = hibernateUtil.buscar(transferenciaFiltro);
 
 		for (Transferencia transferencia : transferencias) {
-			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(transferencia.getPara())), transferencia.getData(), transferencia.getValor().multiply(new BigDecimal(-1)), transferencia.getTipo()));
+			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(transferencia.getDe())), transferencia.getData(), transferencia.getValor(), transferencia.getTipo()));
 		}
 
 		return extratos;
@@ -45,6 +45,22 @@ public class TransferenciaService {
 
 		for (Transferencia transferencia : transferencias) {
 			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(transferencia.getDe())), transferencia.getData(), transferencia.getValor(), transferencia.getTipo()));
+		}
+
+		return extratos;
+	}
+
+	public List<ExtratoDTO> obterTransferenciasParaOutroDistribuidor(Integer idCodigo) {
+
+		List<ExtratoDTO> extratos = new ArrayList<ExtratoDTO>();
+
+		Transferencia transferenciaFiltro = new Transferencia();
+		transferenciaFiltro.setDe(idCodigo);
+		transferenciaFiltro.setTipo(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR);
+		List<Transferencia> transferencias = hibernateUtil.buscar(transferenciaFiltro);
+
+		for (Transferencia transferencia : transferencias) {
+			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(transferencia.getPara())), transferencia.getData(), transferencia.getValor().multiply(new BigDecimal(-1)), transferencia.getTipo()));
 		}
 
 		return extratos;

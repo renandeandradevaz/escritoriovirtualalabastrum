@@ -76,11 +76,35 @@
 		</table>
 	</div>
 </c:if>
-<c:if test="${not empty saldo}">
+<c:if test="${not empty saldoLiberado}">
 	<div class="fundo-branco">
 		<h3>
-			Saldo atual: R$
-			<fmt:formatNumber value="${saldo}" pattern="#,##0.00" />
+			Saldo liberado atual: R$
+			<fmt:formatNumber value="${saldoLiberado}" pattern="#,##0.00" />
+		</h3>
+	</div>
+</c:if>
+<c:if test="${not empty saldoPrevistoNoMes}">
+	<div class="fundo-branco">
+		<h3>
+			Saldo previsto no mês atual: R$
+			<fmt:formatNumber value="${saldoPrevistoNoMes}" pattern="#,##0.00" />
+		</h3>
+	</div>
+</c:if>
+<c:if test="${not empty saldoPrevistoTotal}">
+	<div class="fundo-branco">
+		<h3>
+			Saldo previsto total atual: R$
+			<fmt:formatNumber value="${saldoPrevistoTotal}" pattern="#,##0.00" />
+		</h3>
+	</div>
+</c:if>
+<c:if test="${not empty ganhosAteHoje}">
+	<div class="fundo-branco">
+		<h3>
+			Ganhos até hoje: R$
+			<fmt:formatNumber value="${ganhosAteHoje}" pattern="#,##0.00" />
 		</h3>
 	</div>
 </c:if>

@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.modelo.Transferencia;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class ExtratoService {
@@ -22,6 +24,11 @@ public class ExtratoService {
 
 	public SaldoDTO gerarSaldoEExtrato(Integer idCodigo, Integer mes, Integer ano) {
 
+		return gerarSaldoEExtrato(idCodigo, mes, ano, false);
+	}
+
+	public SaldoDTO gerarSaldoEExtrato(Integer idCodigo, Integer mes, Integer ano, boolean compressaoDeBonus) {
+
 		List<ExtratoDTO> extratoCompleto = new ArrayList<ExtratoDTO>();
 		extratoCompleto.addAll(new IndicacaoDiretaService(hibernateUtil).obterIndicacoesDiretas(idCodigo));
 		extratoCompleto.addAll(new IndicacaoIndiretaService(hibernateUtil).obterIndicacoesIndiretas(idCodigo));
@@ -32,12 +39,19 @@ public class ExtratoService {
 		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaOutroDistribuidor(idCodigo));
 		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaAlabastrumCard(idCodigo));
 		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaPagamentoDePedido(idCodigo));
+		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasPorCompressaoDeBonus(idCodigo));
 		extratoCompleto = ordenarExtratoPorDataCrescente(extratoCompleto);
 
-		int mesAtual = Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH);
-		int anoAtual = Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR);
+		GregorianCalendar tempoCorrente = Util.getTempoCorrenteAMeiaNoite();
 
-		BigDecimal saldoPrevisto = BigDecimal.ZERO;
+		if (compressaoDeBonus) {
+			tempoCorrente.add(Calendar.MONTH, -1);
+		}
+
+		int mesAtual = tempoCorrente.get(Calendar.MONTH);
+		int anoAtual = tempoCorrente.get(Calendar.YEAR);
+
+		BigDecimal saldoPrevistoNoMes = BigDecimal.ZERO;
 		BigDecimal saldoLiberado = BigDecimal.ZERO;
 		BigDecimal ganhosAteHoje = BigDecimal.ZERO;
 
@@ -47,25 +61,35 @@ public class ExtratoService {
 			if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) != 0) {
 
 				if (new AtividadeService(hibernateUtil).isAtivo(idCodigo, extratoDTO.getData())) {
+
 					saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
 					adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
 
-					if (!extratoDTO.getDiscriminador().contains("Transferência")) {
+					if (verificarTransferenciasIgnoradas(extratoDTO)) {
 						ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
 					}
 
 				} else {
 					if (extratoDTO.getData().get(Calendar.MONTH) == mesAtual && extratoDTO.getData().get(Calendar.YEAR) == anoAtual) {
-						saldoPrevisto = saldoPrevisto.add(extratoDTO.getValor());
-						adicionarNoExtratoDoMes(mes, ano, saldoPrevisto, extratoDoMes, extratoDTO);
+
+						if (verificarTransferenciasIgnoradas(extratoDTO)) {
+							saldoPrevistoNoMes = saldoPrevistoNoMes.add(extratoDTO.getValor());
+							adicionarNoExtratoDoMes(mes, ano, saldoPrevistoNoMes, extratoDoMes, extratoDTO);
+						}
 					}
 				}
 			}
 		}
 
-		BigDecimal saldoPrevistoFinal = saldoPrevisto.add(saldoLiberado);
+		BigDecimal saldoPrevistoTotal = saldoPrevistoNoMes.add(saldoLiberado);
+		return new SaldoDTO(saldoPrevistoNoMes, saldoPrevistoTotal, saldoLiberado, ganhosAteHoje, extratoDoMes);
+	}
 
-		return new SaldoDTO(saldoPrevistoFinal, saldoLiberado, ganhosAteHoje, extratoDoMes);
+	private boolean verificarTransferenciasIgnoradas(ExtratoDTO extratoDTO) {
+
+		return !extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR) //
+				&& !extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD) //
+				&& !extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO);
 	}
 
 	private void adicionarNoExtratoDoMes(Integer mes, Integer ano, BigDecimal saldo, List<ExtratoDTO> extratoDoMes, ExtratoDTO extratoDTO) {

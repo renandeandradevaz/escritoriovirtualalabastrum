@@ -5,24 +5,34 @@ import java.util.List;
 
 public class SaldoDTO {
 
-	private BigDecimal saldoPrevisto;
+	private BigDecimal saldoPrevistoNoMes;
+	private BigDecimal saldoPrevistoTotal;
 	private BigDecimal saldoLiberado;
 	private BigDecimal ganhosAteHoje;
 	private List<ExtratoDTO> extratoDoMes;
 
-	public SaldoDTO(BigDecimal saldoPrevisto, BigDecimal saldoLiberado, BigDecimal ganhosAteHoje, List<ExtratoDTO> extratoDoMes) {
-		this.saldoPrevisto = saldoPrevisto;
+	public SaldoDTO(BigDecimal saldoPrevistoNoMes, BigDecimal saldoPrevistoTotal, BigDecimal saldoLiberado, BigDecimal ganhosAteHoje, List<ExtratoDTO> extratoDoMes) {
+		this.saldoPrevistoNoMes = saldoPrevistoNoMes;
+		this.saldoPrevistoTotal = saldoPrevistoTotal;
 		this.saldoLiberado = saldoLiberado;
 		this.ganhosAteHoje = ganhosAteHoje;
 		this.extratoDoMes = extratoDoMes;
 	}
 
-	public BigDecimal getSaldoPrevisto() {
-		return saldoPrevisto;
+	public BigDecimal getSaldoPrevistoNoMes() {
+		return saldoPrevistoNoMes;
 	}
 
-	public void setSaldoPrevisto(BigDecimal saldoPrevisto) {
-		this.saldoPrevisto = saldoPrevisto;
+	public void setSaldoPrevistoNoMes(BigDecimal saldoPrevistoNoMes) {
+		this.saldoPrevistoNoMes = saldoPrevistoNoMes;
+	}
+
+	public BigDecimal getSaldoPrevistoTotal() {
+		return saldoPrevistoTotal;
+	}
+
+	public void setSaldoPrevistoTotal(BigDecimal saldoPrevistoTotal) {
+		this.saldoPrevistoTotal = saldoPrevistoTotal;
 	}
 
 	public BigDecimal getSaldoLiberado() {
@@ -33,19 +43,19 @@ public class SaldoDTO {
 		this.saldoLiberado = saldoLiberado;
 	}
 
-	public List<ExtratoDTO> getExtratoDoMes() {
-		return extratoDoMes;
-	}
-
-	public void setExtratoDoMes(List<ExtratoDTO> extratoDoMes) {
-		this.extratoDoMes = extratoDoMes;
-	}
-
 	public BigDecimal getGanhosAteHoje() {
 		return ganhosAteHoje;
 	}
 
 	public void setGanhosAteHoje(BigDecimal ganhosAteHoje) {
 		this.ganhosAteHoje = ganhosAteHoje;
+	}
+
+	public List<ExtratoDTO> getExtratoDoMes() {
+		return extratoDoMes;
+	}
+
+	public void setExtratoDoMes(List<ExtratoDTO> extratoDoMes) {
+		this.extratoDoMes = extratoDoMes;
 	}
 }

@@ -42,10 +42,9 @@ public class HibernateInterceptor implements Interceptor {
 
 			hibernateUtil.fecharSessao();
 
-			StringWriter writerStack = new StringWriter();
-			PrintWriter printWriterStack = new PrintWriter(writerStack);
-			e1.printStackTrace(printWriterStack);
-			String errorString = writerStack.toString();
+			StringWriter stringWriter = new StringWriter();
+			e1.printStackTrace(new PrintWriter(stringWriter));
+			String errorString = stringWriter.toString();
 
 			result.include("exception", errorString);
 

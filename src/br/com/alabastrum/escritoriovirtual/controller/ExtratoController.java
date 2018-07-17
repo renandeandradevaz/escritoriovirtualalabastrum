@@ -45,7 +45,8 @@ public class ExtratoController {
 		SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(idCodigo, mes, ano);
 
 		result.include("saldoLiberado", saldoDTO.getSaldoLiberado());
-		result.include("saldoPrevisto", saldoDTO.getSaldoPrevisto());
+		result.include("saldoPrevistoNoMes", saldoDTO.getSaldoPrevistoNoMes());
+		result.include("saldoPrevistoTotal", saldoDTO.getSaldoPrevistoTotal());
 		result.include("ganhosAteHoje", saldoDTO.getGanhosAteHoje());
 		result.include("extratoDoMes", saldoDTO.getExtratoDoMes());
 		result.forwardTo(this).acessarTelaExtrato(mes, ano);

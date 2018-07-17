@@ -5,8 +5,8 @@
 <br>
 <div class="fundo-branco">
 	<h3>
-		Saldo atual: R$
-		<fmt:formatNumber value="${saldo}" pattern="#,##0.00" />
+		Saldo liberado atual: R$
+		<fmt:formatNumber value="${saldoLiberado}" pattern="#,##0.00" />
 	</h3>
 	<br>
 	<form action="<c:url value="/transferencia/transferirParaOutroDistribuidor"/>" method="post">

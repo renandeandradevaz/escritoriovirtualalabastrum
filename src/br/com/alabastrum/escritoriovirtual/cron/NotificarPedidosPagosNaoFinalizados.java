@@ -31,7 +31,7 @@ public class NotificarPedidosPagosNaoFinalizados implements Runnable {
 		}
 
 		if (enviarEmail) {
-			String mensagem = "Existem pedidos pagos mas não finalizados com 15 dias de criação";
+			String mensagem = "Existem pedidos pagos mas não finalizados com 15 dias ou mais de criação";
 			try {
 				Mail.enviarEmail(mensagem, mensagem);
 			} catch (Exception e) {
