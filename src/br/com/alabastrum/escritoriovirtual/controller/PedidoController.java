@@ -2,6 +2,7 @@ package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -11,13 +12,16 @@ import org.hibernate.criterion.Order;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.dto.ItemPedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.PedidoDTO;
+import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.ItemPedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Pedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
+import br.com.alabastrum.escritoriovirtual.modelo.Transferencia;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
+import br.com.alabastrum.escritoriovirtual.service.ExtratoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
@@ -32,8 +36,6 @@ import br.com.caelum.vraptor.validator.ValidationMessage;
 public class PedidoController {
 
 	private static final String ID_USUARIO_PEDIDO = "idUsuarioPedido";
-	private static final String PENDENTE = "PENDENTE";
-	private static final String PAGO = "PAGO";
 
 	private Result result;
 	private HibernateUtil hibernateUtil;
@@ -74,7 +76,7 @@ public class PedidoController {
 			pedido = new Pedido();
 			pedido.setIdCodigo(idCodigo);
 			pedido.setCompleted(false);
-			pedido.setStatus(PENDENTE);
+			pedido.setStatus("PENDENTE");
 		}
 
 		pedido.setIdFranquia(idFranquia);
@@ -165,9 +167,35 @@ public class PedidoController {
 	}
 
 	@Funcionalidade
-	public void concluirPedido() throws Exception {
+	public void escolherFormaDePagamento() {
+	}
+
+	@Funcionalidade
+	public void concluirPedido(String formaDePagamento) {
+
+		if (formaDePagamento == null || formaDePagamento.equals("")) {
+			validator.add(new ValidationMessage("Selecione a forma de pagamento", "Erro"));
+			validator.onErrorRedirectTo(this).escolherFormaDePagamento();
+			return;
+		}
 
 		Pedido pedido = selecionarPedidoAberto();
+
+		if (formaDePagamento.equals("pagarComSaldo")) {
+
+			BigDecimal saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado();
+			BigDecimal totalPedido = calcularTotais(pedido).getValorTotal();
+
+			if (totalPedido.compareTo(saldoLiberado) > 0) {
+				validator.add(new ValidationMessage("você não possui saldo suficiente. Saldo atual: R$" + saldoLiberado, "Erro"));
+				validator.onErrorRedirectTo(this).escolherFormaDePagamento();
+				return;
+			}
+
+			salvarTransferencia(totalPedido, pedido);
+			pedido.setStatus("PAGO");
+		}
+
 		pedido.setCompleted(true);
 		pedido.setData(new GregorianCalendar());
 		hibernateUtil.salvarOuAtualizar(pedido);
@@ -177,7 +205,7 @@ public class PedidoController {
 	}
 
 	@Funcionalidade
-	public void meusPedidos() throws Exception {
+	public void meusPedidos() {
 
 		Integer idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_PEDIDO);
 
@@ -192,7 +220,7 @@ public class PedidoController {
 	public void pesquisarPedidosDosDistribuidores(String status, Integer idCodigo) {
 
 		if (Util.vazio(status)) {
-			status = PENDENTE;
+			status = "PENDENTE";
 		}
 
 		montarPedidosDTO(status, idCodigo);
@@ -207,7 +235,7 @@ public class PedidoController {
 
 		Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 
-		if (pedido.getStatus().equals(PENDENTE) && status.equals(PAGO)) {
+		if (status.equals("FINALIZADO") && !pedido.getStatus().equals("FINALIZADO")) {
 
 			String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
 			textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
@@ -221,6 +249,46 @@ public class PedidoController {
 		hibernateUtil.salvarOuAtualizar(pedido);
 
 		result.forwardTo(this).pesquisarPedidosDosDistribuidores(null, null);
+	}
+
+	@Funcionalidade(administrativa = "true")
+	@Get("/pedido/realizarPagamento/{idPedido}")
+	public void realizarPagamento(Integer idPedido) {
+
+		Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+		SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+
+		result.include("idPedido", idPedido);
+		result.include("saldoLiberado", saldoDTO.getSaldoLiberado());
+	}
+
+	@Funcionalidade(administrativa = "true")
+	@Post("/pedido/pagarEFinalizar")
+	public void pagarEFinalizar(Integer idPedido, BigDecimal valor) throws Exception {
+
+		Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+		SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+		BigDecimal saldoLiberado = saldoDTO.getSaldoLiberado();
+
+		if (valor.compareTo(saldoLiberado) > 0) {
+			validator.add(new ValidationMessage("O valor a ser debitado não pode ser maior do que o saldo atual", "Erro"));
+			validator.onErrorRedirectTo(this).realizarPagamento(idPedido);
+			return;
+		}
+
+		salvarTransferencia(valor, pedido);
+
+		result.forwardTo(this).alterarStatus("FINALIZADO", idPedido);
+	}
+
+	private void salvarTransferencia(BigDecimal valor, Pedido pedido) {
+
+		Transferencia transferencia = new Transferencia();
+		transferencia.setData(new GregorianCalendar());
+		transferencia.setDe(pedido.getIdCodigo());
+		transferencia.setValor(valor);
+		transferencia.setTipo(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO);
+		hibernateUtil.salvarOuAtualizar(transferencia);
 	}
 
 	@Funcionalidade

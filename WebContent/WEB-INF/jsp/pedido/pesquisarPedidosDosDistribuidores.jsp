@@ -9,6 +9,7 @@
 		<select name='status' id='status'>
 			<option value="PENDENTE">PENDENTE</option>
 			<option value="PAGO">PAGO</option>
+			<option value="FINALIZADO">FINALIZADO</option>
 			<option value="CANCELADO">CANCELADO</option>
 		</select>
 		<br>
@@ -53,7 +54,12 @@
 							<a class="btn btn-danger" href="<c:url value="/pedido/alterarStatus/${item.pedido.id}/CANCELADO"/>"> Cancelar </a>
 						</td>
 						<td style="text-align: center;">
-							<a class="btn btn-success" href="<c:url value="/pedido/alterarStatus/${item.pedido.id}/PAGO"/>"> Marcar como pago </a>
+							<a class="btn btn-success" href="<c:url value="/pedido/realizarPagamento/${item.pedido.id}"/>"> Realizar pagamento </a>
+						</td>
+					</c:if>
+					<c:if test="${item.pedido.status == 'PAGO'}">
+						<td style="text-align: center;">
+							<a class="btn btn-success" href="<c:url value="/pedido/alterarStatus/${item.pedido.id}/FINALIZADO"/>"> Finalizar </a>
 						</td>
 					</c:if>
 				</tr>

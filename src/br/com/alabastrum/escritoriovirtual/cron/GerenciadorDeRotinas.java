@@ -10,5 +10,6 @@ public class GerenciadorDeRotinas {
 		new AtualizacaoArquivosAutomaticamente().iniciarRotina();
 		new CancelarPedidosPendentes().iniciarRotina();
 		new CompressaoDeBonus().iniciarRotina();
+		new NotificarPedidosPagosNaoFinalizados().iniciarRotina();
 	}
 }

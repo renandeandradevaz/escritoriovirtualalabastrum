@@ -31,6 +31,7 @@ public class ExtratoService {
 		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeOutroDistribuidor(idCodigo));
 		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaOutroDistribuidor(idCodigo));
 		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaAlabastrumCard(idCodigo));
+		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaPagamentoDePedido(idCodigo));
 		extratoCompleto = ordenarExtratoPorDataCrescente(extratoCompleto);
 
 		int mesAtual = Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH);

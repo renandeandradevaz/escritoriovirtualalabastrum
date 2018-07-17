@@ -65,4 +65,20 @@ public class TransferenciaService {
 
 		return extratos;
 	}
+
+	public List<ExtratoDTO> obterTransferenciasParaPagamentoDePedido(Integer idCodigo) {
+
+		List<ExtratoDTO> extratos = new ArrayList<ExtratoDTO>();
+
+		Transferencia transferenciaFiltro = new Transferencia();
+		transferenciaFiltro.setDe(idCodigo);
+		transferenciaFiltro.setTipo(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO);
+		List<Transferencia> transferencias = hibernateUtil.buscar(transferenciaFiltro);
+
+		for (Transferencia transferencia : transferencias) {
+			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(transferencia.getDe())), transferencia.getData(), transferencia.getValor().multiply(new BigDecimal(-1)), transferencia.getTipo()));
+		}
+
+		return extratos;
+	}
 }
