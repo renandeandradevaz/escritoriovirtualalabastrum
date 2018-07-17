@@ -60,22 +60,25 @@ public class ExtratoService {
 
 			if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) != 0) {
 
-				if (new AtividadeService(hibernateUtil).isAtivo(idCodigo, extratoDTO.getData())) {
-					
-					CORRIGIR ISTO AQUI TAMBÉM. O SALDO LIBERADO DEVE CONSIDERAR MOVIMENTAÇÕES QUE NÃO SEJAM BONIFICAÇÃO
+				if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR) //
+						|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD) //
+						|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO) //
+						|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS)) {
+
 					saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
 					adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
 
-					if (!extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR) //
-							&& !extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD) //
-							&& !extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO)) {
-						ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
-					}
-
 				} else {
-					if (extratoDTO.getData().get(Calendar.MONTH) == mesAtual && extratoDTO.getData().get(Calendar.YEAR) == anoAtual) {
 
-						if (CORRIGIR ESTA CONDIÇÃO AQUI) {
+					if (new AtividadeService(hibernateUtil).isAtivo(idCodigo, extratoDTO.getData())) {
+
+						saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
+						adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
+						ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
+					} else {
+
+						if (extratoDTO.getData().get(Calendar.MONTH) == mesAtual && extratoDTO.getData().get(Calendar.YEAR) == anoAtual) {
+
 							saldoPrevistoNoMes = saldoPrevistoNoMes.add(extratoDTO.getValor());
 							adicionarNoExtratoDoMes(mes, ano, saldoPrevistoNoMes, extratoDoMes, extratoDTO);
 						}
