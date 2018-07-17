@@ -29,7 +29,7 @@ public class BonusUnilevelService {
 
 			Pedido pedidoFiltro = new Pedido();
 			pedidoFiltro.setIdCodigo(arvoreHierarquicaDTOEntry.getKey());
-			pedidoFiltro.setStatus("PAGO");
+			pedidoFiltro.setStatus("FINALIZADO");
 			List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro);
 
 			for (Pedido pedido : pedidos) {
