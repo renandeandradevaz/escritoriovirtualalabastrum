@@ -37,20 +37,20 @@ public class CompressaoDeBonusService {
 
 				if (!new AtividadeService(hibernateUtil).isAtivo(usuario.getId_Codigo(), mesPassado)) {
 
-					BigDecimal saldoPrevistoNoMes = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(usuario.getId_Codigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoPrevistoNoMes();
+					BigDecimal saldoPrevistoNoMes = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(usuario.getId_Codigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR), true).getSaldoPrevistoNoMes();
 
 					if (saldoPrevistoNoMes.compareTo(BigDecimal.ZERO) > 0) {
 
 						List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(usuario.getId_Codigo(), null);
 
-						for (Integer idCodigo : arvoreHierarquicaAscendente) {
+						for (Integer idCodigoAscendente : arvoreHierarquicaAscendente) {
 
-							if (arvoreHierarquicaAscendente.indexOf(idCodigo) > 0 && new AtividadeService(hibernateUtil).isAtivo(idCodigo, mesPassado)) {
+							if (arvoreHierarquicaAscendente.indexOf(idCodigoAscendente) > 0 && new AtividadeService(hibernateUtil).isAtivo(idCodigoAscendente, mesPassado)) {
 
 								Transferencia transferencia = new Transferencia();
 								transferencia.setData(Util.getUltimoDiaDoMes(mesPassado));
 								transferencia.setDe(usuario.getId_Codigo());
-								transferencia.setPara(idCodigo);
+								transferencia.setPara(idCodigoAscendente);
 								transferencia.setValor(saldoPrevistoNoMes);
 								transferencia.setTipo(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS);
 								transferencias.add(transferencia);
