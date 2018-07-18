@@ -73,22 +73,34 @@
 </c:if>
 <c:if test="${not empty saldoLiberado}">
 	<div class="fundo-branco">
-		<h4>
+		<span style="font-weight: bold; font-size: 18px;">
 			Saldo liberado atual: R$
 			<fmt:formatNumber value="${saldoLiberado}" pattern="#,##0.00" />
-		</h4>
-		<h4>
+		</span>
+		<br>
+		<br>
+		<span style="font-weight: bold; font-size: 18px;">
 			Saldo previsto no mês atual: R$
 			<fmt:formatNumber value="${saldoPrevistoNoMes}" pattern="#,##0.00" />
-		</h4>
-		<h4>
+		</span>
+		<span> (Este valor será liberado logo após sua ativação) </span>
+		<br>
+		<br>
+		<span style="font-weight: bold; font-size: 18px;">
 			Saldo previsto total atual: R$
 			<fmt:formatNumber value="${saldoPrevistoTotal}" pattern="#,##0.00" />
-		</h4>
-		<h4>
+		</span>
+		<br>
+		<br>
+		<span style="font-weight: bold; font-size: 18px;">
 			Ganhos até hoje: R$
 			<fmt:formatNumber value="${ganhosAteHoje}" pattern="#,##0.00" />
-		</h4>
+		</span>
+		<span> (Não considera transferências. Apenas bonificações) </span>
+		<br>
+		<br>
+		<br>
+		<br>
 	</div>
 </c:if>
 <script>

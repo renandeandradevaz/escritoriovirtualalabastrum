@@ -68,6 +68,9 @@ public class ExtratoService {
 					saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
 					adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
 
+					if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS)) {
+						ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
+					}
 				} else {
 
 					if (new AtividadeService(hibernateUtil).isAtivo(idCodigo, extratoDTO.getData())) {

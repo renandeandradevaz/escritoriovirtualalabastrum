@@ -41,10 +41,7 @@ public class Mail {
 		message.setFrom(new InternetAddress("alabastrumnotificacoes@gmail.com"));
 		message.setContent(mensagem.replaceAll("\\r\\n", "<br>"), "text/html; charset=utf-8");
 
-		// Address[] toUser =
-		// InternetAddress.parse("renanandrade_rj@hotmail.com,ev@alabastrum.com.br, " +
-		// remetente);
-		Address[] toUser = InternetAddress.parse("renanandrade_rj@hotmail.com," + remetente);
+		Address[] toUser = InternetAddress.parse("renanandrade_rj@hotmail.com,ev@alabastrum.com.br, " + remetente);
 		message.setRecipients(Message.RecipientType.TO, toUser);
 
 		message.setSubject(titulo);
