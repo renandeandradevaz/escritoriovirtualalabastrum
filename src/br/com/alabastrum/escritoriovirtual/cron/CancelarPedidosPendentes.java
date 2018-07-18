@@ -19,6 +19,7 @@ public class CancelarPedidosPendentes implements Runnable {
 
 		Pedido pedidoFiltro = new Pedido();
 		pedidoFiltro.setStatus("PENDENTE");
+		pedidoFiltro.setCompleted(true);
 		List<Pedido> pedidosPendentes = hibernateUtil.buscar(pedidoFiltro);
 
 		for (Pedido pedidoPendente : pedidosPendentes) {
