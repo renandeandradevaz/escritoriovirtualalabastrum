@@ -4,6 +4,7 @@ import org.hibernate.criterion.MatchMode;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.modelo.InformacoesFixasUsuario;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.caelum.vraptor.Resource;
@@ -33,9 +34,9 @@ public class AssumirIdentidadeController {
 
 		Usuario usuario = new Usuario();
 		usuario.setId_Codigo(codigo);
-
 		usuario = this.hibernateUtil.selecionar(usuario, MatchMode.EXACT);
-
+		usuario.setInformacoesFixasUsuario(new InformacoesFixasUsuario());
+		usuario.getInformacoesFixasUsuario().setAdministrador(true);
 		this.sessaoUsuario.login(usuario);
 
 		result.forwardTo(HomeController.class).home();

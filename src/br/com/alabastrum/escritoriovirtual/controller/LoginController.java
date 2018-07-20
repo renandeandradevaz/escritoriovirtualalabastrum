@@ -48,7 +48,8 @@ public class LoginController {
 
 		if (Util.vazio(usuario.getId_Codigo()) || usuario.getId_Codigo().equals(0) || Util.vazio(usuario.getInformacoesFixasUsuario().getSenha())) {
 
-			codigoOuSenhaIncorretos();
+			codigoOuSenhaIncorretos(usuario.getId_Codigo(), usuario.getInformacoesFixasUsuario().getSenha());
+			return;
 		}
 
 		String senhaInformada = usuario.getInformacoesFixasUsuario().getSenha();
@@ -62,9 +63,8 @@ public class LoginController {
 
 			this.sessaoUsuario.login(usuario);
 			result.redirectTo(AssumirIdentidadeController.class).acessarTelaAssumirIdentidade();
-		}
 
-		else {
+		} else {
 
 			Usuario usuarioFiltro = new Usuario();
 			usuarioFiltro.setId_Codigo(usuario.getId_Codigo());
@@ -75,9 +75,8 @@ public class LoginController {
 
 				validator.add(new ValidationMessage("Código inexistente", "Erro"));
 				validator.onErrorRedirectTo(this).telaLogin();
-			}
 
-			else {
+			} else {
 
 				InformacoesFixasUsuario informacoesFixasUsuario = usuarioBanco.obterInformacoesFixasUsuario();
 
@@ -85,7 +84,8 @@ public class LoginController {
 
 					if (!senhaInformada.equals("alabastrum")) {
 
-						codigoOuSenhaIncorretos();
+						codigoOuSenhaIncorretos(usuario.getId_Codigo(), senhaInformada);
+						return;
 					}
 
 					else {
@@ -94,16 +94,16 @@ public class LoginController {
 						result.forwardTo(this).trocarSenhaPrimeiroAcesso();
 						return;
 					}
-				}
-
-				else {
+				} else {
 
 					if (!informacoesFixasUsuario.getSenha().equals(GeradorDeMd5.converter(senhaInformada))) {
 
-						codigoOuSenhaIncorretos();
+						codigoOuSenhaIncorretos(usuario.getId_Codigo(), senhaInformada);
+						return;
 					}
 
 					validarAcessoBloqueado(usuarioBanco);
+					return;
 				}
 			}
 
@@ -115,9 +115,14 @@ public class LoginController {
 
 	}
 
-	private void codigoOuSenhaIncorretos() {
+	private void codigoOuSenhaIncorretos(Integer codigo, String senha) throws Exception {
 
-		validator.add(new ValidationMessage("Código ou senha incorretos", "Erro"));
+		String mensagem = "Código ou senha incorretos";
+		String mensagemEmail = mensagem + " no login. Codigo: " + codigo + ", senha: " + senha;
+
+		Mail.enviarEmail(mensagemEmail, mensagemEmail);
+
+		validator.add(new ValidationMessage(mensagem, "Erro"));
 		validator.onErrorRedirectTo(this).telaLogin();
 	}
 
