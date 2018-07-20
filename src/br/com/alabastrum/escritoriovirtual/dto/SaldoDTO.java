@@ -3,8 +3,11 @@ package br.com.alabastrum.escritoriovirtual.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
+import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
+
 public class SaldoDTO {
 
+	private Usuario usuario;
 	private BigDecimal saldoPrevistoNoMes;
 	private BigDecimal saldoPrevistoTotal;
 	private BigDecimal saldoLiberado;
@@ -57,5 +60,13 @@ public class SaldoDTO {
 
 	public void setExtratoDoMes(List<ExtratoDTO> extratoDoMes) {
 		this.extratoDoMes = extratoDoMes;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 }

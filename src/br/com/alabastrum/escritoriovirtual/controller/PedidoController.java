@@ -187,7 +187,7 @@ public class PedidoController {
 			BigDecimal totalPedido = calcularTotais(pedido).getValorTotal();
 
 			if (totalPedido.compareTo(saldoLiberado) > 0) {
-				validator.add(new ValidationMessage("você não possui saldo suficiente. Saldo atual: R$" + saldoLiberado, "Erro"));
+				validator.add(new ValidationMessage("você não possui saldo suficiente. Saldo atual: R$" + String.format("%.2f", saldoLiberado), "Erro"));
 				validator.onErrorRedirectTo(this).escolherFormaDePagamento();
 				return;
 			}

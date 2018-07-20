@@ -18,11 +18,6 @@ public class DistribuidorController {
 		this.result = result;
 		this.hibernateUtil = hibernateUtil;
 	}
-	
-	@Public
-	public void teste(Integer codigo) {
-
-	}
 
 	@Public
 	public void obterNomeDistribuidor(Integer codigo) {
