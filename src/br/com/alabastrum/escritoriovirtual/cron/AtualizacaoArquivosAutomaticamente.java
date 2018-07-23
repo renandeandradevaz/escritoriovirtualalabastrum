@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import br.com.alabastrum.escritoriovirtual.emailSender.BoasVindas;
+import br.com.alabastrum.escritoriovirtual.emailSender.BoasVindasEmailSender;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.service.AtualizacaoArquivosService;
@@ -34,7 +34,7 @@ public class AtualizacaoArquivosAutomaticamente implements Runnable {
 				HibernateUtil hibernateUtil = new HibernateUtil();
 				new AtualizacaoArquivosService(hibernateUtil).processarArquivos();
 				moverArquivos();
-				BoasVindas.enviarEmail();
+				BoasVindasEmailSender.enviarEmail();
 				hibernateUtil.fecharSessao();
 			} catch (Exception e) {
 			}
