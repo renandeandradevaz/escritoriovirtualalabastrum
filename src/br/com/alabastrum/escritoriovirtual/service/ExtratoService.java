@@ -108,10 +108,13 @@ public class ExtratoService {
 
 			public int compare(ExtratoDTO e1, ExtratoDTO e2) {
 
-				if (e1.getData().getTimeInMillis() < e2.getData().getTimeInMillis()) {
+				if (e1.getData().getTimeInMillis() < e2.getData().getTimeInMillis())
 					return -1;
-				}
-				return 1;
+
+				if (e1.getData().getTimeInMillis() > e2.getData().getTimeInMillis())
+					return 1;
+
+				return 0;
 			}
 		});
 
