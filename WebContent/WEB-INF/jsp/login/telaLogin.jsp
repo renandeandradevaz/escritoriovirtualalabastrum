@@ -67,6 +67,11 @@ body {
 	margin-bottom: 15px;
 	padding: 7px 9px;
 }
+
+.esqueciminhasenha {
+	float: right;
+	padding-right: 10px;
+}
 </style>
 <body>
 	<c:if test="${not empty errors}">
@@ -83,6 +88,8 @@ body {
 			<label class="labelLoginSenha">Senha:</label>
 			<input type="password" class="inputLoginSenha" name="usuario.informacoesFixasUsuario.senha">
 			<button class="btn btn-large btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();">Entrar</button>
+			<br>
+			<a class="esqueciminhasenha" href="<c:url value="/login/esqueciMinhaSenha"/>"> Esqueci minha senha </a>
 		</form>
 	</div>
 	<script>

@@ -86,9 +86,8 @@ public class LoginController {
 
 						codigoOuSenhaIncorretos(usuario.getId_Codigo(), senhaInformada);
 						return;
-					}
 
-					else {
+					} else {
 
 						this.sessaoGeral.adicionar("codigoUsuarioPrimeiroAcesso", usuarioBanco.getId_Codigo());
 						result.forwardTo(this).trocarSenhaPrimeiroAcesso();
@@ -143,55 +142,81 @@ public class LoginController {
 	}
 
 	@Public
+	public void esqueciMinhaSenha() {
+
+	}
+
+	@Public
+	public void verificarExistenciaCodigoEsqueciMinhaSenha(Integer codigoUsuario) throws Exception {
+
+		if (Util.preenchido(codigoUsuario)) {
+
+			Usuario usuario = this.hibernateUtil.selecionar(new Usuario(codigoUsuario), MatchMode.EXACT);
+
+			if (Util.vazio(usuario)) {
+
+				validator.add(new ValidationMessage("Código inexistente", "Erro"));
+				validator.onErrorRedirectTo(this).esqueciMinhaSenha();
+				return;
+
+			} else {
+				validarAcessoBloqueado(usuario);
+
+				this.sessaoGeral.adicionar("codigoUsuarioPrimeiroAcesso", codigoUsuario);
+				result.forwardTo(this).trocarSenhaPrimeiroAcesso();
+				return;
+			}
+		} else {
+			result.forwardTo(this).telaLogin();
+		}
+	}
+
+	@Public
 	public void trocarSenhaPrimeiroAcesso() {
 
 	}
 
 	@Public
-	public void salvarTrocarSenhaPrimeiroAcesso(String senhaNova, String confirmacaoSenhaNova, String cpf, String email) throws Exception {
+	public void salvarTrocarSenhaPrimeiroAcesso(String senhaNova, String confirmacaoSenhaNova, String cpf) throws Exception {
 
 		if (!senhaNova.equals(confirmacaoSenhaNova)) {
 
 			validator.add(new ValidationMessage("Senha nova incorreta", "Erro"));
 			validator.onErrorRedirectTo(this).trocarSenhaPrimeiroAcesso();
+			return;
 		}
 
 		if (Util.vazio(cpf)) {
 
 			validator.add(new ValidationMessage("CPF requerido", "Erro"));
 			validator.onErrorRedirectTo(this).trocarSenhaPrimeiroAcesso();
-		}
-
-		if (Util.vazio(email)) {
-
-			validator.add(new ValidationMessage("Email requerido", "Erro"));
-			validator.onErrorRedirectTo(this).trocarSenhaPrimeiroAcesso();
+			return;
 		}
 
 		Integer codigoUsuario = (Integer) this.sessaoGeral.getValor("codigoUsuarioPrimeiroAcesso");
 
 		Usuario usuarioFiltro = new Usuario();
 		usuarioFiltro.setId_Codigo(codigoUsuario);
-
 		Usuario usuarioBanco = hibernateUtil.selecionar(usuarioFiltro, MatchMode.EXACT);
 
 		if (Util.vazio(usuarioBanco.getCPF())) {
 
 			validator.add(new ValidationMessage("O usuário com código " + usuarioBanco.getId_Codigo() + " não possui um CPF cadastrado no escritório virtual. Entre em contato com a Alabastrum pedindo para cadastrar o seu CPF no escritório virtual.", "Erro"));
 			validator.onErrorRedirectTo(this).trocarSenhaPrimeiroAcesso();
-		}
+			return;
 
-		else {
-
+		} else {
 			cpf = cpf.replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", "");
+			String cpfBanco = usuarioBanco.getCPF().replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", "");
 
-			if (!usuarioBanco.getCPF().equals(cpf)) {
+			if (!cpfBanco.equals(cpf)) {
 
 				String mensagem = "O usuário " + usuarioBanco.getId_Codigo() + " - " + usuarioBanco.getvNome() + " tentou acessar o EV pela primeira vez utilizando o CPF " + cpf + " e não obteve sucesso.";
 				Mail.enviarEmail("CPF incorreto no primeiro acesso", mensagem);
 
 				validator.add(new ValidationMessage("O CPF informado não é igual ao CPF existente no banco de dados da Alabastrum. Informe o CPF corretamente ou entre em contato com a Alabastrum através do email suporte@alabastrum.com.br informando sobre o problema e peça para editar o seu CPF na base de dados.", "Erro"));
 				validator.onErrorRedirectTo(this).trocarSenhaPrimeiroAcesso();
+				return;
 			}
 		}
 
