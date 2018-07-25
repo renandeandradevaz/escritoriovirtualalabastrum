@@ -14,6 +14,7 @@ public class Franquia implements Entidade {
 	private Integer id;
 
 	private Integer id_Estoque;
+	private Integer id_Codigo;
 	private String estqNome;
 	private String estqEndereco;
 	private String estqBairro;
@@ -108,5 +109,13 @@ public class Franquia implements Entidade {
 
 	public void setEstqEmail(String estqEmail) {
 		this.estqEmail = estqEmail;
+	}
+
+	public Integer getId_Codigo() {
+		return id_Codigo;
+	}
+
+	public void setId_Codigo(Integer id_Codigo) {
+		this.id_Codigo = id_Codigo;
 	}
 }

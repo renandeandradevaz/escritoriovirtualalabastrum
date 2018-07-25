@@ -1,5 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.modelo;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -63,6 +65,9 @@ public class Usuario implements Entidade {
 	@Transient
 	private String nomeQuemIndicou;
 
+	@Transient
+	private Boolean donoDeFranquia;
+
 	public Usuario() {
 
 	}
@@ -89,6 +94,29 @@ public class Usuario implements Entidade {
 		hibernateUtil.fecharSessao();
 
 		return informacoesFixasUsuario;
+	}
+
+	public Boolean getDonoDeFranquia() {
+
+		if (Util.preenchido(this.donoDeFranquia)) {
+
+			return this.donoDeFranquia;
+		}
+
+		HibernateUtil hibernateUtil = new HibernateUtil();
+
+		Franquia franquiaFiltro = new Franquia();
+		franquiaFiltro.setId_Codigo(this.id_Codigo);
+		List<Franquia> franquias = hibernateUtil.buscar(franquiaFiltro);
+
+		if (franquias != null && franquias.size() > 0)
+			this.donoDeFranquia = true;
+		else
+			this.donoDeFranquia = false;
+
+		hibernateUtil.fecharSessao();
+
+		return this.donoDeFranquia;
 	}
 
 	public Integer getId() {

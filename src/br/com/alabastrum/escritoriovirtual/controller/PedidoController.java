@@ -65,9 +65,19 @@ public class PedidoController {
 		this.sessaoGeral.adicionar(ID_USUARIO_PEDIDO, idCodigo);
 
 		if (idFranquia == null || idFranquia == 0) {
-			validator.add(new ValidationMessage("Selecione uma franquia", "Erro"));
-			validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
-			return;
+
+			if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+
+				Franquia franquiaFiltro = new Franquia();
+				franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+				List<Franquia> franquias = hibernateUtil.buscar(franquiaFiltro);
+				idFranquia = franquias.get(0).getId_Estoque();
+
+			} else {
+				validator.add(new ValidationMessage("Selecione uma franquia", "Erro"));
+				validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
+				return;
+			}
 		}
 
 		Pedido pedido = selecionarPedidoAberto();
