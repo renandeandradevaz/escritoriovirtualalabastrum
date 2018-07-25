@@ -68,10 +68,7 @@ public class PedidoController {
 
 			if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
 
-				Franquia franquiaFiltro = new Franquia();
-				franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
-				List<Franquia> franquias = hibernateUtil.buscar(franquiaFiltro);
-				idFranquia = franquias.get(0).getId_Estoque();
+				idFranquia = obterFranquiaDoDono();
 
 			} else {
 				validator.add(new ValidationMessage("Selecione uma franquia", "Erro"));
@@ -94,6 +91,14 @@ public class PedidoController {
 
 		result.include("franquia", hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())));
 		result.include("categorias", hibernateUtil.buscar(new Categoria(), Order.asc("catNome")));
+	}
+
+	private Integer obterFranquiaDoDono() {
+
+		Franquia franquiaFiltro = new Franquia();
+		franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+		List<Franquia> franquias = hibernateUtil.buscar(franquiaFiltro);
+		return franquias.get(0).getId_Estoque();
 	}
 
 	@Funcionalidade
@@ -210,8 +215,14 @@ public class PedidoController {
 		pedido.setData(new GregorianCalendar());
 		hibernateUtil.salvarOuAtualizar(pedido);
 
-		result.include("sucesso", "Pedido feito com sucesso. Você pode buscar no endereço escolhido. De segunda a sexta-feira. De 9h as 17h.");
-		result.forwardTo(this).meusPedidos();
+		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+
+			result.forwardTo(this).pesquisarPedidosDosDistribuidores(null, null);
+
+		} else {
+			result.include("sucesso", "Pedido feito com sucesso. Você pode buscar no endereço escolhido. De segunda a sexta-feira. De 9h as 17h.");
+			result.forwardTo(this).meusPedidos();
+		}
 	}
 
 	@Funcionalidade
@@ -226,69 +237,86 @@ public class PedidoController {
 		montarPedidosDTO(null, idCodigo);
 	}
 
-	@Funcionalidade(administrativa = "true")
+	@Funcionalidade
 	public void pesquisarPedidosDosDistribuidores(String status, Integer idCodigo) {
 
-		if (Util.vazio(status)) {
-			status = "PENDENTE";
+		if (verificarPermissaoPedidosAdministrativos()) {
+
+			if (Util.vazio(status)) {
+				status = "PENDENTE";
+			}
+
+			montarPedidosDTO(status, idCodigo);
+
+			result.include("idCodigo", idCodigo);
+			result.include("status", status);
 		}
-
-		montarPedidosDTO(status, idCodigo);
-
-		result.include("idCodigo", idCodigo);
-		result.include("status", status);
 	}
 
-	@Funcionalidade(administrativa = "true")
+	private boolean verificarPermissaoPedidosAdministrativos() {
+
+		return this.sessaoUsuario.getUsuario().getDonoDeFranquia() || this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador();
+	}
+
+	@Funcionalidade
 	@Get("/pedido/alterarStatus/{idPedido}/{status}")
 	public void alterarStatus(String status, Integer idPedido) throws Exception {
 
-		Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+		if (verificarPermissaoPedidosAdministrativos()) {
 
-		if (status.equals("FINALIZADO") && !pedido.getStatus().equals("FINALIZADO")) {
+			Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 
-			String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
-			textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
-			for (ItemPedido itemPedido : listarItensPedido(pedido)) {
-				textoArquivo += itemPedido.getIdProduto() + "=" + itemPedido.getQuantidade() + "\r\n";
+			if (status.equals("FINALIZADO") && !pedido.getStatus().equals("FINALIZADO")) {
+
+				String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
+				textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
+				for (ItemPedido itemPedido : listarItensPedido(pedido)) {
+					textoArquivo += itemPedido.getIdProduto() + "=" + itemPedido.getQuantidade() + "\r\n";
+				}
+				ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
 			}
-			ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
+
+			pedido.setStatus(status);
+			hibernateUtil.salvarOuAtualizar(pedido);
+
+			result.forwardTo(this).pesquisarPedidosDosDistribuidores(null, null);
 		}
-
-		pedido.setStatus(status);
-		hibernateUtil.salvarOuAtualizar(pedido);
-
-		result.forwardTo(this).pesquisarPedidosDosDistribuidores(null, null);
 	}
 
-	@Funcionalidade(administrativa = "true")
+	@Funcionalidade
 	@Get("/pedido/realizarPagamento/{idPedido}")
 	public void realizarPagamento(Integer idPedido) {
 
-		Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
-		SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+		if (verificarPermissaoPedidosAdministrativos()) {
 
-		result.include("idPedido", idPedido);
-		result.include("saldoLiberado", saldoDTO.getSaldoLiberado());
+			Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+			SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+
+			result.include("idPedido", idPedido);
+			result.include("saldoLiberado", saldoDTO.getSaldoLiberado());
+		}
 	}
 
-	@Funcionalidade(administrativa = "true")
+	@Funcionalidade
 	@Post("/pedido/pagarEFinalizar")
 	public void pagarEFinalizar(Integer idPedido, BigDecimal valor) throws Exception {
 
-		Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
-		SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
-		BigDecimal saldoLiberado = saldoDTO.getSaldoLiberado();
+		if (verificarPermissaoPedidosAdministrativos()) {
 
-		if (valor.compareTo(saldoLiberado) > 0) {
-			validator.add(new ValidationMessage("O valor a ser debitado não pode ser maior do que o saldo atual", "Erro"));
-			validator.onErrorRedirectTo(this).realizarPagamento(idPedido);
-			return;
+			Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+			SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+			BigDecimal saldoLiberado = saldoDTO.getSaldoLiberado();
+
+			if (valor.compareTo(saldoLiberado) > 0) {
+				validator.add(new ValidationMessage("O valor a ser debitado não pode ser maior do que o saldo atual", "Erro"));
+				validator.onErrorRedirectTo(this).realizarPagamento(idPedido);
+				return;
+			}
+
+			salvarTransferencia(valor, pedido);
+
+			result.forwardTo(this).alterarStatus("FINALIZADO", idPedido);
 		}
-
-		salvarTransferencia(valor, pedido);
-
-		result.forwardTo(this).alterarStatus("FINALIZADO", idPedido);
 	}
 
 	private void salvarTransferencia(BigDecimal valor, Pedido pedido) {
@@ -319,6 +347,11 @@ public class PedidoController {
 	private void montarPedidosDTO(String status, Integer idCodigo) {
 
 		Pedido pedidoFiltro = new Pedido();
+
+		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+			pedidoFiltro.setIdFranquia(obterFranquiaDoDono());
+		}
+
 		pedidoFiltro.setIdCodigo(idCodigo);
 		pedidoFiltro.setStatus(status);
 		pedidoFiltro.setCompleted(true);
