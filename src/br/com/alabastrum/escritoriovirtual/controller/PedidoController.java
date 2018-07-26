@@ -183,6 +183,20 @@ public class PedidoController {
 
 	@Funcionalidade
 	public void escolherFormaDePagamento() {
+
+		Pedido pedido = selecionarPedidoAberto();
+		verificarPagamentoComSaldoHabilitado(pedido);
+	}
+
+	private void verificarPagamentoComSaldoHabilitado(Pedido pedido) {
+
+		boolean pagamentoComSaldoHabilitado = false;
+
+		if (pedido.getIdCodigo().equals(this.sessaoUsuario.getUsuario().getId_Codigo()) || this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador()) {
+			pagamentoComSaldoHabilitado = true;
+		}
+
+		result.include("pagamentoComSaldoHabilitado", pagamentoComSaldoHabilitado);
 	}
 
 	@Funcionalidade
@@ -292,6 +306,7 @@ public class PedidoController {
 			Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 			SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
 
+			verificarPagamentoComSaldoHabilitado(pedido);
 			result.include("idPedido", idPedido);
 			result.include("saldoLiberado", saldoDTO.getSaldoLiberado());
 		}
@@ -302,6 +317,10 @@ public class PedidoController {
 	public void pagarEFinalizar(Integer idPedido, BigDecimal valor) throws Exception {
 
 		if (verificarPermissaoPedidosAdministrativos()) {
+
+			if (valor == null) {
+				valor = BigDecimal.ZERO;
+			}
 
 			Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 			SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
@@ -321,12 +340,15 @@ public class PedidoController {
 
 	private void salvarTransferencia(BigDecimal valor, Pedido pedido) {
 
-		Transferencia transferencia = new Transferencia();
-		transferencia.setData(new GregorianCalendar());
-		transferencia.setDe(pedido.getIdCodigo());
-		transferencia.setValor(valor);
-		transferencia.setTipo(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO);
-		hibernateUtil.salvarOuAtualizar(transferencia);
+		if (valor.compareTo(BigDecimal.ZERO) > 0) {
+
+			Transferencia transferencia = new Transferencia();
+			transferencia.setData(new GregorianCalendar());
+			transferencia.setDe(pedido.getIdCodigo());
+			transferencia.setValor(valor);
+			transferencia.setTipo(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO);
+			hibernateUtil.salvarOuAtualizar(transferencia);
+		}
 	}
 
 	@Funcionalidade

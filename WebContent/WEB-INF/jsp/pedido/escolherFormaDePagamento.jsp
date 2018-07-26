@@ -8,7 +8,9 @@
 		<select name='formaDePagamento'>
 			<option value="">Selecione</option>
 			<option value="pagarNoCentroDeDistribuicao">Pagar diretamente no centro de distribuição (Pagamento presencial com dinheiro vivo ou cartão)</option>
-			<option value="pagarComSaldo">Pagar com saldo</option>
+			<c:if test="${pagamentoComSaldoHabilitado}">
+				<option value="pagarComSaldo">Pagar com saldo</option>
+			</c:if>
 		</select>
 		<br>
 		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Concluir</button>
