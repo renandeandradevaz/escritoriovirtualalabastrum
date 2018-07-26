@@ -112,7 +112,7 @@ public class QualificacaoService {
 
 		return qualificacoes;
 	}
-	
+
 	public List<Qualificacao> obterQualificacoes(Integer idCodigo) {
 
 		Qualificacao qualificacaoFiltro = new Qualificacao();
@@ -143,7 +143,11 @@ public class QualificacaoService {
 			}
 		}
 
-		return new PosicoesService(hibernateUtil).obterNomeDaPosicao(qualificacoesAntesDaData.size());
+		if (qualificacoesAntesDaData.size() > 0) {
+			return new PosicoesService(hibernateUtil).obterNomeDaPosicao(qualificacoesAntesDaData.size());
+		}
+
+		return "Desconhecido";
 	}
 
 	private List<QualificacaoDTO> ordenarQualificacoesPorDataDescrescente(List<QualificacaoDTO> qualificacoes) {

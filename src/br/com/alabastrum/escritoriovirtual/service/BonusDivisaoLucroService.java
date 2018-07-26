@@ -41,19 +41,22 @@ public class BonusDivisaoLucroService {
 
 				Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(new QualificacaoService(hibernateUtil).obterPosicaoNaData(idCodigo, parametroVip.getData()));
 
-				BigDecimal bonificacao = BigDecimal.ZERO;
+				if (posicao != null) {
 
-				Map<Integer, BigDecimal> valoresPorPosicao = obterValoresPorPosicao(parametroVip, primeiroDiaDoMes, ultimoDiaDoMes);
+					BigDecimal bonificacao = BigDecimal.ZERO;
 
-				for (Entry<Integer, BigDecimal> valoresPorPosicaoEntry : valoresPorPosicao.entrySet()) {
+					Map<Integer, BigDecimal> valoresPorPosicao = obterValoresPorPosicao(parametroVip, primeiroDiaDoMes, ultimoDiaDoMes);
 
-					if (valoresPorPosicaoEntry.getKey() <= posicao.getPosicao()) {
+					for (Entry<Integer, BigDecimal> valoresPorPosicaoEntry : valoresPorPosicao.entrySet()) {
 
-						bonificacao = bonificacao.add(valoresPorPosicaoEntry.getValue());
+						if (valoresPorPosicaoEntry.getKey() <= posicao.getPosicao()) {
+
+							bonificacao = bonificacao.add(valoresPorPosicaoEntry.getValue());
+						}
 					}
-				}
 
-				extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(idCodigo)), parametroVip.getData(), bonificacao, "Divisão de lucro"));
+					extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(idCodigo)), parametroVip.getData(), bonificacao, "Divisão de lucro"));
+				}
 			}
 		}
 
