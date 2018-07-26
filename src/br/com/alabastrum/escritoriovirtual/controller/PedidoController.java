@@ -348,7 +348,7 @@ public class PedidoController {
 
 		Pedido pedidoFiltro = new Pedido();
 
-		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia() && !this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador()) {
 			pedidoFiltro.setIdFranquia(obterFranquiaDoDono());
 		}
 
