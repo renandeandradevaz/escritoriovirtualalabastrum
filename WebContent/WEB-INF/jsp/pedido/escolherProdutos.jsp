@@ -45,7 +45,7 @@
 				</p>
 				<p>Pontos: ${item.produto.prdPontos}</p>
 				<form action="<c:url value="/pedido/adicionarProduto/${item.produto.id_Produtos}"/>" method="post">
-					<input type="number" min="0" name="quantidade" style="width: 90px; margin-top: 10px" placeholder="Quantidade" value="${item.quantidade}">
+					<input type="number" min="0" max="${item.quantidadeEmEstoque}" name="quantidade" style="width: 90px; margin-top: 10px" placeholder="Quantidade" value="${item.quantidade}">
 					<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Adicionar</button>
 				</form>
 			</div>

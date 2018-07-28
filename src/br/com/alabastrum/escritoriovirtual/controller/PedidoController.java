@@ -6,8 +6,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.dto.ItemPedidoDTO;
@@ -21,7 +23,9 @@ import br.com.alabastrum.escritoriovirtual.modelo.Pedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 import br.com.alabastrum.escritoriovirtual.modelo.Transferencia;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
+import br.com.alabastrum.escritoriovirtual.service.EstoqueService;
 import br.com.alabastrum.escritoriovirtual.service.ExtratoService;
+import br.com.alabastrum.escritoriovirtual.service.PedidoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
@@ -53,7 +57,14 @@ public class PedidoController {
 
 	@Funcionalidade
 	public void acessarTelaNovoPedido() {
-		result.include("franquias", hibernateUtil.buscar(new Franquia()));
+
+		Franquia franquiaFiltro = new Franquia();
+
+		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+			franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+		}
+
+		result.include("franquias", hibernateUtil.buscar(franquiaFiltro));
 	}
 
 	@Funcionalidade
@@ -66,15 +77,9 @@ public class PedidoController {
 
 		if (idFranquia == null || idFranquia == 0) {
 
-			if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
-
-				idFranquia = obterFranquiaDoDono();
-
-			} else {
-				validator.add(new ValidationMessage("Selecione uma franquia", "Erro"));
-				validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
-				return;
-			}
+			validator.add(new ValidationMessage("Selecione uma franquia", "Erro"));
+			validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
+			return;
 		}
 
 		Pedido pedido = selecionarPedidoAberto();
@@ -93,35 +98,35 @@ public class PedidoController {
 		result.include("categorias", hibernateUtil.buscar(new Categoria(), Order.asc("catNome")));
 	}
 
-	private Integer obterFranquiaDoDono() {
-
-		Franquia franquiaFiltro = new Franquia();
-		franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
-		List<Franquia> franquias = hibernateUtil.buscar(franquiaFiltro);
-		return franquias.get(0).getId_Estoque();
-	}
-
 	@Funcionalidade
 	@Get("/pedido/selecionarCategoria/{idCategoria}")
 	public void selecionarCategoria(Integer idCategoria) {
 
+		Pedido pedido = selecionarPedidoAberto();
+
 		Produto filtro = new Produto();
 		filtro.setId_Categoria(idCategoria);
-		filtro.setDisponivel("1");
+
 		List<Produto> produtos = hibernateUtil.buscar(filtro);
 		List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
 		for (Produto produto : produtos) {
-			ItemPedido itemPedido = selecionarItemPedido(produto.getId_Produtos(), selecionarPedidoAberto());
-			Integer quantidade = 0;
-			if (itemPedido != null) {
-				quantidade = itemPedido.getQuantidade();
+
+			int quantidadeEmEstoque = new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(produto.getId_Produtos(), pedido.getIdFranquia());
+
+			if (quantidadeEmEstoque > 0) {
+
+				ItemPedido itemPedido = selecionarItemPedido(produto.getId_Produtos(), selecionarPedidoAberto());
+				Integer quantidade = 0;
+				if (itemPedido != null) {
+					quantidade = itemPedido.getQuantidade();
+				}
+
+				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit(), quantidadeEmEstoque));
 			}
-			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit()));
 		}
 
 		result.include("itensPedidoDTO", itensPedidoDTO);
 
-		Pedido pedido = selecionarPedidoAberto();
 		result.include("totais", calcularTotais(pedido));
 		result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), pedido.getIdCodigo());
 	}
@@ -160,10 +165,10 @@ public class PedidoController {
 
 		if (pedido != null) {
 
-			for (ItemPedido itemPedido : listarItensPedido(pedido)) {
+			for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 				Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 				Integer quantidade = itemPedido.getQuantidade();
-				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit()));
+				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit(), 0));
 			}
 		}
 
@@ -210,6 +215,20 @@ public class PedidoController {
 
 		Pedido pedido = selecionarPedidoAberto();
 
+		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
+
+			Integer quantidadeEmEstoque = new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(itemPedido.getIdProduto(), pedido.getIdFranquia());
+
+			if (itemPedido.getQuantidade() > quantidadeEmEstoque) {
+
+				Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()));
+
+				validator.add(new ValidationMessage("O produto " + produto.getPrdNome() + " possui " + quantidadeEmEstoque + " unidades no estoque", "Erro"));
+				validator.onErrorRedirectTo(this).acessarCarrinho();
+				return;
+			}
+		}
+
 		if (formaDePagamento.equals("pagarComSaldo")) {
 
 			BigDecimal saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado();
@@ -228,6 +247,10 @@ public class PedidoController {
 		pedido.setCompleted(true);
 		pedido.setData(new GregorianCalendar());
 		hibernateUtil.salvarOuAtualizar(pedido);
+
+		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
+			new EstoqueService(hibernateUtil).retirarDoEstoque(itemPedido.getIdProduto(), pedido.getIdFranquia(), itemPedido.getQuantidade());
+		}
 
 		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
 
@@ -284,10 +307,17 @@ public class PedidoController {
 
 				String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
 				textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
-				for (ItemPedido itemPedido : listarItensPedido(pedido)) {
+				for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 					textoArquivo += itemPedido.getIdProduto() + "=" + itemPedido.getQuantidade() + "\r\n";
 				}
 				ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
+			}
+
+			if (status.equals("CANCELADO")) {
+
+				for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
+					new EstoqueService(hibernateUtil).adicionarAoEstoque(itemPedido.getIdProduto(), pedido.getIdFranquia(), itemPedido.getQuantidade());
+				}
 			}
 
 			pedido.setStatus(status);
@@ -357,10 +387,10 @@ public class PedidoController {
 
 		List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
 
-		for (ItemPedido itemPedido : listarItensPedido((Pedido) hibernateUtil.selecionar(new Pedido(idPedido)))) {
+		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido((Pedido) hibernateUtil.selecionar(new Pedido(idPedido)))) {
 			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 			Integer quantidade = itemPedido.getQuantidade();
-			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit()));
+			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit(), 0));
 		}
 
 		result.include("itensPedidoDTO", itensPedidoDTO);
@@ -369,15 +399,28 @@ public class PedidoController {
 	private void montarPedidosDTO(String status, Integer idCodigo) {
 
 		Pedido pedidoFiltro = new Pedido();
-
-		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia() && !this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador()) {
-			pedidoFiltro.setIdFranquia(obterFranquiaDoDono());
-		}
-
 		pedidoFiltro.setIdCodigo(idCodigo);
 		pedidoFiltro.setStatus(status);
 		pedidoFiltro.setCompleted(true);
-		List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro);
+
+		List<Criterion> restricoes = new ArrayList<Criterion>();
+
+		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia() && !this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador()) {
+
+			Franquia franquiaFiltro = new Franquia();
+			franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+			List<Franquia> franquias = hibernateUtil.buscar(franquiaFiltro);
+
+			List<Integer> idFranquias = new ArrayList<Integer>();
+
+			for (Franquia franquia : franquias) {
+				idFranquias.add(franquia.getId_Estoque());
+			}
+
+			restricoes.add(Restrictions.in("idFranquia", idFranquias));
+		}
+
+		List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes);
 		List<PedidoDTO> pedidosDTO = new ArrayList<PedidoDTO>();
 		for (Pedido pedido : pedidos) {
 			pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), calcularTotais(pedido).getValorTotal()));
@@ -391,7 +434,7 @@ public class PedidoController {
 		Integer totalItens = 0;
 		Integer totalPontos = 0;
 
-		List<ItemPedido> itens = listarItensPedido(pedido);
+		List<ItemPedido> itens = new PedidoService(hibernateUtil).listarItensPedido(pedido);
 
 		for (ItemPedido itemPedido : itens) {
 
@@ -404,13 +447,6 @@ public class PedidoController {
 		}
 
 		return new PedidoDTO(valorTotal, totalItens, totalPontos);
-	}
-
-	private List<ItemPedido> listarItensPedido(Pedido pedido) {
-
-		ItemPedido filtro = new ItemPedido();
-		filtro.setPedido(pedido);
-		return hibernateUtil.buscar(filtro);
 	}
 
 	private Pedido selecionarPedidoAberto() {

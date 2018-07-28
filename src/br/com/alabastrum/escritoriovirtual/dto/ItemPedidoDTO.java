@@ -9,11 +9,14 @@ public class ItemPedidoDTO {
 	private Produto produto;
 	private Integer quantidade;
 	private BigDecimal precoUnitario;
+	private Integer quantidadeEmEstoque;
 
-	public ItemPedidoDTO(Produto produto, Integer quantidade, BigDecimal precoUnitario) {
+	public ItemPedidoDTO(Produto produto, Integer quantidade, BigDecimal precoUnitario, Integer quantidadeEmEstoque) {
+
 		this.produto = produto;
 		this.quantidade = quantidade;
 		this.precoUnitario = precoUnitario;
+		this.quantidadeEmEstoque = quantidadeEmEstoque;
 	}
 
 	public Produto getProduto() {
@@ -38,5 +41,13 @@ public class ItemPedidoDTO {
 
 	public void setPrecoUnitario(BigDecimal precoUnitario) {
 		this.precoUnitario = precoUnitario;
+	}
+
+	public Integer getQuantidadeEmEstoque() {
+		return quantidadeEmEstoque;
+	}
+
+	public void setQuantidadeEmEstoque(Integer quantidadeEmEstoque) {
+		this.quantidadeEmEstoque = quantidadeEmEstoque;
 	}
 }

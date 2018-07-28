@@ -52,4 +52,18 @@ public class PedidoService {
 
 		return totalPedido;
 	}
+
+	public List<ItemPedido> listarItensPedido(Pedido pedido) {
+
+		ItemPedido filtro = new ItemPedido();
+		filtro.setPedido(pedido);
+		return hibernateUtil.buscar(filtro);
+	}
+
+	public void cancelarPedido(Pedido pedido) {
+
+		for (ItemPedido itemPedido : listarItensPedido(pedido)) {
+			new EstoqueService(hibernateUtil).adicionarAoEstoque(itemPedido.getIdProduto(), pedido.getIdFranquia(), itemPedido.getQuantidade());
+		}
+	}
 }
