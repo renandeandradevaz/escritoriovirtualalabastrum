@@ -5,9 +5,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
-import br.com.alabastrum.escritoriovirtual.modelo.ItemPedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Pedido;
-import br.com.alabastrum.escritoriovirtual.service.EstoqueService;
 import br.com.alabastrum.escritoriovirtual.service.PedidoService;
 import it.sauronsoftware.cron4j.Scheduler;
 
@@ -29,9 +27,7 @@ public class CancelarPedidosPendentes implements Runnable {
 
 			if (pedidoPendente.getData().before(calendar)) {
 
-				for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedidoPendente)) {
-					new EstoqueService(hibernateUtil).adicionarAoEstoque(itemPedido.getIdProduto(), pedidoPendente.getIdFranquia(), itemPedido.getQuantidade());
-				}
+				new PedidoService(hibernateUtil).cancelarPedido(pedidoPendente);
 
 				pedidoPendente.setStatus("CANCELADO");
 				hibernateUtil.salvarOuAtualizar(pedidoPendente);

@@ -315,9 +315,7 @@ public class PedidoController {
 
 			if (status.equals("CANCELADO")) {
 
-				for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
-					new EstoqueService(hibernateUtil).adicionarAoEstoque(itemPedido.getIdProduto(), pedido.getIdFranquia(), itemPedido.getQuantidade());
-				}
+				new PedidoService(hibernateUtil).cancelarPedido(pedido);
 			}
 
 			pedido.setStatus(status);
