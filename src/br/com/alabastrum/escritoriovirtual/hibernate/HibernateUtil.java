@@ -1,6 +1,5 @@
 package br.com.alabastrum.escritoriovirtual.hibernate;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.List;
@@ -472,12 +471,16 @@ public class HibernateUtil {
 			criteria.add(Restrictions.eq("id", filtro.getId()));
 		}
 
-		gerarFiltroParaAssociacoes(criteria, filtro);
+		try {
+			gerarFiltroParaAssociacoes(criteria, filtro);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		return criteria;
 	}
 
-	private void gerarFiltroParaAssociacoes(Criteria criteria, Entidade entidadePrimeiroNivel) {
+	private void gerarFiltroParaAssociacoes(Criteria criteria, Entidade entidadePrimeiroNivel) throws Exception {
 
 		Method[] metodos = entidadePrimeiroNivel.getClass().getMethods();
 
@@ -485,77 +488,26 @@ public class HibernateUtil {
 
 			if (metodo.getName().startsWith("get")) {
 
-				try {
+				Object objeto = metodo.invoke(entidadePrimeiroNivel, new Object[0]);
 
-					Object objeto = metodo.invoke(entidadePrimeiroNivel, new Object[0]);
+				if (objeto instanceof Entidade) {
 
-					if (objeto instanceof Entidade) {
+					if (!objeto.getClass().isAnnotationPresent(Transient.class)) {
 
-						if (!objeto.getClass().isAnnotationPresent(Transient.class)) {
+						Entidade entidadeSegundoNivel = (Entidade) objeto;
 
-							Entidade entidadeSegundoNivel = (Entidade) objeto;
+						String nomeEntidadeSegundoNivel = metodo.getName().substring(3);
+						String nomeEntidadeSegundoNivelDiminutivo = nomeEntidadeSegundoNivel.substring(0, 1).toLowerCase() + nomeEntidadeSegundoNivel.substring(1);
 
-							String nomeEntidadeSegundoNivel = metodo.getName().substring(3);
-							String nomeEntidadeSegundoNivelDiminutivo = nomeEntidadeSegundoNivel.substring(0, 1).toLowerCase() + nomeEntidadeSegundoNivel.substring(1);
+						if (entidadeSegundoNivel.getId() != null && entidadeSegundoNivel.getId() != 0) {
 
-							if (entidadeSegundoNivel.getId() != null && entidadeSegundoNivel.getId() != 0) {
-
-								criteria.add(Restrictions.eq(nomeEntidadeSegundoNivelDiminutivo + ".id", entidadeSegundoNivel.getId()));
-							}
-
-							UtilReflection.nullifyStrings(entidadeSegundoNivel);
-
-							criteria.createCriteria(nomeEntidadeSegundoNivelDiminutivo).add(Example.create(entidadeSegundoNivel).enableLike(MatchMode.EXACT).ignoreCase());
-
-							Method[] metodosEntidadeSegundoNivel = entidadeSegundoNivel.getClass().getMethods();
-
-							for (Method metodoEntidadeSegundoNivel : metodosEntidadeSegundoNivel) {
-
-								if (metodoEntidadeSegundoNivel.getName().startsWith("get")) {
-									try {
-										Object objetoEntidadeSegundoNivel = metodoEntidadeSegundoNivel.invoke(entidadeSegundoNivel, new Object[0]);
-
-										if (objetoEntidadeSegundoNivel instanceof Entidade) {
-
-											Entidade entidadeTerceiroNivel = (Entidade) objetoEntidadeSegundoNivel;
-
-											String nomeEntidadeTerceiroNivel = metodoEntidadeSegundoNivel.getName().substring(3);
-											String nomeEntidadeTerceiroNivelDiminutivo = nomeEntidadeTerceiroNivel.substring(0, 1).toLowerCase() + nomeEntidadeTerceiroNivel.substring(1);
-
-											if (entidadeTerceiroNivel.getId() != null && entidadeTerceiroNivel.getId() != 0) {
-
-												criteria.createAlias(nomeEntidadeSegundoNivelDiminutivo + "." + nomeEntidadeTerceiroNivelDiminutivo, nomeEntidadeTerceiroNivelDiminutivo);
-
-												criteria.add(Restrictions.eq(nomeEntidadeTerceiroNivelDiminutivo + ".id", entidadeTerceiroNivel.getId()));
-											}
-
-											else {
-
-												UtilReflection.nullifyStrings(entidadeTerceiroNivel);
-
-												criteria.createCriteria(nomeEntidadeSegundoNivelDiminutivo + "." + nomeEntidadeTerceiroNivelDiminutivo).add(Example.create(entidadeTerceiroNivel).enableLike(MatchMode.EXACT).ignoreCase());
-											}
-
-										}
-									}
-
-									catch (IllegalArgumentException e) {
-
-									} catch (IllegalAccessException e) {
-
-									} catch (InvocationTargetException e) {
-
-									}
-								}
-							}
+							criteria.add(Restrictions.eq(nomeEntidadeSegundoNivelDiminutivo + ".id", entidadeSegundoNivel.getId()));
 						}
+
+						UtilReflection.nullifyStrings(entidadeSegundoNivel);
+
+						criteria.createCriteria(nomeEntidadeSegundoNivelDiminutivo).add(Example.create(entidadeSegundoNivel).enableLike(MatchMode.EXACT).ignoreCase());
 					}
-				} catch (IllegalArgumentException e) {
-
-				} catch (IllegalAccessException e) {
-
-				} catch (InvocationTargetException e) {
-
 				}
 			}
 		}

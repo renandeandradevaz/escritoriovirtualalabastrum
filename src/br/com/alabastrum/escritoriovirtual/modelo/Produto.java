@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
+import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 
 @Entity
 public class Produto implements Entidade {
@@ -29,6 +30,16 @@ public class Produto implements Entidade {
 
 	public Produto(String id_Produtos) {
 		this.id_Produtos = id_Produtos;
+	}
+
+	public Categoria obterCategoria() {
+
+		HibernateUtil hibernateUtil = new HibernateUtil();
+		Categoria categoria = new Categoria();
+		categoria.setId_Categoria(id_Categoria);
+		categoria = hibernateUtil.selecionar(categoria);
+		hibernateUtil.fecharSessao();
+		return categoria;
 	}
 
 	public Integer getId() {

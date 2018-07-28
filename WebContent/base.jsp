@@ -45,6 +45,7 @@
 			<a href="<c:url value="/pedido/meusPedidos"/>" class="submenu-accordion"> Meus pedidos </a>
 			<c:if test="${sessaoUsuario.usuario.donoDeFranquia}">
 				<a href="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" class="submenu-accordion"> Pedidos da franquia </a>
+				<a href="<c:url value="/pedidoFranquia/pedidosFranquia"/>" class="submenu-accordion"> Pedidos para estoque </a>
 			</c:if>
 		</div>
 		<h3 class="menu-accordion has-child">Financeiro</h3>
