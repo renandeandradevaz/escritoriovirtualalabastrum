@@ -20,7 +20,7 @@ public class Produto implements Entidade {
 	private Integer id_Categoria;
 	private String prdNome;
 	private BigDecimal prdPreco_Unit;
-	private Integer prdPontos;
+	private BigDecimal prdPontos;
 	private String prdComissionado;
 	private String prdPromocao;
 	private String prdMatApoio;
@@ -54,11 +54,11 @@ public class Produto implements Entidade {
 		return id_Produtos;
 	}
 
-	public Integer getPrdPontos() {
+	public BigDecimal getPrdPontos() {
 		return prdPontos;
 	}
 
-	public void setPrdPontos(Integer prdPontos) {
+	public void setPrdPontos(BigDecimal prdPontos) {
 		this.prdPontos = prdPontos;
 	}
 
