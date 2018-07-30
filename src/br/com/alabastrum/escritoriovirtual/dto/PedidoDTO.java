@@ -11,18 +11,31 @@ public class PedidoDTO {
 	private Franquia franquia;
 	private BigDecimal valorTotal;
 	private Integer totalItens;
-	private Integer totalPontos;
+	private BigDecimal totalPontos;
 
-	public PedidoDTO(Pedido pedido, Franquia franquia, BigDecimal valorTotal) {
+	public PedidoDTO(Pedido pedido, Franquia franquia, BigDecimal valorTotal, Integer totalItens, BigDecimal totalPontos) {
+
 		this.pedido = pedido;
 		this.franquia = franquia;
 		this.valorTotal = valorTotal;
-	}
-
-	public PedidoDTO(BigDecimal valorTotal, Integer totalItens, Integer totalPontos) {
-		this.valorTotal = valorTotal;
 		this.totalItens = totalItens;
 		this.totalPontos = totalPontos;
+	}
+
+	public Pedido getPedido() {
+		return pedido;
+	}
+
+	public void setPedido(Pedido pedido) {
+		this.pedido = pedido;
+	}
+
+	public Franquia getFranquia() {
+		return franquia;
+	}
+
+	public void setFranquia(Franquia franquia) {
+		this.franquia = franquia;
 	}
 
 	public BigDecimal getValorTotal() {
@@ -41,27 +54,11 @@ public class PedidoDTO {
 		this.totalItens = totalItens;
 	}
 
-	public Integer getTotalPontos() {
+	public BigDecimal getTotalPontos() {
 		return totalPontos;
 	}
 
-	public void setTotalPontos(Integer totalPontos) {
+	public void setTotalPontos(BigDecimal totalPontos) {
 		this.totalPontos = totalPontos;
-	}
-
-	public Pedido getPedido() {
-		return pedido;
-	}
-
-	public void setPedido(Pedido pedido) {
-		this.pedido = pedido;
-	}
-
-	public Franquia getFranquia() {
-		return franquia;
-	}
-
-	public void setFranquia(Franquia franquia) {
-		this.franquia = franquia;
 	}
 }

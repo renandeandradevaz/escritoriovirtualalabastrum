@@ -13,14 +13,6 @@ public class ItemPedidoDTO {
 	private Integer quantidadeEmEstoque;
 	private Categoria categoria;
 
-	public ItemPedidoDTO(Produto produto, Integer quantidade, BigDecimal precoUnitario, Integer quantidadeEmEstoque) {
-
-		this.produto = produto;
-		this.quantidade = quantidade;
-		this.precoUnitario = precoUnitario;
-		this.quantidadeEmEstoque = quantidadeEmEstoque;
-	}
-
 	public ItemPedidoDTO(Produto produto, Integer quantidade, BigDecimal precoUnitario, Integer quantidadeEmEstoque, Categoria categoria) {
 
 		this.produto = produto;

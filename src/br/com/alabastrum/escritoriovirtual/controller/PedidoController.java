@@ -388,7 +388,7 @@ public class PedidoController {
 		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido((Pedido) hibernateUtil.selecionar(new Pedido(idPedido)))) {
 			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 			Integer quantidade = itemPedido.getQuantidade();
-			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit(), 0));
+			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, itemPedido.getPrecoUnitario(), 0));
 		}
 
 		result.include("itensPedidoDTO", itensPedidoDTO);
@@ -420,17 +420,19 @@ public class PedidoController {
 
 		List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes);
 		List<PedidoDTO> pedidosDTO = new ArrayList<PedidoDTO>();
+
 		for (Pedido pedido : pedidos) {
-			pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), calcularTotais(pedido).getValorTotal()));
+			pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), calcularTotais(pedido).getValorTotal(), null, null));
 		}
+
 		result.include("pedidosDTO", pedidosDTO);
 	}
 
 	private PedidoDTO calcularTotais(Pedido pedido) {
 
 		BigDecimal valorTotal = BigDecimal.ZERO;
+		BigDecimal totalPontos = BigDecimal.ZERO;
 		Integer totalItens = 0;
-		Integer totalPontos = 0;
 
 		List<ItemPedido> itens = new PedidoService(hibernateUtil).listarItensPedido(pedido);
 
@@ -441,10 +443,10 @@ public class PedidoController {
 
 			totalItens += quantidade;
 			valorTotal = valorTotal.add(itemPedido.getPrecoUnitario().multiply(BigDecimal.valueOf(quantidade)));
-			totalPontos += produto.getPrdPontos() * quantidade;
+			totalPontos = totalPontos.add(produto.getPrdPontos().multiply(new BigDecimal(quantidade)));
 		}
 
-		return new PedidoDTO(valorTotal, totalItens, totalPontos);
+		return new PedidoDTO(pedido, null, valorTotal, totalItens, totalPontos);
 	}
 
 	private Pedido selecionarPedidoAberto() {

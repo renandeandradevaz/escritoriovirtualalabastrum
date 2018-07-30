@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
@@ -23,6 +24,7 @@ import br.com.alabastrum.escritoriovirtual.service.EstoqueService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
+import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 
@@ -87,6 +89,8 @@ public class PedidoFranquiaController {
 
 		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
 
+			this.sessaoGeral.adicionar("idPedido", null);
+
 			Franquia franquiaFiltro = new Franquia();
 			franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
 			result.include("franquias", hibernateUtil.buscar(franquiaFiltro));
@@ -126,31 +130,64 @@ public class PedidoFranquiaController {
 	@Funcionalidade
 	public void concluirPedido(HashMap<String, String> quantidades) {
 
-		Integer idFranquia = (Integer) this.sessaoGeral.getValor("idFranquia");
+		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+			
+			
+			this.sessaoGeral.getValor("")  this.sessaoGeral.adicionar("idPedido", idPedido);
 
-		PedidoFranquia pedidoFranquia = new PedidoFranquia();
-		pedidoFranquia.setData(new GregorianCalendar());
-		pedidoFranquia.setIdFranquia(idFranquia);
-		pedidoFranquia.setStatus("PENDENTE");
-		hibernateUtil.salvarOuAtualizar(pedidoFranquia);
+			Integer idFranquia = (Integer) this.sessaoGeral.getValor("idFranquia");
 
-		for (Entry<String, String> quantidadeEntry : quantidades.entrySet()) {
+			PedidoFranquia pedidoFranquia = new PedidoFranquia();
+			pedidoFranquia.setData(new GregorianCalendar());
+			pedidoFranquia.setIdFranquia(idFranquia);
+			pedidoFranquia.setStatus("PENDENTE");
+			hibernateUtil.salvarOuAtualizar(pedidoFranquia);
 
-			Integer quantidade = Integer.valueOf(quantidadeEntry.getValue());
+			for (Entry<String, String> quantidadeEntry : quantidades.entrySet()) {
 
-			if (quantidade > 0) {
+				Integer quantidade = Integer.valueOf(quantidadeEntry.getValue());
 
-				Produto produto = hibernateUtil.selecionar(new Produto(String.valueOf(quantidadeEntry.getKey())));
+				if (quantidade > 0) {
 
-				ItemPedidoFranquia itemPedidoFranquia = new ItemPedidoFranquia();
-				itemPedidoFranquia.setPedidoFranquia(pedidoFranquia);
-				itemPedidoFranquia.setIdProduto(produto.getId_Produtos());
-				itemPedidoFranquia.setQuantidade(quantidade);
-				itemPedidoFranquia.setPrecoUnitario(calcularPrecoUnitario(produto));
-				hibernateUtil.salvarOuAtualizar(itemPedidoFranquia);
+					Produto produto = hibernateUtil.selecionar(new Produto(String.valueOf(quantidadeEntry.getKey())));
+
+					ItemPedidoFranquia itemPedidoFranquia = new ItemPedidoFranquia();
+					itemPedidoFranquia.setPedidoFranquia(pedidoFranquia);
+					itemPedidoFranquia.setIdProduto(produto.getId_Produtos());
+					itemPedidoFranquia.setQuantidade(quantidade);
+					itemPedidoFranquia.setPrecoUnitario(calcularPrecoUnitario(produto));
+					hibernateUtil.salvarOuAtualizar(itemPedidoFranquia);
+				}
 			}
-		}
 
-		result.forwardTo(this).pedidosFranquia(null);
+			result.forwardTo(this).pedidosFranquia(null);
+		}
+	}
+
+	@Funcionalidade
+	@Get("/pedidoFranquia/verItens/{idPedido}")
+	public void verItens(Integer idPedido) {
+
+		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+
+			this.sessaoGeral.adicionar("idPedido", idPedido);
+
+			List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
+
+			PedidoFranquia pedidoFranquia = hibernateUtil.selecionar(new PedidoFranquia(idPedido));
+
+			ItemPedidoFranquia filtro = new ItemPedidoFranquia();
+			filtro.setPedidoFranquia(pedidoFranquia);
+			List<ItemPedidoFranquia> itens = hibernateUtil.buscar(filtro);
+
+			for (ItemPedidoFranquia item : itens) {
+
+				Produto produto = hibernateUtil.selecionar(new Produto(item.getIdProduto()), MatchMode.EXACT);
+				itensPedidoDTO.add(new ItemPedidoDTO(produto, item.getQuantidade(), item.getPrecoUnitario(), new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(produto.getId_Produtos(), pedidoFranquia.getIdFranquia()), produto.obterCategoria()));
+			}
+
+			result.include("itensPedidoDTO", itensPedidoDTO);
+			result.forwardTo("/pedidoFranquia/listarProdutos.jsp");
+		}
 	}
 }

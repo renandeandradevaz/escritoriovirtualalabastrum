@@ -22,6 +22,13 @@ public class PedidoFranquia implements Entidade {
 	private Integer idFranquia;
 	private String status;
 
+	public PedidoFranquia() {
+	}
+
+	public PedidoFranquia(Integer id) {
+		this.id = id;
+	}
+
 	public Franquia obterFranquia() {
 
 		HibernateUtil hibernateUtil = new HibernateUtil();
