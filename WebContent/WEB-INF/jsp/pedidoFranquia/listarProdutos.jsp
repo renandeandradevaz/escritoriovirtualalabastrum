@@ -5,7 +5,7 @@
 <br>
 <div class="fundo-branco">
 	<form action="<c:url value="/pedidoFranquia/concluirPedido"/>" method="post">
-		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Concluir</button>
+		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Salvar</button>
 		<br>
 		<br>
 		<table class="table table-striped table-bordered">
@@ -35,6 +35,6 @@
 				</c:forEach>
 			</tbody>
 		</table>
-		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Concluir</button>
+		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Salvar</button>
 	</form>
 </div>

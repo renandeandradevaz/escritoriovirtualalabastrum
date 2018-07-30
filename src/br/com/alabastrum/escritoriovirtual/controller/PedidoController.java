@@ -121,7 +121,7 @@ public class PedidoController {
 					quantidade = itemPedido.getQuantidade();
 				}
 
-				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit(), quantidadeEmEstoque));
+				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit(), quantidadeEmEstoque, null));
 			}
 		}
 
@@ -168,7 +168,7 @@ public class PedidoController {
 			for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 				Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 				Integer quantidade = itemPedido.getQuantidade();
-				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit(), 0));
+				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit(), 0, null));
 			}
 		}
 
@@ -388,7 +388,7 @@ public class PedidoController {
 		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido((Pedido) hibernateUtil.selecionar(new Pedido(idPedido)))) {
 			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 			Integer quantidade = itemPedido.getQuantidade();
-			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, itemPedido.getPrecoUnitario(), 0));
+			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, itemPedido.getPrecoUnitario(), 0, null));
 		}
 
 		result.include("itensPedidoDTO", itensPedidoDTO);
