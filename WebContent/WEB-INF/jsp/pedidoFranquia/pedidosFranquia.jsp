@@ -7,7 +7,7 @@
 	<c:if test="${sessaoUsuario.usuario.donoDeFranquia}">
 		<a class="btn btn-default" style="float: right;" href="<c:url value="/pedidoFranquia/novoPedido"/>"> Novo pedido </a>
 	</c:if>
-	<form action="<c:url value="/pedidoFranquia/pedidosFranquia"/>" method="post">
+	<form action="<c:url value="/pedidoFranquia/${searchEndpoint}"/>" method="post">
 		<h6>Status do pedido</h6>
 		<select name='status' id='status'>
 			<option value="PENDENTE">PENDENTE</option>

@@ -79,6 +79,7 @@ public class PedidoFranquiaController {
 				pedidosDTO.add(new PedidoFranquiaDTO(pedidoFranquia, franquia, pedidoFranquia.obterValorTotal()));
 			}
 
+			result.include("searchEndpoint", "pedidosFranquia");
 			result.include("pedidos", pedidosDTO);
 			result.include("status", status);
 		}
@@ -104,6 +105,7 @@ public class PedidoFranquiaController {
 			pedidosDTO.add(new PedidoFranquiaDTO(pedidoFranquia, franquia, pedidoFranquia.obterValorTotal()));
 		}
 
+		result.include("searchEndpoint", "todosPedidosFranquia");
 		result.include("pedidos", pedidosDTO);
 		result.include("status", status);
 
@@ -154,7 +156,6 @@ public class PedidoFranquiaController {
 		return precoUnitario;
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
 	@Funcionalidade
 	public void concluirPedido(HashMap<String, String> quantidades) {
 
