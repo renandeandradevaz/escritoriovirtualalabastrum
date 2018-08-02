@@ -23,6 +23,7 @@
 				<th>Valor</th>
 				<th>Status</th>
 				<th></th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -40,6 +41,11 @@
 					<td class="centralizado">${item.pedidoFranquia.status}</td>
 					<td style="text-align: center;">
 						<a class="btn btn-default" href="<c:url value="/pedidoFranquia/verItens/${item.pedidoFranquia.id}"/>"> Detalhar </a>
+					</td>
+					<td style="text-align: center;">
+						<c:if test="${sessaoUsuario.usuario.informacoesFixasUsuario.administrador && item.pedidoFranquia.status == 'PENDENTE'}">
+							<a class="btn btn-default" href="<c:url value="/pedidoFranquia/marcarComoEntregue/${item.pedidoFranquia.id}"/>"> Marcar como entregue </a>
+						</c:if>
 					</td>
 				</tr>
 			</c:forEach>

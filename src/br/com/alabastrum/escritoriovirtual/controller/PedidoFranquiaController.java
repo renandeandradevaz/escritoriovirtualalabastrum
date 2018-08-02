@@ -69,7 +69,7 @@ public class PedidoFranquiaController {
 
 			restricoes.add(Restrictions.in("idFranquia", idFranquias));
 
-			List<PedidoFranquia> pedidos = hibernateUtil.buscar(filtro, restricoes);
+			List<PedidoFranquia> pedidos = hibernateUtil.buscar(filtro, restricoes, Order.desc("id"));
 
 			List<PedidoFranquiaDTO> pedidosDTO = new ArrayList<PedidoFranquiaDTO>();
 			for (PedidoFranquia pedidoFranquia : pedidos) {
@@ -82,6 +82,32 @@ public class PedidoFranquiaController {
 			result.include("pedidos", pedidosDTO);
 			result.include("status", status);
 		}
+	}
+
+	@Funcionalidade(administrativa = "true")
+	public void todosPedidosFranquia(String status) {
+
+		if (Util.vazio(status)) {
+			status = "PENDENTE";
+		}
+
+		PedidoFranquia filtro = new PedidoFranquia();
+		filtro.setStatus(status);
+
+		List<PedidoFranquia> pedidos = hibernateUtil.buscar(filtro, Order.desc("id"));
+
+		List<PedidoFranquiaDTO> pedidosDTO = new ArrayList<PedidoFranquiaDTO>();
+		for (PedidoFranquia pedidoFranquia : pedidos) {
+
+			Franquia franquia = hibernateUtil.selecionar(new Franquia(pedidoFranquia.getIdFranquia()));
+
+			pedidosDTO.add(new PedidoFranquiaDTO(pedidoFranquia, franquia, pedidoFranquia.obterValorTotal()));
+		}
+
+		result.include("pedidos", pedidosDTO);
+		result.include("status", status);
+
+		result.forwardTo("/WEB-INF/jsp//pedidoFranquia/pedidosFranquia.jsp");
 	}
 
 	@Funcionalidade
@@ -113,6 +139,7 @@ public class PedidoFranquiaController {
 				itens.add(new ItemPedidoDTO(produto, 0, calcularPrecoUnitario(produto), new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(produto.getId_Produtos(), idFranquia), produto.obterCategoria()));
 			}
 
+			result.include("permitirAlterar", true);
 			result.include("itens", itens);
 		}
 	}
@@ -127,6 +154,7 @@ public class PedidoFranquiaController {
 		return precoUnitario;
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Funcionalidade
 	public void concluirPedido(HashMap<String, String> quantidades) {
 
@@ -169,7 +197,7 @@ public class PedidoFranquiaController {
 
 				for (ItemPedidoFranquia item : itens) {
 
-					Integer quantidade = Integer.valueOf(quantidades.get(item.getIdProduto()));
+					Integer quantidade = Integer.valueOf(quantidades.get(Integer.valueOf(item.getIdProduto())));
 
 					if (quantidade < 0) {
 						quantidade = 0;
@@ -212,8 +240,28 @@ public class PedidoFranquiaController {
 				itensPedidoDTO.add(new ItemPedidoDTO(produto, item.getQuantidade(), item.getPrecoUnitario(), new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(produto.getId_Produtos(), pedidoFranquia.getIdFranquia()), produto.obterCategoria()));
 			}
 
-			result.include("itensPedidoDTO", itensPedidoDTO);
-			result.forwardTo("/pedidoFranquia/listarProdutos.jsp");
+			result.include("itens", itensPedidoDTO);
+			result.include("permitirAlterar", pedidoFranquia.getStatus().equals("PENDENTE"));
+			result.forwardTo("/WEB-INF/jsp//pedidoFranquia/listarProdutos.jsp");
 		}
+	}
+
+	@Funcionalidade(administrativa = "true")
+	@Get("/pedidoFranquia/marcarComoEntregue/{idPedido}")
+	public void marcarComoEntregue(Integer idPedido) {
+
+		PedidoFranquia pedidoFranquia = hibernateUtil.selecionar(new PedidoFranquia(idPedido));
+		ItemPedidoFranquia filtro = new ItemPedidoFranquia();
+		filtro.setPedidoFranquia(pedidoFranquia);
+		List<ItemPedidoFranquia> itens = hibernateUtil.buscar(filtro);
+
+		for (ItemPedidoFranquia item : itens) {
+			new EstoqueService(hibernateUtil).adicionarAoEstoque(item.getIdProduto(), pedidoFranquia.getIdFranquia(), item.getQuantidade());
+		}
+
+		pedidoFranquia.setStatus("ENTREGUE");
+		hibernateUtil.salvarOuAtualizar(pedidoFranquia);
+
+		result.forwardTo(this).pedidosFranquia(null);
 	}
 }

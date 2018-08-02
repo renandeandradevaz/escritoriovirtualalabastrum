@@ -5,7 +5,9 @@
 <br>
 <div class="fundo-branco">
 	<form action="<c:url value="/pedidoFranquia/concluirPedido"/>" method="post">
-		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Salvar</button>
+		<c:if test="${permitirAlterar}">
+			<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Salvar</button>
+		</c:if>
 		<br>
 		<br>
 		<table class="table table-striped table-bordered">
@@ -29,12 +31,14 @@
 						</td>
 						<td class="centralizado">${item.quantidadeEmEstoque}</td>
 						<td class="centralizado">
-							<input type="number" min="0" name="quantidades[${item.produto.id_Produtos}]" value="0">
+							<input type="number" min="0" name="quantidades[${item.produto.id_Produtos}]" value="${item.quantidade}">
 						</td>
 					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
-		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Salvar</button>
+		<c:if test="${permitirAlterar}">
+			<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Salvar</button>
+		</c:if>
 	</form>
 </div>
