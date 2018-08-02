@@ -31,7 +31,7 @@
 						</td>
 						<td class="centralizado">${item.quantidadeEmEstoque}</td>
 						<td class="centralizado">
-							<input type="number" min="0" name="quantidades[${item.produto.id_Produtos}]" value="${item.quantidade}">
+							<input type="number" min="0" name="quantidades['${item.produto.id_Produtos}']" value="${item.quantidade}">
 						</td>
 					</tr>
 				</c:forEach>

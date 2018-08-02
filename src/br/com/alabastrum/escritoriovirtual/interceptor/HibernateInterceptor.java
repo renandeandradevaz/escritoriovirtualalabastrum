@@ -49,7 +49,9 @@ public class HibernateInterceptor implements Interceptor {
 			result.include("exception", errorString);
 
 			try {
-			//	Mail.enviarEmail("Exception no EV para o usuario com codigo = " + sessaoUsuario.getUsuario().getId_Codigo(), errorString);
+				if (!errorString.contains("Broken pipe")) {
+					Mail.enviarEmail("Exception no EV para o usuario com codigo = " + sessaoUsuario.getUsuario().getId_Codigo(), errorString);
+				}
 			} catch (Exception e2) {
 			}
 

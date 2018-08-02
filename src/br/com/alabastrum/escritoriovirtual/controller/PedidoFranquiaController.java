@@ -197,7 +197,7 @@ public class PedidoFranquiaController {
 
 				for (ItemPedidoFranquia item : itens) {
 
-					Integer quantidade = Integer.valueOf(quantidades.get(Integer.valueOf(item.getIdProduto())));
+					Integer quantidade = Integer.valueOf(quantidades.get(item.getIdProduto()));
 
 					if (quantidade < 0) {
 						quantidade = 0;
