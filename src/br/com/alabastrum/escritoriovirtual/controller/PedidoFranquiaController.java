@@ -223,7 +223,7 @@ public class PedidoFranquiaController {
 	@Get("/pedidoFranquia/verItens/{idPedido}")
 	public void verItens(Integer idPedido) {
 
-		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+		
 
 			this.sessaoGeral.adicionar("idPedido", idPedido);
 
@@ -244,7 +244,7 @@ public class PedidoFranquiaController {
 			result.include("itens", itensPedidoDTO);
 			result.include("permitirAlterar", pedidoFranquia.getStatus().equals("PENDENTE"));
 			result.forwardTo("/WEB-INF/jsp//pedidoFranquia/listarProdutos.jsp");
-		}
+		
 	}
 
 	@Funcionalidade(administrativa = "true")
