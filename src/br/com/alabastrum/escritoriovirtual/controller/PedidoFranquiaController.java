@@ -128,7 +128,7 @@ public class PedidoFranquiaController {
 	@Funcionalidade
 	public void listarProdutos(Integer idFranquia) {
 
-		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+		
 
 			this.sessaoGeral.adicionar("idFranquia", idFranquia);
 
@@ -144,7 +144,7 @@ public class PedidoFranquiaController {
 			result.include("permitirAlterar", true);
 			result.include("itens", itens);
 		}
-	}
+	
 
 	private BigDecimal calcularPrecoUnitario(Produto produto) {
 
