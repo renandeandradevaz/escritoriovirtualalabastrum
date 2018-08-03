@@ -116,10 +116,6 @@ public class LoginController {
 	private void codigoOuSenhaIncorretos(Integer codigo, String senha) throws Exception {
 
 		String mensagem = "Código ou senha incorretos";
-		String mensagemEmail = mensagem + " no login. Codigo: " + codigo + ", senha: " + senha;
-
-		Mail.enviarEmail(mensagemEmail, mensagemEmail);
-
 		validator.add(new ValidationMessage(mensagem, "Erro"));
 		validator.onErrorRedirectTo(this).telaLogin();
 	}
@@ -210,10 +206,6 @@ public class LoginController {
 			String cpfBanco = usuarioBanco.getCPF().replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", "");
 
 			if (!cpfBanco.equals(cpf)) {
-
-				String mensagem = "O usuário " + usuarioBanco.getId_Codigo() + " - " + usuarioBanco.getvNome() + " tentou acessar o EV pela primeira vez utilizando o CPF " + cpf + " e não obteve sucesso.";
-				Mail.enviarEmail("CPF incorreto no primeiro acesso", mensagem);
-
 				validator.add(new ValidationMessage("O CPF informado não é igual ao CPF existente no banco de dados da Alabastrum. Informe o CPF corretamente ou entre em contato com a Alabastrum através do email suporte@alabastrum.com.br informando sobre o problema e peça para editar o seu CPF na base de dados.", "Erro"));
 				validator.onErrorRedirectTo(this).trocarSenhaPrimeiroAcesso();
 				return;
