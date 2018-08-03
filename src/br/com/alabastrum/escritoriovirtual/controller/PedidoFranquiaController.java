@@ -159,7 +159,7 @@ public class PedidoFranquiaController {
 	@Funcionalidade
 	public void concluirPedido(HashMap<String, String> quantidades) {
 
-		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+		
 
 			if (this.sessaoGeral.getValor("idPedido") == null) {
 
@@ -214,7 +214,7 @@ public class PedidoFranquiaController {
 					}
 				}
 			}
-		}
+		
 
 		result.forwardTo(this).pedidosFranquia(null);
 	}
