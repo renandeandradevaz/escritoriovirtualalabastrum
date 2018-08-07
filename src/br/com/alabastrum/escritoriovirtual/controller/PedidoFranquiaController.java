@@ -147,7 +147,7 @@ public class PedidoFranquiaController {
 
 		BigDecimal precoUnitario = produto.getPrdPreco_Unit();
 
-		if (produto.getPrdMatApoio().equals("0")) {
+		if (!produto.obterCategoria().getCatNome().equalsIgnoreCase("material de apoio")) {
 			precoUnitario = precoUnitario.subtract(precoUnitario.multiply(new BigDecimal("0.1")));
 		}
 		return precoUnitario;
