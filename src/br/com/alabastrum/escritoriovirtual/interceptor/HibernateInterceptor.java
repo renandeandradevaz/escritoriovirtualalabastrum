@@ -3,6 +3,8 @@ package br.com.alabastrum.escritoriovirtual.interceptor;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import javax.servlet.http.HttpServletRequest;
+
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Mail;
@@ -21,12 +23,14 @@ public class HibernateInterceptor implements Interceptor {
 	private Result result;
 	private HibernateUtil hibernateUtil;
 	private SessaoUsuario sessaoUsuario;
+	private HttpServletRequest request;
 
-	public HibernateInterceptor(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario) {
+	public HibernateInterceptor(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario, HttpServletRequest request) {
 
 		this.result = result;
 		this.hibernateUtil = hibernateUtil;
 		this.sessaoUsuario = sessaoUsuario;
+		this.request = request;
 	}
 
 	public void intercept(InterceptorStack stack, ResourceMethod method, Object instance) throws InterceptionException {
@@ -50,7 +54,10 @@ public class HibernateInterceptor implements Interceptor {
 
 			try {
 				if (!errorString.contains("Broken pipe")) {
-					Mail.enviarEmail("Exception no EV para o usuario com codigo = " + sessaoUsuario.getUsuario().getId_Codigo(), errorString);
+
+					String userAgent = "User-Agent: " + request.getHeader("User-Agent") + "<br> <br> <br>";
+
+					Mail.enviarEmail("Exception no EV para o usuario com codigo = " + sessaoUsuario.getUsuario().getId_Codigo(), userAgent + errorString);
 				}
 			} catch (Exception e2) {
 			}
