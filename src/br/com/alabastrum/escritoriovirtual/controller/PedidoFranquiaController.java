@@ -2,6 +2,8 @@ package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -233,10 +235,23 @@ public class PedidoFranquiaController {
 			itensPedidoDTO.add(new ItemPedidoDTO(produto, item.getQuantidade(), item.getPrecoUnitario(), new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(produto.getId_Produtos(), pedidoFranquia.getIdFranquia()), produto.obterCategoria()));
 		}
 
+		itensPedidoDTO = ordenarPorCategoria(itensPedidoDTO);
+
 		result.include("itens", itensPedidoDTO);
 		result.include("permitirAlterar", pedidoFranquia.getStatus().equals("PENDENTE"));
 		result.forwardTo("/WEB-INF/jsp//pedidoFranquia/listarProdutos.jsp");
+	}
 
+	private List<ItemPedidoDTO> ordenarPorCategoria(List<ItemPedidoDTO> itens) {
+
+		Collections.sort(itens, new Comparator<ItemPedidoDTO>() {
+
+			public int compare(ItemPedidoDTO item1, ItemPedidoDTO item2) {
+				return item1.getCategoria().getCatNome().compareTo(item2.getCategoria().getCatNome());
+			}
+		});
+
+		return itens;
 	}
 
 	@Funcionalidade(administrativa = "true")

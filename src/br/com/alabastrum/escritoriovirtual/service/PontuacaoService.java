@@ -182,14 +182,13 @@ public class PontuacaoService {
 
 		List<Pontuacao> pontuacoes = buscarPontuacoes(codigo, primeiroDiaDoMes, ultimoDiaDoMes);
 
-		for (Pontuacao pontuacao : pontuacoes) {
+		BigDecimal valorIngresso = BigDecimal.ZERO;
 
-			if (pontuacao.getValorIngresso().compareTo(BigDecimal.ZERO) > 0) {
-				return pontuacao.getValorIngresso();
-			}
+		for (Pontuacao pontuacao : pontuacoes) {
+			valorIngresso = valorIngresso.add(pontuacao.getValorIngresso());
 		}
 
-		return BigDecimal.ZERO;
+		return valorIngresso;
 	}
 
 	public List<Pontuacao> buscarPontuacoes(Integer codigo, GregorianCalendar dataInicial, GregorianCalendar dataFinal) {

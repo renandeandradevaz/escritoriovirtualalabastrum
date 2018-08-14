@@ -13,8 +13,10 @@
 		<table class="table table-striped table-bordered">
 			<thead>
 				<tr>
+					<th>Imagem</th>
 					<th>Categoria</th>
-					<th>Produto</th>
+					<th>Código do produto</th>
+					<th>Nome do produto</th>
 					<th>Valor unitário</th>
 					<th>Quantidade em estoque atual</th>
 					<th>Quantidade para compra</th>
@@ -23,8 +25,12 @@
 			<tbody>
 				<c:forEach items="${itens}" var="item">
 					<tr>
+						<td class="centralizado">
+							<img src="<c:url value="/download/imagem/produto/${item.produto.id_Produtos}.jpg"/>">
+						</td>
 						<td class="centralizado">${item.categoria.catNome}</td>
-						<td class="centralizado">${item.produto.id_Produtos}-${item.produto.prdNome}</td>
+						<td class="centralizado">${item.produto.id_Produtos}</td>
+						<td class="centralizado">${item.produto.prdNome}</td>
 						<td class="centralizado">
 							R$
 							<fmt:formatNumber value="${item.precoUnitario}" pattern="#,##0.00" />
