@@ -7,6 +7,7 @@ public class ConfiguracaoAdministrativaDTO {
 	private String pontuacaoMaximaPorLinhaEmPorcentagem;
 	private String pontuacaoMinimaPorLinhaEmPorcentagem;
 	private String quantidadeDeMesesSomatorioPontuacao;
+	private String valorMinimoPedidosPrimeiraPosicao;
 
 	public String getValorMinimoPontuacaoPessoalParaQualificacao() {
 		return valorMinimoPontuacaoPessoalParaQualificacao;
@@ -46,5 +47,13 @@ public class ConfiguracaoAdministrativaDTO {
 
 	public void setQuantidadeDeMesesSomatorioPontuacao(String quantidadeDeMesesSomatorioPontuacao) {
 		this.quantidadeDeMesesSomatorioPontuacao = quantidadeDeMesesSomatorioPontuacao;
+	}
+
+	public String getValorMinimoPedidosPrimeiraPosicao() {
+		return valorMinimoPedidosPrimeiraPosicao;
+	}
+
+	public void setValorMinimoPedidosPrimeiraPosicao(String valorMinimoPedidosPrimeiraPosicao) {
+		this.valorMinimoPedidosPrimeiraPosicao = valorMinimoPedidosPrimeiraPosicao;
 	}
 }

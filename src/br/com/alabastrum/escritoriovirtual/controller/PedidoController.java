@@ -17,15 +17,18 @@ import br.com.alabastrum.escritoriovirtual.dto.PedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
+import br.com.alabastrum.escritoriovirtual.modelo.Configuracao;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.ItemPedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Pedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 import br.com.alabastrum.escritoriovirtual.modelo.Transferencia;
+import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.service.EstoqueService;
 import br.com.alabastrum.escritoriovirtual.service.ExtratoService;
 import br.com.alabastrum.escritoriovirtual.service.PedidoService;
+import br.com.alabastrum.escritoriovirtual.service.PosicoesService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
@@ -214,6 +217,7 @@ public class PedidoController {
 		}
 
 		Pedido pedido = selecionarPedidoAberto();
+		BigDecimal totalPedido = calcularTotais(pedido).getValorTotal();
 
 		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 
@@ -229,10 +233,32 @@ public class PedidoController {
 			}
 		}
 
+		Usuario comprador = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+		String valorMinimoPedidosPrimeiraPosicao = new Configuracao().retornarConfiguracao("valorMinimoPedidosPrimeiraPosicao");
+		if (comprador.getPosAtual().equalsIgnoreCase(new PosicoesService(hibernateUtil).obterNomeDaPosicao(1)) && totalPedido.compareTo(new BigDecimal(valorMinimoPedidosPrimeiraPosicao)) < 0) {
+
+			validator.add(new ValidationMessage("O valor mínimo para pedidos é de R$" + valorMinimoPedidosPrimeiraPosicao, "Erro"));
+			validator.onErrorRedirectTo(this).acessarCarrinho();
+			return;
+		}
+
 		if (formaDePagamento.equals("pagarComSaldo")) {
 
 			BigDecimal saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado();
-			BigDecimal totalPedido = calcularTotais(pedido).getValorTotal();
+
+			if (totalPedido.compareTo(saldoLiberado) > 0) {
+				validator.add(new ValidationMessage("você não possui saldo suficiente. Saldo atual: R$" + String.format("%.2f", saldoLiberado), "Erro"));
+				validator.onErrorRedirectTo(this).escolherFormaDePagamento();
+				return;
+			}
+
+			salvarTransferencia(totalPedido, pedido);
+			pedido.setStatus("PAGO");
+		}
+
+		if (formaDePagamento.equals("pagarComSaldo")) {
+
+			BigDecimal saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado();
 
 			if (totalPedido.compareTo(saldoLiberado) > 0) {
 				validator.add(new ValidationMessage("você não possui saldo suficiente. Saldo atual: R$" + String.format("%.2f", saldoLiberado), "Erro"));

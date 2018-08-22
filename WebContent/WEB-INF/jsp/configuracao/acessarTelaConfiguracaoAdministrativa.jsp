@@ -33,6 +33,12 @@
 					<input type="text" name="configuracaoAdministrativaDTO.quantidadeDeMesesSomatorioPontuacao" value="${configuracaoAdministrativaDTO.quantidadeDeMesesSomatorioPontuacao}">
 				</div>
 			</div>
+			<div class="control-group">
+				<label class="control-label"> Valor mínimo para pedidos de distribuidores na primeira posição </label>
+				<div class="controls">
+					<input type="text" name="configuracaoAdministrativaDTO.valorMinimoPedidosPrimeiraPosicao" value="${configuracaoAdministrativaDTO.valorMinimoPedidosPrimeiraPosicao}">
+				</div>
+			</div>
 			<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Salvar</button>
 		</fieldset>
 	</form>

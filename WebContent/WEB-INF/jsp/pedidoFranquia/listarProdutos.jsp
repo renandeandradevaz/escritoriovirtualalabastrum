@@ -26,7 +26,7 @@
 				<c:forEach items="${itens}" var="item">
 					<tr>
 						<td class="centralizado">
-							<img style="width: 100px" src="<c:url value="/download/imagem/produto/${item.produto.id_Produtos}.jpg"/>">
+<%-- 							<img style="width: 100px" src="<c:url value="/download/imagem/produto/${item.produto.id_Produtos}.jpg"/>"> --%>
 						</td>
 						<td class="centralizado">${item.categoria.catNome}</td>
 						<td class="centralizado">${item.produto.id_Produtos}</td>
