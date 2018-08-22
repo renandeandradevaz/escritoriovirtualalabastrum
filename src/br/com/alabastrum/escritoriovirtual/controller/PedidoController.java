@@ -430,7 +430,7 @@ public class PedidoController {
 			restricoes.add(Restrictions.in("idFranquia", idFranquias));
 		}
 
-		List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes);
+		List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes, Order.desc("id"));
 		List<PedidoDTO> pedidosDTO = new ArrayList<PedidoDTO>();
 
 		for (Pedido pedido : pedidos) {
