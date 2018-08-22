@@ -256,20 +256,6 @@ public class PedidoController {
 			pedido.setStatus("PAGO");
 		}
 
-		if (formaDePagamento.equals("pagarComSaldo")) {
-
-			BigDecimal saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado();
-
-			if (totalPedido.compareTo(saldoLiberado) > 0) {
-				validator.add(new ValidationMessage("você não possui saldo suficiente. Saldo atual: R$" + String.format("%.2f", saldoLiberado), "Erro"));
-				validator.onErrorRedirectTo(this).escolherFormaDePagamento();
-				return;
-			}
-
-			salvarTransferencia(totalPedido, pedido);
-			pedido.setStatus("PAGO");
-		}
-
 		pedido.setCompleted(true);
 		pedido.setData(new GregorianCalendar());
 		hibernateUtil.salvarOuAtualizar(pedido);
