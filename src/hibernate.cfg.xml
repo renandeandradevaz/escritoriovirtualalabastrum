@@ -16,11 +16,11 @@
 		<property name="hibernate.hbm2ddl.auto">update</property>
 		<property name="hibernate.generate_statistics">false</property>
       
-		<property name="hibernate.c3p0.min_size">5</property>
-		<property name="hibernate.c3p0.max_size">20</property>
-		<property name="hibernate.c3p0.timeout">600</property>
-		<property name="hibernate.c3p0.max_statements">50</property>
-		<property name="hibernate.c3p0.idle_test_period">600</property>
+		<property name="hibernate.c3p0.min_size">100</property>
+		<property name="hibernate.c3p0.max_size">100</property>
+		<property name="hibernate.c3p0.timeout">60</property>
+		<property name="hibernate.c3p0.max_statements">100</property>
+		<property name="hibernate.c3p0.idle_test_period">60</property>
       
         <mapping class="br.com.alabastrum.escritoriovirtual.modelo.BoasVindas" />
       	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Categoria" />
