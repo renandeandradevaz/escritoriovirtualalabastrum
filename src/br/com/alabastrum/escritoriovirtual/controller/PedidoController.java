@@ -1,10 +1,16 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
@@ -208,11 +214,36 @@ public class PedidoController {
 	}
 
 	@Funcionalidade
-	public void concluirPedido(String formaDePagamento) {
+	public void concluirPedido(String formaDePagamento) throws Exception {
 
 		if (formaDePagamento == null || formaDePagamento.equals("")) {
 			validator.add(new ValidationMessage("Selecione a forma de pagamento", "Erro"));
 			validator.onErrorRedirectTo(this).escolherFormaDePagamento();
+			return;
+		}
+
+		if (formaDePagamento.equals("pagarComCartaoDeCredito")) {
+
+			URL obj = new URL("https://ws.sandbox.pagseguro.uol.com.br/v2/sessions");
+			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+			String urlParameters = "email=renandeandradevaz@gmail.com&token=3F172393EBB94C36BC94CF5E092E4404";
+			con.setDoOutput(true);
+			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+			wr.writeBytes(urlParameters);
+			wr.flush();
+			wr.close();
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
+			result.include("pagseguroSessionId", response.toString().split("<session><id>")[1].split("</id></session>")[0]);
+			result.forwardTo("/WEB-INF/jsp//pedido/pagarComCartaoDeCredito.jsp");
 			return;
 		}
 
