@@ -1,16 +1,11 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
@@ -33,6 +28,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.service.EstoqueService;
 import br.com.alabastrum.escritoriovirtual.service.ExtratoService;
+import br.com.alabastrum.escritoriovirtual.service.PagSeguroService;
 import br.com.alabastrum.escritoriovirtual.service.PedidoService;
 import br.com.alabastrum.escritoriovirtual.service.PosicoesService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
@@ -224,25 +220,7 @@ public class PedidoController {
 
 		if (formaDePagamento.equals("pagarComCartaoDeCredito")) {
 
-			URL obj = new URL("https://ws.sandbox.pagseguro.uol.com.br/v2/sessions");
-			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-			String urlParameters = "email=renandeandradevaz@gmail.com&token=3F172393EBB94C36BC94CF5E092E4404";
-			con.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			wr.writeBytes(urlParameters);
-			wr.flush();
-			wr.close();
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
-
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
-			}
-			in.close();
-
-			result.include("pagseguroSessionId", response.toString().split("<session><id>")[1].split("</id></session>")[0]);
+			result.include("pagseguroSessionId", new PagSeguroService().gerarSessionId());
 			result.forwardTo("/WEB-INF/jsp//pedido/pagarComCartaoDeCredito.jsp");
 			return;
 		}
@@ -303,6 +281,17 @@ public class PedidoController {
 			result.include("sucesso", "Pedido feito com sucesso. Você pode buscar no endereço escolhido. De segunda a sexta-feira. De 9h as 17h.");
 			result.forwardTo(this).meusPedidos();
 		}
+	}
+
+	@Funcionalidade
+	public void pagarComCartaoDeCredito(String senderHash, String creditCardToken, String nomeCartao) throws Exception {
+
+		Pedido pedido = selecionarPedidoAberto();
+
+		new PagSeguroService().executarTransacao(senderHash, creditCardToken, String.valueOf(pedido.getId()), new DecimalFormat("0.00").format(new BigDecimal(calcularTotais(pedido).getValorTotal().toString())).replaceAll(",", "."), nomeCartao);
+
+		result.include("sucesso", "Seu cartão de crédito está passando por avaliação junto com sua operadora. Assim que o pagamento for confirmado, você receberá um e-mail de confirmação");
+		concluirPedido("pagamentoFinalizadoComCartaoDeCredito");
 	}
 
 	@Funcionalidade

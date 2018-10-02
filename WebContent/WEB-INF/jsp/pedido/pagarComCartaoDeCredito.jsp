@@ -4,66 +4,76 @@
 </div>
 <br>
 <div class="fundo-branco">
-	<input type="text" id="pagseguroSessionId" value="${pagseguroSessionId}" />
-	<input type="text" id="numeroCartao" value="5555666677778884" />
+	<form>
+		<fieldset>
+			<legend>Cartão de crédito</legend>
+			<input type="hidden" id="pagseguroSessionId" value="${pagseguroSessionId}" />
+			<div class="control-group">
+				<label class="control-label">Número do cartão</label>
+				<div class="controls">
+					<input type="text" id='numero'>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Nome no cartão</label>
+				<div class="controls">
+					<input type="text" id='nome'>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Código de segurança</label>
+				<div class="controls">
+					<input type="text" id='codigo'>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Mês de expiração</label>
+				<div class="controls">
+					<input type="text" id='mes'>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Ano de expiração</label>
+				<div class="controls">
+					<input type="text" id='ano'>
+				</div>
+			</div>
+			<a class="btn btn-info" id='pagar'> Avançar </a>
+		</fieldset>
+	</form>
 </div>
 <script type="text/javascript" src="https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
+
 <script>    
 	jQuery(document).ready(function() {
 		
+		$( "#pagar" ).click(function() {
+				
 			PagSeguroDirectPayment.setSessionId(jQuery('#pagseguroSessionId').val());
 			
 			PagSeguroDirectPayment.onSenderHashReady(function(response){
 			    if(response.status == 'error') {
-			        console.log(response.message);
+			        erro(response, 'onSenderHashReady');
 			        return false;
 			    }
 
-			    var hash = response.senderHash;
-			    
-			    console.log(hash);	
+			    var senderHash = response.senderHash;
 			    
 			    PagSeguroDirectPayment.getBrand({
-			    	cardBin: jQuery('#numeroCartao').val(),
-			    		success: function(response) {
-			    			console.log("sucesso");
-			    			console.log(response.brand.name);
-			    			
-			    			
-			    			
-			    			
-			    			PagSeguroDirectPayment.getInstallments({	
-			    				amount: 200,
-			    				brand: response.brand.name,
-			    				maxInstallmentNoInterest: 2,
-			    				success: function(response) {
-			    					console.log(response.installments);
-			    			},
-			    				error: function(response) {
-			    					console.log("erro: " + response);
-			    				},
-			    				complete: function(response) {
-			    				}
-			    			});
-			    			
-			    			
-			    			
-			    			
-			    			
-			    			
+			    	cardBin: jQuery('#numero').val(),
+			    		success: function(response) {			    			
+
 			    			PagSeguroDirectPayment.createCardToken({
-			    				cardNumber: "5555666677778884",
+			    				cardNumber: jQuery('#numero').val(),
 			    				brand: response.brand.name,
-			    				cvv: "123",
-			    				expirationMonth: "12",
-			    				expirationYear: "2022",
+			    				cvv: jQuery('#codigo').val(),
+			    				expirationMonth: jQuery('#mes').val(),
+			    				expirationYear: jQuery('#ano').val(),
 			    				success: function(response) {
-			    					console.log("cartao de credito token");
-					    			console.log(response.card);
+					    			window.location = '<c:url value="/pedido/pagarComCartaoDeCredito"/>?senderHash=' + senderHash + '&creditCardToken=' + response.card.token + '&nomeCartao=' + jQuery('#nome').val() ;
 					    		},
 					    		error: function(response) {
-					    			console.log("erro");
-					    			console.log(response);
+					    			erro(response, 'createCardToken');
 					    		},
 					    		complete: function(response) {
 					    		}
@@ -71,12 +81,18 @@
 			    			
 			    		},
 			    		error: function(response) {
-			    			console.log("erro");
-			    			console.log(response);
+			    			erro(response, 'getBrand');
 			    		},
 			    		complete: function(response) {
 			    		}
 			    });
-			});		
+			});	
+		});
 	});
+	
+	function erro(response, method){
+		console.log("Error on method: " + method + ":");
+		console.log(response);
+		alert('Ocorreu um erro. Por favor, tente novamente.');
+	}
 </script>
