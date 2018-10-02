@@ -98,23 +98,19 @@ public class PagSeguroService {
 		String tokenPagseguro = new Configuracao().retornarConfiguracao("tokenPagseguro");
 		String emailEToken = "email=" + emailPagseguro + "&token=" + tokenPagseguro;
 
-		String request = PAGSEGURO_URL + "/transactions/notifications/" + notificationCode + "?" + emailEToken;
-		URL url = new URL(request);
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setDoOutput(true);
-		conn.setRequestMethod("GET");
-		conn.setInstanceFollowRedirects(false);
-		conn.setUseCaches(false);
-		DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-		wr.flush();
-		wr.close();
+		String url = PAGSEGURO_URL + "/transactions/notifications/" + notificationCode + "?" + emailEToken;
+
+		URL obj = new URL(url);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+		con.setRequestMethod("GET");
+		int responseCode = con.getResponseCode();
 
 		InputStream inputStream = null;
 
-		if (conn.getResponseCode() == 200) {
-			inputStream = conn.getInputStream();
+		if (responseCode == 200) {
+			inputStream = con.getInputStream();
 		} else {
-			inputStream = conn.getErrorStream();
+			inputStream = con.getErrorStream();
 		}
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
@@ -126,8 +122,8 @@ public class PagSeguroService {
 		}
 		in.close();
 
-		if (conn.getResponseCode() != 200) {
-			throw new Exception("Pagseguro retornou um código inesperado: " + conn.getResponseCode() + ". Erro: " + response.toString());
+		if (con.getResponseCode() != 200) {
+			throw new RuntimeException("Pagseguro retornou um código inesperado: " + con.getResponseCode() + ". Erro: " + response.toString());
 		}
 
 		return response.toString();
