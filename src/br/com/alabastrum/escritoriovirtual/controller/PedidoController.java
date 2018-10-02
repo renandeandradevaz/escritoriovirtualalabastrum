@@ -1,5 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
+import static br.com.caelum.vraptor.view.Results.json;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
+import br.com.alabastrum.escritoriovirtual.anotacoes.Public;
 import br.com.alabastrum.escritoriovirtual.dto.ItemPedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.PedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
@@ -292,6 +295,15 @@ public class PedidoController {
 
 		result.include("sucesso", "Seu cartão de crédito está passando por avaliação junto com sua operadora. Assim que o pagamento for confirmado, você receberá um e-mail de confirmação");
 		concluirPedido("pagamentoFinalizadoComCartaoDeCredito");
+	}
+
+	@Public
+	@Funcionalidade
+	public void pagseguroNotificacao(String notificationCode, String tokenEV) throws Exception {
+
+		if (tokenEV.equals(new Configuracao().retornarConfiguracao("tokenEV"))) {
+			result.use(json()).from(notificationCode + " - " + tokenEV).serialize();
+		}
 	}
 
 	@Funcionalidade
