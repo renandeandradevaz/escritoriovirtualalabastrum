@@ -61,7 +61,7 @@ body {
 }
 
 .nodeExample1 {
-	padding: 2px;
+	padding-top: 20px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 50%;
@@ -72,8 +72,8 @@ body {
 	font-size: 12px;
 	text-align: center;
 	color: white;
-    font-weight: bold;
-    height: 80px;
+	font-weight: bold;
+	height: 80px;
 }
 
 .nodeExample1 img {

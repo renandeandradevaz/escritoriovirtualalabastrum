@@ -102,6 +102,7 @@ public class PagSeguroService {
 		URL url = new URL(request);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setDoOutput(true);
+		conn.setRequestMethod("GET");
 		conn.setInstanceFollowRedirects(false);
 		conn.setUseCaches(false);
 		DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
