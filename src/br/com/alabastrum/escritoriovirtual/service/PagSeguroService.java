@@ -14,7 +14,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.Configuracao;
 
 public class PagSeguroService {
 
-	private static final String PAGSEGURO_URL = "https://ws.sandbox.pagseguro.uol.com.br/v2";
+	private static final String PAGSEGURO_URL = "https://ws.pagseguro.uol.com.br/v2";
 
 	public String gerarSessionId() throws Exception {
 
