@@ -36,6 +36,7 @@ import br.com.alabastrum.escritoriovirtual.service.PedidoService;
 import br.com.alabastrum.escritoriovirtual.service.PosicoesService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
+import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Post;
@@ -302,7 +303,32 @@ public class PedidoController {
 	public void pagseguroNotificacao(String notificationCode, String tokenEV) throws Exception {
 
 		if (tokenEV.equals(new Configuracao().retornarConfiguracao("tokenEV"))) {
-			result.use(json()).from(notificationCode + " - " + tokenEV).serialize();
+
+			String xml = new PagSeguroService().consultarTransacao(notificationCode);
+
+			String status = xml.split("<status>")[1].split("</status>")[0];
+			Integer idPedido = Integer.valueOf(xml.split("<items><item><id>")[1].split("</id>")[0]);
+
+			if (status.equals("3")) {
+
+				Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+				pedido.setStatus("PAGO");
+				hibernateUtil.salvarOuAtualizar(pedido);
+
+				Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+
+				
+				
+				usuario.seteMail("renan.vaz@bemobi.com.br");
+
+				
+				
+				
+				
+				Mail.enviarEmail("Cartão de crédito confirmado", "Seu cartão de crédito foi confirmado e o pagamento concluído. Seu pedido de código " + idPedido + " está pronto para entrega.", usuario.geteMail());
+
+				result.use(json()).from("Sucesso!").serialize();
+			}
 		}
 	}
 

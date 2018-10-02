@@ -64,15 +64,16 @@ body {
 	padding: 2px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
-	border-radius: 20px;
+	border-radius: 50%;
 	background-color: #25b5ae;
 	border: 1px solid #8bcccc;
-	width: 100px;
+	width: 120px;
 	font-family: Tahoma;
 	font-size: 12px;
 	text-align: center;
 	color: white;
     font-weight: bold;
+    height: 80px;
 }
 
 .nodeExample1 img {
