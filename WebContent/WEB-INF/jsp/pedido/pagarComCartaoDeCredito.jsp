@@ -93,6 +93,6 @@
 	function erro(response, method){
 		console.log("Error on method: " + method + ":");
 		console.log(response);
-		alert('Ocorreu um erro. Por favor, tente novamente.');
+		alert('Ocorreu um erro. Por favor, reveja os dados do seu cartao e tente novamente.');
 	}
 </script>
