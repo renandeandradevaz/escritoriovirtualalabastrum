@@ -57,7 +57,7 @@ public class HibernateInterceptor implements Interceptor {
 
 					String userAgent = "User-Agent: " + request.getHeader("User-Agent") + "<br> <br> <br>";
 
-					//Mail.enviarEmail("Exception no EV para o usuario com codigo = " + sessaoUsuario.getUsuario().getId_Codigo(), userAgent + errorString);
+					Mail.enviarEmail("Exception no EV para o usuario com codigo = " + sessaoUsuario.getUsuario().getId_Codigo(), userAgent + errorString);
 				}
 			} catch (Exception e2) {
 			}
