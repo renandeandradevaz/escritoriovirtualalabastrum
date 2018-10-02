@@ -317,14 +317,6 @@ public class PedidoController {
 
 				Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
 
-				
-				
-				usuario.seteMail("renan.vaz@bemobi.com.br");
-
-				
-				
-				
-				
 				Mail.enviarEmail("Cartão de crédito confirmado", "Seu cartão de crédito foi confirmado e o pagamento concluído. Seu pedido de código " + idPedido + " está pronto para entrega.", usuario.geteMail());
 
 				result.use(json()).from("Sucesso!").serialize();
