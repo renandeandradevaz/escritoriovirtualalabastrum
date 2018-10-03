@@ -319,8 +319,18 @@ public class PedidoController {
 
 				Mail.enviarEmail("Cartão de crédito confirmado", "Seu cartão de crédito foi confirmado e o pagamento concluído. Seu pedido de código " + idPedido + " está pronto para entrega.", usuario.geteMail());
 
-				result.use(json()).from("Sucesso!").serialize();
+				result.use(json()).from("Pagamento realizado com sucesso. Status pagseguro = 3").serialize();
+
+			} else {
+
+				String pagamentoNaoRealizadoMessage = "Pagamento não realizado. Status diferente de 3. Status = " + status;
+
+				Mail.enviarEmail(pagamentoNaoRealizadoMessage, xml);
+
+				result.use(json()).from(pagamentoNaoRealizadoMessage);
 			}
+		} else {
+			result.use(json()).from("tokenEV incorreto").serialize();
 		}
 	}
 
