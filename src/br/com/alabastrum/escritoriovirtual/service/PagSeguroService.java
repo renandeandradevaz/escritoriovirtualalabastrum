@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -42,7 +44,9 @@ public class PagSeguroService {
 		return response.toString().split("<session><id>")[1].split("</id></session>")[0];
 	}
 
-	public void executarTransacao(String senderHash, String creditCardToken, String pedidoId, String valorTotal, String nome) throws Exception {
+	public void executarTransacao(String senderHash, String creditCardToken, String pedidoId, String valorTotal, String nome, String parcelas) throws Exception {
+
+		String valorDaParcela = new DecimalFormat("0.00").format(new BigDecimal(valorTotal).divide(new BigDecimal(parcelas))).toString().replaceAll(",", ".");
 
 		String emailPagseguro = new Configuracao().retornarConfiguracao("emailPagseguro");
 		String tokenPagseguro = new Configuracao().retornarConfiguracao("tokenPagseguro");
@@ -51,7 +55,7 @@ public class PagSeguroService {
 		String senderEmail = new Configuracao().retornarConfiguracao("senderEmail");
 		String tokenEV = new Configuracao().retornarConfiguracao("tokenEV");
 
-		String urlParameters = "paymentMode=default&paymentMethod=creditCard&receiverEmail=" + emailPagseguro + "&currency=BRL&itemId1=" + pedidoId + "&itemDescription1=Pedido " + pedidoId + "&itemAmount1=" + valorTotal + "&itemQuantity1=1&notificationURL=https://escritoriovirtual.alabastrum.com.br/pedido/pagseguroNotificacao?tokenEV=" + tokenEV + "&senderEmail=" + senderEmail + "&senderHash=" + senderHash + "&shippingAddressCountry=BRA&shippingType=1&creditCardToken=" + creditCardToken + "&installmentQuantity=1&installmentValue=" + valorTotal + "&senderName=Jose%20Comprador&senderCPF=01234567890&senderAreaCode=21&senderPhone=56273440&shippingAddressStreet=Teste&shippingAddressNumber=1234&shippingAddressDistrict=Teste&shippingAddressPostalCode=01452002&shippingAddressCity=RioDeJaneiro&shippingAddressState=RJ&shippingAddressCountry=BRA&shippingType=1&creditCardHolderName=" + nome + "&creditCardHolderCPF=01234567890&creditCardHolderBirthDate=27%2F10%2F1987&creditCardHolderAreaCode=21&creditCardHolderPhone=56273440&billingAddressStreet=Teste&billingAddressNumber=1234&billingAddressComplement=teste&billingAddressDistrict=teste&billingAddressPostalCode=01452002&billingAddressCity=teste&billingAddressState=RJ&billingAddressCountry=BRA";
+		String urlParameters = "paymentMode=default&paymentMethod=creditCard&receiverEmail=" + emailPagseguro + "&currency=BRL&itemId1=" + pedidoId + "&itemDescription1=Pedido " + pedidoId + "&itemAmount1=" + valorTotal + "&itemQuantity1=1&notificationURL=https://escritoriovirtual.alabastrum.com.br/pedido/pagseguroNotificacao?tokenEV=" + tokenEV + "&senderEmail=" + senderEmail + "&senderHash=" + senderHash + "&shippingAddressCountry=BRA&shippingType=1&creditCardToken=" + creditCardToken + "&installmentQuantity=" + parcelas + "&installmentValue=" + valorDaParcela + "&noInterestInstallmentQuantity=6&senderName=Distribuidor%20Alabastrum&senderCPF=01234567890&senderAreaCode=21&senderPhone=56273440&shippingAddressStreet=Teste&shippingAddressNumber=1234&shippingAddressDistrict=Teste&shippingAddressPostalCode=01452002&shippingAddressCity=RioDeJaneiro&shippingAddressState=RJ&shippingAddressCountry=BRA&shippingType=1&creditCardHolderName=" + nome + "&creditCardHolderCPF=01234567890&creditCardHolderBirthDate=27%2F10%2F1987&creditCardHolderAreaCode=21&creditCardHolderPhone=56273440&billingAddressStreet=Teste&billingAddressNumber=1234&billingAddressComplement=teste&billingAddressDistrict=teste&billingAddressPostalCode=01452002&billingAddressCity=teste&billingAddressState=RJ&billingAddressCountry=BRA";
 
 		byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 		int postDataLength = postData.length;

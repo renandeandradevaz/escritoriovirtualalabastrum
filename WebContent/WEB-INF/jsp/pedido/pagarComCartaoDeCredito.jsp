@@ -38,10 +38,24 @@
 					<input type="text" id='ano'>
 				</div>
 			</div>
+			<div class="control-group">
+				<label class="control-label">Quantidade de parcelas</label>
+				<div class="controls">
+					<select id='parcelas'>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+					</select>
+				</div>
+			</div>
 			<a class="btn btn-info" id='pagar'> Avançar </a>
 		</fieldset>
 	</form>
 </div>
+
 <script type="text/javascript" src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
 
 <script>    
@@ -58,7 +72,7 @@
 			    }
 
 			    var senderHash = response.senderHash;
-			    
+
 			    PagSeguroDirectPayment.getBrand({
 			    	cardBin: jQuery('#numero').val(),
 			    		success: function(response) {			    			
@@ -70,7 +84,7 @@
 			    				expirationMonth: jQuery('#mes').val(),
 			    				expirationYear: jQuery('#ano').val(),
 			    				success: function(response) {
-					    			window.location = '<c:url value="/pedido/pagarComCartaoDeCredito"/>?senderHash=' + senderHash + '&creditCardToken=' + response.card.token + '&nomeCartao=' + jQuery('#nome').val() ;
+					    			window.location = '<c:url value="/pedido/pagarComCartaoDeCredito"/>?senderHash=' + senderHash + '&creditCardToken=' + response.card.token + '&nomeCartao=' + jQuery('#nome').val() + "&parcelas=" + jQuery('#parcelas').val();
 					    		},
 					    		error: function(response) {
 					    			erro(response, 'createCardToken');
