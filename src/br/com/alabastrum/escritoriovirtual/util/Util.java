@@ -1,5 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Collection;
@@ -98,5 +100,12 @@ public class Util {
 		meses.put(11, "Dez");
 
 		return meses.get(mes);
+	}
+
+	public static String getExceptionMessage(Exception e) {
+
+		StringWriter stringWriter = new StringWriter();
+		e.printStackTrace(new PrintWriter(stringWriter));
+		return stringWriter.toString();
 	}
 }

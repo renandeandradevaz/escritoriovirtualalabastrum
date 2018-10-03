@@ -1,13 +1,11 @@
 package br.com.alabastrum.escritoriovirtual.interceptor;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import javax.servlet.http.HttpServletRequest;
 
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Mail;
+import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Result;
@@ -46,10 +44,7 @@ public class HibernateInterceptor implements Interceptor {
 
 			hibernateUtil.fecharSessao();
 
-			StringWriter stringWriter = new StringWriter();
-			e1.printStackTrace(new PrintWriter(stringWriter));
-			String errorString = stringWriter.toString();
-
+			String errorString = Util.getExceptionMessage(e1);
 			result.include("exception", errorString);
 
 			try {

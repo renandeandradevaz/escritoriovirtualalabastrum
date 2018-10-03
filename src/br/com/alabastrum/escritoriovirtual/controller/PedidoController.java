@@ -306,28 +306,39 @@ public class PedidoController {
 
 			String xml = new PagSeguroService().consultarTransacao(notificationCode);
 
-			String status = xml.split("<status>")[1].split("</status>")[0];
-			Integer idPedido = Integer.valueOf(xml.split("<items><item><id>")[1].split("</id>")[0]);
+			try {
 
-			if (status.equals("3")) {
+				String status = xml.split("<status>")[1].split("</status>")[0];
+				Integer idPedido = Integer.valueOf(xml.split("<items><item><id>")[1].split("</id>")[0]);
 
-				Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
-				pedido.setStatus("PAGO");
-				hibernateUtil.salvarOuAtualizar(pedido);
+				if (status.equals("3")) {
 
-				Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+					Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+					pedido.setStatus("PAGO");
+					hibernateUtil.salvarOuAtualizar(pedido);
 
-				Mail.enviarEmail("Cartão de crédito confirmado", "Seu cartão de crédito foi confirmado e o pagamento concluído. Seu pedido de código " + idPedido + " está pronto para entrega.", usuario.geteMail());
+					Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
 
-				result.use(json()).from("Pagamento realizado com sucesso. Status pagseguro = 3").serialize();
+					Mail.enviarEmail("Cartão de crédito confirmado", "Seu cartão de crédito foi confirmado e o pagamento concluído. Seu pedido de código " + idPedido + " está pronto para entrega.", usuario.geteMail());
 
-			} else {
+					result.use(json()).from("Pagamento realizado com sucesso. Status pagseguro = 3").serialize();
 
-				String pagamentoNaoRealizadoMessage = "Pagamento não realizado. Status diferente de 3. Status = " + status;
+				} else {
 
-				Mail.enviarEmail(pagamentoNaoRealizadoMessage, xml);
+					String pagamentoNaoRealizadoMessage = "Pagamento não realizado. Status diferente de 3. Status = " + status;
 
-				result.use(json()).from(pagamentoNaoRealizadoMessage);
+					Mail.enviarEmail(pagamentoNaoRealizadoMessage, xml);
+
+					result.use(json()).from(pagamentoNaoRealizadoMessage);
+				}
+
+			} catch (Exception e) {
+
+				String exceptionMessage = Util.getExceptionMessage(e);
+
+				Mail.enviarEmail("Exception no pagseguroNotificacao", "Exception: " + exceptionMessage + "<br><br><br> XML: " + xml);
+
+				result.use(json()).from("Ocorreu um erro. Exception: " + exceptionMessage).serialize();
 			}
 		} else {
 			result.use(json()).from("tokenEV incorreto").serialize();
