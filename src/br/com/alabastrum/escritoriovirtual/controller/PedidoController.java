@@ -314,12 +314,16 @@ public class PedidoController {
 				if (status.equals("3")) {
 
 					Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
-					pedido.setStatus("PAGO");
-					hibernateUtil.salvarOuAtualizar(pedido);
 
-					Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+					if (pedido != null) {
 
-					Mail.enviarEmail("Cartão de crédito confirmado", "Seu cartão de crédito foi confirmado e o pagamento concluído. Seu pedido de código " + idPedido + " está pronto para entrega.", usuario.geteMail());
+						pedido.setStatus("PAGO");
+						hibernateUtil.salvarOuAtualizar(pedido);
+
+						Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+
+						Mail.enviarEmail("Cartão de crédito confirmado", "Seu cartão de crédito foi confirmado e o pagamento concluído. Seu pedido de código " + idPedido + " está pronto para entrega.", usuario.geteMail());
+					}
 
 					result.use(json()).from("Pagamento realizado com sucesso. Status pagseguro = 3").serialize();
 
