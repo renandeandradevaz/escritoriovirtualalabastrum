@@ -292,7 +292,7 @@ public class PedidoController {
 
 		Pedido pedido = selecionarPedidoAberto();
 
-		new PagSeguroService().executarTransacao(senderHash, creditCardToken, String.valueOf(pedido.getId()), new DecimalFormat("0.00").format(new BigDecimal(calcularTotais(pedido).getValorTotal().toString())).replaceAll(",", "."), nomeCartao, parcelas);
+		new PagSeguroService().executarTransacao(senderHash, creditCardToken, String.valueOf(pedido.getId()), new DecimalFormat("0.00").format(new BigDecimal(calcularTotais(pedido).getValorTotal().toString())).replaceAll(",", "."), nomeCartao, parcelas, pedido.getIdCodigo());
 
 		result.include("sucesso", "Seu cartão de crédito está passando por avaliação junto com sua operadora. Assim que o pagamento for confirmado, você receberá um e-mail de confirmação");
 		concluirPedido("pagamentoFinalizadoComCartaoDeCredito");
