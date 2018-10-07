@@ -12,30 +12,35 @@
 				<label class="control-label">Número do cartão</label>
 				<div class="controls">
 					<input type="text" id='numero'>
+					<span style="color: grey">Ex: 4111 1234 5678 9000</span>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label">Nome no cartão</label>
 				<div class="controls">
 					<input type="text" id='nome'>
+					<span style="color: grey">Ex: JOAO A SILVA</span>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label">Código de segurança</label>
 				<div class="controls">
 					<input type="text" id='codigo'>
+					<span style="color: grey">Ex: 123</span>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label">Mês de expiração</label>
 				<div class="controls">
 					<input type="text" id='mes'>
+					<span style="color: grey">Ex: 05</span>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label">Ano de expiração</label>
 				<div class="controls">
 					<input type="text" id='ano'>
+					<span style="color: grey">Ex: 2023</span>
 				</div>
 			</div>
 			<div class="control-group">
@@ -74,11 +79,11 @@
 			    var senderHash = response.senderHash;
 
 			    PagSeguroDirectPayment.getBrand({
-			    	cardBin: jQuery('#numero').val(),
+			    	cardBin: jQuery('#numero').val().replace(/ /g, ""),
 			    		success: function(response) {			    			
 
 			    			PagSeguroDirectPayment.createCardToken({
-			    				cardNumber: jQuery('#numero').val(),
+			    				cardNumber: jQuery('#numero').val().replace(/ /g, ""),
 			    				brand: response.brand.name,
 			    				cvv: jQuery('#codigo').val(),
 			    				expirationMonth: jQuery('#mes').val(),
