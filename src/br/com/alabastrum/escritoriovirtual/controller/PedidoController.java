@@ -282,7 +282,11 @@ public class PedidoController {
 			result.forwardTo(this).pesquisarPedidosDosDistribuidores(null, null);
 
 		} else {
-			result.include("sucesso", "Pedido feito com sucesso. Você pode buscar no endereço escolhido. De segunda a sexta-feira. De 9h as 17h.");
+
+			if (!formaDePagamento.equalsIgnoreCase("pagamentoFinalizadoComCartaoDeCredito")) {
+				result.include("sucesso", "Pedido feito com sucesso. Você pode buscar no endereço escolhido. De segunda a sexta-feira. De 9h as 17h.");
+			}
+
 			result.forwardTo(this).meusPedidos();
 		}
 	}
