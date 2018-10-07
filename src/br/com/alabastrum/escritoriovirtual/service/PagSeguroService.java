@@ -9,14 +9,25 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Configuracao;
+import br.com.alabastrum.escritoriovirtual.modelo.DadosFake;
+import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 
 public class PagSeguroService {
 
 	private static final String PAGSEGURO_URL = "https://ws.pagseguro.uol.com.br/v2";
+
+	private HibernateUtil hibernateUtil;
+
+	public PagSeguroService(HibernateUtil hibernateUtil) {
+
+		this.hibernateUtil = hibernateUtil;
+	}
 
 	public String gerarSessionId() throws Exception {
 
@@ -43,19 +54,31 @@ public class PagSeguroService {
 
 		return response.toString().split("<session><id>")[1].split("</id></session>")[0];
 	}
-	
 
-	public void executarTransacao(String senderHash, String creditCardToken, String pedidoId, String valorTotal, String nome, String parcelas, Integer idCodigoUsuario) throws Exception {
+	public void executarTransacao(String senderHash, String creditCardToken, String pedidoId, String valorTotal, String nomeCartao, String parcelas, Usuario usuario) throws Exception {
 
 		String valorDaParcela = new DecimalFormat("0.00").format(new BigDecimal(valorTotal).divide(new BigDecimal(parcelas))).toString().replaceAll(",", ".");
 
+		String tokenEV = new Configuracao().retornarConfiguracao("tokenEV");
 		String emailPagseguro = new Configuracao().retornarConfiguracao("emailPagseguro");
 		String tokenPagseguro = new Configuracao().retornarConfiguracao("tokenPagseguro");
 		String emailEToken = "email=" + emailPagseguro + "&token=" + tokenPagseguro;
 
-		String tokenEV = new Configuracao().retornarConfiguracao("tokenEV");
+		DadosFake dadosFake = new DadosFake();
+		dadosFake.setId(usuario.getId_Codigo());
+		dadosFake = hibernateUtil.selecionar(dadosFake);
 
-		String urlParameters = "paymentMode=default&paymentMethod=creditCard&receiverEmail=" + emailPagseguro + "&currency=BRL&itemId1=" + pedidoId + "&itemDescription1=Pedido " + pedidoId + "&itemAmount1=" + valorTotal + "&itemQuantity1=1&notificationURL=https://escritoriovirtual.alabastrum.com.br/pedido/pagseguroNotificacao?tokenEV=" + tokenEV + "&senderEmail=" + senderEmail + "&senderHash=" + senderHash + "&shippingAddressCountry=BRA&shippingType=1&creditCardToken=" + creditCardToken + "&installmentQuantity=" + parcelas + "&installmentValue=" + valorDaParcela + "&noInterestInstallmentQuantity=6&senderName=Distribuidor%20Alabastrum&senderCPF=01234567890&senderAreaCode=21&senderPhone=56273440&shippingAddressStreet=Teste&shippingAddressNumber=1234&shippingAddressDistrict=Teste&shippingAddressPostalCode=01452002&shippingAddressCity=RioDeJaneiro&shippingAddressState=RJ&shippingAddressCountry=BRA&shippingType=1&creditCardHolderName=" + nome + "&creditCardHolderCPF=01234567890&creditCardHolderBirthDate=27%2F10%2F1987&creditCardHolderAreaCode=21&creditCardHolderPhone=56273440&billingAddressStreet=Teste&billingAddressNumber=1234&billingAddressDistrict=teste&billingAddressPostalCode=01452002&billingAddressCity=teste&billingAddressState=RJ&billingAddressCountry=BRA";
+		String email = usuario.geteMail();
+		String cpf = usuario.getCPF();
+		String nome = usuario.getvNome();
+		String telefone = dadosFake.getTelefone();
+		String bairro = dadosFake.getBairro();
+		String rua = dadosFake.getRua();
+		String numero = dadosFake.getNumero();
+		String cep = dadosFake.getCep();
+		String dataNascimento = new SimpleDateFormat("dd/MM/yyyy").format(dadosFake.getDataNascimento());
+
+		String urlParameters = "paymentMode=default&paymentMethod=creditCard&receiverEmail=" + emailPagseguro + "&currency=BRL&itemId1=" + pedidoId + "&itemDescription1=Pedido " + pedidoId + "&itemAmount1=" + valorTotal + "&itemQuantity1=1&notificationURL=https://escritoriovirtual.alabastrum.com.br/pedido/pagseguroNotificacao?tokenEV=" + tokenEV + "&senderEmail=" + email + "&senderHash=" + senderHash + "&shippingAddressCountry=BRA&shippingType=1&creditCardToken=" + creditCardToken + "&installmentQuantity=" + parcelas + "&installmentValue=" + valorDaParcela + "&noInterestInstallmentQuantity=6&senderName=" + nome + "&senderCPF=" + cpf + "&senderAreaCode=11&senderPhone=" + telefone + "&&shippingAddressStreet=" + rua + "&shippingAddressNumber=" + numero + "&shippingAddressDistrict=" + bairro + "&shippingAddressPostalCode=" + cep + "&shippingAddressCity=Sao Paulo&shippingAddressState=SP&shippingAddressCountry=BRA&shippingType=1&creditCardHolderName=" + nomeCartao + "&creditCardHolderCPF=" + cpf + "&creditCardHolderBirthDate=" + dataNascimento + "&creditCardHolderAreaCode=11&creditCardHolderPhone=" + telefone + "&billingAddressStreet=" + rua + "&billingAddressNumber=" + numero + "&billingAddressDistrict=" + bairro + "&billingAddressPostalCode=" + cep + "&billingAddressCity=Sao Paulo&billingAddressState=SP&billingAddressCountry=BRA";
 
 		byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 		int postDataLength = postData.length;

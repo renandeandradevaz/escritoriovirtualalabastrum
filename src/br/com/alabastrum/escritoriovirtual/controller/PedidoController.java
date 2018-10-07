@@ -224,7 +224,7 @@ public class PedidoController {
 
 		if (formaDePagamento.equals("pagarComCartaoDeCredito")) {
 
-			result.include("pagseguroSessionId", new PagSeguroService().gerarSessionId());
+			result.include("pagseguroSessionId", new PagSeguroService(hibernateUtil).gerarSessionId());
 			result.forwardTo("/WEB-INF/jsp//pedido/pagarComCartaoDeCredito.jsp");
 			return;
 		}
@@ -292,7 +292,7 @@ public class PedidoController {
 
 		Pedido pedido = selecionarPedidoAberto();
 
-		new PagSeguroService().executarTransacao(senderHash, creditCardToken, String.valueOf(pedido.getId()), new DecimalFormat("0.00").format(new BigDecimal(calcularTotais(pedido).getValorTotal().toString())).replaceAll(",", "."), nomeCartao, parcelas, pedido.getIdCodigo());
+		new PagSeguroService(hibernateUtil).executarTransacao(senderHash, creditCardToken, String.valueOf(pedido.getId()), new DecimalFormat("0.00").format(new BigDecimal(calcularTotais(pedido).getValorTotal().toString())).replaceAll(",", "."), nomeCartao, parcelas, (Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())));
 
 		result.include("sucesso", "Seu cartão de crédito está passando por avaliação junto com sua operadora. Assim que o pagamento for confirmado, você receberá um e-mail de confirmação");
 		concluirPedido("pagamentoFinalizadoComCartaoDeCredito");
@@ -304,7 +304,7 @@ public class PedidoController {
 
 		if (tokenEV.equals(new Configuracao().retornarConfiguracao("tokenEV"))) {
 
-			String xml = new PagSeguroService().consultarTransacao(notificationCode);
+			String xml = new PagSeguroService(hibernateUtil).consultarTransacao(notificationCode);
 
 			try {
 
