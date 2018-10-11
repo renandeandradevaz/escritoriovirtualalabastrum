@@ -39,6 +39,24 @@
 					<input type="text" name="configuracaoAdministrativaDTO.valorMinimoPedidosPrimeiraPosicao" value="${configuracaoAdministrativaDTO.valorMinimoPedidosPrimeiraPosicao}">
 				</div>
 			</div>
+			<div class="control-group">
+				<label class="control-label"> Email pagseguro </label>
+				<div class="controls">
+					<input type="text" name="configuracaoAdministrativaDTO.emailPagseguro" value="${configuracaoAdministrativaDTO.emailPagseguro}">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label"> Token pagseguro </label>
+				<div class="controls">
+					<input type="text" name="configuracaoAdministrativaDTO.tokenPagseguro" value="${configuracaoAdministrativaDTO.tokenPagseguro}">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label"> Token EV</label>
+				<div class="controls">
+					<input type="text" name="configuracaoAdministrativaDTO.tokenEV" value="${configuracaoAdministrativaDTO.tokenEV}">
+				</div>
+			</div>
 			<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Salvar</button>
 		</fieldset>
 	</form>
