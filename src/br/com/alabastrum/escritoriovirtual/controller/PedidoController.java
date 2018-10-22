@@ -314,12 +314,12 @@ public class PedidoController {
 
 				String status = xml.split("<status>")[1].split("</status>")[0];
 				Integer idPedido = Integer.valueOf(xml.split("<items><item><id>")[1].split("</id>")[0]);
-				
+
 				if (status.equals("3") || status.equals("4")) {
 
 					Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 
-					if (pedido != null) {
+					if (pedido != null && !pedido.getStatus().equals("FINALIZADO")) {
 
 						pedido.setStatus("PAGO");
 						hibernateUtil.salvarOuAtualizar(pedido);
