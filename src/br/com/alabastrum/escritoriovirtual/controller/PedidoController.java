@@ -314,8 +314,8 @@ public class PedidoController {
 
 				String status = xml.split("<status>")[1].split("</status>")[0];
 				Integer idPedido = Integer.valueOf(xml.split("<items><item><id>")[1].split("</id>")[0]);
-
-				if (status.equals("3")) {
+				
+				if (status.equals("3") || status.equals("4")) {
 
 					Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 
@@ -333,7 +333,7 @@ public class PedidoController {
 
 				} else {
 
-					String pagamentoNaoRealizadoMessage = "Pagamento não realizado. Status diferente de 3. Status = " + status;
+					String pagamentoNaoRealizadoMessage = "Pagamento não realizado. Status diferente de 3 ou 4. Status = " + status;
 
 					Mail.enviarEmail(pagamentoNaoRealizadoMessage, xml);
 
