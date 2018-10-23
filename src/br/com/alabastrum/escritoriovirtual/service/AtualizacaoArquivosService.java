@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -245,11 +246,11 @@ public class AtualizacaoArquivosService {
 								catch (Exception e3) {
 
 									try {
-
+										
 										DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yy");
-										DateTime data = formatter.parseDateTime(colunas[i]);
-
-										field.set(entidade, data.toGregorianCalendar());
+										GregorianCalendar gregorianCalendar = new GregorianCalendar();
+										gregorianCalendar.setTime(formatter.parseLocalDateTime(colunas[i]).toDate());
+										field.set(entidade, gregorianCalendar);
 
 									} catch (Exception e4) {
 
