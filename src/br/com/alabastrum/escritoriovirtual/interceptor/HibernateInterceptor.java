@@ -60,7 +60,7 @@ public class HibernateInterceptor implements Interceptor {
 						titulo = "Exception no EV";
 					}
 
-					Mail.enviarEmail(titulo, userAgent + errorString);
+					//Mail.enviarEmail(titulo, userAgent + errorString);
 				}
 			} catch (Exception e2) {
 			}

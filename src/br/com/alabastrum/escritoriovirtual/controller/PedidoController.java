@@ -49,6 +49,7 @@ import br.com.caelum.vraptor.validator.ValidationMessage;
 public class PedidoController {
 
 	private static final String ID_USUARIO_PEDIDO = "idUsuarioPedido";
+	private static final String ID_USUARIO_LOJA_PESSOAL = "idUsuarioLojaPessoal";
 
 	private Result result;
 	private HibernateUtil hibernateUtil;
@@ -67,24 +68,37 @@ public class PedidoController {
 	@Funcionalidade
 	public void acessarTelaNovoPedido() {
 
-		Franquia franquiaFiltro = new Franquia();
+		if (this.sessaoUsuario.getUsuario().getId() == null) {
+			lojaPessoal((Integer) this.sessaoGeral.getValor(ID_USUARIO_LOJA_PESSOAL));
+		} else {
+			Franquia franquiaFiltro = new Franquia();
 
-		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
-			franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+			if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+				franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+			}
+
+			result.include("franquias", hibernateUtil.buscar(franquiaFiltro));
 		}
-
-		result.include("franquias", hibernateUtil.buscar(franquiaFiltro));
 	}
 
 	@Funcionalidade
 	public void escolherProdutos(Integer idFranquia, Integer idCodigo) {
+
+		if (this.sessaoUsuario.getUsuario().getId() == null) {
+			idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_LOJA_PESSOAL);
+
+			Franquia franquia = new Franquia();
+			franquia.setEstqNome("VENDA ONLINE");
+			franquia = this.hibernateUtil.selecionar(franquia);
+			idFranquia = franquia.getId_Estoque();
+		}
 
 		if (idCodigo == null || idCodigo == 0) {
 			idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
 		}
 		this.sessaoGeral.adicionar(ID_USUARIO_PEDIDO, idCodigo);
 
-		if (idFranquia == null || idFranquia == 0) {
+		if (idFranquia == null) {
 
 			validator.add(new ValidationMessage("Selecione uma franquia", "Erro"));
 			validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
@@ -206,7 +220,7 @@ public class PedidoController {
 
 		boolean pagamentoComSaldoHabilitado = false;
 
-		if (pedido.getIdCodigo().equals(this.sessaoUsuario.getUsuario().getId_Codigo()) || this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador()) {
+		if (this.sessaoUsuario.getUsuario().getId() != null && (pedido.getIdCodigo().equals(this.sessaoUsuario.getUsuario().getId_Codigo()) || this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador())) {
 			pagamentoComSaldoHabilitado = true;
 		}
 
@@ -483,6 +497,25 @@ public class PedidoController {
 		}
 
 		result.include("itensPedidoDTO", itensPedidoDTO);
+	}
+
+	@Public
+	@Funcionalidade
+	@Get("/lojaPessoal/{idUsuario}")
+	public void lojaPessoal(Integer idUsuario) {
+
+		this.sessaoGeral.adicionar(ID_USUARIO_LOJA_PESSOAL, idUsuario);
+		Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idUsuario));
+		Usuario usuarioFakeLojaPessoal = new Usuario();
+		usuarioFakeLojaPessoal.setvNome("Bem vindo à loja de " + usuario.getvNome());
+		this.sessaoUsuario.login(usuarioFakeLojaPessoal);
+
+		Franquia franquia = new Franquia();
+		franquia.setEstqNome("VENDA ONLINE");
+		franquia = this.hibernateUtil.selecionar(franquia);
+
+		this.escolherProdutos(franquia.getId_Estoque(), idUsuario);
+		result.forwardTo("/WEB-INF/jsp//pedido/escolherProdutos.jsp");
 	}
 
 	private void montarPedidosDTO(String status, Integer idCodigo) {
