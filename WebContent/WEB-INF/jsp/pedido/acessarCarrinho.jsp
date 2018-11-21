@@ -41,7 +41,12 @@
 		<br>
 		<br>
 		<br>
-		<a href="<c:url value="/pedido/escolherFormaDePagamento"/>" class="btn btn-success" style="float: right;">Escolher forma de pagamento</a>
+		<c:if test="${sessaoUsuario.usuario.id_Codigo != null}">
+			<a href="<c:url value="/pedido/escolherFormaDePagamento"/>" class="btn btn-success" style="float: right;">Escolher forma de pagamento</a>
+		</c:if>
+		<c:if test="${sessaoUsuario.usuario.id_Codigo == null}">
+			<a href="<c:url value="/pedido/informarDadosComprador"/>" class="btn btn-success" style="float: right;">Avançar</a>
+		</c:if>
 	</c:if>
 	<c:if test="${empty itensPedidoDTO}">
 		<h4>Seu carrinho está vazio.</h4>

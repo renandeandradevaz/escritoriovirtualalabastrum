@@ -216,6 +216,10 @@ public class PedidoController {
 		verificarPagamentoComSaldoHabilitado(pedido);
 	}
 
+	@Funcionalidade
+	public void informarDadosComprador() {
+	}
+
 	private void verificarPagamentoComSaldoHabilitado(Pedido pedido) {
 
 		boolean pagamentoComSaldoHabilitado = false;
@@ -239,7 +243,7 @@ public class PedidoController {
 		if (formaDePagamento.equals("pagarComCartaoDeCredito")) {
 
 			result.include("pagseguroSessionId", new PagSeguroService(hibernateUtil).gerarSessionId());
-			result.forwardTo("/WEB-INF/jsp//pedido/pagarComCartaoDeCredito.jsp");
+			result.forwardTo("/WEB-INF/jsp/pedido/pagarComCartaoDeCredito.jsp");
 			return;
 		}
 
