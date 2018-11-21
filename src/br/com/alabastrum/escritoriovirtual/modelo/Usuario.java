@@ -98,6 +98,10 @@ public class Usuario implements Entidade {
 
 	public Boolean getDonoDeFranquia() {
 
+		if (this.id_Codigo == null) {
+			return false;
+		}
+
 		if (Util.preenchido(this.donoDeFranquia)) {
 
 			return this.donoDeFranquia;

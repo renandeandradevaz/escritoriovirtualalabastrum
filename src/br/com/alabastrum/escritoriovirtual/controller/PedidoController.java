@@ -301,7 +301,11 @@ public class PedidoController {
 				result.include("sucesso", "Pedido feito com sucesso. Você pode buscar no endereço escolhido. De segunda a sexta-feira. De 9h as 17h.");
 			}
 
-			result.forwardTo(this).meusPedidos();
+			if (this.sessaoUsuario.getUsuario().getId() == null) {
+				result.forwardTo(this).finalizarCompraLojaPessoal();
+			} else {
+				result.forwardTo(this).meusPedidos();
+			}
 		}
 	}
 
@@ -380,6 +384,11 @@ public class PedidoController {
 	}
 
 	@Funcionalidade
+	public void finalizarCompraLojaPessoal() {
+		result.include("sucesso", "Pedido feito com sucesso.");
+	}
+
+	@Funcionalidade
 	public void pesquisarPedidosDosDistribuidores(String status, Integer idCodigo) {
 
 		if (verificarPermissaoPedidosAdministrativos()) {
@@ -397,7 +406,7 @@ public class PedidoController {
 
 	private boolean verificarPermissaoPedidosAdministrativos() {
 
-		return this.sessaoUsuario.getUsuario().getDonoDeFranquia() || this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador();
+		return this.sessaoUsuario.getUsuario().getId() != null && (this.sessaoUsuario.getUsuario().getDonoDeFranquia() || this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador());
 	}
 
 	@Funcionalidade
