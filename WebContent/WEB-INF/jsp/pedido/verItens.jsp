@@ -2,6 +2,15 @@
 <div class="fundo-branco">
 	<h4>Itens do pedido</h4>
 </div>
+<c:if test="${not empty comprador}">
+	<br>
+	<div class="fundo-branco">
+		<h4>Dados do comprador</h4>
+		<p>Nome: ${comprador.nome}</p>
+		<p>Email: ${comprador.email}</p>
+		<p>Telefone: ${comprador.telefone}</p>
+	</div>
+</c:if>
 <br>
 <div class="fundo-branco">
 	<table class="table table-striped table-bordered">

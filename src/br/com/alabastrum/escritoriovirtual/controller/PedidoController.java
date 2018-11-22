@@ -230,7 +230,7 @@ public class PedidoController {
 	}
 
 	@Funcionalidade
-	public void salvarDadosComprador(String nome, String cpf, String email, String telefone) {
+	public void salvarDadosComprador(String nome, String cpf, String email, String telefone) throws Exception {
 
 		cpf = cpf.replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", "");
 		telefone = telefone.replaceAll(" ", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("-", "");
@@ -253,7 +253,7 @@ public class PedidoController {
 		pedido.setComprador(comprador);
 		hibernateUtil.salvarOuAtualizar(pedido);
 
-		result.forwardTo(this).escolherFormaDePagamento();
+		result.forwardTo(this).concluirPedido("pagarComCartaoDeCredito");
 	}
 
 	private void verificarPagamentoComSaldoHabilitado(Pedido pedido) {
@@ -425,7 +425,6 @@ public class PedidoController {
 
 	@Funcionalidade
 	public void finalizarCompraLojaPessoal() {
-		result.include("sucesso", "Pedido feito com sucesso.");
 	}
 
 	@Funcionalidade
@@ -537,15 +536,18 @@ public class PedidoController {
 	@Get("/pedido/verItens/{idPedido}")
 	public void verItens(Integer idPedido) {
 
+		Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+
 		List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
 
-		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido((Pedido) hibernateUtil.selecionar(new Pedido(idPedido)))) {
+		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 			Integer quantidade = itemPedido.getQuantidade();
 			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, itemPedido.getPrecoUnitario(), 0, null));
 		}
 
 		result.include("itensPedidoDTO", itensPedidoDTO);
+		result.include("comprador", pedido.getComprador());
 	}
 
 	@Public
