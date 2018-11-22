@@ -24,6 +24,7 @@
       
         <mapping class="br.com.alabastrum.escritoriovirtual.modelo.BoasVindas" />
       	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Categoria" />
+      	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Comprador" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Configuracao" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.DadosFake" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Estoque" />

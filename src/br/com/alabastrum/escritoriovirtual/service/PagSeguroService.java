@@ -14,8 +14,10 @@ import java.text.SimpleDateFormat;
 import javax.net.ssl.HttpsURLConnection;
 
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.modelo.Comprador;
 import br.com.alabastrum.escritoriovirtual.modelo.Configuracao;
 import br.com.alabastrum.escritoriovirtual.modelo.DadosFake;
+import br.com.alabastrum.escritoriovirtual.modelo.Pedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 
 public class PagSeguroService {
@@ -64,13 +66,30 @@ public class PagSeguroService {
 		String tokenPagseguro = new Configuracao().retornarConfiguracao("tokenPagseguro");
 		String emailEToken = "email=" + emailPagseguro + "&token=" + tokenPagseguro;
 
-		DadosFake dadosFake = new DadosFake();
-		dadosFake.setId(usuario.getId_Codigo());
-		dadosFake = hibernateUtil.selecionar(dadosFake);
+		Pedido pedido = hibernateUtil.selecionar(new Pedido(Integer.valueOf(pedidoId)));
 
-		String email = usuario.geteMail();
-		String cpf = usuario.getCPF();
-		String nome = usuario.getvNome();
+		String email = null;
+		String cpf = null;
+		String nome = null;
+
+		DadosFake dadosFake = new DadosFake();
+
+		Comprador comprador = pedido.getComprador();
+		if (comprador != null) {
+
+			dadosFake.setId(comprador.getId());
+			email = comprador.getEmail();
+			cpf = comprador.getCpf();
+			nome = comprador.getNome();
+
+		} else {
+			dadosFake.setId(usuario.getId_Codigo());
+			email = usuario.geteMail();
+			cpf = usuario.getCPF();
+			nome = usuario.getvNome();
+		}
+
+		dadosFake = hibernateUtil.selecionar(dadosFake);
 		String telefone = dadosFake.getTelefone();
 		String bairro = dadosFake.getBairro();
 		String rua = dadosFake.getRua();

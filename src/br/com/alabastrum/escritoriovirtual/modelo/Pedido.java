@@ -5,6 +5,7 @@ import java.util.GregorianCalendar;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.Index;
 
@@ -21,6 +22,17 @@ public class Pedido implements Entidade {
 	private Boolean completed;
 	private Integer idFranquia;
 	private String status;
+
+	@ManyToOne
+	private Comprador comprador;
+
+	public Comprador getComprador() {
+		return comprador;
+	}
+
+	public void setComprador(Comprador comprador) {
+		this.comprador = comprador;
+	}
 
 	@Index(name = "index_idCodigo_pedido")
 	private Integer idCodigo;

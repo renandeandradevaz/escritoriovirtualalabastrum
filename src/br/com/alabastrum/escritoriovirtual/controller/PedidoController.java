@@ -21,6 +21,7 @@ import br.com.alabastrum.escritoriovirtual.dto.PedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
+import br.com.alabastrum.escritoriovirtual.modelo.Comprador;
 import br.com.alabastrum.escritoriovirtual.modelo.Configuracao;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.ItemPedido;
@@ -144,7 +145,7 @@ public class PedidoController {
 					quantidade = itemPedido.getQuantidade();
 				}
 
-				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit(), quantidadeEmEstoque, null));
+				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()), quantidadeEmEstoque, null));
 			}
 		}
 
@@ -152,6 +153,14 @@ public class PedidoController {
 
 		result.include("totais", calcularTotais(pedido));
 		result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), pedido.getIdCodigo());
+	}
+
+	private BigDecimal calcularPrecoUnitarioProduto(BigDecimal precoUnitario) {
+
+		if (this.sessaoUsuario.getUsuario().getId() == null) {
+			return precoUnitario.multiply(new BigDecimal("2"));
+		}
+		return precoUnitario;
 	}
 
 	@Funcionalidade
@@ -166,7 +175,7 @@ public class PedidoController {
 			itemPedido = new ItemPedido();
 			itemPedido.setPedido(pedido);
 			itemPedido.setIdProduto(idProduto);
-			itemPedido.setPrecoUnitario(produto.getPrdPreco_Unit());
+			itemPedido.setPrecoUnitario(calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()));
 		}
 
 		itemPedido.setQuantidade(quantidade);
@@ -191,7 +200,7 @@ public class PedidoController {
 			for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 				Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 				Integer quantidade = itemPedido.getQuantidade();
-				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, produto.getPrdPreco_Unit(), 0, null));
+				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, itemPedido.getPrecoUnitario(), 0, null));
 			}
 		}
 
@@ -218,6 +227,33 @@ public class PedidoController {
 
 	@Funcionalidade
 	public void informarDadosComprador() {
+	}
+
+	@Funcionalidade
+	public void salvarDadosComprador(String nome, String cpf, String email, String telefone) {
+
+		cpf = cpf.replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", "");
+		telefone = telefone.replaceAll(" ", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("-", "");
+
+		Comprador comprador = new Comprador();
+		comprador.setCpf(cpf);
+		comprador = hibernateUtil.selecionar(comprador);
+
+		if (comprador == null) {
+			comprador = new Comprador();
+		}
+
+		comprador.setCpf(cpf);
+		comprador.setNome(nome);
+		comprador.setEmail(email);
+		comprador.setTelefone(telefone);
+		hibernateUtil.salvarOuAtualizar(comprador);
+
+		Pedido pedido = selecionarPedidoAberto();
+		pedido.setComprador(comprador);
+		hibernateUtil.salvarOuAtualizar(pedido);
+
+		result.forwardTo(this).escolherFormaDePagamento();
 	}
 
 	private void verificarPagamentoComSaldoHabilitado(Pedido pedido) {
