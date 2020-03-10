@@ -89,6 +89,6 @@ public class AtualizacaoDadosController {
 		ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PRE_CADASTRO);
 		Mail.enviarEmail("Pré cadastro pelo site", textoArquivo);
 
-		result.redirectTo("https://alabastrum.com.br/sucesso");
+		result.redirectTo("https://dunastes.com.br/sucesso");
 	}
 }
