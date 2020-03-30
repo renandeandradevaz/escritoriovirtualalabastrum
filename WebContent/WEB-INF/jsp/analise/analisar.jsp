@@ -2,24 +2,24 @@
 <br>
 <br>
 <br>
-⁄ltima atualizaÁ„o do sistema: ${ultimaAtualizacaoSistema}
+√öltima atualiza√ß√£o do sistema: ${ultimaAtualizacaoSistema}
 <br>
 <br>
-Sessıes abertas hibernate: ${sessoesAbertasHibernate}
+Sess√µes abertas hibernate: ${sessoesAbertasHibernate}
 <br>
-Sessıes fechadas hibernate: ${sessoesFechadasHibernate}
-<br>
-<br>
-<h4>Total de acessos (InÌcio da contagem em 07/06/2018): &nbsp;&nbsp; ${total}</h4>
-<h4>MÈdia di·ria: ${mediaDiaria}</h4>
+Sess√µes fechadas hibernate: ${sessoesFechadasHibernate}
 <br>
 <br>
-<h3 style="text-align: center">Usu·rios que mais acessam</h3>
+<h4>Total de acessos (In√≠cio da contagem em 30/03/2020): &nbsp;&nbsp; ${total}</h4>
+<h4>M√©dia di√°ria: ${mediaDiaria}</h4>
+<br>
+<br>
+<h3 style="text-align: center">Usu√°rios que mais acessam</h3>
 <br>
 <table style="width: 100%">
 	<thead>
 		<tr>
-			<th>Usu·rio</th>
+			<th>Usu√°rio</th>
 			<th>Quantidade de acessos</th>
 		</tr>
 	</thead>
