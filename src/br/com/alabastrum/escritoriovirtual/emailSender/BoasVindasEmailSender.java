@@ -83,13 +83,13 @@ public class BoasVindasEmailSender {
 
 		String textoEmail = "";
 		textoEmail += "Olá " + usuario.getvNome();
-		textoEmail += "<br> O seu código de distribuidor na Alabastrum é:  <b> " + usuario.getId_Codigo() + "</b>";
-		textoEmail += "<br> Você já pode acessar o Escritório Virtual da Alabastrum ";
-		textoEmail += "<br> Você só precisa acessar o seguinte link: <a href='http://escritoriovirtual.alabastrum.com.br' > http://escritoriovirtual.alabastrum.com.br </a> ";
+		textoEmail += "<br> O seu código de distribuidor na Dunastes é:  <b> " + usuario.getId_Codigo() + "</b>";
+		textoEmail += "<br> Você já pode acessar o Escritório Virtual da Dunastes ";
+		textoEmail += "<br> Você só precisa acessar o seguinte link: <a href='http://ev.dunastes.com.br' > http://ev.dunastes.com.br </a> ";
 		textoEmail += "<br> Deverá ter em mãos o seu código, email e cpf (o mesmo utilizado no cadastro).  ";
-		textoEmail += "<br> A primeira vez que acessar o sistema. Deverá utilizar o seu código e a senha <b> alabastrum </b> ";
+		textoEmail += "<br> A primeira vez que acessar o sistema. Deverá utilizar o seu código e a senha <b> dunastes </b> ";
 		textoEmail += "<br> Você será redirecionado para uma nova tela para trocar a sua senha. ";
-		textoEmail += "<br> Qualquer dúvida, envie um e-mail para atendimento@alabastrum.com.br ";
-		Mail.enviarEmail("Alabastrum - Instruções para acesso ao Escritório Virtual", textoEmail, usuario.geteMail());
+		textoEmail += "<br> Qualquer dúvida, envie um e-mail para contato@dunastes.com.br ";
+		Mail.enviarEmail("Dunastes - Instruções para acesso ao Escritório Virtual", textoEmail, usuario.geteMail());
 	}
 }

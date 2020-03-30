@@ -24,7 +24,7 @@
 		<p>Olá, ${sessaoUsuario.usuario.vNome} (${sessaoUsuario.usuario.id_Codigo})</p>
 	</div>
 	<c:if test="${sessaoUsuario.usuario.id_Codigo != null}">
-		<a id="sair" style="float: right; padding-right: 15px; font-weight: bold; font-size: 12px; cursor: pointer;" href="https://alabastrum.com.br"> Sair </a>
+		<a id="sair" style="float: right; padding-right: 15px; font-weight: bold; font-size: 12px; cursor: pointer;" href="https://dunastes.com.br"> Sair </a>
 		<div class="menu" data-collapse="persist">
 			<h3 class="menu-accordion" onclick="goTo('<c:url value="/home"/>')">Início</h3>
 			<div></div>

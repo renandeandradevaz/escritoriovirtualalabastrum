@@ -82,16 +82,13 @@ public class LoginController {
 
 				if (Util.vazio(informacoesFixasUsuario)) {
 
-					if (!senhaInformada.equals("alabastrum")) {
-
-						codigoOuSenhaIncorretos(usuario.getId_Codigo(), senhaInformada);
-						return;
-
+					if (senhaInformada.equalsIgnoreCase("alabastrum") || senhaInformada.equalsIgnoreCase("dunastes")) {
+					    this.sessaoGeral.adicionar("codigoUsuarioPrimeiroAcesso", usuarioBanco.getId_Codigo());
+					    result.forwardTo(this).trocarSenhaPrimeiroAcesso();
+					    return;
 					} else {
-
-						this.sessaoGeral.adicionar("codigoUsuarioPrimeiroAcesso", usuarioBanco.getId_Codigo());
-						result.forwardTo(this).trocarSenhaPrimeiroAcesso();
-						return;
+					    codigoOuSenhaIncorretos(usuario.getId_Codigo(), senhaInformada);
+					    return;						
 					}
 				} else {
 
