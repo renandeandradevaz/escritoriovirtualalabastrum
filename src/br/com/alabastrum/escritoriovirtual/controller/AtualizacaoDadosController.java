@@ -30,6 +30,10 @@ public class AtualizacaoDadosController {
 		Usuario usuario = this.hibernateUtil.selecionar(new Usuario(this.sessaoUsuario.getUsuario().getId_Codigo()));
 		result.include("usuario", usuario);
 	}
+	
+	@Public
+	public void acessarTelaCadastro() {
+	}
 
 	@Funcionalidade
 	public void salvarAtualizacaoDados(Usuario usuario) throws Exception {
@@ -85,9 +89,11 @@ public class AtualizacaoDadosController {
 		textoArquivo += "Email: \'" + usuario.geteMail() + "\'\r\n";
 		textoArquivo += "Codigo: \'" + usuario.getCodigoQuemIndicou() + "\'\r\n";
 		textoArquivo += "nomepatroc: \'" + usuario.getNomeQuemIndicou() + "\'\r\n";
+		
+		System.out.println(textoArquivo);
 
 		ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PRE_CADASTRO);
-		Mail.enviarEmail("Pré cadastro pelo site", textoArquivo);
+		//Mail.enviarEmail("Pré cadastro pelo site", textoArquivo);
 
 		result.redirectTo("https://dunastes.com.br/sucesso");
 	}
