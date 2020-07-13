@@ -240,9 +240,7 @@ hr {
 									'async' : false,
 									'global' : false,
 									'crossDomain' : true,
-									'url' : "https://ev.dunastes.com.br/distribuidor/obterNomeDistribuidor?codigo=" + jQuery('#codigoQuemIndicou')
-											+ jQuery('#codigoQuemIndicou')
-													.val(),
+									'url' : 'https://ev.dunastes.com.br/distribuidor/obterNomeDistribuidor?codigo=' + jQuery('#codigoQuemIndicou').val(),
 									dataType : 'json',
 									'success' : function(data) {
 
