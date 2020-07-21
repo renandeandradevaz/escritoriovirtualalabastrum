@@ -58,6 +58,20 @@ public class AtualizacaoDadosController {
 		textoArquivo += "tipo_conta: \'" + usuario.getCadTipoConta() + "\'\r\n";
 		textoArquivo += "agencia: \'" + usuario.getCadAgencia() + "\'\r\n";
 		textoArquivo += "conta: \'" + usuario.getCadCCorrente() + "\'\r\n";
+		textoArquivo += "nickname: \'" + usuario.getNickname() + "\'\r\n";
+		textoArquivo += "pisMis: \'" + usuario.getPisMis() + "\'\r\n";
+		textoArquivo += "pasep: \'" + usuario.getPasep() + "\'\r\n";
+		textoArquivo += "cnpj: \'" + usuario.getCnpj() + "\'\r\n";
+		textoArquivo += "razaoSocial: \'" + usuario.getRazaoSocial() + "\'\r\n";
+		textoArquivo += "nomeFantasia: \'" + usuario.getNomeFantasia() + "\'\r\n";
+		textoArquivo += "inscricaoEstadual: \'" + usuario.getInscricaoEstadual() + "\'\r\n";
+		textoArquivo += "agenciaBancoEspecifico: \'" + usuario.getAgenciaBancoEspecifico() + "\'\r\n";
+		textoArquivo += "contaBancoEspecifico: \'" + usuario.getContaBancoEspecifico() + "\'\r\n";
+		textoArquivo += "bancoPessoaJuridica: \'" + usuario.getBancoPessoaJuridica() + "\'\r\n";
+		textoArquivo += "agenciaPessoaJuridica: \'" + usuario.getAgenciaPessoaJuridica() + "\'\r\n";
+		textoArquivo += "contaPessoaJuridica: \'" + usuario.getContaPessoaJuridica() + "\'\r\n";
+		textoArquivo += "agenciaPessoaJuridicaBancoEspecifico: \'" + usuario.getAgenciaPessoaJuridicaBancoEspecifico() + "\'\r\n";
+		textoArquivo += "contaPessoaJuridicaBancoEspecifico: \'" + usuario.getContaPessoaJuridicaBancoEspecifico() + "\'\r\n";
 
 		ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_ATUALIZACAO_DADOS);
 		Mail.enviarEmail("Atualização de dados de usuário", textoArquivo);

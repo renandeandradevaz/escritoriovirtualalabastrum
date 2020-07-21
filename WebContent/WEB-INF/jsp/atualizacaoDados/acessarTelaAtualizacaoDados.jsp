@@ -81,7 +81,9 @@ hr {
 	<form action="<c:url value="/atualizacaoDados/salvarAtualizacaoDados"/>" method="post">
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Nome: </label>
-			<input type="text" style="width: 585px;" name="usuario.vnome" value="${usuario.vNome}">
+			<input type="text" style="width: 400px;" name="usuario.vnome" value="${usuario.vNome}">
+			<label class="labelFormulario">Nickname: </label>
+			  <input type="text" style="width: 200px;" name="usuario.nickname" value="${usuario.nickname}">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Data nasc.: </label>
@@ -161,6 +163,20 @@ hr {
 			<label class="labelFormulario">Email: </label>
 			<input type="text" style="width: 585px;" name="usuario.email" value="${usuario.eMail}">
 		</div>
+		<div class="corClara divFormulario">
+			<label class="labelFormulario">PIS/MIS: </label>
+			<input type="text" style="width: 200px;" name="usuario.pisMis" value="${usuario.pisMis}">
+			<label class="labelFormulario">PASEP: </label>
+			<input type="text" style="width: 200px;" name="usuario.pasep" value="${usuario.pasep}">
+			<label class="labelFormulario">CNPJ: </label>
+			<input type="text" style="width: 200px;" name="usuario.cnpj" value="${usuario.cnpj}">
+			<label class="labelFormulario">Razão social: </label>
+			<input type="text" style="width: 200px;" name="usuario.razaoSocial" value="${usuario.razaoSocial}">
+			<label class="labelFormulario">Nome fantasia: </label>
+			<input type="text" style="width: 200px;" name="usuario.nomeFantasia" value="${usuario.nomeFantasia}">
+			<label class="labelFormulario">Inscrição estadual: </label>
+			<input type="text" style="width: 200px;" name="usuario.inscricaoEstadual" value="${usuario.inscricaoEstadual}">
+		</div>
 		<div class="divFormulario">
 			<label class="labelFormulario">
 				<b> Dados bancários para pagamento de bonificação </b>
@@ -182,6 +198,55 @@ hr {
 			<label class="labelFormulario">Nº da Conta: </label>
 			<input type="text" style="width: 200px;" name="usuario.cadCCorrente" value="${usuario.cadCCorrente}">
 		</div>
+		
+		<div class="divFormulario">
+			<label class="labelFormulario">
+				<b> Conta nubank </b>
+			</label>
+		</div>
+		<div class="corClara divFormulario">
+			<label class="labelFormulario">Banco: </label>
+			<input type="text" disabled="disabled" style="width: 200px;" value="260 - Nubank">
+		</div>
+		<div class="corMedia divFormulario">
+			<label class="labelFormulario">Nº Agência: </label>
+			<input type="text" style="width: 170px;" name="usuario.agenciaBancoEspecifico" value="${usuario.agenciaBancoEspecifico}">
+			<label class="labelFormulario">Nº da Conta: </label>
+			<input type="text" style="width: 200px;" name="usuario.contaBancoEspecifico" value="${usuario.contaBancoEspecifico}">
+		</div>
+		
+		<div class="divFormulario">
+			<label class="labelFormulario">
+				<b> Dados bancários Pessoa jurídica </b>
+			</label>
+		</div>
+		<div class="corClara divFormulario">
+			<label class="labelFormulario">Banco: </label>
+			<input type="text" style="width: 200px;" name="usuario.bancoPessoaJuridica" value="${usuario.bancoPessoaJuridica}">
+		</div>
+		<div class="corMedia divFormulario">
+			<label class="labelFormulario">Nº Agência: </label>
+			<input type="text" style="width: 170px;" name="usuario.agenciaPessoaJuridica" value="${usuario.agenciaPessoaJuridica}">
+			<label class="labelFormulario">Nº da Conta: </label>
+			<input type="text" style="width: 200px;" name="usuario.contaPessoaJuridica" value="${usuario.contaPessoaJuridica}">
+		</div>
+		
+		<div class="divFormulario">
+			<label class="labelFormulario">
+				<b> Conta nubank Pessoa jurídica </b>
+			</label>
+		</div>
+		<div class="corClara divFormulario">
+			<label class="labelFormulario">Banco: </label>
+			<input type="text" disabled="disabled" style="width: 200px;" value="260 - Nubank">
+		</div>
+		<div class="corMedia divFormulario">
+			<label class="labelFormulario">Nº Agência: </label>
+			<input type="text" style="width: 170px;" name="usuario.agenciaPessoaJuridicaBancoEspecifico" value="${usuario.agenciaPessoaJuridicaBancoEspecifico}">
+			<label class="labelFormulario">Nº da Conta: </label>
+			<input type="text" style="width: 200px;" name="usuario.contaPessoaJuridicaBancoEspecifico" value="${usuario.contaPessoaJuridicaBancoEspecifico}">
+		</div>
+		
 		<div style="margin-top: 20px; margin-left: 20px">
 			<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Enviar</button>
 			<a class="btn btn-danger" href="<c:url value="/home/home"/>"> Cancelar </a>

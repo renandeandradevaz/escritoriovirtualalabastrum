@@ -49,6 +49,20 @@ public class Usuario implements Entidade {
 	private String cadRG;
 	private String cadOrgaoExpedidor;
 	private String apelido;
+	private String nickname;
+	private String pisMis;
+	private String pasep;
+	private String cnpj;
+	private String razaoSocial;
+	private String nomeFantasia;
+	private String inscricaoEstadual;
+	private String agenciaBancoEspecifico;
+	private String contaBancoEspecifico;
+	private String bancoPessoaJuridica;
+	private String agenciaPessoaJuridica;
+	private String contaPessoaJuridica;
+	private String agenciaPessoaJuridicaBancoEspecifico;
+	private String contaPessoaJuridicaBancoEspecifico;
 
 	@Index(name = "index_id_Codigo")
 	private Integer id_Codigo;
@@ -361,5 +375,117 @@ public class Usuario implements Entidade {
 
 	public void setNomeQuemIndicou(String nomeQuemIndicou) {
 		this.nomeQuemIndicou = nomeQuemIndicou;
+	}
+
+	public String getNickname() {
+	    return nickname;
+	}
+
+	public void setNickname(String nickname) {
+	    this.nickname = nickname;
+	}
+
+	public String getPisMis() {
+	    return pisMis;
+	}
+
+	public void setPisMis(String pisMis) {
+	    this.pisMis = pisMis;
+	}
+
+	public String getPasep() {
+	    return pasep;
+	}
+
+	public void setPasep(String pasep) {
+	    this.pasep = pasep;
+	}
+
+	public String getCnpj() {
+	    return cnpj;
+	}
+
+	public void setCnpj(String cnpj) {
+	    this.cnpj = cnpj;
+	}
+
+	public String getRazaoSocial() {
+	    return razaoSocial;
+	}
+
+	public void setRazaoSocial(String razaoSocial) {
+	    this.razaoSocial = razaoSocial;
+	}
+
+	public String getNomeFantasia() {
+	    return nomeFantasia;
+	}
+
+	public void setNomeFantasia(String nomeFantasia) {
+	    this.nomeFantasia = nomeFantasia;
+	}
+
+	public String getInscricaoEstadual() {
+	    return inscricaoEstadual;
+	}
+
+	public void setInscricaoEstadual(String inscricaoEstadual) {
+	    this.inscricaoEstadual = inscricaoEstadual;
+	}
+
+	public String getAgenciaBancoEspecifico() {
+	    return agenciaBancoEspecifico;
+	}
+
+	public void setAgenciaBancoEspecifico(String agenciaBancoEspecifico) {
+	    this.agenciaBancoEspecifico = agenciaBancoEspecifico;
+	}
+
+	public String getContaBancoEspecifico() {
+	    return contaBancoEspecifico;
+	}
+
+	public void setContaBancoEspecifico(String contaBancoEspecifico) {
+	    this.contaBancoEspecifico = contaBancoEspecifico;
+	}
+
+	public String getBancoPessoaJuridica() {
+	    return bancoPessoaJuridica;
+	}
+
+	public void setBancoPessoaJuridica(String bancoPessoaJuridica) {
+	    this.bancoPessoaJuridica = bancoPessoaJuridica;
+	}
+
+	public String getAgenciaPessoaJuridica() {
+	    return agenciaPessoaJuridica;
+	}
+
+	public void setAgenciaPessoaJuridica(String agenciaPessoaJuridica) {
+	    this.agenciaPessoaJuridica = agenciaPessoaJuridica;
+	}
+
+	public String getContaPessoaJuridica() {
+	    return contaPessoaJuridica;
+	}
+
+	public void setContaPessoaJuridica(String contaPessoaJuridica) {
+	    this.contaPessoaJuridica = contaPessoaJuridica;
+	}
+
+	public String getAgenciaPessoaJuridicaBancoEspecifico() {
+	    return agenciaPessoaJuridicaBancoEspecifico;
+	}
+
+	public void setAgenciaPessoaJuridicaBancoEspecifico(String agenciaPessoaJuridicaBancoEspecifico) {
+	    this.agenciaPessoaJuridicaBancoEspecifico = agenciaPessoaJuridicaBancoEspecifico;
+	}
+
+	public String getContaPessoaJuridicaBancoEspecifico() {
+	    return contaPessoaJuridicaBancoEspecifico;
+	}
+
+	public void setContaPessoaJuridicaBancoEspecifico(String contaPessoaJuridicaBancoEspecifico) {
+	    this.contaPessoaJuridicaBancoEspecifico = contaPessoaJuridicaBancoEspecifico;
 	}
 }
