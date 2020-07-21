@@ -203,7 +203,7 @@ public class LoginController {
 			String cpfBanco = usuarioBanco.getCPF().replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", "");
 
 			if (!cpfBanco.equals(cpf)) {
-				validator.add(new ValidationMessage("O CPF informado não é igual ao CPF existente no banco de dados da Alabastrum. Informe o CPF corretamente ou entre em contato com a Alabastrum através do email suporte@alabastrum.com.br informando sobre o problema e peça para editar o seu CPF na base de dados.", "Erro"));
+				validator.add(new ValidationMessage("O CPF informado não é igual ao CPF existente no banco de dados da Dunastes. Informe o CPF corretamente ou entre em contato com a Dunastes através do email contato@dunastes.com.br informando sobre o problema e peça para editar o seu CPF na base de dados.", "Erro"));
 				validator.onErrorRedirectTo(this).trocarSenhaPrimeiroAcesso();
 				return;
 			}
@@ -248,7 +248,7 @@ public class LoginController {
 			String mensagem = "O usuário " + usuarioBanco.getId_Codigo() + " - " + usuarioBanco.getvNome() + " tentou acessar o EV mas o acesso está bloqueado para ele.";
 			Mail.enviarEmail("Código não habilitado para acessar o escritório virtual", mensagem);
 
-			validator.add(new ValidationMessage("Código não habilitado para acessar o escritório virtual. Entre em contato com a Alabastrum através do email suporte@alabastrum.com.br", "Erro"));
+			validator.add(new ValidationMessage("Código não habilitado para acessar o escritório virtual. Entre em contato com a Dunastes através do email contato@dunastes.com.br", "Erro"));
 			validator.onErrorRedirectTo(this).telaLogin();
 		}
 	}
