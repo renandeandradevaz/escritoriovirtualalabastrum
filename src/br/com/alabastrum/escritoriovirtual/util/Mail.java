@@ -31,14 +31,14 @@ public class Mail {
 		Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 
-				return new PasswordAuthentication("alabastrumnotificacoes@gmail.com", new Configuracao().retornarConfiguracao("senhaEmail"));
+				return new PasswordAuthentication("dunastes.notificacoes@gmail.com", new Configuracao().retornarConfiguracao("senhaEmail"));
 			}
 		});
 
 		session.setDebug(true);
 
 		Message message = new MimeMessage(session);
-		message.setFrom(new InternetAddress("alabastrumnotificacoes@gmail.com"));
+		message.setFrom(new InternetAddress("dunastes.notificacoes@gmail.com"));
 		message.setContent(mensagem.replaceAll("\\r\\n", "<br>"), "text/html; charset=utf-8");
 
 		Address[] toUser = InternetAddress.parse("renanandrade_rj@hotmail.com,ev@alabastrum.com.br, " + remetente);
