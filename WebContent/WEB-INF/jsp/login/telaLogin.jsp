@@ -13,22 +13,24 @@
 			</c:forEach>
 		</div>
 	</c:if>
-
-
 	<div id="corpo-form">
 		<img src="css/images/logo.png">
 		<h1>Escritório Virtual</h1>
 		<form method="post" action="<c:url value="/login/efetuarLogin"/>">
 			<input type="text" placeholder="USUÁRIO" name="usuario.id_Codigo">
-			<input type="password" placeholder="SENHA"
-				name="usuario.informacoesFixasUsuario.senha"> <br /> <input
-				type="submit" value="ACESSAR"
-				onclick="this.disabled=true;this.form.submit();"> <a
-				href="<c:url value="/atualizacaoDados/acessarTelaCadastro"/>">
-				Ainda não é inscrito?<br /> <strong>Cadastre-se</strong>
+			<input type="password" placeholder="SENHA" name="usuario.informacoesFixasUsuario.senha">
+			<br />
+			<input type="submit" value="ACESSAR" onclick="this.disabled=true;this.form.submit();">
+			<a href="<c:url value="/atualizacaoDados/acessarTelaCadastro"/>">
+				Ainda não é inscrito?
+				<br />
+				<strong>Cadastre-se</strong>
+			</a>
+			<br>
+			<a href="<c:url value="/login/esqueciMinhaSenha"/>">
+				<strong>Esqueci minha senha</strong>
 			</a>
 		</form>
 	</div>
-
 </body>
 </html>

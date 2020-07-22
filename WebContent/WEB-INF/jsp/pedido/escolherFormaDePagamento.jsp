@@ -7,12 +7,23 @@
 	<form action="<c:url value="/pedido/concluirPedido"/>" method="post">
 		<select name='formaDePagamento'>
 			<option value="">Selecione</option>
-			<option value="pagarNoCentroDeDistribuicao">Pagar diretamente no centro de distribuição (Pagamento presencial com dinheiro vivo ou cartão)</option>
-			<c:if test="${pagamentoComSaldoHabilitado}">
-				<option value="pagarComSaldo">Pagar com saldo</option>
-			</c:if>
-			<option value="pagarComCartaoDeCredito">Pagar online com cartão de crédito</option>
+			<option value="pagarNoCentroDeDistribuicao" selected="selected">Transferência bancária</option>
+			<!-- 			<option value="pagarNoCentroDeDistribuicao">Pagar diretamente no centro de distribuição (Pagamento presencial com dinheiro vivo ou cartão)</option> -->
+			<%-- 			<c:if test="${pagamentoComSaldoHabilitado}"> --%>
+			<!-- 				<option value="pagarComSaldo">Pagar com saldo</option> -->
+			<%-- 			</c:if> --%>
+			<!-- 			<option value="pagarComCartaoDeCredito">Pagar online com cartão de crédito</option> -->
 		</select>
+		<br>
+		<div style="margin: 5%; border: 1px solid black; padding: 10px">
+			<h5>A transferência bancária deve ser feita para a seguinte conta:</h5>
+			<br>
+			<h5>DUNASTES MULTINIVEL DO BRASIL COSMÉTICOS EIRELI</h5>
+			<h5>CNPJ: 37.268.755/0001-81</h5>
+			<h5>* Banco: SANTANDER</h5>
+			<h5>* Agência: 2093</h5>
+			<h5>* Conta Corrente: 13-001999-0</h5>
+		</div>
 		<br>
 		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Avançar</button>
 	</form>

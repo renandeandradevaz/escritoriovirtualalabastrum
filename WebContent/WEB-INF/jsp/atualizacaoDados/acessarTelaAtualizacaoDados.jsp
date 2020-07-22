@@ -81,20 +81,20 @@ hr {
 	<form action="<c:url value="/atualizacaoDados/salvarAtualizacaoDados"/>" method="post">
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Nome: </label>
-			<input type="text" style="width: 400px;" name="usuario.vnome" value="${usuario.vNome}">
+			<input type="text" name="usuario.vnome" value="${usuario.vNome}" required="required">
 			<label class="labelFormulario">Nickname: </label>
-			  <input type="text" style="width: 200px;" name="usuario.nickname" value="${usuario.nickname}">
+			<input type="text" name="usuario.nickname" value="${usuario.nickname}" required="required">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Data nasc.: </label>
-			<input type="text" style="width: 90px;" class="data" name="usuario.dt_Nasc" value="${usuario.dt_Nasc}">
+			<input type="text" class="data" name="usuario.dt_Nasc" value="${usuario.dt_Nasc}" required="required">
 			<label class="labelFormulario">Sexo: </label>
-			<select name="usuario.cadSexo" style="width: 130px;">
+			<select name="usuario.cadSexo">
 				<option value="Masculino" <c:if test="${usuario.cadSexo == 'Masc'}"> selected="selected" </c:if>>Masc</option>
 				<option value="Feminino" <c:if test="${usuario.cadSexo == 'Fem'}"> selected="selected" </c:if>>Fem</option>
 			</select>
 			<label class="labelFormulario">Estado civil: </label>
-			<select name="usuario.cadEstCivil" style="width: 170px;">
+			<select name="usuario.cadEstCivil">
 				<option value="Solteiro(a)" <c:if test="${usuario.cadEstCivil == 'Solteiro(a)'}"> selected="selected" </c:if>>Solteiro(a)</option>
 				<option value="Casado(a)" <c:if test="${usuario.cadEstCivil == 'Casado(a)'}"> selected="selected" </c:if>>Casado(a)</option>
 				<option value="Divorciado(a)" <c:if test="${usuario.cadEstCivil == 'Divorciado(a)'}"> selected="selected" </c:if>>Divorciado(a)</option>
@@ -103,27 +103,27 @@ hr {
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario"> RG: </label>
-			<input type="text" style="width: 250px;" name="usuario.cadRG" value="${usuario.cadRG}">
+			<input type="text" name="usuario.cadRG" value="${usuario.cadRG}" required="required">
 			<label class="labelFormulario"> Emissor: </label>
-			<input type="text" style="width: 260px;" name="usuario.cadOrgaoExpedidor" value="${usuario.cadOrgaoExpedidor}">
+			<input type="text" name="usuario.cadOrgaoExpedidor" value="${usuario.cadOrgaoExpedidor}" required="required">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">CEP: </label>
-			<input type="text" style="width: 90px;" name="usuario.cadCEP" value="${usuario.cadCEP}">
+			<input type="text" name="usuario.cadCEP" value="${usuario.cadCEP}" required="required">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">End. Resid.: </label>
-			<input type="text" style="width: 550px;" name="usuario.cadEndereco" value="${usuario.cadEndereco}">
+			<input type="text" name="usuario.cadEndereco" value="${usuario.cadEndereco}" required="required">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Bairro: </label>
-			<input type="text" style="width: 585px;" name="usuario.cadBairro" value="${usuario.cadBairro}">
+			<input type="text" name="usuario.cadBairro" value="${usuario.cadBairro}" required="required">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Cidade: </label>
-			<input type="text" style="width: 340px;" name="usuario.cadCidade" value="${usuario.cadCidade}">
+			<input type="text" name="usuario.cadCidade" value="${usuario.cadCidade}" required="required">
 			<label class="labelFormulario">Estado: </label>
-			<select id='uf' name="usuario.cadUF" style="width: 160px;">
+			<select id='uf' name="usuario.cadUF">
 				<option value="AC">Acre</option>
 				<option value="AL">Alagoas</option>
 				<option value="AP">Amapá</option>
@@ -155,27 +155,30 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Tel. resid.: </label>
-			<input type="text" style="width: 225px;" name="usuario.tel" value="${usuario.tel}">
+			<input type="text" name="usuario.tel" value="${usuario.tel}" required="required">
 			<label class="labelFormulario">Tel. Cel.: </label>
-			<input type="text" style="width: 235px;" name="usuario.cadCelular" value="${usuario.cadCelular}">
+			<input type="text" name="usuario.cadCelular" value="${usuario.cadCelular}" required="required">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Email: </label>
-			<input type="text" style="width: 585px;" name="usuario.email" value="${usuario.eMail}">
+			<input type="text" style="width: 585px;" name="usuario.email" value="${usuario.eMail}" required="required">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">PIS/MIS: </label>
-			<input type="text" style="width: 200px;" name="usuario.pisMis" value="${usuario.pisMis}">
+			<input type="text" name="usuario.pisMis" value="${usuario.pisMis}">
 			<label class="labelFormulario">PASEP: </label>
-			<input type="text" style="width: 200px;" name="usuario.pasep" value="${usuario.pasep}">
+			<input type="text" name="usuario.pasep" value="${usuario.pasep}">
+			<br>
 			<label class="labelFormulario">CNPJ: </label>
-			<input type="text" style="width: 200px;" name="usuario.cnpj" value="${usuario.cnpj}">
+			<input type="text" name="usuario.cnpj" value="${usuario.cnpj}">
 			<label class="labelFormulario">Razão social: </label>
-			<input type="text" style="width: 200px;" name="usuario.razaoSocial" value="${usuario.razaoSocial}">
+			<input type="text" name="usuario.razaoSocial" value="${usuario.razaoSocial}">
+			<br>
 			<label class="labelFormulario">Nome fantasia: </label>
-			<input type="text" style="width: 200px;" name="usuario.nomeFantasia" value="${usuario.nomeFantasia}">
+			<input type="text" name="usuario.nomeFantasia" value="${usuario.nomeFantasia}">
+			<br>
 			<label class="labelFormulario">Inscrição estadual: </label>
-			<input type="text" style="width: 200px;" name="usuario.inscricaoEstadual" value="${usuario.inscricaoEstadual}">
+			<input type="text" name="usuario.inscricaoEstadual" value="${usuario.inscricaoEstadual}">
 		</div>
 		<div class="divFormulario">
 			<label class="labelFormulario">
@@ -184,37 +187,35 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Banco: </label>
-			<input type="text" style="width: 200px;" name="usuario.cadBanco" value="${usuario.cadBanco}">
+			<input type="text" name="usuario.cadBanco" value="${usuario.cadBanco}">
 			<label class="labelFormulario">Tipo de conta: </label>
-			<select name="usuario.cadTipoConta" style="width: 200px;">
+			<select name="usuario.cadTipoConta">
 				<option value="Conta corrente" <c:if test="${usuario.cadTipoConta == 'Conta corrente'}"> selected="selected" </c:if>>Conta corrente</option>
 				<option value="Conta poupança" <c:if test="${usuario.cadTipoConta == 'Conta poupança'}"> selected="selected" </c:if>>Conta poupança</option>
 				<option value="Conta salário" <c:if test="${usuario.cadTipoConta == 'Conta salário'}"> selected="selected" </c:if>>Conta salário</option>
 			</select>
 		</div>
-		<div class="corMedia divFormulario">
+		<div class="corClara divFormulario">
 			<label class="labelFormulario">Nº Agência: </label>
-			<input type="text" style="width: 170px;" name="usuario.cadAgencia" value="${usuario.cadAgencia}">
+			<input type="text" name="usuario.cadAgencia" value="${usuario.cadAgencia}">
 			<label class="labelFormulario">Nº da Conta: </label>
-			<input type="text" style="width: 200px;" name="usuario.cadCCorrente" value="${usuario.cadCCorrente}">
+			<input type="text" name="usuario.cadCCorrente" value="${usuario.cadCCorrente}">
 		</div>
-		
 		<div class="divFormulario">
 			<label class="labelFormulario">
 				<b> Conta nubank </b>
 			</label>
 		</div>
-		<div class="corClara divFormulario">
+		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Banco: </label>
-			<input type="text" disabled="disabled" style="width: 200px;" value="260 - Nubank">
+			<input type="text" disabled="disabled" value="260 - Nubank">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Nº Agência: </label>
-			<input type="text" style="width: 170px;" name="usuario.agenciaBancoEspecifico" value="${usuario.agenciaBancoEspecifico}">
+			<input type="text" name="usuario.agenciaBancoEspecifico" value="${usuario.agenciaBancoEspecifico}">
 			<label class="labelFormulario">Nº da Conta: </label>
-			<input type="text" style="width: 200px;" name="usuario.contaBancoEspecifico" value="${usuario.contaBancoEspecifico}">
+			<input type="text" name="usuario.contaBancoEspecifico" value="${usuario.contaBancoEspecifico}">
 		</div>
-		
 		<div class="divFormulario">
 			<label class="labelFormulario">
 				<b> Dados bancários Pessoa jurídica </b>
@@ -222,33 +223,55 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Banco: </label>
-			<input type="text" style="width: 200px;" name="usuario.bancoPessoaJuridica" value="${usuario.bancoPessoaJuridica}">
+			<input type="text" name="usuario.bancoPessoaJuridica" value="${usuario.bancoPessoaJuridica}">
 		</div>
-		<div class="corMedia divFormulario">
+		<div class="corClara divFormulario">
 			<label class="labelFormulario">Nº Agência: </label>
-			<input type="text" style="width: 170px;" name="usuario.agenciaPessoaJuridica" value="${usuario.agenciaPessoaJuridica}">
+			<input type="text" name="usuario.agenciaPessoaJuridica" value="${usuario.agenciaPessoaJuridica}">
 			<label class="labelFormulario">Nº da Conta: </label>
-			<input type="text" style="width: 200px;" name="usuario.contaPessoaJuridica" value="${usuario.contaPessoaJuridica}">
+			<input type="text" name="usuario.contaPessoaJuridica" value="${usuario.contaPessoaJuridica}">
 		</div>
-		
 		<div class="divFormulario">
 			<label class="labelFormulario">
 				<b> Conta nubank Pessoa jurídica </b>
 			</label>
 		</div>
-		<div class="corClara divFormulario">
+		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Banco: </label>
-			<input type="text" disabled="disabled" style="width: 200px;" value="260 - Nubank">
+			<input type="text" disabled="disabled" value="260 - Nubank">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Nº Agência: </label>
-			<input type="text" style="width: 170px;" name="usuario.agenciaPessoaJuridicaBancoEspecifico" value="${usuario.agenciaPessoaJuridicaBancoEspecifico}">
+			<input type="text" name="usuario.agenciaPessoaJuridicaBancoEspecifico" value="${usuario.agenciaPessoaJuridicaBancoEspecifico}">
 			<label class="labelFormulario">Nº da Conta: </label>
-			<input type="text" style="width: 200px;" name="usuario.contaPessoaJuridicaBancoEspecifico" value="${usuario.contaPessoaJuridicaBancoEspecifico}">
+			<input type="text" name="usuario.contaPessoaJuridicaBancoEspecifico" value="${usuario.contaPessoaJuridicaBancoEspecifico}">
 		</div>
-		
+		<div class="corClara divFormulario" style="margin: 5%; border: 1px solid black;">
+			<h5>Após finalizar a atualização dos seus dados aqui no Escritório virtual, você deve enviar por e-mail as fotos dos seus documentos.</h5>
+			<br>
+			<h5>O título do email deve ser: Fotos dos documentos do distribuidor com ID XXX (Coloque aqui o seu código de distribuidor).</h5>
+			<br>
+			<h5>As fotos devem ir em anexo no email.</h5>
+			<br>
+			<br>
+			<h5>Os documentos necessários são:</h5>
+			<br>
+			<h5>* RG/CNH</h5>
+			<br>
+			<h5>* CPF</h5>
+			<br>
+			<h5>* Comprovante PIS/MIS/PASEP</h5>
+			<br>
+			<h5>* Comprovante de Residência no próprio nome</h5>
+			<br>
+			<h5>* Declaração de Isenção do INSS com firma reconhecida (próprio punho)</h5>
+			<br>
+			<br>
+			<br>
+			<h5>Todos documentos devem ser enviados para: documentos@dunastes.com.br</h5>
+		</div>
 		<div style="margin-top: 20px; margin-left: 20px">
-			<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Enviar</button>
+			<button type="submit" class="btn btn-primary">Enviar</button>
 			<a class="btn btn-danger" href="<c:url value="/home/home"/>"> Cancelar </a>
 		</div>
 	</form>
