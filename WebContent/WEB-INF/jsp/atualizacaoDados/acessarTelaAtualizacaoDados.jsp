@@ -203,7 +203,7 @@ hr {
 		</div>
 		<div class="divFormulario">
 			<label class="labelFormulario">
-				<b> Conta nubank </b>
+				<b> Conta Nubank </b>
 			</label>
 		</div>
 		<div class="corMedia divFormulario">
@@ -218,7 +218,7 @@ hr {
 		</div>
 		<div class="divFormulario">
 			<label class="labelFormulario">
-				<b> Dados bancários Pessoa jurídica </b>
+				<b> Dados bancários Pessoa Jurídica </b>
 			</label>
 		</div>
 		<div class="corClara divFormulario">
@@ -233,7 +233,7 @@ hr {
 		</div>
 		<div class="divFormulario">
 			<label class="labelFormulario">
-				<b> Conta nubank Pessoa jurídica </b>
+				<b> Conta Nubank Pessoa Jurídica </b>
 			</label>
 		</div>
 		<div class="corMedia divFormulario">
@@ -248,24 +248,15 @@ hr {
 		</div>
 		<div class="corClara divFormulario" style="margin: 5%; border: 1px solid black;">
 			<h5>Após finalizar a atualização dos seus dados aqui no Escritório virtual, você deve enviar por e-mail as fotos dos seus documentos.</h5>
-			<br>
 			<h5>O título do email deve ser: Fotos dos documentos do distribuidor com ID XXX (Coloque aqui o seu código de distribuidor).</h5>
-			<br>
 			<h5>As fotos devem ir em anexo no email.</h5>
 			<br>
-			<br>
 			<h5>Os documentos necessários são:</h5>
-			<br>
 			<h5>* RG/CNH</h5>
-			<br>
 			<h5>* CPF</h5>
-			<br>
 			<h5>* Comprovante PIS/MIS/PASEP</h5>
-			<br>
 			<h5>* Comprovante de Residência no próprio nome</h5>
-			<br>
 			<h5>* Declaração de Isenção do INSS com firma reconhecida (próprio punho)</h5>
-			<br>
 			<br>
 			<br>
 			<h5>Todos documentos devem ser enviados para: documentos@dunastes.com.br</h5>

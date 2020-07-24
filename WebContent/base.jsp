@@ -6,7 +6,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Escritório Virtual Alabastrum</title>
+<title>Dunastes</title>
 <link rel="SHORTCUT ICON" href="<c:url value="/css/images/favico.png"/>" type="image/x-icon">
 <link type="text/css" href="<c:url value="/css/bootstrap.css"/>" rel="stylesheet" />
 <link type="text/css" href="<c:url value="/css/bootstrap-alterado.css"/>" rel="stylesheet" />
