@@ -61,7 +61,6 @@ public class MatrizController {
 	for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaCompleta.values()) {
 
 	    if (arvoreHierarquicaDTO.getNivel() <= QUANTIDADE_DE_NIVEIS) {
-		arvoreHierarquicaDTO.getUsuario().setvNome(arvoreHierarquicaDTO.getUsuario().getvNome().split(" ")[0]);
 		arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
 	    }
 	}
