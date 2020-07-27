@@ -61,13 +61,6 @@ public class HierarquiaService {
 			return;
 		}
 
-		// REGRA ANTERIOR QUE VERIFICAVA A ATIVIDADE PRA ADICIONAR NA ARVORE ASCENDENTE
-		// ATIVA
-		// if (new AtividadeService(hibernateUtil).isAtivo(lider.getId_Codigo(), data))
-		// {
-		// arvoreHierarquicaAtivaAscendente.add(lider.getId_Codigo());
-		// }
-
 		arvoreHierarquicaAscendente.add(lider.getId_Codigo());
 
 		montarArvoreHierarquicaAscendenteComRecursividade(arvoreHierarquicaAscendente, lider.getId_Codigo(), data);
@@ -76,7 +69,7 @@ public class HierarquiaService {
 	private void pesquisarComRecursividade(Integer codigo, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivel) {
 
 		Usuario filtro = new Usuario();
-		filtro.setId_lider(codigo);
+		filtro.setId_Indicante(codigo);
 		List<Usuario> usuariosFromDatabase = hibernateUtil.buscar(filtro);
 
 		for (Usuario usuarioFromDatabase : usuariosFromDatabase) {
