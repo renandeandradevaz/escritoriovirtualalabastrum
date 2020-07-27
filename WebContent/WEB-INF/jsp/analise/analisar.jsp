@@ -10,7 +10,7 @@ Sessões abertas hibernate: ${sessoesAbertasHibernate}
 Sessões fechadas hibernate: ${sessoesFechadasHibernate}
 <br>
 <br>
-<h4>Total de acessos (Início da contagem em 30/03/2020): &nbsp;&nbsp; ${total}</h4>
+<h4>Total de acessos: ${total}</h4>
 <h4>Média diária: ${mediaDiaria}</h4>
 <br>
 <br>
