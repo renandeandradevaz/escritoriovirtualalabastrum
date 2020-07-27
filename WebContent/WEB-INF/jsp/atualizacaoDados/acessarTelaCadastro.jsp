@@ -125,6 +125,7 @@ hr {
 			<input type="text" required="required" name="sessaoAtualizacaoDados.CPF" value="" onBlur="Verifica_campo_CPF(this)">
 			<label class="labelFormulario"> RG: </label>
 			<input type="text" required="required" name="sessaoAtualizacaoDados.cadRG" value="">
+			<br>
 			<label class="labelFormulario"> Emissor: </label>
 			<input type="text" required="required" name="sessaoAtualizacaoDados.cadOrgaoExpedidor" value="">
 		</div>

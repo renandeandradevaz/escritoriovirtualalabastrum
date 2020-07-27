@@ -49,7 +49,6 @@ public class Usuario implements Entidade {
 	private String cadRG;
 	private String cadOrgaoExpedidor;
 	private String apelido;
-	private String nickname;
 	private String pisMis;
 	private String pasep;
 	private String cnpj;
@@ -375,14 +374,6 @@ public class Usuario implements Entidade {
 
 	public void setNomeQuemIndicou(String nomeQuemIndicou) {
 		this.nomeQuemIndicou = nomeQuemIndicou;
-	}
-
-	public String getNickname() {
-	    return nickname;
-	}
-
-	public void setNickname(String nickname) {
-	    this.nickname = nickname;
 	}
 
 	public String getPisMis() {

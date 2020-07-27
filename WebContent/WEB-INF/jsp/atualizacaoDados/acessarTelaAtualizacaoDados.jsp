@@ -83,7 +83,7 @@ hr {
 			<label class="labelFormulario">Nome: </label>
 			<input type="text" name="usuario.vnome" value="${usuario.vNome}" required="required">
 			<label class="labelFormulario">Nickname: </label>
-			<input type="text" name="usuario.nickname" value="${usuario.nickname}" required="required">
+			<input type="text" name="usuario.apelido" value="${usuario.apelido}" required="required">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Data nasc.: </label>

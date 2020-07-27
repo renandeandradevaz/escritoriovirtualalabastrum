@@ -32,7 +32,7 @@
 	var user${lider.id_Codigo} = {
 		text : {
 			name : ${lider.id_Codigo},
-			title: '${lider.vNome}'
+			title: '${lider.apelido}'
 		},
 	};
 	chart_config.push(user${lider.id_Codigo});
@@ -42,7 +42,7 @@
 			parent : user${item.usuario.id_lider},
 			text : {
 				name : ${item.usuario.id_Codigo},
-				title: '${item.usuario.vNome}'
+				title: '${item.usuario.apelido}'
 			},
 			link: {
 	            href: "<c:url value="/matriz/acessarTelaMatriz?codigo=${item.usuario.id_Codigo}"/>"

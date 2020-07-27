@@ -58,7 +58,7 @@ public class AtualizacaoDadosController {
 	textoArquivo += "tipo_conta: \'" + usuario.getCadTipoConta() + "\'\r\n";
 	textoArquivo += "agencia: \'" + usuario.getCadAgencia() + "\'\r\n";
 	textoArquivo += "conta: \'" + usuario.getCadCCorrente() + "\'\r\n";
-	textoArquivo += "nickname: \'" + usuario.getNickname() + "\'\r\n";
+	textoArquivo += "apelido: \'" + usuario.getApelido() + "\'\r\n";
 	textoArquivo += "pisMis: \'" + usuario.getPisMis() + "\'\r\n";
 	textoArquivo += "pasep: \'" + usuario.getPasep() + "\'\r\n";
 	textoArquivo += "cnpj: \'" + usuario.getCnpj() + "\'\r\n";
