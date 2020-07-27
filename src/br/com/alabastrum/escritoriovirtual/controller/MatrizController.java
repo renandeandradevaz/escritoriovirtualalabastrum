@@ -16,43 +16,57 @@ import br.com.caelum.vraptor.Result;
 @Resource
 public class MatrizController {
 
-	private static final Integer QUANTIDADE_DE_NIVEIS = 3;
+    private static final Integer QUANTIDADE_DE_NIVEIS = 3;
 
-	private Result result;
-	private HibernateUtil hibernateUtil;
-	private SessaoUsuario sessaoUsuario;
+    private Result result;
+    private HibernateUtil hibernateUtil;
+    private SessaoUsuario sessaoUsuario;
 
-	public MatrizController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario) {
+    public MatrizController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario) {
 
-		this.result = result;
-		this.hibernateUtil = hibernateUtil;
-		this.sessaoUsuario = sessaoUsuario;
+	this.result = result;
+	this.hibernateUtil = hibernateUtil;
+	this.sessaoUsuario = sessaoUsuario;
+    }
+
+    @Funcionalidade
+    public void acessarTelaMatrizMultilevel(Integer codigo) throws Exception {
+	gerarMatriz(codigo, null);
+	result.include("nomeMatriz", "Matriz multilevel");
+	result.include("tipoDeMatriz", "Multilevel");
+	result.forwardTo("/WEB-INF/jsp//matriz/acessarTelaMatriz.jsp");
+    }
+
+    @Funcionalidade
+    public void acessarTelaMatrizTrinaria(Integer codigo) throws Exception {
+	gerarMatriz(codigo, "id_lider");
+	result.include("nomeMatriz", "Matriz trinária");
+	result.include("tipoDeMatriz", "Trinaria");
+	result.forwardTo("/WEB-INF/jsp//matriz/acessarTelaMatriz.jsp");
+    }
+
+    private void gerarMatriz(Integer codigo, String tipoDeFiltro) {
+
+	Usuario usuario = this.sessaoUsuario.getUsuario();
+
+	TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo(), tipoDeFiltro);
+
+	if (codigo != null && arvoreHierarquicaCompleta.containsKey(codigo)) {
+	    arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(codigo, tipoDeFiltro);
+	    usuario = hibernateUtil.selecionar(new Usuario(codigo));
 	}
 
-	@Funcionalidade
-	public void acessarTelaMatriz(Integer codigo) throws Exception {
+	List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
 
-		Usuario usuario = this.sessaoUsuario.getUsuario();
+	for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaCompleta.values()) {
 
-		TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo());
-
-		if (codigo != null && arvoreHierarquicaCompleta.containsKey(codigo)) {
-			arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(codigo);
-			usuario = hibernateUtil.selecionar(new Usuario(codigo));
-		}
-
-		List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
-
-		for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaCompleta.values()) {
-
-			if (arvoreHierarquicaDTO.getNivel() <= QUANTIDADE_DE_NIVEIS) {
-				arvoreHierarquicaDTO.getUsuario().setvNome(arvoreHierarquicaDTO.getUsuario().getvNome().split(" ")[0]);
-				arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
-			}
-		}
-
-		usuario.setvNome(usuario.getvNome().split(" ")[0]);
-		result.include("lider", usuario);
-		result.include("arvoreHierarquica", arvoreHierarquicaFiltrada);
+	    if (arvoreHierarquicaDTO.getNivel() <= QUANTIDADE_DE_NIVEIS) {
+		arvoreHierarquicaDTO.getUsuario().setvNome(arvoreHierarquicaDTO.getUsuario().getvNome().split(" ")[0]);
+		arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
+	    }
 	}
+
+	result.include("lider", usuario);
+	result.include("arvoreHierarquica", arvoreHierarquicaFiltrada);
+    }
 }

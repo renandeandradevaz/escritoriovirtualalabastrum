@@ -1,13 +1,11 @@
 <%@ include file="/base.jsp"%>
 <div class="fundo-branco">
-	<h4>Matriz</h4>
+	<h4>${nomeMatriz}</h4>
 </div>
 <br>
 <div class="fundo-branco">
 	<p>Clique em algum distribuidor para ver detalhes de sua rede</p>
 	<br>
-	<a href="<c:url value="/matriz/acessarTelaMatriz"/>"> Voltar ao topo </a>
-	<a class="btn btn-basic" style="float: right;" href="<c:url value="/configuracao/acessarTelaConfiguracao"/>"> Direcionamento de novos cadastros </a>
 	<div class="chart" id="matriz"></div>
 </div>
 <link type="text/css" href="<c:url value="/css/treant.css"/>" rel="stylesheet" />
@@ -45,7 +43,7 @@
 				title: '${item.usuario.apelido}'
 			},
 			link: {
-	            href: "<c:url value="/matriz/acessarTelaMatriz?codigo=${item.usuario.id_Codigo}"/>"
+	            href: "<c:url value="/matriz/acessarTelaMatriz${tipoDeMatriz}?codigo=${item.usuario.id_Codigo}"/>"
 	        }
 		};
 		chart_config.push(user${item.usuario.id_Codigo});

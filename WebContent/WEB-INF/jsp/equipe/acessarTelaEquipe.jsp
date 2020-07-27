@@ -96,15 +96,9 @@
 					<td class="centralizado">${item.usuario.posAtual}</td>
 					<td class="centralizado">${item.usuario.vNome}</td>
 					<td class="centralizado">${item.usuario.dt_Nasc}</td>
-					<td class="centralizado">
-						<c:if test="${item.nivel == 1}"> ${item.usuario.tel} </c:if>
-					</td>
-					<td class="centralizado">
-						<c:if test="${item.nivel == 1}"> ${item.usuario.cadCelular} </c:if>
-					</td>
-					<td class="centralizado">
-						<c:if test="${item.nivel == 1}"> ${item.usuario.eMail} </c:if>
-					</td>
+					<td class="centralizado">${item.usuario.tel}</td>
+					<td class="centralizado">${item.usuario.cadCelular}</td>
+					<td class="centralizado">${item.usuario.eMail}</td>
 					<td class="centralizado">${item.nivel}</td>
 					<td class="centralizado">${item.preCadastro}</td>
 			</c:forEach>

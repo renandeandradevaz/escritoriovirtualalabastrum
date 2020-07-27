@@ -75,7 +75,8 @@
 			<h3 class="menu-accordion has-child">Redes</h3>
 			<div>
 				<a href="<c:url value="/equipe/acessarTelaEquipe"/>" class="submenu-accordion"> Equipe </a>
-				<a href="<c:url value="/matriz/acessarTelaMatriz"/>" class="submenu-accordion"> Matriz </a>
+				<a href="<c:url value="/matriz/acessarTelaMatrizMultilevel"/>" class="submenu-accordion"> Matriz multilevel</a>
+				<a href="<c:url value="/matriz/acessarTelaMatrizTrinaria"/>" class="submenu-accordion"> Matriz trinária</a>
 			</div>
 			<h3 class="menu-accordion has-child">Pedidos</h3>
 			<div>
