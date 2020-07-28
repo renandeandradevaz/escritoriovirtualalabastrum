@@ -6,6 +6,8 @@
 <div class="fundo-branco">
 	<p>Clique em algum distribuidor para ver detalhes de sua rede</p>
 	<br>
+	<a href="<c:url value="/matriz/acessarTelaMatriz${tipoDeMatriz}"/>"> Voltar ao topo </a>
+	<br>
 	<div class="chart" id="matriz"></div>
 </div>
 <link type="text/css" href="<c:url value="/css/treant.css"/>" rel="stylesheet" />
@@ -37,7 +39,10 @@
 	
 	<c:forEach items="${arvoreHierarquica}" var="item">	
 		var user${item.usuario.id_Codigo} = {
-			parent : user${item.usuario.id_lider},
+				
+			<c:if test="${tipoDeMatriz == 'Trinaria'}"> parent : user${item.usuario.id_lider}, </c:if>
+			<c:if test="${tipoDeMatriz == 'Multilevel'}"> parent : user${item.usuario.id_Indicante}, </c:if>	
+				
 			text : {
 				name : ${item.usuario.id_Codigo},
 				title: '${item.usuario.apelido}'
