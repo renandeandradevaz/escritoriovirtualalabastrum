@@ -43,17 +43,19 @@ public class MatrizController {
 
 	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompleta = gerarMatriz(codigo, "id_lider");
 
-	TreeMap<Integer, Integer> quantidadesExistentes = new TreeMap<Integer, Integer>();
-	for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaCompleta.values()) {
-	    Integer quantidadeExistente = quantidadesExistentes.get(arvoreHierarquicaDTO.getNivel());
-	    if (quantidadeExistente == null) {
-		quantidadesExistentes.put(arvoreHierarquicaDTO.getNivel(), 1);
-	    } else {
-		quantidadesExistentes.put(arvoreHierarquicaDTO.getNivel(), quantidadeExistente + 1);
+	if (codigo == null) {
+	    TreeMap<Integer, Integer> quantidadesExistentes = new TreeMap<Integer, Integer>();
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaCompleta.values()) {
+		Integer quantidadeExistente = quantidadesExistentes.get(arvoreHierarquicaDTO.getNivel());
+		if (quantidadeExistente == null) {
+		    quantidadesExistentes.put(arvoreHierarquicaDTO.getNivel(), 1);
+		} else {
+		    quantidadesExistentes.put(arvoreHierarquicaDTO.getNivel(), quantidadeExistente + 1);
+		}
 	    }
+	    result.include("quantidadesExistentes", quantidadesExistentes);
 	}
 
-	result.include("quantidadesExistentes", quantidadesExistentes);
 	result.include("nomeMatriz", "Matriz Trinária");
 	result.include("tipoDeMatriz", "Trinaria");
 	result.forwardTo("/WEB-INF/jsp//matriz/acessarTelaMatriz.jsp");
