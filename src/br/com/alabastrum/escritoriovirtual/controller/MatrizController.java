@@ -2,6 +2,7 @@ package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
@@ -39,17 +40,30 @@ public class MatrizController {
 
     @Funcionalidade
     public void acessarTelaMatrizTrinaria(Integer codigo) throws Exception {
-	gerarMatriz(codigo, "id_lider");
+
+	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompleta = gerarMatriz(codigo, "id_lider");
+
+	TreeMap<Integer, Integer> quantidadesExistentes = new TreeMap<Integer, Integer>();
+	for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaCompleta.values()) {
+	    Integer quantidadeExistente = quantidadesExistentes.get(arvoreHierarquicaDTO.getNivel());
+	    if (quantidadeExistente == null) {
+		quantidadesExistentes.put(arvoreHierarquicaDTO.getNivel(), 1);
+	    } else {
+		quantidadesExistentes.put(arvoreHierarquicaDTO.getNivel(), quantidadeExistente + 1);
+	    }
+	}
+
+	result.include("quantidadesExistentes", quantidadesExistentes);
 	result.include("nomeMatriz", "Matriz Trinária");
 	result.include("tipoDeMatriz", "Trinaria");
 	result.forwardTo("/WEB-INF/jsp//matriz/acessarTelaMatriz.jsp");
     }
 
-    private void gerarMatriz(Integer codigo, String tipoDeFiltro) {
+    private Map<Integer, ArvoreHierarquicaDTO> gerarMatriz(Integer codigo, String tipoDeFiltro) {
 
 	Usuario usuario = this.sessaoUsuario.getUsuario();
 
-	TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo(), tipoDeFiltro);
+	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo(), tipoDeFiltro);
 
 	if (codigo != null && arvoreHierarquicaCompleta.containsKey(codigo)) {
 	    arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(codigo, tipoDeFiltro);
@@ -67,5 +81,7 @@ public class MatrizController {
 
 	result.include("lider", usuario);
 	result.include("arvoreHierarquica", arvoreHierarquicaFiltrada);
+
+	return arvoreHierarquicaCompleta;
     }
 }
