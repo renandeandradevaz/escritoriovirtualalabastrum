@@ -32,7 +32,7 @@ public class MatrizController {
     @Funcionalidade
     public void acessarTelaMatrizMultilevel(Integer codigo) throws Exception {
 	gerarMatriz(codigo, null);
-	result.include("nomeMatriz", "Matriz multilevel");
+	result.include("nomeMatriz", "Matriz Multilevel");
 	result.include("tipoDeMatriz", "Multilevel");
 	result.forwardTo("/WEB-INF/jsp//matriz/acessarTelaMatriz.jsp");
     }
@@ -40,7 +40,7 @@ public class MatrizController {
     @Funcionalidade
     public void acessarTelaMatrizTrinaria(Integer codigo) throws Exception {
 	gerarMatriz(codigo, "id_lider");
-	result.include("nomeMatriz", "Matriz trinária");
+	result.include("nomeMatriz", "Matriz Trinária");
 	result.include("tipoDeMatriz", "Trinaria");
 	result.forwardTo("/WEB-INF/jsp//matriz/acessarTelaMatriz.jsp");
     }

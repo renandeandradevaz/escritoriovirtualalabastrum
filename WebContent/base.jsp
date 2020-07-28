@@ -70,29 +70,29 @@
 		<div class="menu" data-collapse="persist">
 			<h3 class="menu-accordion" onclick="goTo('<c:url value="/home"/>')">Início</h3>
 			<div></div>
-			<h3 class="menu-accordion" onclick="goTo('<c:url value="/atualizacaoDados/acessarTelaAtualizacaoDados"/>')">Dados cadastrais</h3>
+			<h3 class="menu-accordion" onclick="goTo('<c:url value="/atualizacaoDados/acessarTelaAtualizacaoDados"/>')">Dados Cadastrais</h3>
 			<div></div>
 			<h3 class="menu-accordion has-child">Redes</h3>
 			<div>
 				<a href="<c:url value="/equipe/acessarTelaEquipe"/>" class="submenu-accordion"> Equipe </a>
-				<a href="<c:url value="/matriz/acessarTelaMatrizMultilevel"/>" class="submenu-accordion"> Matriz multilevel</a>
-				<a href="<c:url value="/matriz/acessarTelaMatrizTrinaria"/>" class="submenu-accordion"> Matriz trinária</a>
+				<a href="<c:url value="/matriz/acessarTelaMatrizMultilevel"/>" class="submenu-accordion"> Matriz Multilevel</a>
+				<a href="<c:url value="/matriz/acessarTelaMatrizTrinaria"/>" class="submenu-accordion"> Matriz Trinária</a>
 			</div>
 			<h3 class="menu-accordion has-child">Pedidos</h3>
 			<div>
 				<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="submenu-accordion"> Produtos </a>
-				<a href="<c:url value="/pedido/acessarCarrinho"/>" class="submenu-accordion"> Meu carrinho </a>
-				<a href="<c:url value="/pedido/meusPedidos"/>" class="submenu-accordion"> Meus pedidos </a>
+				<a href="<c:url value="/pedido/acessarCarrinho"/>" class="submenu-accordion"> Meu Carrinho </a>
+				<a href="<c:url value="/pedido/meusPedidos"/>" class="submenu-accordion"> Meus Pedidos </a>
 			</div>
 			<c:if test="${sessaoUsuario.usuario.informacoesFixasUsuario.administrador}">
 				<h3 class="menu-accordion has-child">Administrativo</h3>
 				<div>
-					<a href="<c:url value="/assumirIdentidade/acessarTelaAssumirIdentidade"/>" class="submenu-accordion"> Assumir identidade </a>
-					<a href="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" class="submenu-accordion"> Gerenciar pedidos </a>
-					<a href="<c:url value="/pedidoFranquia/todosPedidosFranquia"/>" class="submenu-accordion"> Gerenciar pedidos para estoque </a>
+					<a href="<c:url value="/assumirIdentidade/acessarTelaAssumirIdentidade"/>" class="submenu-accordion"> Assumir Identidade </a>
+					<a href="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" class="submenu-accordion"> Gerenciar Pedidos </a>
+					<a href="<c:url value="/pedidoFranquia/todosPedidosFranquia"/>" class="submenu-accordion"> Gerenciar Pedidos para Estoque </a>
 					<a href="<c:url value="/transferencia/acessarTelaTransferenciasParaAlabastrumCardAdministrativa"/>" class="submenu-accordion"> Transferências para Alabastrum Card </a>
-					<a href="<c:url value="/saldoGeral/acessarTelaSaldoGeral"/>" class="submenu-accordion"> Saldo geral </a>
-					<a href="<c:url value="/configuracao/acessarTelaConfiguracaoAdministrativa"/>" class="submenu-accordion"> Configurações administrativas </a>
+					<a href="<c:url value="/saldoGeral/acessarTelaSaldoGeral"/>" class="submenu-accordion"> Saldo Geral </a>
+					<a href="<c:url value="/configuracao/acessarTelaConfiguracaoAdministrativa"/>" class="submenu-accordion"> Configurações Administrativas </a>
 				</div>
 			</c:if>
 		</div>
