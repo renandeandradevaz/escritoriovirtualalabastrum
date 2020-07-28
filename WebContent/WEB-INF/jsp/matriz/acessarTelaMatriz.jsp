@@ -41,7 +41,6 @@
 					<td class="centralizado">
 						<b>Existente </b>
 					</td>
-					<td class="centralizado">3</td>
 					<c:forEach items="${quantidadesExistentes}" var="entry">
 						<td class="centralizado">${entry.value}</td>
 					</c:forEach>
