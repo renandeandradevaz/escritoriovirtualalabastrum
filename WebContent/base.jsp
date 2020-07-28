@@ -84,6 +84,10 @@
 				<a href="<c:url value="/pedido/acessarCarrinho"/>" class="submenu-accordion"> Meu Carrinho </a>
 				<a href="<c:url value="/pedido/meusPedidos"/>" class="submenu-accordion"> Meus Pedidos </a>
 			</div>
+			<h3 class="menu-accordion has-child">Downloads</h3>
+			<div>
+				<a href="<c:url value="/download/downloads"/>" class="submenu-accordion"> Downloads </a>
+			</div>
 			<c:if test="${sessaoUsuario.usuario.informacoesFixasUsuario.administrador}">
 				<h3 class="menu-accordion has-child">Administrativo</h3>
 				<div>

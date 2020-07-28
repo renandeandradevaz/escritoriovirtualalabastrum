@@ -10,15 +10,25 @@ import br.com.caelum.vraptor.Resource;
 @Resource
 public class DownloadController {
 
-	@Funcionalidade
-	@Get("/download/imagem/produto/{idProduto}")
-	public File downloadImagemProduto(String idProduto) {
+    @Funcionalidade
+    public void downloads() {
+    }
 
-		File file = new File(ArquivoService.PASTA_IMAGEM_PRODUTOS + idProduto);
+    @Funcionalidade
+    @Get("/downloadArquivo/{idArquivo}")
+    public File downloadArquivo(String idArquivo) {
+	return new File(ArquivoService.PASTA_ARQUIVOS + idArquivo);
+    }
 
-		if (file.exists()) {
-			return file;
-		}
-		return new File(ArquivoService.PASTA_IMAGEM_PRODUTOS + "imagem-nao-disponivel.jpg");
+    @Funcionalidade
+    @Get("/download/imagem/produto/{idProduto}")
+    public File downloadImagemProduto(String idProduto) {
+
+	File file = new File(ArquivoService.PASTA_IMAGEM_PRODUTOS + idProduto);
+
+	if (file.exists()) {
+	    return file;
 	}
+	return new File(ArquivoService.PASTA_IMAGEM_PRODUTOS + "imagem-nao-disponivel.jpg");
+    }
 }
