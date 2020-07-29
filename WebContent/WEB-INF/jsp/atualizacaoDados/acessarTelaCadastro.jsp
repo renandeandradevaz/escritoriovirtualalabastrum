@@ -101,11 +101,11 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Nickname: </label>
-			<input type="text" name="preCadastro.apelido" value="${preCadastro.apelido}" required="required" placeholder="Escolha um nickname para você">
+			<input type="text" name="preCadastro.apelido" value="${preCadastro.apelido}" required="required" placeholder="Escolha um nickname para você" maxlength="15">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Nome: </label>
-			<input type="text" name="preCadastro.vnome" value="${preCadastro.vnome}" required="required">
+			<input type="text" name="preCadastro.vnome" value="${preCadastro.vNome}" required="required">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Data nasc.: </label>
@@ -189,7 +189,7 @@ hr {
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Email: </label>
-			<input type="text" name="preCadastro.email" value="${preCadastro.email}" required="required">
+			<input type="text" name="preCadastro.email" value="${preCadastro.eMail}" required="required">
 		</div>
 		<div style="margin-top: 20px; margin-left: 20px">
 			<button type="submit" class="btn btn-primary">Enviar</button>

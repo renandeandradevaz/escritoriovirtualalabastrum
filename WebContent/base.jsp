@@ -22,7 +22,7 @@
 </head>
 <body>
 	<div class="topo">
-		<p>${sessaoUsuario.usuario.vNome}</p>
+		<p>${sessaoUsuario.usuario.apelido}</p>
 	</div>
 	<c:if test="${sessaoUsuario.usuario.id_Codigo != null}">
 		<a id="sair" style="float: right; padding-right: 15px; font-weight: bold; font-size: 12px; cursor: pointer;" href="https://dunastes.com.br"> Sair </a>

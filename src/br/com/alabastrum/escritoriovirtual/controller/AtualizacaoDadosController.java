@@ -1,5 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
+import java.text.Normalizer;
+
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Public;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
@@ -90,8 +92,10 @@ public class AtualizacaoDadosController {
 
 	Usuario usuario = preCadastro;
 
+	String apelido = Normalizer.normalize(usuario.getApelido().toLowerCase().replaceAll(" ", ""), Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+
 	String textoArquivo = "Nome: \'" + usuario.getvNome() + "\'\r\n";
-	textoArquivo += "apelido: \'" + usuario.getApelido() + "\'\r\n";
+	textoArquivo += "apelido: \'" + apelido + "\'\r\n";
 	textoArquivo += "Data_de_nascimento: \'" + usuario.getDt_Nasc() + "\'\r\n";
 	textoArquivo += "CPF: \'" + usuario.getCPF() + "\'\r\n";
 	textoArquivo += "RG: \'" + usuario.getCadRG() + "\'\r\n";
