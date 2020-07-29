@@ -73,10 +73,7 @@ public class Usuario implements Entidade {
 	private Integer id_Indicante;
 
 	@Transient
-	private Integer codigoQuemIndicou;
-
-	@Transient
-	private String nomeQuemIndicou;
+	private String nicknameQuemIndicou;
 
 	@Transient
 	private Boolean donoDeFranquia;
@@ -360,22 +357,6 @@ public class Usuario implements Entidade {
 		this.id_Indicante = id_Indicante;
 	}
 
-	public Integer getCodigoQuemIndicou() {
-		return codigoQuemIndicou;
-	}
-
-	public void setCodigoQuemIndicou(Integer codigoQuemIndicou) {
-		this.codigoQuemIndicou = codigoQuemIndicou;
-	}
-
-	public String getNomeQuemIndicou() {
-		return nomeQuemIndicou;
-	}
-
-	public void setNomeQuemIndicou(String nomeQuemIndicou) {
-		this.nomeQuemIndicou = nomeQuemIndicou;
-	}
-
 	public String getPisMis() {
 	    return pisMis;
 	}
@@ -478,5 +459,13 @@ public class Usuario implements Entidade {
 
 	public void setContaPessoaJuridicaBancoEspecifico(String contaPessoaJuridicaBancoEspecifico) {
 	    this.contaPessoaJuridicaBancoEspecifico = contaPessoaJuridicaBancoEspecifico;
+	}
+
+	public String getNicknameQuemIndicou() {
+	    return nicknameQuemIndicou;
+	}
+
+	public void setNicknameQuemIndicou(String nicknameQuemIndicou) {
+	    this.nicknameQuemIndicou = nicknameQuemIndicou;
 	}
 }

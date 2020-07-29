@@ -6,9 +6,10 @@ import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
-import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.Validator;
+import br.com.caelum.vraptor.validator.ValidationMessage;
 
 @Resource
 public class AtualizacaoDadosController {
@@ -16,12 +17,14 @@ public class AtualizacaoDadosController {
     private Result result;
     private SessaoUsuario sessaoUsuario;
     private HibernateUtil hibernateUtil;
+    private Validator validator;
 
-    public AtualizacaoDadosController(Result result, SessaoUsuario sessaoUsuario, HibernateUtil hibernateUtil) {
+    public AtualizacaoDadosController(Result result, SessaoUsuario sessaoUsuario, HibernateUtil hibernateUtil, Validator validator) {
 
 	this.result = result;
 	this.sessaoUsuario = sessaoUsuario;
 	this.hibernateUtil = hibernateUtil;
+	this.validator = validator;
     }
 
     @Funcionalidade
@@ -74,7 +77,6 @@ public class AtualizacaoDadosController {
 	textoArquivo += "contaPessoaJuridicaBancoEspecifico: \'" + usuario.getContaPessoaJuridicaBancoEspecifico() + "\'\r\n";
 
 	ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_ATUALIZACAO_DADOS);
-	Mail.enviarEmail("Atualização de dados de usuário", textoArquivo);
 
 	result.include("sucesso", "Sua solicitação de alteração de dados cadastrais foi feita com sucesso. Estamos avaliando seus dados, e em breve faremos a atualização no sistema.");
 
@@ -82,11 +84,14 @@ public class AtualizacaoDadosController {
     }
 
     @Public
-    public void salvarPreCadastroDistribuidor(Usuario sessaoAtualizacaoDados) throws Exception {
+    public void salvarPreCadastroDistribuidor(Usuario preCadastro) throws Exception {
 
-	Usuario usuario = sessaoAtualizacaoDados;
+	result.include("preCadastro", preCadastro);
+
+	Usuario usuario = preCadastro;
 
 	String textoArquivo = "Nome: \'" + usuario.getvNome() + "\'\r\n";
+	textoArquivo += "apelido: \'" + usuario.getApelido() + "\'\r\n";
 	textoArquivo += "Data_de_nascimento: \'" + usuario.getDt_Nasc() + "\'\r\n";
 	textoArquivo += "CPF: \'" + usuario.getCPF() + "\'\r\n";
 	textoArquivo += "RG: \'" + usuario.getCadRG() + "\'\r\n";
@@ -101,11 +106,27 @@ public class AtualizacaoDadosController {
 	textoArquivo += "Telefone_residencial: \'" + usuario.getTel() + "\'\r\n";
 	textoArquivo += "Telefone_celular: \'" + usuario.getCadCelular() + "\'\r\n";
 	textoArquivo += "Email: \'" + usuario.geteMail() + "\'\r\n";
-	textoArquivo += "Codigo: \'" + usuario.getCodigoQuemIndicou() + "\'\r\n";
-	textoArquivo += "nomepatroc: \'" + usuario.getNomeQuemIndicou() + "\'\r\n";
+
+	Usuario usuarioFiltro = new Usuario();
+	usuarioFiltro.setApelido(usuario.getApelido());
+	if (hibernateUtil.contar(usuarioFiltro) != 0) {
+	    validator.add(new ValidationMessage("Já existe alguém cadastrado com este nickname: " + usuario.getApelido() + ". Por favor, escolha outro.", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaCadastro();
+	    return;
+	}
+
+	usuarioFiltro = new Usuario();
+	usuarioFiltro.setApelido(usuario.getNicknameQuemIndicou());
+	if (hibernateUtil.contar(usuarioFiltro) != 1) {
+	    validator.add(new ValidationMessage("Nao foi encontrado ninguém com este nickname: " + usuario.getNicknameQuemIndicou(), "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaCadastro();
+	    return;
+	}
+
+	Usuario usuarioQuemIndicou = hibernateUtil.selecionar(usuarioFiltro);
+	textoArquivo += "codigo_quem_indicou: \'" + usuarioQuemIndicou.getId_Codigo() + "\'\r\n";
 
 	ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PRE_CADASTRO);
-	Mail.enviarEmail("Pré cadastro pelo site", textoArquivo);
 
 	result.redirectTo(this).sucessoCadastro();
     }

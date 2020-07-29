@@ -87,33 +87,37 @@ hr {
 			</label>
 		</div>
 		<div class="corMedia divFormulario">
-			<label class="labelFormulario">Código: </label>
-			<input type="text" name="sessaoAtualizacaoDados.codigoQuemIndicou" value="" required="required" id='codigoQuemIndicou' placeholder="Informe o codigo">
+			<label class="labelFormulario">Nickname: </label>
+			<input type="text" name="preCadastro.nicknameQuemIndicou" value="${preCadastro.nicknameQuemIndicou}" required="required" id='nicknameQuemIndicou' placeholder="Informe o nickname">
 			<button style="margin: 5px 0px;" id='descobrir-nome' class="btn btn-primary">Buscar</button>
 			<br />
 			<label class="labelFormulario">Nome: </label>
-			<input type="text" style="margin: 5px 0px 5px 0px;" name="sessaoAtualizacaoDadosnomeQuemIndicou" value="" disabled="disabled" id="nomeQuemIndicou">
+			<input type="text" style="margin: 5px 0px 5px 0px;" value="" disabled="disabled" id="nomeQuemIndicou">
 		</div>
 		<div class="divFormulario">
 			<label class="labelFormulario">
 				<b> Seus dados: </b>
 			</label>
 		</div>
+		<div class="corClara divFormulario">
+			<label class="labelFormulario">Nickname: </label>
+			<input type="text" name="preCadastro.apelido" value="${preCadastro.apelido}" required="required" placeholder="Escolha um nickname para você">
+		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Nome: </label>
-			<input type="text" name="sessaoAtualizacaoDados.vnome" value="" required="required">
+			<input type="text" name="preCadastro.vnome" value="${preCadastro.vnome}" required="required">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Data nasc.: </label>
-			<input required="required" type="text" class="data" style="width: 100px" name="sessaoAtualizacaoDados.dt_Nasc" value="" onkeypress="mascaraData( this, event )">
+			<input required="required" type="text" class="data" style="width: 100px" name="preCadastro.dt_Nasc" value="${preCadastro.dt_Nasc}" onkeypress="mascaraData( this, event )">
 			<br>
 			<label class="labelFormulario">Sexo: </label>
-			<select name="sessaoAtualizacaoDados.cadSexo">
+			<select name="preCadastro.cadSexo">
 				<option value="Masculino">Masc</option>
 				<option value="Feminino">Fem</option>
 			</select>
 			<label class="labelFormulario">Estado civil: </label>
-			<select name="sessaoAtualizacaoDados.cadEstCivil" style="width: 100px">
+			<select name="preCadastro.cadEstCivil" style="width: 100px">
 				<option value="Solteiro(a)">Solteiro(a)</option>
 				<option value="Casado(a)">Casado(a)</option>
 				<option value="Divorciado(a)">Divorciado(a)</option>
@@ -122,31 +126,31 @@ hr {
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario"> CPF: </label>
-			<input type="text" required="required" name="sessaoAtualizacaoDados.CPF" value="" onBlur="Verifica_campo_CPF(this)">
+			<input type="text" required="required" name="preCadastro.CPF" value="${preCadastro.CPF}" onBlur="Verifica_campo_CPF(this)">
 			<label class="labelFormulario"> RG: </label>
-			<input type="text" required="required" name="sessaoAtualizacaoDados.cadRG" value="">
+			<input type="text" required="required" name="preCadastro.cadRG" value="${preCadastro.cadRG}">
 			<br>
 			<label class="labelFormulario"> Emissor: </label>
-			<input type="text" required="required" name="sessaoAtualizacaoDados.cadOrgaoExpedidor" value="">
+			<input type="text" required="required" name="preCadastro.cadOrgaoExpedidor" value="${preCadastro.cadOrgaoExpedidor}">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">CEP: </label>
-			<input type="text" required="required" name="sessaoAtualizacaoDados.cadCEP" value="" onkeypress="mascara(this, '#####-###')">
+			<input type="text" required="required" name="preCadastro.cadCEP" value="${preCadastro.cadCEP}" onkeypress="mascara(this, '#####-###')">
 			<a style="margin-left: 30px;" href="http://www.buscacep.correios.com.br" target="_blank"> Pesquisar CEP </a>
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">End. Resid.: </label>
-			<input required="required" type="text" style="width: 90%;" name="sessaoAtualizacaoDados.cadEndereco" value="">
+			<input required="required" type="text" style="width: 90%;" name="preCadastro.cadEndereco" value="${preCadastro.cadEndereco}">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Bairro: </label>
-			<input type="text" required="required" name="sessaoAtualizacaoDados.cadBairro" value="">
+			<input type="text" required="required" name="preCadastro.cadBairro" value="${preCadastro.cadBairro}">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Cidade: </label>
-			<input type="text" required="required" name="sessaoAtualizacaoDados.cadCidade" value="">
+			<input type="text" required="required" name="preCadastro.cadCidade" value="${preCadastro.cadCidade}">
 			<label class="labelFormulario">Estado: </label>
-			<select name="sessaoAtualizacaoDados.cadUF">
+			<select name="preCadastro.cadUF">
 				<option value="AC">Acre</option>
 				<option value="AL">Alagoas</option>
 				<option value="AP">Amapá</option>
@@ -178,14 +182,14 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Tel. resid.: </label>
-			<input required="required" type="text" style="width: 100px" name="sessaoAtualizacaoDados.tel" value="">
+			<input required="required" type="text" style="width: 100px" name="preCadastro.tel" value="${preCadastro.tel}">
 			<br>
 			<label class="labelFormulario">Tel. Cel.: </label>
-			<input type="text" required="required" style="width: 100px" name="sessaoAtualizacaoDados.cadCelular" value="">
+			<input type="text" required="required" style="width: 100px" name="preCadastro.cadCelular" value="${preCadastro.cadCelular}">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Email: </label>
-			<input type="text" name="sessaoAtualizacaoDados.email" value="" required="required">
+			<input type="text" name="preCadastro.email" value="${preCadastro.email}" required="required">
 		</div>
 		<div style="margin-top: 20px; margin-left: 20px">
 			<button type="submit" class="btn btn-primary">Enviar</button>
@@ -197,9 +201,9 @@ hr {
 
 		var currentPage = window.location.href;
 
-		if (currentPage.includes("codigo=")) {
-			var codigo = currentPage.split("codigo=")[1];
-			jQuery("#codigoQuemIndicou").val(codigo);
+		if (currentPage.includes("nickname=")) {
+			var nickname = currentPage.split("nickname=")[1];
+			jQuery("#nicknameQuemIndicou").val(nickname);
 		}
 	});
 
@@ -211,8 +215,8 @@ hr {
 									'async' : false,
 									'global' : false,
 									'crossDomain' : true,
-									'url' : 'https://ev.dunastes.com.br/distribuidor/obterNomeDistribuidor?codigo='
-											+ jQuery('#codigoQuemIndicou')
+									'url' : 'https://ev.dunastes.com.br/distribuidor/obterNomeDistribuidor?nickname='
+											+ jQuery('#nicknameQuemIndicou')
 													.val(),
 									dataType : 'json',
 									'success' : function(data) {
