@@ -176,7 +176,7 @@ public class LoginController {
 
 	if (Util.vazio(usuarioBanco.getCPF())) {
 
-	    validator.add(new ValidationMessage("O usuário com código " + usuarioBanco.getId_Codigo() + " não possui um CPF cadastrado no escritório virtual. Entre em contato com a suporte pedindo para cadastrar o seu CPF no escritório virtual.", "Erro"));
+	    validator.add(new ValidationMessage("O usuário com código " + usuarioBanco.getId_Codigo() + " não possui um CPF cadastrado no escritório virtual. Entre em contato com o suporte pedindo para cadastrar o seu CPF no escritório virtual.", "Erro"));
 	    validator.onErrorRedirectTo(this).trocarSenhaPrimeiroAcesso();
 	    return;
 
@@ -185,7 +185,7 @@ public class LoginController {
 	    String cpfBanco = usuarioBanco.getCPF().replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", "");
 
 	    if (!cpfBanco.equals(cpf)) {
-		validator.add(new ValidationMessage("O CPF informado não é igual ao CPF existente no banco de dados da Dunastes. Informe o CPF corretamente ou entre em contato com a Dunastes através do email contato@dunastes.com.br informando sobre o problema e peça para editar o seu CPF na base de dados.", "Erro"));
+		validator.add(new ValidationMessage("O CPF informado não é igual ao CPF existente no banco de dados da Dunastes. Informe o CPF corretamente ou entre em contato com o suporte", "Erro"));
 		validator.onErrorRedirectTo(this).trocarSenhaPrimeiroAcesso();
 		return;
 	    }

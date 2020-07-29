@@ -24,7 +24,7 @@
 	<div class="topo">
 		<p>${sessaoUsuario.usuario.apelido}</p>
 	</div>
-	<c:if test="${sessaoUsuario.usuario.id_Codigo != null}">
+	<c:if test="${sessaoUsuario.usuario.apelido != null}">
 		<a id="sair" style="float: right; padding-right: 15px; font-weight: bold; font-size: 12px; cursor: pointer;" href="https://dunastes.com.br"> Sair </a>
 		<!-- 		<div class="menu" data-collapse="persist"> -->
 		<%-- 			<h3 class="menu-accordion" onclick="goTo('<c:url value="/home"/>')">Início</h3> --%>
