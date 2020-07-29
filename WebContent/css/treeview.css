@@ -58,6 +58,11 @@ body {
 
 .node-name {
 	font-weight: bold;
+	display: none;
+}
+
+.node-title{
+	margin-top: 15px;
 }
 
 .nodeExample1 {

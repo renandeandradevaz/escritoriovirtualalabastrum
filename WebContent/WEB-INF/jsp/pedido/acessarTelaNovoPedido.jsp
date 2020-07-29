@@ -14,8 +14,8 @@
 		</select>
 		<br>
 		<c:if test="${sessaoUsuario.usuario.informacoesFixasUsuario.administrador || sessaoUsuario.usuario.donoDeFranquia}">
-			<h5>Escolha o código do distribuidor que irá realizar o pedido</h5>
-			<input type="number" min="1" name="idCodigo" placeholder="idCodigo" value="${sessaoUsuario.usuario.id_Codigo}">
+			<h5 style="display: none">Escolha o código do distribuidor que irá realizar o pedido</h5>
+			<input style="display: none" type="number" min="1" name="idCodigo" placeholder="idCodigo" value="${sessaoUsuario.usuario.id_Codigo}">
 		</c:if>
 		<br>
 		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Selecionar</button>

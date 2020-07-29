@@ -65,8 +65,8 @@ hr {
 	<div class="divInformacoesUsuarios">
 		<h4>DADOS CADASTRAIS</h4>
 		<hr>
-		<label class="labelEsquerda"> Código de identificação: </label>
-		<span class="spanDireita"> ${usuario.id_Codigo} </span>
+		<label class="labelEsquerda"> Nickname: </label>
+		<span class="spanDireita"> ${usuario.apelido} </span>
 		<br>
 		<br>
 		<label class="labelEsquerda"> Nome completo: </label>
@@ -82,8 +82,7 @@ hr {
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Nome: </label>
 			<input type="text" name="usuario.vnome" value="${usuario.vNome}" required="required">
-			<label class="labelFormulario">Nickname: </label>
-			<input type="text" name="usuario.apelido" value="${usuario.apelido}" required="required" disabled="disabled">
+			<input type="hidden" name="usuario.apelido" value="${usuario.apelido}" required="required" disabled="disabled">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Data nasc.: </label>

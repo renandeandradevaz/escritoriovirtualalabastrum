@@ -11,9 +11,9 @@
 		<fieldset>
 			<legend>Pesquisa</legend>
 			<div class="control-group" style="margin-top: 5px;">
-				<label class="control-label">Por ID</label>
+				<label class="control-label">Por nickname</label>
 				<div class="controls">
-					<input type="text" name="pesquisaEquipeDTO.idCodigo" value="${pesquisaEquipeDTO.idCodigo}">
+					<input type="text" name="pesquisaEquipeDTO.apelido" value="${pesquisaEquipeDTO.apelido}">
 				</div>
 			</div>
 			<div class="control-group">
@@ -78,7 +78,7 @@
 	<table class="table table-striped table-bordered">
 		<thead>
 			<tr>
-				<th>ID</th>
+				<th>Nickname</th>
 				<th>Posição</th>
 				<th>Nome</th>
 				<th>Nascimento</th>
@@ -92,7 +92,7 @@
 		<tbody>
 			<c:forEach items="${equipe}" var="item">
 				<tr>
-					<td class="centralizado">${item.usuario.id_Codigo}</td>
+					<td class="centralizado">${item.usuario.apelido}</td>
 					<td class="centralizado">${item.usuario.posAtual}</td>
 					<td class="centralizado">${item.usuario.vNome}</td>
 					<td class="centralizado">${item.usuario.dt_Nasc}</td>

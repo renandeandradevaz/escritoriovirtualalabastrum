@@ -22,163 +22,163 @@ import br.com.caelum.vraptor.Result;
 @Resource
 public class EquipeController {
 
-	private Result result;
-	private HibernateUtil hibernateUtil;
-	private SessaoUsuario sessaoUsuario;
+    private Result result;
+    private HibernateUtil hibernateUtil;
+    private SessaoUsuario sessaoUsuario;
 
-	public EquipeController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario) {
+    public EquipeController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario) {
 
-		this.result = result;
-		this.hibernateUtil = hibernateUtil;
-		this.sessaoUsuario = sessaoUsuario;
+	this.result = result;
+	this.hibernateUtil = hibernateUtil;
+	this.sessaoUsuario = sessaoUsuario;
+    }
+
+    @Funcionalidade
+    public void acessarTelaEquipe(PesquisaEquipeDTO pesquisaEquipeDTO, boolean pesquisa) throws Exception {
+
+	Usuario usuario = this.sessaoUsuario.getUsuario();
+
+	Collection<ArvoreHierarquicaDTO> arvoreHierarquica = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo()).values();
+
+	if (Util.vazio(pesquisaEquipeDTO)) {
+	    pesquisaEquipeDTO = new PesquisaEquipeDTO();
 	}
 
-	@Funcionalidade
-	public void acessarTelaEquipe(PesquisaEquipeDTO pesquisaEquipeDTO, boolean pesquisa) throws Exception {
+	arvoreHierarquica = filtrarPorApelido(arvoreHierarquica, pesquisaEquipeDTO.getApelido());
+	arvoreHierarquica = filtrarPorNivel(arvoreHierarquica, pesquisaEquipeDTO.getNivel());
+	arvoreHierarquica = filtrarPorPosicao(arvoreHierarquica, pesquisaEquipeDTO.getPosicao());
+	arvoreHierarquica = filtrarPorApenasIndicados(arvoreHierarquica, pesquisaEquipeDTO.getApenasIndicados());
+	arvoreHierarquica = filtrarPorAtividade(arvoreHierarquica, pesquisaEquipeDTO.getAtivos());
+	arvoreHierarquica = filtrarPorMesAniversario(arvoreHierarquica, pesquisaEquipeDTO.getMesAniversario());
+	List<EquipeDTO> equipe = gerarEquipe(arvoreHierarquica);
 
-		Usuario usuario = this.sessaoUsuario.getUsuario();
+	result.include("pesquisa", pesquisa);
+	result.include("posicoes", hibernateUtil.buscar(new Posicao()));
+	result.include("pesquisaEquipeDTO", pesquisaEquipeDTO);
+	result.include("equipe", equipe);
+    }
 
-		Collection<ArvoreHierarquicaDTO> arvoreHierarquica = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo()).values();
+    private List<EquipeDTO> gerarEquipe(Collection<ArvoreHierarquicaDTO> arvoreHierarquica) {
 
-		if (Util.vazio(pesquisaEquipeDTO)) {
-			pesquisaEquipeDTO = new PesquisaEquipeDTO();
+	List<EquipeDTO> equipe = new ArrayList<EquipeDTO>();
+
+	for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+
+	    EquipeDTO equipeDTO = new EquipeDTO();
+	    equipeDTO.setUsuario(arvoreHierarquicaDTO.getUsuario());
+	    equipeDTO.setNivel(arvoreHierarquicaDTO.getNivel());
+
+	    if (new QualificacaoService(hibernateUtil).obterQualificacoes(arvoreHierarquicaDTO.getUsuario().getId_Codigo()).size() == 1)
+		equipeDTO.setPreCadastro("Sim");
+	    else
+		equipeDTO.setPreCadastro("Não");
+
+	    equipe.add(equipeDTO);
+	}
+	return equipe;
+    }
+
+    @Funcionalidade
+    public void pesquisar(PesquisaEquipeDTO pesquisaEquipeDTO) throws Exception {
+
+	result.forwardTo(this).acessarTelaEquipe(pesquisaEquipeDTO, true);
+    }
+
+    private Collection<ArvoreHierarquicaDTO> filtrarPorApelido(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, String apelidoFiltro) {
+
+	List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+
+	if (Util.preenchido(apelidoFiltro)) {
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+		if (arvoreHierarquicaDTO.getUsuario().getApelido().equalsIgnoreCase(apelidoFiltro.replaceAll(" ", ""))) {
+		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
 		}
-
-		arvoreHierarquica = filtrarPorCodigo(arvoreHierarquica, pesquisaEquipeDTO.getIdCodigo());
-		arvoreHierarquica = filtrarPorNivel(arvoreHierarquica, pesquisaEquipeDTO.getNivel());
-		arvoreHierarquica = filtrarPorPosicao(arvoreHierarquica, pesquisaEquipeDTO.getPosicao());
-		arvoreHierarquica = filtrarPorApenasIndicados(arvoreHierarquica, pesquisaEquipeDTO.getApenasIndicados());
-		arvoreHierarquica = filtrarPorAtividade(arvoreHierarquica, pesquisaEquipeDTO.getAtivos());
-		arvoreHierarquica = filtrarPorMesAniversario(arvoreHierarquica, pesquisaEquipeDTO.getMesAniversario());
-		List<EquipeDTO> equipe = gerarEquipe(arvoreHierarquica);
-
-		result.include("pesquisa", pesquisa);
-		result.include("posicoes", hibernateUtil.buscar(new Posicao()));
-		result.include("pesquisaEquipeDTO", pesquisaEquipeDTO);
-		result.include("equipe", equipe);
+	    }
+	    return arvoreHierarquicaFiltrada;
 	}
+	return arvoreHierarquica;
+    }
 
-	private List<EquipeDTO> gerarEquipe(Collection<ArvoreHierarquicaDTO> arvoreHierarquica) {
+    private Collection<ArvoreHierarquicaDTO> filtrarPorNivel(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivelFiltro) {
 
-		List<EquipeDTO> equipe = new ArrayList<EquipeDTO>();
+	if (Util.preenchido(nivelFiltro)) {
 
-		for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+	    List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
 
-			EquipeDTO equipeDTO = new EquipeDTO();
-			equipeDTO.setUsuario(arvoreHierarquicaDTO.getUsuario());
-			equipeDTO.setNivel(arvoreHierarquicaDTO.getNivel());
-
-			if (new QualificacaoService(hibernateUtil).obterQualificacoes(arvoreHierarquicaDTO.getUsuario().getId_Codigo()).size() == 1)
-				equipeDTO.setPreCadastro("Sim");
-			else
-				equipeDTO.setPreCadastro("Não");
-
-			equipe.add(equipeDTO);
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+		if (arvoreHierarquicaDTO.getNivel().equals(nivelFiltro)) {
+		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
 		}
-		return equipe;
+	    }
+	    return arvoreHierarquicaFiltrada;
 	}
+	return arvoreHierarquica;
+    }
 
-	@Funcionalidade
-	public void pesquisar(PesquisaEquipeDTO pesquisaEquipeDTO) throws Exception {
+    private Collection<ArvoreHierarquicaDTO> filtrarPorPosicao(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, String posicaoFiltro) {
 
-		result.forwardTo(this).acessarTelaEquipe(pesquisaEquipeDTO, true);
-	}
+	if (Util.preenchido(posicaoFiltro)) {
 
-	private Collection<ArvoreHierarquicaDTO> filtrarPorCodigo(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Integer idCodigoFiltro) {
+	    List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
 
-		List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
-
-		if (Util.preenchido(idCodigoFiltro)) {
-			for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
-				if (arvoreHierarquicaDTO.getUsuario().getId_Codigo().equals(idCodigoFiltro)) {
-					arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
-				}
-			}
-			return arvoreHierarquicaFiltrada;
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+		if (arvoreHierarquicaDTO.getUsuario().getPosAtual().equals(posicaoFiltro)) {
+		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
 		}
-		return arvoreHierarquica;
+	    }
+	    return arvoreHierarquicaFiltrada;
 	}
+	return arvoreHierarquica;
+    }
 
-	private Collection<ArvoreHierarquicaDTO> filtrarPorNivel(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivelFiltro) {
+    private Collection<ArvoreHierarquicaDTO> filtrarPorApenasIndicados(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Boolean apenasIndicados) {
 
-		if (Util.preenchido(nivelFiltro)) {
+	if (Util.preenchido(apenasIndicados) && apenasIndicados) {
 
-			List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+	    List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
 
-			for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
-				if (arvoreHierarquicaDTO.getNivel().equals(nivelFiltro)) {
-					arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
-				}
-			}
-			return arvoreHierarquicaFiltrada;
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+		if (arvoreHierarquicaDTO.getUsuario().getId_Indicante().equals(this.sessaoUsuario.getUsuario().getId_Codigo())) {
+		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
 		}
-		return arvoreHierarquica;
+	    }
+	    return arvoreHierarquicaFiltrada;
 	}
+	return arvoreHierarquica;
+    }
 
-	private Collection<ArvoreHierarquicaDTO> filtrarPorPosicao(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, String posicaoFiltro) {
+    private Collection<ArvoreHierarquicaDTO> filtrarPorMesAniversario(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, String mesAniversario) {
 
-		if (Util.preenchido(posicaoFiltro)) {
+	if (Util.preenchido(mesAniversario)) {
 
-			List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+	    List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
 
-			for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
-				if (arvoreHierarquicaDTO.getUsuario().getPosAtual().equals(posicaoFiltro)) {
-					arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
-				}
-			}
-			return arvoreHierarquicaFiltrada;
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+		if (arvoreHierarquicaDTO.getUsuario().getDt_Nasc().contains("/" + mesAniversario + "/")) {
+		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
 		}
-		return arvoreHierarquica;
+	    }
+	    return arvoreHierarquicaFiltrada;
 	}
+	return arvoreHierarquica;
+    }
 
-	private Collection<ArvoreHierarquicaDTO> filtrarPorApenasIndicados(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Boolean apenasIndicados) {
+    private Collection<ArvoreHierarquicaDTO> filtrarPorAtividade(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Boolean ativosFiltro) {
 
-		if (Util.preenchido(apenasIndicados) && apenasIndicados) {
+	if (Util.preenchido(ativosFiltro)) {
 
-			List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+	    List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
 
-			for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
-				if (arvoreHierarquicaDTO.getUsuario().getId_Indicante().equals(this.sessaoUsuario.getUsuario().getId_Codigo())) {
-					arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
-				}
-			}
-			return arvoreHierarquicaFiltrada;
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+
+		boolean usuarioAtivo = new AtividadeService(hibernateUtil).isAtivo(arvoreHierarquicaDTO.getUsuario().getId_Codigo());
+
+		if ((ativosFiltro && usuarioAtivo) || (!ativosFiltro && !usuarioAtivo)) {
+		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
 		}
-		return arvoreHierarquica;
+	    }
+	    return arvoreHierarquicaFiltrada;
 	}
-
-	private Collection<ArvoreHierarquicaDTO> filtrarPorMesAniversario(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, String mesAniversario) {
-
-		if (Util.preenchido(mesAniversario)) {
-
-			List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
-
-			for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
-				if (arvoreHierarquicaDTO.getUsuario().getDt_Nasc().contains("/" + mesAniversario + "/")) {
-					arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
-				}
-			}
-			return arvoreHierarquicaFiltrada;
-		}
-		return arvoreHierarquica;
-	}
-
-	private Collection<ArvoreHierarquicaDTO> filtrarPorAtividade(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, Boolean ativosFiltro) {
-
-		if (Util.preenchido(ativosFiltro)) {
-
-			List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
-
-			for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
-
-				boolean usuarioAtivo = new AtividadeService(hibernateUtil).isAtivo(arvoreHierarquicaDTO.getUsuario().getId_Codigo());
-
-				if ((ativosFiltro && usuarioAtivo) || (!ativosFiltro && !usuarioAtivo)) {
-					arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
-				}
-			}
-			return arvoreHierarquicaFiltrada;
-		}
-		return arvoreHierarquica;
-	}
+	return arvoreHierarquica;
+    }
 }
