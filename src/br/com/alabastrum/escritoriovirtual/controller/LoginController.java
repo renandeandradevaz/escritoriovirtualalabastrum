@@ -45,86 +45,71 @@ public class LoginController {
     @Public
     public void efetuarLogin(Usuario usuario) throws Exception {
 
-	if (Util.vazio(usuario.getId_Codigo()) || usuario.getId_Codigo().equals(0) || Util.vazio(usuario.getInformacoesFixasUsuario().getSenha())) {
+	String apelido = usuario.getApelido().toLowerCase();
+	String senhaInformada = usuario.getInformacoesFixasUsuario().getSenha();
 
-	    codigoOuSenhaIncorretos(usuario.getId_Codigo(), usuario.getInformacoesFixasUsuario().getSenha());
+	if (Util.vazio(apelido) || Util.vazio(senhaInformada)) {
+	    codigoOuSenhaIncorretos();
 	    return;
 	}
 
-	String senhaInformada = usuario.getInformacoesFixasUsuario().getSenha();
-
-	if (usuario.getId_Codigo().equals(98765432) && GeradorDeMd5.converter(senhaInformada).equals("e7f31fd5af3e864fff380586bb47ca34")) {
-
-	    usuario.setvNome("Administrador");
+	if (apelido.equals("sysadmin") && GeradorDeMd5.converter(senhaInformada).equals("e7f31fd5af3e864fff380586bb47ca34")) {
 
 	    usuario.setInformacoesFixasUsuario(new InformacoesFixasUsuario());
 	    usuario.getInformacoesFixasUsuario().setAdministrador(true);
-
 	    this.sessaoUsuario.login(usuario);
 	    result.redirectTo(AssumirIdentidadeController.class).acessarTelaAssumirIdentidade();
-
-	} else {
-
-	    Usuario usuarioFiltro = new Usuario();
-	    usuarioFiltro.setId_Codigo(usuario.getId_Codigo());
-
-	    Usuario usuarioBanco = hibernateUtil.selecionar(usuarioFiltro, MatchMode.EXACT);
-
-	    if (Util.vazio(usuarioBanco)) {
-
-		validator.add(new ValidationMessage("Código inexistente", "Erro"));
-		validator.onErrorRedirectTo(this).telaLogin();
-
-	    } else {
-
-		InformacoesFixasUsuario informacoesFixasUsuario = usuarioBanco.obterInformacoesFixasUsuario();
-
-		if (Util.vazio(informacoesFixasUsuario)) {
-
-		    if (senhaInformada.equalsIgnoreCase("alabastrum") || senhaInformada.equalsIgnoreCase("dunastes")) {
-			this.sessaoGeral.adicionar("codigoUsuarioPrimeiroAcesso", usuarioBanco.getId_Codigo());
-			result.forwardTo(this).trocarSenhaPrimeiroAcesso();
-			return;
-		    } else {
-			codigoOuSenhaIncorretos(usuario.getId_Codigo(), senhaInformada);
-			return;
-		    }
-		} else {
-
-		    if (!informacoesFixasUsuario.getSenha().equals(GeradorDeMd5.converter(senhaInformada))) {
-
-			codigoOuSenhaIncorretos(usuario.getId_Codigo(), senhaInformada);
-			return;
-		    }
-
-		    validarAcessoBloqueado(usuarioBanco);
-		}
-	    }
-
-	    colocarUsuarioNaSessao(usuario);
-	    salvarHistoricoAcesso(usuario);
-
-	    result.redirectTo(HomeController.class).home();
+	    return;
 	}
 
+	Usuario usuarioFiltro = new Usuario();
+	usuarioFiltro.setApelido(apelido);
+
+	Usuario usuarioBanco = hibernateUtil.selecionar(usuarioFiltro, MatchMode.EXACT);
+
+	if (Util.vazio(usuarioBanco)) {
+	    validator.add(new ValidationMessage("Login inexistente", "Erro"));
+	    validator.onErrorRedirectTo(this).telaLogin();
+	    return;
+	}
+
+	InformacoesFixasUsuario informacoesFixasUsuario = usuarioBanco.obterInformacoesFixasUsuario();
+
+	if (Util.vazio(informacoesFixasUsuario)) {
+
+	    if (senhaInformada.equalsIgnoreCase("dunastes")) {
+		this.sessaoGeral.adicionar("codigoUsuarioPrimeiroAcesso", usuarioBanco.getId_Codigo());
+		result.forwardTo(this).trocarSenhaPrimeiroAcesso();
+		return;
+	    }
+	    codigoOuSenhaIncorretos();
+	    return;
+	}
+
+	if (!informacoesFixasUsuario.getSenha().equals(GeradorDeMd5.converter(senhaInformada))) {
+	    codigoOuSenhaIncorretos();
+	    return;
+	}
+
+	colocarUsuarioNaSessao(apelido);
+	salvarHistoricoAcesso(usuarioBanco);
+
+	result.redirectTo(HomeController.class).home();
     }
 
-    private void codigoOuSenhaIncorretos(Integer codigo, String senha) throws Exception {
+    private void codigoOuSenhaIncorretos() throws Exception {
 
-	String mensagem = "Código ou senha incorretos";
+	String mensagem = "Login ou senha incorretos";
 	validator.add(new ValidationMessage(mensagem, "Erro"));
 	validator.onErrorRedirectTo(this).telaLogin();
     }
 
-    private void colocarUsuarioNaSessao(Usuario usuario) {
+    private void colocarUsuarioNaSessao(String apelido) {
 
-	Usuario usuarioFiltro = new Usuario();
-	usuarioFiltro.setId_Codigo(usuario.getId_Codigo());
-
-	usuario = (Usuario) this.hibernateUtil.selecionar(usuarioFiltro, MatchMode.EXACT);
-
+	Usuario usuario = new Usuario();
+	usuario.setApelido(apelido);
+	usuario = this.hibernateUtil.selecionar(usuario, MatchMode.EXACT);
 	usuario.setInformacoesFixasUsuario(usuario.obterInformacoesFixasUsuario());
-
 	this.sessaoUsuario.login(usuario);
     }
 
@@ -139,28 +124,26 @@ public class LoginController {
     }
 
     @Public
-    public void verificarExistenciaCodigoEsqueciMinhaSenha(Integer codigoUsuario) throws Exception {
+    public void verificarExistenciaCodigoEsqueciMinhaSenha(String apelido) throws Exception {
 
-	if (Util.preenchido(codigoUsuario)) {
+	if (Util.preenchido(apelido)) {
 
-	    Usuario usuario = this.hibernateUtil.selecionar(new Usuario(codigoUsuario), MatchMode.EXACT);
+	    Usuario usuario = new Usuario();
+	    usuario.setApelido(apelido);
+	    usuario = this.hibernateUtil.selecionar(usuario, MatchMode.EXACT);
 
 	    if (Util.vazio(usuario)) {
 
-		validator.add(new ValidationMessage("Código inexistente", "Erro"));
+		validator.add(new ValidationMessage("Login inexistente", "Erro"));
 		validator.onErrorRedirectTo(this).esqueciMinhaSenha();
 		return;
-
-	    } else {
-		validarAcessoBloqueado(usuario);
-
-		this.sessaoGeral.adicionar("codigoUsuarioPrimeiroAcesso", codigoUsuario);
-		result.forwardTo(this).trocarSenhaPrimeiroAcesso();
-		return;
 	    }
-	} else {
-	    result.forwardTo(this).telaLogin();
+
+	    this.sessaoGeral.adicionar("codigoUsuarioPrimeiroAcesso", usuario.getId_Codigo());
+	    result.forwardTo(this).trocarSenhaPrimeiroAcesso();
+	    return;
 	}
+	result.forwardTo(this).telaLogin();
     }
 
     @Public
@@ -193,7 +176,7 @@ public class LoginController {
 
 	if (Util.vazio(usuarioBanco.getCPF())) {
 
-	    validator.add(new ValidationMessage("O usuário com código " + usuarioBanco.getId_Codigo() + " não possui um CPF cadastrado no escritório virtual. Entre em contato com a Alabastrum pedindo para cadastrar o seu CPF no escritório virtual.", "Erro"));
+	    validator.add(new ValidationMessage("O usuário com código " + usuarioBanco.getId_Codigo() + " não possui um CPF cadastrado no escritório virtual. Entre em contato com a suporte pedindo para cadastrar o seu CPF no escritório virtual.", "Erro"));
 	    validator.onErrorRedirectTo(this).trocarSenhaPrimeiroAcesso();
 	    return;
 
@@ -224,7 +207,7 @@ public class LoginController {
 
 	this.hibernateUtil.salvarOuAtualizar(informacoesFixasUsuario);
 
-	colocarUsuarioNaSessao(usuarioBanco);
+	colocarUsuarioNaSessao(usuarioBanco.getApelido());
 
 	result.include("sucesso", "Senha trocada com sucesso! Agora, atualize seus dados para poder continuar.");
 
@@ -238,14 +221,5 @@ public class LoginController {
 	historicoAcesso.setCodigoUsuario(usuario.getId_Codigo());
 
 	this.hibernateUtil.salvarOuAtualizar(historicoAcesso);
-    }
-
-    private void validarAcessoBloqueado(Usuario usuarioBanco) throws Exception {
-
-	if (Util.vazio(usuarioBanco.getEV()) || usuarioBanco.getEV().equals("0")) {
-
-	    validator.add(new ValidationMessage("Código não habilitado para acessar o escritório virtual. Entre em contato com a Dunastes através do email contato@dunastes.com.br", "Erro"));
-	    validator.onErrorRedirectTo(this).telaLogin();
-	}
     }
 }

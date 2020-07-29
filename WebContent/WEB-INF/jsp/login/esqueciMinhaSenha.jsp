@@ -3,9 +3,9 @@
 	<fieldset>
 		<legend>Esqueci minha senha</legend>
 		<div class="control-group warning">
-			<label class="control-label">Informe seu código</label>
+			<label class="control-label">Informe seu nickname</label>
 			<div class="controls">
-				<input type="text" class="numero-inteiro" name="codigoUsuario">
+				<input type="text" name="apelido">
 			</div>
 		</div>
 		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Avançar</button>

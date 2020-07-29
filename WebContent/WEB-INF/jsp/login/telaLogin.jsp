@@ -17,7 +17,7 @@
 		<img src="css/images/logo.png">
 		<h1>Escritório Virtual</h1>
 		<form method="post" action="<c:url value="/login/efetuarLogin"/>">
-			<input type="text" placeholder="USUÁRIO" name="usuario.id_Codigo">
+			<input type="text" placeholder="NICKNAME" name="usuario.apelido">
 			<input type="password" placeholder="SENHA" name="usuario.informacoesFixasUsuario.senha">
 			<br />
 			<input type="submit" value="ACESSAR" onclick="this.disabled=true;this.form.submit();">
