@@ -2,7 +2,6 @@
 <div class="fundo-branco">
 	<h4>Produtos</h4>
 </div>
-
 <c:if test="${sessaoUsuario.usuario.id_Codigo != null}">
 	<br>
 	<div class="fundo-branco">
@@ -27,7 +26,8 @@
 		<h4>
 			Valor: R$
 			<fmt:formatNumber value="${totais.valorTotal}" pattern="#,##0.00" />
-			- Total de itens: ${totais.totalItens} - Pontos: ${totais.totalPontos}
+			- Total de itens: ${totais.totalItens}
+			<c:if test="${mostrarPontuacao}"> - Pontos: ${totais.totalPontos}  </c:if>
 		</h4>
 		<br>
 		<a href="<c:url value="/pedido/acessarCarrinho"/>" style="float: right;">
@@ -46,7 +46,9 @@
 					Preço: R$
 					<fmt:formatNumber value="${item.precoUnitario}" pattern="#,##0.00" />
 				</p>
-				<p>Pontos: ${item.produto.prdPontos}</p>
+				<c:if test="${mostrarPontuacao}">
+					<p>Pontos: ${item.produto.prdPontos}</p>
+				</c:if>
 				<form action="<c:url value="/pedido/adicionarProduto/${item.produto.id_Produtos}"/>" method="post">
 					<input type="number" min="0" max="${item.quantidadeEmEstoque}" name="quantidade" style="width: 90px; margin-top: 10px" placeholder="Quantidade" value="${item.quantidade}">
 					<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Adicionar</button>

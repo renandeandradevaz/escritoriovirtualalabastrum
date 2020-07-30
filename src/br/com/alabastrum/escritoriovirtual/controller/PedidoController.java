@@ -151,15 +151,7 @@ public class PedidoController {
 	    pedido.setIdCodigo(idCodigo);
 	    pedido.setCompleted(false);
 	    pedido.setStatus(PENDENTE);
-
-	    Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
-	    Object isInativo = this.sessaoGeral.getValor("isInativo");
-	    if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido)
-		pedido.setTipo("adesao");
-	    else if (isInativo != null && (Boolean) isInativo)
-		pedido.setTipo("atividade");
-	    else
-		pedido.setTipo("recompra");
+	    pedido.setTipo(definirTipoDoPedido());
 	}
 
 	pedido.setIdFranquia(idFranquia);
@@ -167,6 +159,19 @@ public class PedidoController {
 
 	result.include("franquia", hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())));
 	result.include("categorias", hibernateUtil.buscar(new Categoria(), Order.asc("catNome")));
+	result.include("mostrarPontuacao", !Boolean.TRUE.equals(this.sessaoGeral.getValor("isPrimeiroPedido")));
+    }
+
+    private String definirTipoDoPedido() {
+
+	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
+	Object isInativo = this.sessaoGeral.getValor("isInativo");
+	if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido)
+	    return "adesao";
+	else if (isInativo != null && (Boolean) isInativo)
+	    return "atividade";
+
+	return "recompra";
     }
 
     @Funcionalidade
@@ -204,7 +209,10 @@ public class PedidoController {
 
     private BigDecimal calcularPrecoUnitarioProduto(BigDecimal precoUnitario) {
 
-	if (this.sessaoUsuario.getUsuario().getId() == null) {
+	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
+	Object isInativo = this.sessaoGeral.getValor("isInativo");
+
+	if (this.sessaoUsuario.getUsuario().getId() == null || (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) || (isInativo != null && (Boolean) isInativo)) {
 	    return precoUnitario.multiply(new BigDecimal("2"));
 	}
 	return precoUnitario;

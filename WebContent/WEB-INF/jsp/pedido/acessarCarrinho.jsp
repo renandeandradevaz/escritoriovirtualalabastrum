@@ -36,7 +36,9 @@
 		<br>
 		<br>
 		<br>
-		<h4 style="float: right;">Pontos: ${totais.totalPontos}</h4>
+		<c:if test="${mostrarPontuacao}">
+			<h4 style="float: right;">Pontos: ${totais.totalPontos}</h4>
+		</c:if>
 		<br>
 		<br>
 		<br>
