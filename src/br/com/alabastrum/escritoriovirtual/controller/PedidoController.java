@@ -223,6 +223,9 @@ public class PedidoController {
     public void adicionarProduto(String idProduto, Integer quantidade) {
 
 	Pedido pedido = selecionarPedidoAberto();
+
+	adicionarItemPedidoTaxaAdesao(idProduto, pedido);
+
 	ItemPedido itemPedido = selecionarItemPedido(idProduto, pedido);
 	Produto produto = hibernateUtil.selecionar(new Produto(idProduto), MatchMode.EXACT);
 
@@ -241,6 +244,23 @@ public class PedidoController {
 	}
 
 	result.forwardTo(this).selecionarCategoria(produto.getId_Categoria());
+    }
+
+    private void adicionarItemPedidoTaxaAdesao(String idProduto, Pedido pedido) {
+
+	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
+	if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
+	    if (new PedidoService(hibernateUtil).listarItensPedido(pedido).size() == 0) {
+
+		Produto produto = hibernateUtil.selecionar(new Produto("tx_ads"));
+		ItemPedido itemPedidoTaxaAdesao = new ItemPedido();
+		itemPedidoTaxaAdesao.setPedido(pedido);
+		itemPedidoTaxaAdesao.setIdProduto(produto.getId_Produtos());
+		itemPedidoTaxaAdesao.setPrecoUnitario(calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()));
+		itemPedidoTaxaAdesao.setQuantidade(1);
+		hibernateUtil.salvarOuAtualizar(itemPedidoTaxaAdesao);
+	    }
+	}
     }
 
     @Funcionalidade
