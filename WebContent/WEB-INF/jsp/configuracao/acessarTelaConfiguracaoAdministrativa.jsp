@@ -16,6 +16,30 @@
 				</div>
 			</div>
 			<div class="control-group">
+				<label class="control-label">Valor mínimo de pedido de adesão</label>
+				<div class="controls">
+					<input type="text" name="configuracaoAdministrativaDTO.valorMinimoPedidoAdesao" value="${configuracaoAdministrativaDTO.valorMinimoPedidoAdesao}">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Valor máximo de pedido de adesão</label>
+				<div class="controls">
+					<input type="text" name="configuracaoAdministrativaDTO.valorMaximoPedidoAdesao" value="${configuracaoAdministrativaDTO.valorMaximoPedidoAdesao}">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Valor mínimo de pedido de atividade</label>
+				<div class="controls">
+					<input type="text" name="configuracaoAdministrativaDTO.valorMinimoPedidoAtividade" value="${configuracaoAdministrativaDTO.valorMinimoPedidoAtividade}">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Valor máximo de pedido de atividade</label>
+				<div class="controls">
+					<input type="text" name="configuracaoAdministrativaDTO.valorMaximoPedidoAtividade" value="${configuracaoAdministrativaDTO.valorMaximoPedidoAtividade}">
+				</div>
+			</div>
+			<div class="control-group">
 				<label class="control-label"> Pontuação máxima por linha (%)</label>
 				<div class="controls">
 					<input type="text" name="configuracaoAdministrativaDTO.pontuacaoMaximaPorLinhaEmPorcentagem" value="${configuracaoAdministrativaDTO.pontuacaoMaximaPorLinhaEmPorcentagem}">

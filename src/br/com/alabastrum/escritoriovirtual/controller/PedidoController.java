@@ -5,6 +5,7 @@ import static br.com.caelum.vraptor.view.Results.json;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -30,6 +31,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 import br.com.alabastrum.escritoriovirtual.modelo.Transferencia;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
+import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
 import br.com.alabastrum.escritoriovirtual.service.EstoqueService;
 import br.com.alabastrum.escritoriovirtual.service.ExtratoService;
 import br.com.alabastrum.escritoriovirtual.service.PagSeguroService;
@@ -49,600 +51,673 @@ import br.com.caelum.vraptor.validator.ValidationMessage;
 @Resource
 public class PedidoController {
 
-	private static final String ID_USUARIO_PEDIDO = "idUsuarioPedido";
-	private static final String ID_USUARIO_LOJA_PESSOAL = "idUsuarioLojaPessoal";
+    private static final String ID_USUARIO_PEDIDO = "idUsuarioPedido";
+    private static final String ID_USUARIO_LOJA_PESSOAL = "idUsuarioLojaPessoal";
+    private static final String FINALIZADO = "FINALIZADO";
+    private static final String PENDENTE = "PENDENTE";
+    private static final String CANCELADO = "CANCELADO";
 
-	private Result result;
-	private HibernateUtil hibernateUtil;
-	private SessaoUsuario sessaoUsuario;
-	private SessaoGeral sessaoGeral;
-	private Validator validator;
+    private Result result;
+    private HibernateUtil hibernateUtil;
+    private SessaoUsuario sessaoUsuario;
+    private SessaoGeral sessaoGeral;
+    private Validator validator;
 
-	public PedidoController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario, Validator validator, SessaoGeral sessaoGeral) {
-		this.result = result;
-		this.hibernateUtil = hibernateUtil;
-		this.sessaoUsuario = sessaoUsuario;
-		this.sessaoGeral = sessaoGeral;
-		this.validator = validator;
+    public PedidoController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario, Validator validator, SessaoGeral sessaoGeral) {
+	this.result = result;
+	this.hibernateUtil = hibernateUtil;
+	this.sessaoUsuario = sessaoUsuario;
+	this.sessaoGeral = sessaoGeral;
+	this.validator = validator;
+    }
+
+    @Funcionalidade
+    public void acessarTelaNovoPedido() {
+
+	if (this.sessaoUsuario.getUsuario().getId() == null) {
+	    lojaPessoal((Integer) this.sessaoGeral.getValor(ID_USUARIO_LOJA_PESSOAL));
+	    return;
+	}
+	buscarFranquias();
+
+	if (isPrimeiroPedido()) {
+	    this.sessaoGeral.adicionar("isPrimeiroPedido", true);
+	    Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
+	    Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
+	    result.include("errors", Arrays.asList(new ValidationMessage(String.format("Você ainda não fez um pedido de adesão. Você precisa realizar este pedido para ingressar, de fato, na empresa, e poder ficar ativo este mês. Para realizar a adesão à empresa, você precisa fazer um pedido com valor mínimo de R$%s e máximo de R$%s", valorMinimoPedidoAdesao, valorMaximoPedidoAdesao), "Erro")));
+	    return;
 	}
 
-	@Funcionalidade
-	public void acessarTelaNovoPedido() {
+	if (isInativo()) {
+	    this.sessaoGeral.adicionar("isInativo", true);
+	    Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
+	    Integer valorMaximoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAtividade"));
+	    result.include("errors", Arrays.asList(new ValidationMessage(String.format("Você ainda não está ativo este mês. Você precisa fazer um pedido para ficar ativo. O valor mínimo do pedido de atividade é R$%s e o valor máximo é R$%s", valorMinimoPedidoAtividade, valorMaximoPedidoAtividade), "Erro")));
+	    return;
+	}
+    }
 
-		if (this.sessaoUsuario.getUsuario().getId() == null) {
-			lojaPessoal((Integer) this.sessaoGeral.getValor(ID_USUARIO_LOJA_PESSOAL));
-		} else {
-			Franquia franquiaFiltro = new Franquia();
+    private boolean isPrimeiroPedido() {
 
-			if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
-				franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
-			}
+	Pedido pedidoFiltro = new Pedido();
+	pedidoFiltro.setIdCodigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+	pedidoFiltro.setStatus(FINALIZADO);
+	return hibernateUtil.contar(pedidoFiltro) == 0;
+    }
 
-			result.include("franquias", hibernateUtil.buscar(franquiaFiltro));
-		}
+    private boolean isInativo() {
+
+	return !new AtividadeService(hibernateUtil).isAtivo(this.sessaoUsuario.getUsuario().getId_Codigo());
+    }
+
+    private void buscarFranquias() {
+
+	Franquia franquiaFiltro = new Franquia();
+	if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+	    franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+	}
+	result.include("franquias", hibernateUtil.buscar(franquiaFiltro));
+    }
+
+    @Funcionalidade
+    public void escolherProdutos(Integer idFranquia, Integer idCodigo) {
+
+	if (this.sessaoUsuario.getUsuario().getId() == null) {
+	    idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_LOJA_PESSOAL);
+
+	    Franquia franquia = new Franquia();
+	    franquia.setEstqNome("VENDA ONLINE");
+	    franquia = this.hibernateUtil.selecionar(franquia);
+	    idFranquia = franquia.getId_Estoque();
 	}
 
-	@Funcionalidade
-	public void escolherProdutos(Integer idFranquia, Integer idCodigo) {
+	if (idCodigo == null || idCodigo == 0) {
+	    idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
+	}
+	this.sessaoGeral.adicionar(ID_USUARIO_PEDIDO, idCodigo);
 
-		if (this.sessaoUsuario.getUsuario().getId() == null) {
-			idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_LOJA_PESSOAL);
+	if (idFranquia == null) {
 
-			Franquia franquia = new Franquia();
-			franquia.setEstqNome("VENDA ONLINE");
-			franquia = this.hibernateUtil.selecionar(franquia);
-			idFranquia = franquia.getId_Estoque();
-		}
-
-		if (idCodigo == null || idCodigo == 0) {
-			idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
-		}
-		this.sessaoGeral.adicionar(ID_USUARIO_PEDIDO, idCodigo);
-
-		if (idFranquia == null) {
-
-			validator.add(new ValidationMessage("Selecione uma franquia", "Erro"));
-			validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
-			return;
-		}
-
-		Pedido pedido = selecionarPedidoAberto();
-
-		if (Util.vazio(pedido)) {
-			pedido = new Pedido();
-			pedido.setIdCodigo(idCodigo);
-			pedido.setCompleted(false);
-			pedido.setStatus("PENDENTE");
-		}
-
-		pedido.setIdFranquia(idFranquia);
-		hibernateUtil.salvarOuAtualizar(pedido);
-
-		result.include("franquia", hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())));
-		result.include("categorias", hibernateUtil.buscar(new Categoria(), Order.asc("catNome")));
+	    validator.add(new ValidationMessage("Selecione uma franquia", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
+	    return;
 	}
 
-	@Funcionalidade
-	@Get("/pedido/selecionarCategoria/{idCategoria}")
-	public void selecionarCategoria(Integer idCategoria) {
+	Pedido pedido = selecionarPedidoAberto();
 
-		Pedido pedido = selecionarPedidoAberto();
-
-		Produto filtro = new Produto();
-		filtro.setId_Categoria(idCategoria);
-
-		List<Produto> produtos = hibernateUtil.buscar(filtro);
-		List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
-		for (Produto produto : produtos) {
-
-			int quantidadeEmEstoque = new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(produto.getId_Produtos(), pedido.getIdFranquia());
-
-			if (quantidadeEmEstoque > 0) {
-
-				ItemPedido itemPedido = selecionarItemPedido(produto.getId_Produtos(), selecionarPedidoAberto());
-				Integer quantidade = 0;
-				if (itemPedido != null) {
-					quantidade = itemPedido.getQuantidade();
-				}
-
-				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()), quantidadeEmEstoque, null));
-			}
-		}
-
-		result.include("itensPedidoDTO", itensPedidoDTO);
-
-		result.include("totais", calcularTotais(pedido));
-		result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), pedido.getIdCodigo());
+	if (Util.vazio(pedido)) {
+	    pedido = new Pedido();
+	    pedido.setIdCodigo(idCodigo);
+	    pedido.setCompleted(false);
+	    pedido.setStatus(PENDENTE);
 	}
 
-	private BigDecimal calcularPrecoUnitarioProduto(BigDecimal precoUnitario) {
+	pedido.setIdFranquia(idFranquia);
+	hibernateUtil.salvarOuAtualizar(pedido);
 
-		if (this.sessaoUsuario.getUsuario().getId() == null) {
-			return precoUnitario.multiply(new BigDecimal("2"));
+	result.include("franquia", hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())));
+	result.include("categorias", hibernateUtil.buscar(new Categoria(), Order.asc("catNome")));
+    }
+
+    @Funcionalidade
+    @Get("/pedido/selecionarCategoria/{idCategoria}")
+    public void selecionarCategoria(Integer idCategoria) {
+
+	Pedido pedido = selecionarPedidoAberto();
+
+	Produto filtro = new Produto();
+	filtro.setId_Categoria(idCategoria);
+
+	List<Produto> produtos = hibernateUtil.buscar(filtro);
+	List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
+	for (Produto produto : produtos) {
+
+	    int quantidadeEmEstoque = new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(produto.getId_Produtos(), pedido.getIdFranquia());
+
+	    if (quantidadeEmEstoque > 0) {
+
+		ItemPedido itemPedido = selecionarItemPedido(produto.getId_Produtos(), selecionarPedidoAberto());
+		Integer quantidade = 0;
+		if (itemPedido != null) {
+		    quantidade = itemPedido.getQuantidade();
 		}
-		return precoUnitario;
+
+		itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()), quantidadeEmEstoque, null));
+	    }
 	}
 
-	@Funcionalidade
-	@Post("/pedido/adicionarProduto/{idProduto}")
-	public void adicionarProduto(String idProduto, Integer quantidade) {
+	result.include("itensPedidoDTO", itensPedidoDTO);
 
-		Pedido pedido = selecionarPedidoAberto();
-		ItemPedido itemPedido = selecionarItemPedido(idProduto, pedido);
-		Produto produto = hibernateUtil.selecionar(new Produto(idProduto), MatchMode.EXACT);
+	result.include("totais", calcularTotais(pedido));
+	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), pedido.getIdCodigo());
+    }
 
-		if (Util.vazio(itemPedido)) {
-			itemPedido = new ItemPedido();
-			itemPedido.setPedido(pedido);
-			itemPedido.setIdProduto(idProduto);
-			itemPedido.setPrecoUnitario(calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()));
-		}
+    private BigDecimal calcularPrecoUnitarioProduto(BigDecimal precoUnitario) {
 
-		itemPedido.setQuantidade(quantidade);
-		hibernateUtil.salvarOuAtualizar(itemPedido);
+	if (this.sessaoUsuario.getUsuario().getId() == null) {
+	    return precoUnitario.multiply(new BigDecimal("2"));
+	}
+	return precoUnitario;
+    }
 
-		if (quantidade <= 0) {
-			hibernateUtil.deletar(itemPedido);
-		}
+    @Funcionalidade
+    @Post("/pedido/adicionarProduto/{idProduto}")
+    public void adicionarProduto(String idProduto, Integer quantidade) {
 
-		result.forwardTo(this).selecionarCategoria(produto.getId_Categoria());
+	Pedido pedido = selecionarPedidoAberto();
+	ItemPedido itemPedido = selecionarItemPedido(idProduto, pedido);
+	Produto produto = hibernateUtil.selecionar(new Produto(idProduto), MatchMode.EXACT);
+
+	if (Util.vazio(itemPedido)) {
+	    itemPedido = new ItemPedido();
+	    itemPedido.setPedido(pedido);
+	    itemPedido.setIdProduto(idProduto);
+	    itemPedido.setPrecoUnitario(calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()));
 	}
 
-	@Funcionalidade
-	public void acessarCarrinho() {
+	itemPedido.setQuantidade(quantidade);
+	hibernateUtil.salvarOuAtualizar(itemPedido);
 
-		List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
-
-		Pedido pedido = selecionarPedidoAberto();
-
-		if (pedido != null) {
-
-			for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
-				Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
-				Integer quantidade = itemPedido.getQuantidade();
-				itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, itemPedido.getPrecoUnitario(), 0, null));
-			}
-		}
-
-		result.include("itensPedidoDTO", itensPedidoDTO);
-		result.include("totais", calcularTotais(pedido));
+	if (quantidade <= 0) {
+	    hibernateUtil.deletar(itemPedido);
 	}
 
-	@Funcionalidade
-	@Get("/pedido/removerProduto/{idProduto}")
-	public void removerProduto(String idProduto) {
+	result.forwardTo(this).selecionarCategoria(produto.getId_Categoria());
+    }
 
-		Pedido pedido = selecionarPedidoAberto();
-		ItemPedido itemPedido = selecionarItemPedido(idProduto, pedido);
-		hibernateUtil.deletar(itemPedido);
-		result.forwardTo(this).acessarCarrinho();
+    @Funcionalidade
+    public void acessarCarrinho() {
+
+	List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
+
+	Pedido pedido = selecionarPedidoAberto();
+
+	if (pedido != null) {
+
+	    for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
+		Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
+		Integer quantidade = itemPedido.getQuantidade();
+		itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, itemPedido.getPrecoUnitario(), 0, null));
+	    }
 	}
 
-	@Funcionalidade
-	public void escolherFormaDePagamento() {
+	result.include("itensPedidoDTO", itensPedidoDTO);
+	result.include("totais", calcularTotais(pedido));
+    }
 
-		Pedido pedido = selecionarPedidoAberto();
-		verificarPagamentoComSaldoHabilitado(pedido);
+    @Funcionalidade
+    @Get("/pedido/removerProduto/{idProduto}")
+    public void removerProduto(String idProduto) {
+
+	Pedido pedido = selecionarPedidoAberto();
+	ItemPedido itemPedido = selecionarItemPedido(idProduto, pedido);
+	hibernateUtil.deletar(itemPedido);
+	result.forwardTo(this).acessarCarrinho();
+    }
+
+    @Funcionalidade
+    public void escolherFormaDePagamento() {
+
+	Pedido pedido = selecionarPedidoAberto();
+	Integer valorTotal = this.calcularTotais(pedido).getValorTotal().intValue();
+
+	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
+	if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
+
+	    Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
+	    Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
+
+	    if (valorTotal < valorMinimoPedidoAdesao || valorTotal > valorMaximoPedidoAdesao) {
+		validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de adesão é de R$%s. E o valor máximo é de R$%s", valorMinimoPedidoAdesao, valorMaximoPedidoAdesao), "Erro"));
+		validator.onErrorRedirectTo(this).acessarCarrinho();
+		return;
+	    }
 	}
 
-	@Funcionalidade
-	public void informarDadosComprador() {
+	Object isInativo = this.sessaoGeral.getValor("isInativo");
+	if (isInativo != null && (Boolean) isInativo) {
+
+	    Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
+	    Integer valorMaximoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAtividade"));
+
+	    if (valorTotal < valorMinimoPedidoAtividade || valorTotal > valorMaximoPedidoAtividade) {
+		validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de atividade é de R$%s. E o valor máximo é de R$%s", valorMinimoPedidoAtividade, valorMaximoPedidoAtividade), "Erro"));
+		validator.onErrorRedirectTo(this).acessarCarrinho();
+		return;
+	    }
 	}
 
-	@Funcionalidade
-	public void salvarDadosComprador(String nome, String cpf, String email, String telefone) throws Exception {
+	verificarPagamentoComSaldoHabilitado(pedido);
+    }
 
-		cpf = cpf.replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", "");
-		telefone = telefone.replaceAll(" ", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("-", "");
+    @Funcionalidade
+    public void informarDadosComprador() {
+    }
 
-		Comprador comprador = new Comprador();
-		comprador.setCpf(cpf);
-		comprador = hibernateUtil.selecionar(comprador);
+    @Funcionalidade
+    public void salvarDadosComprador(String nome, String cpf, String email, String telefone) throws Exception {
 
-		if (comprador == null) {
-			comprador = new Comprador();
-		}
+	cpf = cpf.replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", "");
+	telefone = telefone.replaceAll(" ", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("-", "");
 
-		comprador.setCpf(cpf);
-		comprador.setNome(nome);
-		comprador.setEmail(email);
-		comprador.setTelefone(telefone);
-		hibernateUtil.salvarOuAtualizar(comprador);
+	Comprador comprador = new Comprador();
+	comprador.setCpf(cpf);
+	comprador = hibernateUtil.selecionar(comprador);
 
-		Pedido pedido = selecionarPedidoAberto();
-		pedido.setComprador(comprador);
-		hibernateUtil.salvarOuAtualizar(pedido);
-
-		result.forwardTo(this).concluirPedido("pagarComCartaoDeCredito");
+	if (comprador == null) {
+	    comprador = new Comprador();
 	}
 
-	private void verificarPagamentoComSaldoHabilitado(Pedido pedido) {
+	comprador.setCpf(cpf);
+	comprador.setNome(nome);
+	comprador.setEmail(email);
+	comprador.setTelefone(telefone);
+	hibernateUtil.salvarOuAtualizar(comprador);
 
-		boolean pagamentoComSaldoHabilitado = false;
+	Pedido pedido = selecionarPedidoAberto();
+	pedido.setComprador(comprador);
+	hibernateUtil.salvarOuAtualizar(pedido);
 
-		if (this.sessaoUsuario.getUsuario().getId() != null && (pedido.getIdCodigo().equals(this.sessaoUsuario.getUsuario().getId_Codigo()) || this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador())) {
-			pagamentoComSaldoHabilitado = true;
-		}
+	result.forwardTo(this).concluirPedido("pagarComCartaoDeCredito");
+    }
 
-		result.include("pagamentoComSaldoHabilitado", pagamentoComSaldoHabilitado);
+    private void verificarPagamentoComSaldoHabilitado(Pedido pedido) {
+
+	boolean pagamentoComSaldoHabilitado = false;
+
+	if (this.sessaoUsuario.getUsuario().getId() != null && (pedido.getIdCodigo().equals(this.sessaoUsuario.getUsuario().getId_Codigo()) || this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador())) {
+	    pagamentoComSaldoHabilitado = true;
 	}
 
-	@Funcionalidade
-	public void concluirPedido(String formaDePagamento) throws Exception {
+	result.include("pagamentoComSaldoHabilitado", pagamentoComSaldoHabilitado);
+    }
 
-		if (formaDePagamento == null || formaDePagamento.equals("")) {
-			validator.add(new ValidationMessage("Selecione a forma de pagamento", "Erro"));
-			validator.onErrorRedirectTo(this).escolherFormaDePagamento();
-			return;
-		}
+    @Funcionalidade
+    public void concluirPedido(String formaDePagamento) throws Exception {
 
-		if (formaDePagamento.equals("pagarComCartaoDeCredito")) {
+	if (formaDePagamento == null || formaDePagamento.equals("")) {
+	    validator.add(new ValidationMessage("Selecione a forma de pagamento", "Erro"));
+	    validator.onErrorRedirectTo(this).escolherFormaDePagamento();
+	    return;
+	}
 
-			result.include("pagseguroSessionId", new PagSeguroService(hibernateUtil).gerarSessionId());
-			result.forwardTo("/WEB-INF/jsp/pedido/pagarComCartaoDeCredito.jsp");
-			return;
-		}
+	if (formaDePagamento.equals("pagarComCartaoDeCredito")) {
 
-		Pedido pedido = selecionarPedidoAberto();
-		BigDecimal totalPedido = calcularTotais(pedido).getValorTotal();
+	    result.include("pagseguroSessionId", new PagSeguroService(hibernateUtil).gerarSessionId());
+	    result.forwardTo("/WEB-INF/jsp/pedido/pagarComCartaoDeCredito.jsp");
+	    return;
+	}
 
-		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
+	Pedido pedido = selecionarPedidoAberto();
+	BigDecimal totalPedido = calcularTotais(pedido).getValorTotal();
 
-			Integer quantidadeEmEstoque = new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(itemPedido.getIdProduto(), pedido.getIdFranquia());
+	for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 
-			if (itemPedido.getQuantidade() > quantidadeEmEstoque) {
+	    Integer quantidadeEmEstoque = new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(itemPedido.getIdProduto(), pedido.getIdFranquia());
 
-				Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()));
+	    if (itemPedido.getQuantidade() > quantidadeEmEstoque) {
 
-				validator.add(new ValidationMessage("O produto " + produto.getPrdNome() + " possui " + quantidadeEmEstoque + " unidades no estoque", "Erro"));
-				validator.onErrorRedirectTo(this).acessarCarrinho();
-				return;
-			}
-		}
+		Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()));
 
-		Usuario comprador = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
-		String valorMinimoPedidosPrimeiraPosicao = new Configuracao().retornarConfiguracao("valorMinimoPedidosPrimeiraPosicao");
-		if (comprador.getPosAtual().equalsIgnoreCase(new PosicoesService(hibernateUtil).obterNomeDaPosicao(1)) && totalPedido.compareTo(new BigDecimal(valorMinimoPedidosPrimeiraPosicao)) < 0) {
+		validator.add(new ValidationMessage("O produto " + produto.getPrdNome() + " possui " + quantidadeEmEstoque + " unidades no estoque", "Erro"));
+		validator.onErrorRedirectTo(this).acessarCarrinho();
+		return;
+	    }
+	}
 
-			validator.add(new ValidationMessage("O valor mínimo para pedidos é de R$" + valorMinimoPedidosPrimeiraPosicao, "Erro"));
-			validator.onErrorRedirectTo(this).acessarCarrinho();
-			return;
-		}
+	Usuario comprador = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+	String valorMinimoPedidosPrimeiraPosicao = new Configuracao().retornarConfiguracao("valorMinimoPedidosPrimeiraPosicao");
+	if (comprador.getPosAtual().equalsIgnoreCase(new PosicoesService(hibernateUtil).obterNomeDaPosicao(1)) && totalPedido.compareTo(new BigDecimal(valorMinimoPedidosPrimeiraPosicao)) < 0) {
 
-		if (formaDePagamento.equals("pagarComSaldo")) {
+	    validator.add(new ValidationMessage("O valor mínimo para pedidos é de R$" + valorMinimoPedidosPrimeiraPosicao, "Erro"));
+	    validator.onErrorRedirectTo(this).acessarCarrinho();
+	    return;
+	}
 
-			BigDecimal saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado();
+	if (formaDePagamento.equals("pagarComSaldo")) {
 
-			if (totalPedido.compareTo(saldoLiberado) > 0) {
-				validator.add(new ValidationMessage("você não possui saldo suficiente. Saldo atual: R$" + String.format("%.2f", saldoLiberado), "Erro"));
-				validator.onErrorRedirectTo(this).escolherFormaDePagamento();
-				return;
-			}
+	    BigDecimal saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado();
 
-			salvarTransferencia(totalPedido, pedido);
+	    if (totalPedido.compareTo(saldoLiberado) > 0) {
+		validator.add(new ValidationMessage("você não possui saldo suficiente. Saldo atual: R$" + String.format("%.2f", saldoLiberado), "Erro"));
+		validator.onErrorRedirectTo(this).escolherFormaDePagamento();
+		return;
+	    }
+
+	    salvarTransferencia(totalPedido, pedido);
+	    pedido.setStatus("PAGO");
+	}
+
+	pedido.setCompleted(true);
+	pedido.setData(new GregorianCalendar());
+	hibernateUtil.salvarOuAtualizar(pedido);
+
+	for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
+	    new EstoqueService(hibernateUtil).retirarDoEstoque(itemPedido.getIdProduto(), pedido.getIdFranquia(), itemPedido.getQuantidade());
+	}
+
+	if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+
+	    result.forwardTo(this).pesquisarPedidosDosDistribuidores(null, null);
+
+	} else {
+
+	    if (!formaDePagamento.equalsIgnoreCase("pagamentoFinalizadoComCartaoDeCredito")) {
+		result.include("sucesso", "Pedido feito com sucesso. Você pode buscar no endereço escolhido. De segunda a sexta-feira. De 9h as 17h.");
+	    }
+
+	    if (this.sessaoUsuario.getUsuario().getId() == null) {
+		result.forwardTo(this).finalizarCompraLojaPessoal();
+	    } else {
+		result.forwardTo(this).meusPedidos();
+	    }
+	}
+    }
+
+    @Funcionalidade
+    public void pagarComCartaoDeCredito(String senderHash, String creditCardToken, String nomeCartao, String parcelas) throws Exception {
+
+	Pedido pedido = selecionarPedidoAberto();
+
+	new PagSeguroService(hibernateUtil).executarTransacao(senderHash, creditCardToken, String.valueOf(pedido.getId()), new DecimalFormat("0.00").format(new BigDecimal(calcularTotais(pedido).getValorTotal().toString())).replaceAll(",", "."), nomeCartao, parcelas, (Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())));
+
+	result.include("sucesso", "Seu cartão de crédito está passando por avaliação junto com sua operadora. Assim que o pagamento for confirmado, você receberá um e-mail de confirmação");
+	concluirPedido("pagamentoFinalizadoComCartaoDeCredito");
+    }
+
+    @Public
+    @Funcionalidade
+    public void pagseguroNotificacao(String notificationCode, String tokenEV) throws Exception {
+
+	if (tokenEV.equals(new Configuracao().retornarConfiguracao("tokenEV"))) {
+
+	    String xml = new PagSeguroService(hibernateUtil).consultarTransacao(notificationCode);
+
+	    try {
+
+		String status = xml.split("<status>")[1].split("</status>")[0];
+		Integer idPedido = Integer.valueOf(xml.split("<items><item><id>")[1].split("</id>")[0]);
+
+		if (status.equals("3") || status.equals("4")) {
+
+		    Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+
+		    if (pedido != null && !pedido.getStatus().equals(FINALIZADO)) {
+
 			pedido.setStatus("PAGO");
-		}
-
-		pedido.setCompleted(true);
-		pedido.setData(new GregorianCalendar());
-		hibernateUtil.salvarOuAtualizar(pedido);
-
-		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
-			new EstoqueService(hibernateUtil).retirarDoEstoque(itemPedido.getIdProduto(), pedido.getIdFranquia(), itemPedido.getQuantidade());
-		}
-
-		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
-
-			result.forwardTo(this).pesquisarPedidosDosDistribuidores(null, null);
-
-		} else {
-
-			if (!formaDePagamento.equalsIgnoreCase("pagamentoFinalizadoComCartaoDeCredito")) {
-				result.include("sucesso", "Pedido feito com sucesso. Você pode buscar no endereço escolhido. De segunda a sexta-feira. De 9h as 17h.");
-			}
-
-			if (this.sessaoUsuario.getUsuario().getId() == null) {
-				result.forwardTo(this).finalizarCompraLojaPessoal();
-			} else {
-				result.forwardTo(this).meusPedidos();
-			}
-		}
-	}
-
-	@Funcionalidade
-	public void pagarComCartaoDeCredito(String senderHash, String creditCardToken, String nomeCartao, String parcelas) throws Exception {
-
-		Pedido pedido = selecionarPedidoAberto();
-
-		new PagSeguroService(hibernateUtil).executarTransacao(senderHash, creditCardToken, String.valueOf(pedido.getId()), new DecimalFormat("0.00").format(new BigDecimal(calcularTotais(pedido).getValorTotal().toString())).replaceAll(",", "."), nomeCartao, parcelas, (Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())));
-
-		result.include("sucesso", "Seu cartão de crédito está passando por avaliação junto com sua operadora. Assim que o pagamento for confirmado, você receberá um e-mail de confirmação");
-		concluirPedido("pagamentoFinalizadoComCartaoDeCredito");
-	}
-
-	@Public
-	@Funcionalidade
-	public void pagseguroNotificacao(String notificationCode, String tokenEV) throws Exception {
-
-		if (tokenEV.equals(new Configuracao().retornarConfiguracao("tokenEV"))) {
-
-			String xml = new PagSeguroService(hibernateUtil).consultarTransacao(notificationCode);
-
-			try {
-
-				String status = xml.split("<status>")[1].split("</status>")[0];
-				Integer idPedido = Integer.valueOf(xml.split("<items><item><id>")[1].split("</id>")[0]);
-
-				if (status.equals("3") || status.equals("4")) {
-
-					Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
-
-					if (pedido != null && !pedido.getStatus().equals("FINALIZADO")) {
-
-						pedido.setStatus("PAGO");
-						hibernateUtil.salvarOuAtualizar(pedido);
-
-						Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
-
-						Mail.enviarEmail("Cartão de crédito confirmado", "Seu cartão de crédito foi confirmado e o pagamento concluído. Seu pedido de código " + idPedido + " está pronto para entrega.", usuario.geteMail());
-					}
-
-					result.use(json()).from("Pagamento realizado com sucesso. Status pagseguro = 3").serialize();
-
-				} else {
-
-					String pagamentoNaoRealizadoMessage = "Pagamento não realizado. Status diferente de 3 ou 4. Status = " + status;
-
-					Mail.enviarEmail(pagamentoNaoRealizadoMessage, xml);
-
-					result.use(json()).from(pagamentoNaoRealizadoMessage);
-				}
-
-			} catch (Exception e) {
-
-				String exceptionMessage = Util.getExceptionMessage(e);
-
-				Mail.enviarEmail("Exception no pagseguroNotificacao", "Exception: " + exceptionMessage + "<br><br><br> XML: " + xml);
-
-				result.use(json()).from("Ocorreu um erro. Exception: " + exceptionMessage).serialize();
-			}
-		} else {
-			result.use(json()).from("tokenEV incorreto").serialize();
-		}
-	}
-
-	@Funcionalidade
-	public void meusPedidos() {
-
-		Integer idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_PEDIDO);
-
-		if (idCodigo == null || idCodigo == 0) {
-			idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
-		}
-
-		montarPedidosDTO(null, idCodigo);
-	}
-
-	@Funcionalidade
-	public void finalizarCompraLojaPessoal() {
-	}
-
-	@Funcionalidade
-	public void pesquisarPedidosDosDistribuidores(String status, Integer idCodigo) {
-
-		if (verificarPermissaoPedidosAdministrativos()) {
-
-			if (Util.vazio(status)) {
-				status = "PENDENTE";
-			}
-
-			montarPedidosDTO(status, idCodigo);
-
-			result.include("idCodigo", idCodigo);
-			result.include("status", status);
-		}
-	}
-
-	private boolean verificarPermissaoPedidosAdministrativos() {
-
-		return this.sessaoUsuario.getUsuario().getId() != null && (this.sessaoUsuario.getUsuario().getDonoDeFranquia() || this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador());
-	}
-
-	@Funcionalidade
-	@Get("/pedido/alterarStatus/{idPedido}/{status}")
-	public void alterarStatus(String status, Integer idPedido) throws Exception {
-
-		if (verificarPermissaoPedidosAdministrativos()) {
-
-			Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
-
-			if (status.equals("FINALIZADO") && !pedido.getStatus().equals("FINALIZADO")) {
-
-				String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
-				textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
-				for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
-					textoArquivo += itemPedido.getIdProduto() + "=" + itemPedido.getQuantidade() + "\r\n";
-				}
-				ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
-			}
-
-			if (status.equals("CANCELADO")) {
-
-				new PedidoService(hibernateUtil).cancelarPedido(pedido);
-			}
-
-			pedido.setStatus(status);
 			hibernateUtil.salvarOuAtualizar(pedido);
 
-			result.forwardTo(this).pesquisarPedidosDosDistribuidores(null, null);
+			Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+
+			Mail.enviarEmail("Cartão de crédito confirmado", "Seu cartão de crédito foi confirmado e o pagamento concluído. Seu pedido de código " + idPedido + " está pronto para entrega.", usuario.geteMail());
+		    }
+
+		    result.use(json()).from("Pagamento realizado com sucesso. Status pagseguro = 3").serialize();
+
+		} else {
+
+		    String pagamentoNaoRealizadoMessage = "Pagamento não realizado. Status diferente de 3 ou 4. Status = " + status;
+
+		    Mail.enviarEmail(pagamentoNaoRealizadoMessage, xml);
+
+		    result.use(json()).from(pagamentoNaoRealizadoMessage);
 		}
+
+	    } catch (Exception e) {
+
+		String exceptionMessage = Util.getExceptionMessage(e);
+
+		Mail.enviarEmail("Exception no pagseguroNotificacao", "Exception: " + exceptionMessage + "<br><br><br> XML: " + xml);
+
+		result.use(json()).from("Ocorreu um erro. Exception: " + exceptionMessage).serialize();
+	    }
+	} else {
+	    result.use(json()).from("tokenEV incorreto").serialize();
+	}
+    }
+
+    @Funcionalidade
+    public void meusPedidos() {
+
+	Integer idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_PEDIDO);
+
+	if (idCodigo == null || idCodigo == 0) {
+	    idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
 	}
 
-	@Funcionalidade
-	@Get("/pedido/realizarPagamento/{idPedido}")
-	public void realizarPagamento(Integer idPedido) {
+	montarPedidosDTO(null, idCodigo);
+    }
 
-		if (verificarPermissaoPedidosAdministrativos()) {
+    @Funcionalidade
+    public void finalizarCompraLojaPessoal() {
+    }
 
-			Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
-			SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+    @Funcionalidade
+    public void pesquisarPedidosDosDistribuidores(String status, Integer idCodigo) {
 
-			verificarPagamentoComSaldoHabilitado(pedido);
-			result.include("idPedido", idPedido);
-			result.include("saldoLiberado", saldoDTO.getSaldoLiberado());
-		}
+	if (verificarPermissaoPedidosAdministrativos()) {
+
+	    if (Util.vazio(status)) {
+		status = PENDENTE;
+	    }
+
+	    montarPedidosDTO(status, idCodigo);
+
+	    result.include("idCodigo", idCodigo);
+	    result.include("status", status);
 	}
+    }
 
-	@Funcionalidade
-	@Post("/pedido/pagarEFinalizar")
-	public void pagarEFinalizar(Integer idPedido, BigDecimal valor) throws Exception {
+    private boolean verificarPermissaoPedidosAdministrativos() {
 
-		if (verificarPermissaoPedidosAdministrativos()) {
+	return this.sessaoUsuario.getUsuario().getId() != null && (this.sessaoUsuario.getUsuario().getDonoDeFranquia() || this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador());
+    }
 
-			if (valor == null) {
-				valor = BigDecimal.ZERO;
-			}
+    @Funcionalidade
+    @Get("/pedido/alterarStatus/{idPedido}/{status}")
+    public void alterarStatus(String status, Integer idPedido) throws Exception {
 
-			Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
-			SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
-			BigDecimal saldoLiberado = saldoDTO.getSaldoLiberado();
+	if (verificarPermissaoPedidosAdministrativos()) {
 
-			if (valor.compareTo(saldoLiberado) > 0) {
-				validator.add(new ValidationMessage("O valor a ser debitado não pode ser maior do que o saldo atual", "Erro"));
-				validator.onErrorRedirectTo(this).realizarPagamento(idPedido);
-				return;
-			}
+	    Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 
-			salvarTransferencia(valor, pedido);
+	    if (status.equals(FINALIZADO) && !pedido.getStatus().equals(FINALIZADO)) {
 
-			result.forwardTo(this).alterarStatus("FINALIZADO", idPedido);
-		}
-	}
+		String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
+		textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
 
-	private void salvarTransferencia(BigDecimal valor, Pedido pedido) {
-
-		if (valor.compareTo(BigDecimal.ZERO) > 0) {
-
-			Transferencia transferencia = new Transferencia();
-			transferencia.setData(new GregorianCalendar());
-			transferencia.setDe(pedido.getIdCodigo());
-			transferencia.setValor(valor);
-			transferencia.setTipo(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO);
-			hibernateUtil.salvarOuAtualizar(transferencia);
-		}
-	}
-
-	@Funcionalidade
-	@Get("/pedido/verItens/{idPedido}")
-	public void verItens(Integer idPedido) {
-
-		Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
-
-		List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
+		Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
+		Object isInativo = this.sessaoGeral.getValor("isInativo");
+		if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido)
+		    textoArquivo += "tipo_pedido=adesao" + "\r\n";
+		else if (isInativo != null && (Boolean) isInativo)
+		    textoArquivo += "tipo_pedido=atividade" + "\r\n";
+		else
+		    textoArquivo += "tipo_pedido=recompra" + "\r\n";
 
 		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
-			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
-			Integer quantidade = itemPedido.getQuantidade();
-			itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, itemPedido.getPrecoUnitario(), 0, null));
+		    textoArquivo += itemPedido.getIdProduto() + "=" + itemPedido.getQuantidade() + "\r\n";
 		}
+		ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
+	    }
 
-		result.include("itensPedidoDTO", itensPedidoDTO);
-		result.include("comprador", pedido.getComprador());
+	    if (status.equals(CANCELADO)) {
+
+		new PedidoService(hibernateUtil).cancelarPedido(pedido);
+	    }
+
+	    pedido.setStatus(status);
+	    hibernateUtil.salvarOuAtualizar(pedido);
+
+	    result.forwardTo(this).pesquisarPedidosDosDistribuidores(null, null);
+	}
+    }
+
+    @Funcionalidade
+    @Get("/pedido/realizarPagamento/{idPedido}")
+    public void realizarPagamento(Integer idPedido) {
+
+	if (verificarPermissaoPedidosAdministrativos()) {
+
+	    Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+	    SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+
+	    verificarPagamentoComSaldoHabilitado(pedido);
+	    result.include("idPedido", idPedido);
+	    result.include("saldoLiberado", saldoDTO.getSaldoLiberado());
+	}
+    }
+
+    @Funcionalidade
+    @Post("/pedido/pagarEFinalizar")
+    public void pagarEFinalizar(Integer idPedido, BigDecimal valor) throws Exception {
+
+	if (verificarPermissaoPedidosAdministrativos()) {
+
+	    if (valor == null) {
+		valor = BigDecimal.ZERO;
+	    }
+
+	    Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+	    SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+	    BigDecimal saldoLiberado = saldoDTO.getSaldoLiberado();
+
+	    if (valor.compareTo(saldoLiberado) > 0) {
+		validator.add(new ValidationMessage("O valor a ser debitado não pode ser maior do que o saldo atual", "Erro"));
+		validator.onErrorRedirectTo(this).realizarPagamento(idPedido);
+		return;
+	    }
+
+	    salvarTransferencia(valor, pedido);
+
+	    result.forwardTo(this).alterarStatus(FINALIZADO, idPedido);
+	}
+    }
+
+    private void salvarTransferencia(BigDecimal valor, Pedido pedido) {
+
+	if (valor.compareTo(BigDecimal.ZERO) > 0) {
+
+	    Transferencia transferencia = new Transferencia();
+	    transferencia.setData(new GregorianCalendar());
+	    transferencia.setDe(pedido.getIdCodigo());
+	    transferencia.setValor(valor);
+	    transferencia.setTipo(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO);
+	    hibernateUtil.salvarOuAtualizar(transferencia);
+	}
+    }
+
+    @Funcionalidade
+    @Get("/pedido/verItens/{idPedido}")
+    public void verItens(Integer idPedido) {
+
+	Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+
+	List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
+
+	for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
+	    Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
+	    Integer quantidade = itemPedido.getQuantidade();
+	    itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, itemPedido.getPrecoUnitario(), 0, null));
 	}
 
-	@Public
-	@Funcionalidade
-	@Get("/lojaPessoal/{idUsuario}")
-	public void lojaPessoal(Integer idUsuario) {
+	result.include("itensPedidoDTO", itensPedidoDTO);
+	result.include("comprador", pedido.getComprador());
+    }
 
-		this.sessaoGeral.adicionar(ID_USUARIO_LOJA_PESSOAL, idUsuario);
-		Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idUsuario));
-		Usuario usuarioFakeLojaPessoal = new Usuario();
-		usuarioFakeLojaPessoal.setvNome("Bem vindo à loja de " + usuario.getvNome());
-		this.sessaoUsuario.login(usuarioFakeLojaPessoal);
+    @Public
+    @Funcionalidade
+    @Get("/lojaPessoal/{idUsuario}")
+    public void lojaPessoal(Integer idUsuario) {
 
-		Franquia franquia = new Franquia();
-		franquia.setEstqNome("VENDA ONLINE");
-		franquia = this.hibernateUtil.selecionar(franquia);
+	this.sessaoGeral.adicionar(ID_USUARIO_LOJA_PESSOAL, idUsuario);
+	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idUsuario));
+	Usuario usuarioFakeLojaPessoal = new Usuario();
+	usuarioFakeLojaPessoal.setvNome("Bem vindo à loja de " + usuario.getvNome());
+	this.sessaoUsuario.login(usuarioFakeLojaPessoal);
 
-		this.escolherProdutos(franquia.getId_Estoque(), idUsuario);
-		result.forwardTo("/WEB-INF/jsp//pedido/escolherProdutos.jsp");
+	Franquia franquia = new Franquia();
+	franquia.setEstqNome("VENDA ONLINE");
+	franquia = this.hibernateUtil.selecionar(franquia);
+
+	this.escolherProdutos(franquia.getId_Estoque(), idUsuario);
+	result.forwardTo("/WEB-INF/jsp//pedido/escolherProdutos.jsp");
+    }
+
+    private void montarPedidosDTO(String status, Integer idCodigo) {
+
+	Pedido pedidoFiltro = new Pedido();
+	pedidoFiltro.setIdCodigo(idCodigo);
+	pedidoFiltro.setStatus(status);
+	pedidoFiltro.setCompleted(true);
+
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+
+	if (this.sessaoUsuario.getUsuario().getDonoDeFranquia() && !this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador()) {
+
+	    Franquia franquiaFiltro = new Franquia();
+	    franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+	    List<Franquia> franquias = hibernateUtil.buscar(franquiaFiltro);
+
+	    List<Integer> idFranquias = new ArrayList<Integer>();
+
+	    for (Franquia franquia : franquias) {
+		idFranquias.add(franquia.getId_Estoque());
+	    }
+
+	    restricoes.add(Restrictions.in("idFranquia", idFranquias));
 	}
 
-	private void montarPedidosDTO(String status, Integer idCodigo) {
+	List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes, Order.desc("id"));
+	List<PedidoDTO> pedidosDTO = new ArrayList<PedidoDTO>();
 
-		Pedido pedidoFiltro = new Pedido();
-		pedidoFiltro.setIdCodigo(idCodigo);
-		pedidoFiltro.setStatus(status);
-		pedidoFiltro.setCompleted(true);
-
-		List<Criterion> restricoes = new ArrayList<Criterion>();
-
-		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia() && !this.sessaoUsuario.getUsuario().obterInformacoesFixasUsuario().getAdministrador()) {
-
-			Franquia franquiaFiltro = new Franquia();
-			franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
-			List<Franquia> franquias = hibernateUtil.buscar(franquiaFiltro);
-
-			List<Integer> idFranquias = new ArrayList<Integer>();
-
-			for (Franquia franquia : franquias) {
-				idFranquias.add(franquia.getId_Estoque());
-			}
-
-			restricoes.add(Restrictions.in("idFranquia", idFranquias));
-		}
-
-		List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes, Order.desc("id"));
-		List<PedidoDTO> pedidosDTO = new ArrayList<PedidoDTO>();
-
-		for (Pedido pedido : pedidos) {
-			pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), calcularTotais(pedido).getValorTotal(), null, null));
-		}
-
-		result.include("pedidosDTO", pedidosDTO);
+	for (Pedido pedido : pedidos) {
+	    pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), calcularTotais(pedido).getValorTotal(), null, null));
 	}
 
-	private PedidoDTO calcularTotais(Pedido pedido) {
+	result.include("pedidosDTO", pedidosDTO);
+    }
 
-		BigDecimal valorTotal = BigDecimal.ZERO;
-		BigDecimal totalPontos = BigDecimal.ZERO;
-		Integer totalItens = 0;
+    private PedidoDTO calcularTotais(Pedido pedido) {
 
-		List<ItemPedido> itens = new PedidoService(hibernateUtil).listarItensPedido(pedido);
+	BigDecimal valorTotal = BigDecimal.ZERO;
+	BigDecimal totalPontos = BigDecimal.ZERO;
+	Integer totalItens = 0;
 
-		for (ItemPedido itemPedido : itens) {
+	List<ItemPedido> itens = new PedidoService(hibernateUtil).listarItensPedido(pedido);
 
-			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
-			Integer quantidade = itemPedido.getQuantidade();
+	for (ItemPedido itemPedido : itens) {
 
-			totalItens += quantidade;
-			valorTotal = valorTotal.add(itemPedido.getPrecoUnitario().multiply(BigDecimal.valueOf(quantidade)));
-			totalPontos = totalPontos.add(produto.getPrdPontos().multiply(new BigDecimal(quantidade)));
-		}
+	    Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
+	    Integer quantidade = itemPedido.getQuantidade();
 
-		return new PedidoDTO(pedido, null, valorTotal, totalItens, totalPontos);
+	    totalItens += quantidade;
+	    valorTotal = valorTotal.add(itemPedido.getPrecoUnitario().multiply(BigDecimal.valueOf(quantidade)));
+	    totalPontos = totalPontos.add(produto.getPrdPontos().multiply(new BigDecimal(quantidade)));
 	}
 
-	private Pedido selecionarPedidoAberto() {
+	return new PedidoDTO(pedido, null, valorTotal, totalItens, totalPontos);
+    }
 
-		Integer idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_PEDIDO);
+    private Pedido selecionarPedidoAberto() {
 
-		if (idCodigo == null || idCodigo == 0) {
-			idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
-		}
+	Integer idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_PEDIDO);
 
-		Pedido pedido = new Pedido();
-		pedido.setIdCodigo(idCodigo);
-		pedido.setCompleted(false);
-		return hibernateUtil.selecionar(pedido);
+	if (idCodigo == null || idCodigo == 0) {
+	    idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
 	}
 
-	private ItemPedido selecionarItemPedido(String idProduto, Pedido pedido) {
+	Pedido pedido = new Pedido();
+	pedido.setIdCodigo(idCodigo);
+	pedido.setCompleted(false);
+	return hibernateUtil.selecionar(pedido);
+    }
 
-		ItemPedido itemPedido = new ItemPedido();
-		itemPedido.setPedido(pedido);
-		itemPedido.setIdProduto(idProduto);
-		return hibernateUtil.selecionar(itemPedido);
-	}
+    private ItemPedido selecionarItemPedido(String idProduto, Pedido pedido) {
+
+	ItemPedido itemPedido = new ItemPedido();
+	itemPedido.setPedido(pedido);
+	itemPedido.setIdProduto(idProduto);
+	return hibernateUtil.selecionar(itemPedido);
+    }
 }
