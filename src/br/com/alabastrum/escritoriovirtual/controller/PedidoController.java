@@ -146,10 +146,20 @@ public class PedidoController {
 	Pedido pedido = selecionarPedidoAberto();
 
 	if (Util.vazio(pedido)) {
+
 	    pedido = new Pedido();
 	    pedido.setIdCodigo(idCodigo);
 	    pedido.setCompleted(false);
 	    pedido.setStatus(PENDENTE);
+
+	    Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
+	    Object isInativo = this.sessaoGeral.getValor("isInativo");
+	    if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido)
+		pedido.setTipo("adesao");
+	    else if (isInativo != null && (Boolean) isInativo)
+		pedido.setTipo("atividade");
+	    else
+		pedido.setTipo("recompra");
 	}
 
 	pedido.setIdFranquia(idFranquia);
@@ -525,19 +535,12 @@ public class PedidoController {
 
 		String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
 		textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
-
-		Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
-		Object isInativo = this.sessaoGeral.getValor("isInativo");
-		if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido)
-		    textoArquivo += "tipo_pedido=adesao" + "\r\n";
-		else if (isInativo != null && (Boolean) isInativo)
-		    textoArquivo += "tipo_pedido=atividade" + "\r\n";
-		else
-		    textoArquivo += "tipo_pedido=recompra" + "\r\n";
+		textoArquivo += "tipo_pedido=" + pedido.getTipo() + "\r\n";
 
 		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 		    textoArquivo += itemPedido.getIdProduto() + "=" + itemPedido.getQuantidade() + "\r\n";
 		}
+
 		ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
 	    }
 
