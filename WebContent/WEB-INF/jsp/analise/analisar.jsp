@@ -2,7 +2,7 @@
 <br>
 <br>
 <br>
-Ultima atualizcao do sistema: ${ultimaAtualizacaoSistema}
+Ultima atualizacao do sistema: ${ultimaAtualizacaoSistema}
 <br>
 <br>
 Sessoes abertas hibernate: ${sessoesAbertasHibernate}

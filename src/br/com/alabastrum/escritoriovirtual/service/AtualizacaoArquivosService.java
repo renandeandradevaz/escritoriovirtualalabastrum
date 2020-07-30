@@ -18,6 +18,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import au.com.bytecode.opencsv.CSVReader;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.modelo.Adesao;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroAtividade;
@@ -35,245 +36,255 @@ import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class AtualizacaoArquivosService {
 
-	private HibernateUtil hibernateUtil;
+    private HibernateUtil hibernateUtil;
 
-	public AtualizacaoArquivosService(HibernateUtil hibernateUtil) {
+    public AtualizacaoArquivosService(HibernateUtil hibernateUtil) {
 
-		this.hibernateUtil = hibernateUtil;
-	}
+	this.hibernateUtil = hibernateUtil;
+    }
 
-	public void processarArquivos() throws Exception {
+    public void processarArquivos() throws Exception {
 
-		processarCSVRelacionamentos();
-		processarCSVPosicoes();
-		processarCSVQualificacao();
-		processarCSVPontuacao();
-		processarCSVParametroIngresso();
-		processarCSVParametroAtividade();
-		processarCSVParametroUnilevel();
-		processarCSVParametroDivisaoLucro();
-		processarCSVReceitaDivisaoLucro();
-		processarCSVParametroVip();
-		processarCSVFranquia();
-		processarCSVCategoria();
-		processarCSVProduto();
-	}
+	processarCSVRelacionamentos();
+	processarCSVPosicoes();
+	processarCSVQualificacao();
+	processarCSVPontuacao();
+	processarCSVParametroIngresso();
+	processarCSVParametroAtividade();
+	processarCSVParametroUnilevel();
+	processarCSVParametroDivisaoLucro();
+	processarCSVReceitaDivisaoLucro();
+	processarCSVParametroVip();
+	processarCSVFranquia();
+	processarCSVCategoria();
+	processarCSVProduto();
+	processarCSVAdesao();
+    }
 
-	private void processarCSVRelacionamentos() throws Exception {
+    private void processarCSVRelacionamentos() throws Exception {
 
-		CSVReader reader = lerArquivo("tblRelacionamentos.csv");
-		List<Usuario> usuarios = new ArrayList<Usuario>();
-		preencherObjeto(reader, usuarios, "Usuario");
-		this.hibernateUtil.executarSQL("delete from usuario");
-		this.hibernateUtil.salvarOuAtualizar(usuarios);
-	}
+	CSVReader reader = lerArquivo("tblRelacionamentos.csv");
+	List<Usuario> usuarios = new ArrayList<Usuario>();
+	preencherObjeto(reader, usuarios, "Usuario");
+	this.hibernateUtil.executarSQL("delete from usuario");
+	this.hibernateUtil.salvarOuAtualizar(usuarios);
+    }
 
-	private void processarCSVPosicoes() throws Exception {
+    private void processarCSVPosicoes() throws Exception {
 
-		CSVReader reader = lerArquivo("tblPosicoes.csv");
-		List<Posicao> posicoes = new ArrayList<Posicao>();
-		preencherObjeto(reader, posicoes, "Posicao");
-		this.hibernateUtil.executarSQL("delete from posicao");
-		this.hibernateUtil.salvarOuAtualizar(posicoes);
-	}
+	CSVReader reader = lerArquivo("tblPosicoes.csv");
+	List<Posicao> posicoes = new ArrayList<Posicao>();
+	preencherObjeto(reader, posicoes, "Posicao");
+	this.hibernateUtil.executarSQL("delete from posicao");
+	this.hibernateUtil.salvarOuAtualizar(posicoes);
+    }
 
-	private void processarCSVQualificacao() throws Exception {
+    private void processarCSVQualificacao() throws Exception {
 
-		CSVReader reader = lerArquivo("tblQualificacoes.csv");
-		List<Qualificacao> qualificacoes = new ArrayList<Qualificacao>();
-		preencherObjeto(reader, qualificacoes, "Qualificacao");
-		this.hibernateUtil.executarSQL("delete from qualificacao");
-		this.hibernateUtil.salvarOuAtualizar(qualificacoes);
-	}
+	CSVReader reader = lerArquivo("tblQualificacoes.csv");
+	List<Qualificacao> qualificacoes = new ArrayList<Qualificacao>();
+	preencherObjeto(reader, qualificacoes, "Qualificacao");
+	this.hibernateUtil.executarSQL("delete from qualificacao");
+	this.hibernateUtil.salvarOuAtualizar(qualificacoes);
+    }
 
-	private void processarCSVPontuacao() throws Exception {
+    private void processarCSVPontuacao() throws Exception {
 
-		CSVReader reader = lerArquivo("tblPontuacao.csv");
-		List<Pontuacao> pontuacoes = new ArrayList<Pontuacao>();
-		preencherObjeto(reader, pontuacoes, "Pontuacao");
-		this.hibernateUtil.executarSQL("delete from pontuacao");
-		this.hibernateUtil.salvarOuAtualizar(pontuacoes);
-	}
+	CSVReader reader = lerArquivo("tblPontuacao.csv");
+	List<Pontuacao> pontuacoes = new ArrayList<Pontuacao>();
+	preencherObjeto(reader, pontuacoes, "Pontuacao");
+	this.hibernateUtil.executarSQL("delete from pontuacao");
+	this.hibernateUtil.salvarOuAtualizar(pontuacoes);
+    }
 
-	private void processarCSVParametroIngresso() throws Exception {
+    private void processarCSVParametroIngresso() throws Exception {
 
-		CSVReader reader = lerArquivo("tblParametrosIngresso.csv");
-		List<ParametroIngresso> parametrosIngresso = new ArrayList<ParametroIngresso>();
-		preencherObjeto(reader, parametrosIngresso, "ParametroIngresso");
-		this.hibernateUtil.executarSQL("delete from parametroingresso");
-		this.hibernateUtil.salvarOuAtualizar(parametrosIngresso);
-	}
+	CSVReader reader = lerArquivo("tblParametrosIngresso.csv");
+	List<ParametroIngresso> parametrosIngresso = new ArrayList<ParametroIngresso>();
+	preencherObjeto(reader, parametrosIngresso, "ParametroIngresso");
+	this.hibernateUtil.executarSQL("delete from parametroingresso");
+	this.hibernateUtil.salvarOuAtualizar(parametrosIngresso);
+    }
 
-	private void processarCSVParametroAtividade() throws Exception {
+    private void processarCSVParametroAtividade() throws Exception {
 
-		CSVReader reader = lerArquivo("tblAtividade.csv");
-		List<ParametroAtividade> parametrosAtividades = new ArrayList<ParametroAtividade>();
-		preencherObjeto(reader, parametrosAtividades, "ParametroAtividade");
-		this.hibernateUtil.executarSQL("delete from parametroatividade");
-		this.hibernateUtil.salvarOuAtualizar(parametrosAtividades);
-	}
+	CSVReader reader = lerArquivo("tblAtividade.csv");
+	List<ParametroAtividade> parametrosAtividades = new ArrayList<ParametroAtividade>();
+	preencherObjeto(reader, parametrosAtividades, "ParametroAtividade");
+	this.hibernateUtil.executarSQL("delete from parametroatividade");
+	this.hibernateUtil.salvarOuAtualizar(parametrosAtividades);
+    }
 
-	private void processarCSVParametroUnilevel() throws Exception {
+    private void processarCSVParametroUnilevel() throws Exception {
 
-		CSVReader reader = lerArquivo("tblUnilevel.csv");
-		List<ParametroUnilevel> parametrosUnilevel = new ArrayList<ParametroUnilevel>();
-		preencherObjeto(reader, parametrosUnilevel, "ParametroUnilevel");
-		this.hibernateUtil.executarSQL("delete from parametrounilevel");
-		this.hibernateUtil.salvarOuAtualizar(parametrosUnilevel);
-	}
+	CSVReader reader = lerArquivo("tblUnilevel.csv");
+	List<ParametroUnilevel> parametrosUnilevel = new ArrayList<ParametroUnilevel>();
+	preencherObjeto(reader, parametrosUnilevel, "ParametroUnilevel");
+	this.hibernateUtil.executarSQL("delete from parametrounilevel");
+	this.hibernateUtil.salvarOuAtualizar(parametrosUnilevel);
+    }
 
-	private void processarCSVParametroDivisaoLucro() throws Exception {
+    private void processarCSVParametroDivisaoLucro() throws Exception {
 
-		CSVReader reader = lerArquivo("tblDivisaoLucro.csv");
-		List<ParametroDivisaoLucro> parametrosDivisaoLucro = new ArrayList<ParametroDivisaoLucro>();
-		preencherObjeto(reader, parametrosDivisaoLucro, "ParametroDivisaoLucro");
-		this.hibernateUtil.executarSQL("delete from parametrodivisaolucro");
-		this.hibernateUtil.salvarOuAtualizar(parametrosDivisaoLucro);
-	}
+	CSVReader reader = lerArquivo("tblDivisaoLucro.csv");
+	List<ParametroDivisaoLucro> parametrosDivisaoLucro = new ArrayList<ParametroDivisaoLucro>();
+	preencherObjeto(reader, parametrosDivisaoLucro, "ParametroDivisaoLucro");
+	this.hibernateUtil.executarSQL("delete from parametrodivisaolucro");
+	this.hibernateUtil.salvarOuAtualizar(parametrosDivisaoLucro);
+    }
 
-	private void processarCSVReceitaDivisaoLucro() throws Exception {
+    private void processarCSVReceitaDivisaoLucro() throws Exception {
 
-		CSVReader reader = lerArquivo("tblReceitaDivisaoLucro.csv");
-		List<ReceitaDivisaoLucro> receitasDivisaoLucro = new ArrayList<ReceitaDivisaoLucro>();
-		preencherObjeto(reader, receitasDivisaoLucro, "ReceitaDivisaoLucro");
-		this.hibernateUtil.executarSQL("delete from receitadivisaolucro");
-		this.hibernateUtil.salvarOuAtualizar(receitasDivisaoLucro);
-	}
+	CSVReader reader = lerArquivo("tblReceitaDivisaoLucro.csv");
+	List<ReceitaDivisaoLucro> receitasDivisaoLucro = new ArrayList<ReceitaDivisaoLucro>();
+	preencherObjeto(reader, receitasDivisaoLucro, "ReceitaDivisaoLucro");
+	this.hibernateUtil.executarSQL("delete from receitadivisaolucro");
+	this.hibernateUtil.salvarOuAtualizar(receitasDivisaoLucro);
+    }
 
-	private void processarCSVParametroVip() throws Exception {
+    private void processarCSVParametroVip() throws Exception {
 
-		CSVReader reader = lerArquivo("tblVIP.csv");
-		List<ParametroVip> parametrosVip = new ArrayList<ParametroVip>();
-		preencherObjeto(reader, parametrosVip, "ParametroVip");
-		this.hibernateUtil.executarSQL("delete from parametrovip");
-		this.hibernateUtil.salvarOuAtualizar(parametrosVip);
-	}
+	CSVReader reader = lerArquivo("tblVIP.csv");
+	List<ParametroVip> parametrosVip = new ArrayList<ParametroVip>();
+	preencherObjeto(reader, parametrosVip, "ParametroVip");
+	this.hibernateUtil.executarSQL("delete from parametrovip");
+	this.hibernateUtil.salvarOuAtualizar(parametrosVip);
+    }
 
-	private void processarCSVFranquia() throws Exception {
+    private void processarCSVFranquia() throws Exception {
 
-		CSVReader reader = lerArquivo("tblCDA.csv");
-		List<Franquia> franquias = new ArrayList<Franquia>();
-		preencherObjeto(reader, franquias, "Franquia");
-		this.hibernateUtil.executarSQL("delete from franquia");
-		this.hibernateUtil.salvarOuAtualizar(franquias);
-	}
+	CSVReader reader = lerArquivo("tblCDA.csv");
+	List<Franquia> franquias = new ArrayList<Franquia>();
+	preencherObjeto(reader, franquias, "Franquia");
+	this.hibernateUtil.executarSQL("delete from franquia");
+	this.hibernateUtil.salvarOuAtualizar(franquias);
+    }
 
-	private void processarCSVCategoria() throws Exception {
+    private void processarCSVCategoria() throws Exception {
 
-		CSVReader reader = lerArquivo("tblCategorias.csv");
-		List<Categoria> categorias = new ArrayList<Categoria>();
-		preencherObjeto(reader, categorias, "Categoria");
-		this.hibernateUtil.executarSQL("delete from categoria");
-		this.hibernateUtil.salvarOuAtualizar(categorias);
-	}
+	CSVReader reader = lerArquivo("tblCategorias.csv");
+	List<Categoria> categorias = new ArrayList<Categoria>();
+	preencherObjeto(reader, categorias, "Categoria");
+	this.hibernateUtil.executarSQL("delete from categoria");
+	this.hibernateUtil.salvarOuAtualizar(categorias);
+    }
 
-	private void processarCSVProduto() throws Exception {
+    private void processarCSVProduto() throws Exception {
 
-		CSVReader reader = lerArquivo("tblProdutos.csv");
-		List<Produto> produtos = new ArrayList<Produto>();
-		preencherObjeto(reader, produtos, "Produto");
-		this.hibernateUtil.executarSQL("delete from produto");
-		this.hibernateUtil.salvarOuAtualizar(produtos);
-	}
+	CSVReader reader = lerArquivo("tblProdutos.csv");
+	List<Produto> produtos = new ArrayList<Produto>();
+	preencherObjeto(reader, produtos, "Produto");
+	this.hibernateUtil.executarSQL("delete from produto");
+	this.hibernateUtil.salvarOuAtualizar(produtos);
+    }
 
-	private CSVReader lerArquivo(String nomeCsv) throws Exception {
+    private void processarCSVAdesao() throws Exception {
 
-		String caminho = ArquivoService.PASTA_ATUALIZACAO_CSV;
-		String caminhoCompletoArquivo = caminho + File.separator + nomeCsv;
-		File arquivoNoDisco = new File(caminhoCompletoArquivo);
-		String content = FileUtils.readFileToString(arquivoNoDisco, "ISO8859_1");
-		FileUtils.write(arquivoNoDisco, content, "UTF-8");
-		return new CSVReader(new FileReader(new File(caminhoCompletoArquivo)), '\t');
-	}
+	CSVReader reader = lerArquivo("tblAdesao.csv");
+	List<Adesao> adesoes = new ArrayList<Adesao>();
+	preencherObjeto(reader, adesoes, "Adesao");
+	this.hibernateUtil.executarSQL("delete from adesao");
+	this.hibernateUtil.salvarOuAtualizar(adesoes);
+    }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void preencherObjeto(CSVReader reader, List listaDeEntidades, String nomeDaClasse) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+    private CSVReader lerArquivo(String nomeCsv) throws Exception {
 
-		HashMap<Integer, String> hashColunas = new HashMap<Integer, String>();
+	String caminho = ArquivoService.PASTA_ATUALIZACAO_CSV;
+	String caminhoCompletoArquivo = caminho + File.separator + nomeCsv;
+	File arquivoNoDisco = new File(caminhoCompletoArquivo);
+	String content = FileUtils.readFileToString(arquivoNoDisco, "ISO8859_1");
+	FileUtils.write(arquivoNoDisco, content, "UTF-8");
+	return new CSVReader(new FileReader(new File(caminhoCompletoArquivo)), '\t');
+    }
 
-		int line = 0;
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private void preencherObjeto(CSVReader reader, List listaDeEntidades, String nomeDaClasse) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 
-		String[] nextLine;
-		while ((nextLine = reader.readNext()) != null) {
+	HashMap<Integer, String> hashColunas = new HashMap<Integer, String>();
 
-			line++;
+	int line = 0;
 
-			String[] colunas = nextLine[0].split(";");
+	String[] nextLine;
+	while ((nextLine = reader.readNext()) != null) {
 
-			for (int i = 0; i < colunas.length; i++) {
+	    line++;
 
-				colunas[i] = colunas[i].replaceAll("\"", "");
+	    String[] colunas = nextLine[0].split(";");
+
+	    for (int i = 0; i < colunas.length; i++) {
+
+		colunas[i] = colunas[i].replaceAll("\"", "");
+	    }
+
+	    if (line > 1) {
+
+		Object entidade = Class.forName("br.com.alabastrum.escritoriovirtual.modelo." + nomeDaClasse).newInstance();
+
+		for (int i = 0; i < colunas.length; i++) {
+
+		    Field field = null;
+
+		    try {
+
+			field = entidade.getClass().getDeclaredField(hashColunas.get(i));
+
+			field.setAccessible(true);
+
+			try {
+
+			    BigDecimal numero = Util.converterStringParaBigDecimal(colunas[i]);
+			    field.set(entidade, numero);
 			}
 
-			if (line > 1) {
+			catch (Exception e1) {
 
-				Object entidade = Class.forName("br.com.alabastrum.escritoriovirtual.modelo." + nomeDaClasse).newInstance();
+			    try {
 
-				for (int i = 0; i < colunas.length; i++) {
+				DecimalFormatSymbols dsf = new DecimalFormatSymbols();
+				field.set(entidade, (int) Double.parseDouble(colunas[i].replace(dsf.getDecimalSeparator(), '.')));
+			    }
 
-					Field field = null;
+			    catch (Exception e2) {
 
-					try {
+				try {
 
-						field = entidade.getClass().getDeclaredField(hashColunas.get(i));
+				    DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yy");
+				    DateTime data = formatter.parseDateTime("01/" + colunas[i]);
 
-						field.setAccessible(true);
-
-						try {
-
-							BigDecimal numero = Util.converterStringParaBigDecimal(colunas[i]);
-							field.set(entidade, numero);
-						}
-
-						catch (Exception e1) {
-
-							try {
-
-								DecimalFormatSymbols dsf = new DecimalFormatSymbols();
-								field.set(entidade, (int) Double.parseDouble(colunas[i].replace(dsf.getDecimalSeparator(), '.')));
-							}
-
-							catch (Exception e2) {
-
-								try {
-
-									DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yy");
-									DateTime data = formatter.parseDateTime("01/" + colunas[i]);
-
-									field.set(entidade, data.toGregorianCalendar());
-								}
-
-								catch (Exception e3) {
-
-									try {
-										
-										DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yy");
-										GregorianCalendar gregorianCalendar = new GregorianCalendar();
-										gregorianCalendar.setTime(formatter.parseLocalDateTime(colunas[i]).toDate());
-										field.set(entidade, gregorianCalendar);
-
-									} catch (Exception e4) {
-
-										field.set(entidade, colunas[i]);
-									}
-								}
-							}
-						}
-
-					} catch (Exception e) {
-					}
+				    field.set(entidade, data.toGregorianCalendar());
 				}
 
-				listaDeEntidades.add(entidade);
-			}
+				catch (Exception e3) {
 
-			else {
+				    try {
 
-				for (int i = 0; i < colunas.length; i++) {
+					DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yy");
+					GregorianCalendar gregorianCalendar = new GregorianCalendar();
+					gregorianCalendar.setTime(formatter.parseLocalDateTime(colunas[i]).toDate());
+					field.set(entidade, gregorianCalendar);
 
-					hashColunas.put(i, colunas[i].replaceAll(" ", ""));
+				    } catch (Exception e4) {
+
+					field.set(entidade, colunas[i]);
+				    }
 				}
+			    }
 			}
+
+		    } catch (Exception e) {
+		    }
 		}
+
+		listaDeEntidades.add(entidade);
+	    }
+
+	    else {
+
+		for (int i = 0; i < colunas.length; i++) {
+
+		    hashColunas.put(i, colunas[i].replaceAll(" ", ""));
+		}
+	    }
 	}
+    }
 }
