@@ -51,15 +51,6 @@ import br.com.caelum.vraptor.validator.ValidationMessage;
 @Resource
 public class PedidoController {
 
-    private static final String RECOMPRA = "recompra";
-    private static final String ATIVIDADE = "atividade";
-    private static final String ADESAO = "adesao";
-    private static final String ID_USUARIO_PEDIDO = "idUsuarioPedido";
-    private static final String ID_USUARIO_LOJA_PESSOAL = "idUsuarioLojaPessoal";
-    private static final String FINALIZADO = "FINALIZADO";
-    private static final String PENDENTE = "PENDENTE";
-    private static final String CANCELADO = "CANCELADO";
-
     private Result result;
     private HibernateUtil hibernateUtil;
     private SessaoUsuario sessaoUsuario;
@@ -78,7 +69,7 @@ public class PedidoController {
     public void acessarTelaNovoPedido() {
 
 	if (this.sessaoUsuario.getUsuario().getId() == null) {
-	    lojaPessoal((Integer) this.sessaoGeral.getValor(ID_USUARIO_LOJA_PESSOAL));
+	    lojaPessoal((Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_LOJA_PESSOAL));
 	    return;
 	}
 	buscarFranquias();
@@ -104,7 +95,7 @@ public class PedidoController {
 
 	Pedido pedidoFiltro = new Pedido();
 	pedidoFiltro.setIdCodigo(this.sessaoUsuario.getUsuario().getId_Codigo());
-	pedidoFiltro.setStatus(FINALIZADO);
+	pedidoFiltro.setStatus(PedidoService.FINALIZADO);
 	return hibernateUtil.contar(pedidoFiltro) == 0;
     }
 
@@ -126,7 +117,7 @@ public class PedidoController {
     public void escolherProdutos(Integer idFranquia, Integer idCodigo) {
 
 	if (this.sessaoUsuario.getUsuario().getId() == null) {
-	    idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_LOJA_PESSOAL);
+	    idCodigo = (Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_LOJA_PESSOAL);
 
 	    Franquia franquia = new Franquia();
 	    franquia.setEstqNome("VENDA ONLINE");
@@ -137,7 +128,7 @@ public class PedidoController {
 	if (idCodigo == null || idCodigo == 0) {
 	    idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
 	}
-	this.sessaoGeral.adicionar(ID_USUARIO_PEDIDO, idCodigo);
+	this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_PEDIDO, idCodigo);
 
 	if (idFranquia == null) {
 
@@ -153,7 +144,7 @@ public class PedidoController {
 	    pedido = new Pedido();
 	    pedido.setIdCodigo(idCodigo);
 	    pedido.setCompleted(false);
-	    pedido.setStatus(PENDENTE);
+	    pedido.setStatus(PedidoService.PENDENTE);
 	    pedido.setTipo(definirTipoDoPedido());
 	}
 
@@ -177,11 +168,11 @@ public class PedidoController {
 	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
 	Object isInativo = this.sessaoGeral.getValor("isInativo");
 	if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido)
-	    return ADESAO;
+	    return PedidoService.ADESAO;
 	else if (isInativo != null && (Boolean) isInativo)
-	    return ATIVIDADE;
+	    return PedidoService.ATIVIDADE;
 
-	return RECOMPRA;
+	return PedidoService.RECOMPRA;
     }
 
     @Funcionalidade
@@ -213,7 +204,7 @@ public class PedidoController {
 
 	result.include("itensPedidoDTO", itensPedidoDTO);
 
-	result.include("totais", calcularTotais(pedido));
+	result.include("totais", new PedidoService(hibernateUtil).calcularTotais(pedido));
 	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), pedido.getIdCodigo());
     }
 
@@ -290,7 +281,7 @@ public class PedidoController {
 	}
 
 	result.include("itensPedidoDTO", itensPedidoDTO);
-	result.include("totais", calcularTotais(pedido));
+	result.include("totais", new PedidoService(hibernateUtil).calcularTotais(pedido));
     }
 
     @Funcionalidade
@@ -307,7 +298,7 @@ public class PedidoController {
     public void escolherFormaDePagamento() {
 
 	Pedido pedido = selecionarPedidoAberto();
-	Integer valorTotal = this.calcularTotais(pedido).getValorTotal().intValue();
+	Integer valorTotal = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal().intValue();
 
 	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
 	if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
@@ -397,7 +388,7 @@ public class PedidoController {
 	}
 
 	Pedido pedido = selecionarPedidoAberto();
-	BigDecimal totalPedido = calcularTotais(pedido).getValorTotal();
+	BigDecimal totalPedido = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal();
 
 	for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 
@@ -467,7 +458,7 @@ public class PedidoController {
 
 	Pedido pedido = selecionarPedidoAberto();
 
-	new PagSeguroService(hibernateUtil).executarTransacao(senderHash, creditCardToken, String.valueOf(pedido.getId()), new DecimalFormat("0.00").format(new BigDecimal(calcularTotais(pedido).getValorTotal().toString())).replaceAll(",", "."), nomeCartao, parcelas, (Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())));
+	new PagSeguroService(hibernateUtil).executarTransacao(senderHash, creditCardToken, String.valueOf(pedido.getId()), new DecimalFormat("0.00").format(new BigDecimal(new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal().toString())).replaceAll(",", "."), nomeCartao, parcelas, (Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())));
 
 	result.include("sucesso", "Seu cartão de crédito está passando por avaliação junto com sua operadora. Assim que o pagamento for confirmado, você receberá um e-mail de confirmação");
 	concluirPedido("pagamentoFinalizadoComCartaoDeCredito");
@@ -490,7 +481,7 @@ public class PedidoController {
 
 		    Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 
-		    if (pedido != null && !pedido.getStatus().equals(FINALIZADO)) {
+		    if (pedido != null && !pedido.getStatus().equals(PedidoService.FINALIZADO)) {
 
 			pedido.setStatus("PAGO");
 			hibernateUtil.salvarOuAtualizar(pedido);
@@ -527,7 +518,7 @@ public class PedidoController {
     @Funcionalidade
     public void meusPedidos() {
 
-	Integer idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_PEDIDO);
+	Integer idCodigo = (Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_PEDIDO);
 
 	if (idCodigo == null || idCodigo == 0) {
 	    idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
@@ -546,7 +537,7 @@ public class PedidoController {
 	if (verificarPermissaoPedidosAdministrativos()) {
 
 	    if (Util.vazio(status)) {
-		status = PENDENTE;
+		status = PedidoService.PENDENTE;
 	    }
 
 	    montarPedidosDTO(status, idCodigo);
@@ -569,7 +560,7 @@ public class PedidoController {
 
 	    Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 
-	    if (status.equals(FINALIZADO) && !pedido.getStatus().equals(FINALIZADO)) {
+	    if (status.equals(PedidoService.FINALIZADO) && !pedido.getStatus().equals(PedidoService.FINALIZADO)) {
 
 		String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
 		textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
@@ -582,7 +573,7 @@ public class PedidoController {
 		ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
 	    }
 
-	    if (status.equals(CANCELADO)) {
+	    if (status.equals(PedidoService.CANCELADO)) {
 
 		new PedidoService(hibernateUtil).cancelarPedido(pedido);
 	    }
@@ -631,7 +622,7 @@ public class PedidoController {
 
 	    salvarTransferencia(valor, pedido);
 
-	    result.forwardTo(this).alterarStatus(FINALIZADO, idPedido);
+	    result.forwardTo(this).alterarStatus(PedidoService.FINALIZADO, idPedido);
 	}
     }
 
@@ -671,7 +662,7 @@ public class PedidoController {
     @Get("/lojaPessoal/{idUsuario}")
     public void lojaPessoal(Integer idUsuario) {
 
-	this.sessaoGeral.adicionar(ID_USUARIO_LOJA_PESSOAL, idUsuario);
+	this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_LOJA_PESSOAL, idUsuario);
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idUsuario));
 	Usuario usuarioFakeLojaPessoal = new Usuario();
 	usuarioFakeLojaPessoal.setvNome("Bem vindo à loja de " + usuario.getvNome());
@@ -713,36 +704,15 @@ public class PedidoController {
 	List<PedidoDTO> pedidosDTO = new ArrayList<PedidoDTO>();
 
 	for (Pedido pedido : pedidos) {
-	    pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), calcularTotais(pedido).getValorTotal(), null, null));
+	    pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal(), null, null));
 	}
 
 	result.include("pedidosDTO", pedidosDTO);
     }
 
-    private PedidoDTO calcularTotais(Pedido pedido) {
-
-	BigDecimal valorTotal = BigDecimal.ZERO;
-	BigDecimal totalPontos = BigDecimal.ZERO;
-	Integer totalItens = 0;
-
-	List<ItemPedido> itens = new PedidoService(hibernateUtil).listarItensPedido(pedido);
-
-	for (ItemPedido itemPedido : itens) {
-
-	    Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
-	    Integer quantidade = itemPedido.getQuantidade();
-
-	    totalItens += quantidade;
-	    valorTotal = valorTotal.add(itemPedido.getPrecoUnitario().multiply(BigDecimal.valueOf(quantidade)));
-	    totalPontos = totalPontos.add(produto.getPrdPontos().multiply(new BigDecimal(quantidade)));
-	}
-
-	return new PedidoDTO(pedido, null, valorTotal, totalItens, totalPontos);
-    }
-
     private Pedido selecionarPedidoAberto() {
 
-	Integer idCodigo = (Integer) this.sessaoGeral.getValor(ID_USUARIO_PEDIDO);
+	Integer idCodigo = (Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_PEDIDO);
 
 	if (idCodigo == null || idCodigo == 0) {
 	    idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
