@@ -51,6 +51,9 @@ import br.com.caelum.vraptor.validator.ValidationMessage;
 @Resource
 public class PedidoController {
 
+    private static final String RECOMPRA = "recompra";
+    private static final String ATIVIDADE = "atividade";
+    private static final String ADESAO = "adesao";
     private static final String ID_USUARIO_PEDIDO = "idUsuarioPedido";
     private static final String ID_USUARIO_LOJA_PESSOAL = "idUsuarioLojaPessoal";
     private static final String FINALIZADO = "FINALIZADO";
@@ -158,8 +161,15 @@ public class PedidoController {
 	hibernateUtil.salvarOuAtualizar(pedido);
 
 	result.include("franquia", hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())));
-	result.include("categorias", hibernateUtil.buscar(new Categoria(), Order.asc("catNome")));
 	result.include("mostrarPontuacao", !Boolean.TRUE.equals(this.sessaoGeral.getValor("isPrimeiroPedido")));
+	List<Categoria> todasCategorias = hibernateUtil.buscar(new Categoria(), Order.asc("catNome"));
+	List<Categoria> categoriasSemTaxas = new ArrayList<Categoria>();
+	for (Categoria categoria : todasCategorias) {
+	    if (!categoria.getCatNome().equalsIgnoreCase("taxas")) {
+		categoriasSemTaxas.add(categoria);
+	    }
+	}
+	result.include("categorias", categoriasSemTaxas);
     }
 
     private String definirTipoDoPedido() {
@@ -167,11 +177,11 @@ public class PedidoController {
 	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
 	Object isInativo = this.sessaoGeral.getValor("isInativo");
 	if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido)
-	    return "adesao";
+	    return ADESAO;
 	else if (isInativo != null && (Boolean) isInativo)
-	    return "atividade";
+	    return ATIVIDADE;
 
-	return "recompra";
+	return RECOMPRA;
     }
 
     @Funcionalidade

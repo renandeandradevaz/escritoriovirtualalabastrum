@@ -16,108 +16,109 @@ import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class ExtratoService {
 
-	private HibernateUtil hibernateUtil;
+    private HibernateUtil hibernateUtil;
 
-	public ExtratoService(HibernateUtil hibernateUtil) {
-		this.hibernateUtil = hibernateUtil;
+    public ExtratoService(HibernateUtil hibernateUtil) {
+	this.hibernateUtil = hibernateUtil;
+    }
+
+    public SaldoDTO gerarSaldoEExtrato(Integer idCodigo, Integer mes, Integer ano) {
+
+	return gerarSaldoEExtrato(idCodigo, mes, ano, false);
+    }
+
+    public SaldoDTO gerarSaldoEExtrato(Integer idCodigo, Integer mes, Integer ano, boolean compressaoDeBonus) {
+
+	List<ExtratoDTO> extratoCompleto = new ArrayList<ExtratoDTO>();
+//		extratoCompleto.addAll(new IndicacaoDiretaService(hibernateUtil).obterIndicacoesDiretas(idCodigo));
+//		extratoCompleto.addAll(new IndicacaoIndiretaService(hibernateUtil).obterIndicacoesIndiretas(idCodigo));
+//		extratoCompleto.addAll(new BonusAtivacaoService(hibernateUtil).obterBonificacoesPorAtivacao(idCodigo));
+//		extratoCompleto.addAll(new BonusUnilevelService(hibernateUtil).obterBonificacoesUnilevel(idCodigo));
+//		extratoCompleto.addAll(new BonusDivisaoLucroService(hibernateUtil).obterBonificacoesDivisaoLucro(idCodigo));
+	extratoCompleto.addAll(new BonusDePrimeiraCompraService(hibernateUtil).obterBonificacoesDePrimeiraCompra(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeOutroDistribuidor(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaOutroDistribuidor(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaAlabastrumCard(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaPagamentoDePedido(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasPorCompressaoDeBonus(idCodigo));
+	extratoCompleto = ordenarExtratoPorDataCrescente(extratoCompleto);
+
+	GregorianCalendar tempoCorrente = Util.getTempoCorrenteAMeiaNoite();
+
+	if (compressaoDeBonus) {
+	    tempoCorrente.add(Calendar.MONTH, -1);
 	}
 
-	public SaldoDTO gerarSaldoEExtrato(Integer idCodigo, Integer mes, Integer ano) {
+	int mesAtual = tempoCorrente.get(Calendar.MONTH);
+	int anoAtual = tempoCorrente.get(Calendar.YEAR);
 
-		return gerarSaldoEExtrato(idCodigo, mes, ano, false);
-	}
+	BigDecimal saldoPrevistoNoMes = BigDecimal.ZERO;
+	BigDecimal saldoLiberado = BigDecimal.ZERO;
+	BigDecimal ganhosAteHoje = BigDecimal.ZERO;
 
-	public SaldoDTO gerarSaldoEExtrato(Integer idCodigo, Integer mes, Integer ano, boolean compressaoDeBonus) {
+	List<ExtratoDTO> extratoDoMes = new ArrayList<ExtratoDTO>();
+	for (ExtratoDTO extratoDTO : extratoCompleto) {
 
-		List<ExtratoDTO> extratoCompleto = new ArrayList<ExtratoDTO>();
-		extratoCompleto.addAll(new IndicacaoDiretaService(hibernateUtil).obterIndicacoesDiretas(idCodigo));
-		extratoCompleto.addAll(new IndicacaoIndiretaService(hibernateUtil).obterIndicacoesIndiretas(idCodigo));
-		extratoCompleto.addAll(new BonusAtivacaoService(hibernateUtil).obterBonificacoesPorAtivacao(idCodigo));
-		extratoCompleto.addAll(new BonusUnilevelService(hibernateUtil).obterBonificacoesUnilevel(idCodigo));
-		extratoCompleto.addAll(new BonusDivisaoLucroService(hibernateUtil).obterBonificacoesDivisaoLucro(idCodigo));
-		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeOutroDistribuidor(idCodigo));
-		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaOutroDistribuidor(idCodigo));
-		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaAlabastrumCard(idCodigo));
-		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaPagamentoDePedido(idCodigo));
-		extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasPorCompressaoDeBonus(idCodigo));
-		extratoCompleto = ordenarExtratoPorDataCrescente(extratoCompleto);
+	    if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) != 0) {
 
-		GregorianCalendar tempoCorrente = Util.getTempoCorrenteAMeiaNoite();
+		if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR) //
+			|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD) //
+			|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO) //
+			|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS)) {
 
-		if (compressaoDeBonus) {
-			tempoCorrente.add(Calendar.MONTH, -1);
-		}
+		    saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
+		    adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
 
-		int mesAtual = tempoCorrente.get(Calendar.MONTH);
-		int anoAtual = tempoCorrente.get(Calendar.YEAR);
+		    if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS)) {
+			ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
+		    }
+		} else {
 
-		BigDecimal saldoPrevistoNoMes = BigDecimal.ZERO;
-		BigDecimal saldoLiberado = BigDecimal.ZERO;
-		BigDecimal ganhosAteHoje = BigDecimal.ZERO;
+		    if (new AtividadeService(hibernateUtil).isAtivo(idCodigo, extratoDTO.getData())) {
 
-		List<ExtratoDTO> extratoDoMes = new ArrayList<ExtratoDTO>();
-		for (ExtratoDTO extratoDTO : extratoCompleto) {
+			saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
+			adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
+			ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
+		    } else {
 
-			if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) != 0) {
+			if (extratoDTO.getData().get(Calendar.MONTH) == mesAtual && extratoDTO.getData().get(Calendar.YEAR) == anoAtual) {
 
-				if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR) //
-						|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD) //
-						|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO) //
-						|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS)) {
-
-					saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
-					adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
-
-					if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS)) {
-						ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
-					}
-				} else {
-
-					if (new AtividadeService(hibernateUtil).isAtivo(idCodigo, extratoDTO.getData())) {
-
-						saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
-						adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
-						ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
-					} else {
-
-						if (extratoDTO.getData().get(Calendar.MONTH) == mesAtual && extratoDTO.getData().get(Calendar.YEAR) == anoAtual) {
-
-							saldoPrevistoNoMes = saldoPrevistoNoMes.add(extratoDTO.getValor());
-							adicionarNoExtratoDoMes(mes, ano, saldoPrevistoNoMes, extratoDoMes, extratoDTO);
-						}
-					}
-				}
+			    saldoPrevistoNoMes = saldoPrevistoNoMes.add(extratoDTO.getValor());
+			    adicionarNoExtratoDoMes(mes, ano, saldoPrevistoNoMes, extratoDoMes, extratoDTO);
 			}
+		    }
 		}
-
-		BigDecimal saldoPrevistoTotal = saldoPrevistoNoMes.add(saldoLiberado);
-		return new SaldoDTO(saldoPrevistoNoMes, saldoPrevistoTotal, saldoLiberado, ganhosAteHoje, extratoDoMes);
+	    }
 	}
 
-	private void adicionarNoExtratoDoMes(Integer mes, Integer ano, BigDecimal saldo, List<ExtratoDTO> extratoDoMes, ExtratoDTO extratoDTO) {
+	BigDecimal saldoPrevistoTotal = saldoPrevistoNoMes.add(saldoLiberado);
+	return new SaldoDTO(saldoPrevistoNoMes, saldoPrevistoTotal, saldoLiberado, ganhosAteHoje, extratoDoMes);
+    }
 
-		if (extratoDTO.getData().get(Calendar.MONTH) == mes && extratoDTO.getData().get(Calendar.YEAR) == ano) {
-			extratoDTO.setSaldo(saldo);
-			extratoDoMes.add(extratoDTO);
-		}
+    private void adicionarNoExtratoDoMes(Integer mes, Integer ano, BigDecimal saldo, List<ExtratoDTO> extratoDoMes, ExtratoDTO extratoDTO) {
+
+	if (extratoDTO.getData().get(Calendar.MONTH) == mes && extratoDTO.getData().get(Calendar.YEAR) == ano) {
+	    extratoDTO.setSaldo(saldo);
+	    extratoDoMes.add(extratoDTO);
 	}
+    }
 
-	private List<ExtratoDTO> ordenarExtratoPorDataCrescente(List<ExtratoDTO> extrato) {
+    private List<ExtratoDTO> ordenarExtratoPorDataCrescente(List<ExtratoDTO> extrato) {
 
-		Collections.sort(extrato, new Comparator<ExtratoDTO>() {
+	Collections.sort(extrato, new Comparator<ExtratoDTO>() {
 
-			public int compare(ExtratoDTO e1, ExtratoDTO e2) {
+	    public int compare(ExtratoDTO e1, ExtratoDTO e2) {
 
-				if (e1.getData().getTimeInMillis() < e2.getData().getTimeInMillis())
-					return -1;
+		if (e1.getData().getTimeInMillis() < e2.getData().getTimeInMillis())
+		    return -1;
 
-				if (e1.getData().getTimeInMillis() > e2.getData().getTimeInMillis())
-					return 1;
+		if (e1.getData().getTimeInMillis() > e2.getData().getTimeInMillis())
+		    return 1;
 
-				return 0;
-			}
-		});
+		return 0;
+	    }
+	});
 
-		return extrato;
-	}
+	return extrato;
+    }
 }
