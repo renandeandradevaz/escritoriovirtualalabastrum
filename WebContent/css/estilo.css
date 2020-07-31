@@ -1,4 +1,4 @@
-html {
+html, body {
 	background-color: #ece8e8;
 }
 
@@ -229,8 +229,25 @@ html {
 	font-weight: bold;
 }
 
+.menu-hamburguer {
+	background-image: url("images/hamburguer.png");
+	height: 25px;
+	background-size: 25px;
+	background-repeat: no-repeat;
+	margin: 10px;
+	background-color: #ece8e8;
+	display: none;
+}
+
 @media only screen and (max-width: 1200px) {
 	.conteudo {
-		width: 65%;
+		width: 100%;
+	}
+	.menu {
+		width: 100%;
+		display: none;
+	}
+	.menu-hamburguer {
+		display: block;
 	}
 }

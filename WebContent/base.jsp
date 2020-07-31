@@ -67,6 +67,7 @@
 		<!-- 				</div> -->
 		<%-- 			</c:if> --%>
 		<!-- 		</div> -->
+		<div class="menu-hamburguer"></div>
 		<div class="menu" data-collapse="persist">
 			<h3 class="menu-accordion" onclick="goTo('<c:url value="/home"/>')">Início</h3>
 			<div></div>
@@ -108,6 +109,11 @@
 		function goTo(url) {
 			window.location.href = url;
 		}
+
+		jQuery(".menu-hamburguer").click(function() {
+			jQuery(this).hide();
+			jQuery(".menu").show();
+		});
 	</script>
 	<div class="conteudo">
 		<c:if test="${not empty sucesso}">

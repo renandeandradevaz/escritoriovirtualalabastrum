@@ -74,37 +74,32 @@
 	</form>
 </div>
 <br>
-<div class="fundo-branco">
-	<table class="table table-striped table-bordered">
-		<thead>
+<table class="table table-striped table-bordered" style="background-color: white; font-size: 10px">
+	<thead>
+		<tr>
+			<th>Distribuidor</th>
+			<th>Nivel</th>
+			<th>Posição</th>
+			<th>Telefone</th>
+			<th>Email</th>
+			<th>Nascimento</th>
+		</tr>
+	</thead>
+	<tbody>
+		<c:forEach items="${equipe}" var="item">
 			<tr>
-				<th>Nickname</th>
-				<th>Posição</th>
-				<th>Nome</th>
-				<th>Nascimento</th>
-				<th>Tel</th>
-				<th>Celular</th>
-				<th>Email</th>
-				<th>Nivel</th>
-				<th>Pré-cadastro</th>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach items="${equipe}" var="item">
-				<tr>
-					<td class="centralizado">${item.usuario.apelido}</td>
-					<td class="centralizado">${item.usuario.posAtual}</td>
-					<td class="centralizado">${item.usuario.vNome}</td>
-					<td class="centralizado">${item.usuario.dt_Nasc}</td>
-					<td class="centralizado">${item.usuario.tel}</td>
-					<td class="centralizado">${item.usuario.cadCelular}</td>
-					<td class="centralizado">${item.usuario.eMail}</td>
-					<td class="centralizado">${item.nivel}</td>
-					<td class="centralizado">${item.preCadastro}</td>
-			</c:forEach>
-		</tbody>
-	</table>
-</div>
+				<td class="centralizado">${item.usuario.apelido}-${item.usuario.vNome}</td>
+				<td class="centralizado">${item.nivel}</td>
+				<td class="centralizado">${item.usuario.posAtual}</td>
+				<td class="centralizado">${item.usuario.tel}
+					<br>
+					${item.usuario.cadCelular}
+				</td>
+				<td class="centralizado">${item.usuario.eMail}</td>
+				<td class="centralizado">${item.usuario.dt_Nasc}</td>
+		</c:forEach>
+	</tbody>
+</table>
 <script>
 	$('#posicao').val('${pesquisaEquipeDTO.posicao}');
 	$('#ativos').val('${pesquisaEquipeDTO.ativos}');

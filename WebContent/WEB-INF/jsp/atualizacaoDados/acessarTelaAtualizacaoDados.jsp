@@ -1,7 +1,6 @@
 <%@ include file="/base.jsp"%>
 <style>
 .divAtualizacaoDados {
-	width: 710px;
 	border: 1px solid rgb(152, 160, 233);
 	padding-top: 10px;
 	border-radius: 6px;
@@ -103,6 +102,7 @@ hr {
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario"> RG: </label>
 			<input type="text" name="usuario.cadRG" value="${usuario.cadRG}" required="required">
+			<br>
 			<label class="labelFormulario"> Emissor: </label>
 			<input type="text" name="usuario.cadOrgaoExpedidor" value="${usuario.cadOrgaoExpedidor}" required="required">
 		</div>
@@ -160,7 +160,7 @@ hr {
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Email: </label>
-			<input type="text" style="width: 585px;" name="usuario.email" value="${usuario.eMail}" required="required">
+			<input type="text" name="usuario.email" value="${usuario.eMail}" required="required">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">PIS/MIS: </label>

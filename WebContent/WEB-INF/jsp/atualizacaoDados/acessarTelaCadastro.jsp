@@ -89,7 +89,7 @@ hr {
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Nickname: </label>
 			<input type="text" name="preCadastro.nicknameQuemIndicou" value="${preCadastro.nicknameQuemIndicou}" required="required" id='nicknameQuemIndicou' placeholder="Informe o nickname">
-			<button style="margin: 5px 0px;" id='descobrir-nome' class="btn btn-primary">Buscar</button>
+			<button style="margin: 5px 0px; margin-left: 20px;" id='descobrir-nome' class="btn btn-primary">Buscar</button>
 			<br />
 			<label class="labelFormulario">Nome: </label>
 			<input type="text" style="margin: 5px 0px 5px 0px;" value="" disabled="disabled" id="nomeQuemIndicou">
@@ -127,6 +127,7 @@ hr {
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario"> CPF: </label>
 			<input type="text" required="required" name="preCadastro.CPF" value="${preCadastro.CPF}" onBlur="Verifica_campo_CPF(this)">
+			<br>
 			<label class="labelFormulario"> RG: </label>
 			<input type="text" required="required" name="preCadastro.cadRG" value="${preCadastro.cadRG}">
 			<br>

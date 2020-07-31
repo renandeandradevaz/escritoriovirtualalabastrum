@@ -1,10 +1,14 @@
 <%@ include file="/base.jsp"%>
 <div class="fundo-branco">
 	<h4>O escritório ainda está em construção. Em breve você terá novidades.</h4>
-	<br>
 	<h4>Mas você já pode fazer a sua primeira compra clicando no botão abaixo:</h4>
-	<br>
 	<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="btn btn-primary"> Primeira compra </a>
+	<br>
+	<br>
+	<br>
+	<h6>Quer indicar alguém?</h6>
+	<h6>Passe o link abaixo pra pessoa que você quer indicar. Para ela poder realizar o cadastro:</h6>
+	<a href="<c:url value="/cadastro?nickname=${sessaoUsuario.usuario.apelido}"/>"> https://ev.dunastes.com.br/cadastro?nickname=${sessaoUsuario.usuario.apelido} </a>
 </div>
 <!-- <div class="fundo-branco"> -->
 <!-- 	<h4>Início</h4> -->

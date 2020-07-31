@@ -5,7 +5,7 @@
 <br>
 <div class="fundo-branco">
 	<c:if test="${not empty itensPedidoDTO}">
-		<table class="table table-striped table-bordered">
+		<table class="table table-striped table-bordered" style="background-color: white">
 			<thead>
 				<tr>
 					<th>Nome</th>
@@ -44,14 +44,16 @@
 		<br>
 		<br>
 		<c:if test="${sessaoUsuario.usuario.id_Codigo != null}">
-			<a href="<c:url value="/pedido/escolherFormaDePagamento"/>" class="btn btn-success" style="float: right;">Escolher forma de pagamento</a>
+			<a href="<c:url value="/pedido/escolherFormaDePagamento"/>" class="btn btn-success">Escolher forma de pagamento</a>
 		</c:if>
 		<c:if test="${sessaoUsuario.usuario.id_Codigo == null}">
-			<a href="<c:url value="/pedido/informarDadosComprador"/>" class="btn btn-success" style="float: right;">Avançar</a>
+			<a href="<c:url value="/pedido/informarDadosComprador"/>" class="btn btn-success">Avançar</a>
 		</c:if>
 	</c:if>
 	<c:if test="${empty itensPedidoDTO}">
 		<h4>Seu carrinho está vazio.</h4>
 	</c:if>
+	<br>
+	<br>
 	<a class="btn btn-info" href="<c:url value="/pedido/escolherProdutos"/>"> Escolher mais produtos</a>
 </div>

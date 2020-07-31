@@ -8,7 +8,7 @@
   display: block;
   margin-top: 2px;
   margin-bottom: 1.5px;
-  background-color: #0498AC;
+  background-color: #73352F;
   line-height: normal;
   font-size: 14px;
   border-radius: 5px;
@@ -19,7 +19,7 @@
 	background-image: url("images/white-down-arrow.png");
     background-size: 20px;
     background-repeat: no-repeat;
-    background-position-x: right;
+    background-position-x: left;
     background-position-y: center;
 }
 
@@ -36,7 +36,7 @@
 }
 
 .submenu-accordion {
-	background-color: #5cc9d8;
+	background-color: #D96F32;
 	display: block;
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -61,5 +61,5 @@
 	color: white;
 	text-decoration: none;
 	cursor: pointer;
-	background-color: #80c6d0;
+	background-color: #095a65;
 }
