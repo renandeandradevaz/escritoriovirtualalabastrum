@@ -39,6 +39,10 @@ th {
 	margin-top: 20px;
 }
 
+.table{
+	background-color: white;
+}
+
 .alert-alerta {
   color: rgb(100, 100, 100);
   background-color: #FAFA08;

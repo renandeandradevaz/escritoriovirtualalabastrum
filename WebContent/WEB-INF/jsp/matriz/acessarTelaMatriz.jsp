@@ -3,51 +3,53 @@
 	<h4>${nomeMatriz}</h4>
 </div>
 <br>
+<c:if test="${not empty quantidadesExistentes}">
+	<br>
+	<div>
+		<table class="table table-striped table-bordered">
+			<tr>
+				<td class="centralizado">
+					<b>Nível </b>
+				</td>
+				<td class="centralizado">1</td>
+				<td class="centralizado">2</td>
+				<td class="centralizado">3</td>
+				<td class="centralizado">4</td>
+				<td class="centralizado">5</td>
+				<td class="centralizado">6</td>
+				<td class="centralizado">7</td>
+				<td class="centralizado">8</td>
+				<td class="centralizado">9</td>
+				<td class="centralizado">10</td>
+			</tr>
+			<tr>
+				<td class="centralizado">
+					<b>Previsto </b>
+				</td>
+				<td class="centralizado">3</td>
+				<td class="centralizado">9</td>
+				<td class="centralizado">27</td>
+				<td class="centralizado">81</td>
+				<td class="centralizado">243</td>
+				<td class="centralizado">729</td>
+				<td class="centralizado">2187</td>
+				<td class="centralizado">6561</td>
+				<td class="centralizado">19683</td>
+				<td class="centralizado">59049</td>
+			</tr>
+			<tr>
+				<td class="centralizado">
+					<b>Existente </b>
+				</td>
+				<c:forEach items="${quantidadesExistentes}" var="entry">
+					<td class="centralizado">${entry.value}</td>
+				</c:forEach>
+			</tr>
+		</table>
+	</div>
+	<br>
+</c:if>
 <div class="fundo-branco">
-	<c:if test="${not empty quantidadesExistentes}">
-		<div>
-			<table class="table table-striped table-bordered">
-				<tr>
-					<td class="centralizado">
-						<b>Nível </b>
-					</td>
-					<td class="centralizado">1</td>
-					<td class="centralizado">2</td>
-					<td class="centralizado">3</td>
-					<td class="centralizado">4</td>
-					<td class="centralizado">5</td>
-					<td class="centralizado">6</td>
-					<td class="centralizado">7</td>
-					<td class="centralizado">8</td>
-					<td class="centralizado">9</td>
-					<td class="centralizado">10</td>
-				</tr>
-				<tr>
-					<td class="centralizado">
-						<b>Previsto </b>
-					</td>
-					<td class="centralizado">3</td>
-					<td class="centralizado">9</td>
-					<td class="centralizado">27</td>
-					<td class="centralizado">81</td>
-					<td class="centralizado">243</td>
-					<td class="centralizado">729</td>
-					<td class="centralizado">2187</td>
-					<td class="centralizado">6561</td>
-					<td class="centralizado">19683</td>
-					<td class="centralizado">59049</td>
-				</tr>
-				<tr>
-					<td class="centralizado">
-						<b>Existente </b>
-					</td>
-					<c:forEach items="${quantidadesExistentes}" var="entry">
-						<td class="centralizado">${entry.value}</td>
-					</c:forEach>
-				</tr>
-			</table>
-		</div>
-	</c:if>
 	<br>
 	<a href="<c:url value="/matriz/acessarTelaMatriz${tipoDeMatriz}"/>"> Voltar ao topo </a>
 	<br>

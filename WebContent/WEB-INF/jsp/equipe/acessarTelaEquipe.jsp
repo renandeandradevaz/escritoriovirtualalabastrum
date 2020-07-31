@@ -88,7 +88,10 @@
 	<tbody>
 		<c:forEach items="${equipe}" var="item">
 			<tr>
-				<td class="centralizado">${item.usuario.apelido}-${item.usuario.vNome}</td>
+				<td class="centralizado">${item.usuario.apelido}
+					<br>
+					${item.usuario.vNome}
+				</td>
 				<td class="centralizado">${item.nivel}</td>
 				<td class="centralizado">${item.usuario.posAtual}</td>
 				<td class="centralizado">${item.usuario.tel}

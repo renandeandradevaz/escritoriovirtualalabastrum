@@ -10,7 +10,6 @@
 				<th>Info</th>
 				<th>Franquia</th>
 				<th>Valor</th>
-				<th>Status</th>
 				<th></th>
 			</tr>
 		</thead>

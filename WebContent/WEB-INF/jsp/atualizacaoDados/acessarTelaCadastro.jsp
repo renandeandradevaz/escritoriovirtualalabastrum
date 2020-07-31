@@ -150,6 +150,7 @@ hr {
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Cidade: </label>
 			<input type="text" required="required" name="preCadastro.cadCidade" value="${preCadastro.cadCidade}">
+			<br>
 			<label class="labelFormulario">Estado: </label>
 			<select name="preCadastro.cadUF">
 				<option value="AC">Acre</option>
