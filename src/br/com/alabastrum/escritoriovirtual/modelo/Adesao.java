@@ -17,8 +17,8 @@ public class Adesao implements Entidade {
     private Integer id;
 
     private GregorianCalendar data_referencia;
-    private Integer geracao;
     private BigDecimal bonusAdesao;
+    private Integer geracao;
 
     public Integer getId() {
 	return id;
