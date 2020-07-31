@@ -21,7 +21,7 @@
 			<input type="password" placeholder="SENHA" name="usuario.informacoesFixasUsuario.senha">
 			<br />
 			<input type="submit" value="ACESSAR" onclick="this.disabled=true;this.form.submit();">
-			<a href="<c:url value="/cadastro"/>">
+			<a style="display: none" href="<c:url value="/cadastro"/>">
 				Ainda não é inscrito?
 				<br />
 				<strong>Cadastre-se</strong>
