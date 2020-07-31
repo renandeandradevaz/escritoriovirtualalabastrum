@@ -259,7 +259,7 @@ hr {
 			<h5>* Declaração de Isenção do INSS com firma reconhecida (próprio punho)</h5>
 			<br>
 			<br>
-			<h5>Todos documentos devem ser enviados para: documentos@dunastes.com.br</h5>
+			<h6>Todos documentos devem ser enviados para: documentos@dunastes.com.br</h6>
 		</div>
 		<div style="margin-top: 20px; margin-left: 20px">
 			<button type="submit" class="btn btn-primary">Enviar</button>

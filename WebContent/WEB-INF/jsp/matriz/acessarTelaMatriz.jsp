@@ -58,7 +58,7 @@
 	<br>
 </div>
 <br>
-<h6>Obs: Caso esteja visualizando pelo celular, será necessário arrastar a tela do celular para o lado porque a árvore matriz pode ser grande.</h6>
+<h6 style="margin-left: 10px;">Obs: Caso esteja visualizando pelo celular, será necessário arrastar a tela do celular para o lado porque a árvore matriz pode ser grande.</h6>
 <div class="chart" id="matriz"></div>
 <link type="text/css" href="<c:url value="/css/treant.css"/>" rel="stylesheet" />
 <link type="text/css" href="<c:url value="/css/treeview.css"/>" rel="stylesheet" />
