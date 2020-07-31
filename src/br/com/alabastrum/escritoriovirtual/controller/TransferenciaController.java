@@ -20,118 +20,118 @@ import br.com.caelum.vraptor.validator.ValidationMessage;
 @Resource
 public class TransferenciaController {
 
-	private static final Integer DIA_MAXIMO_TRANSFERENCIA_ALABASTRUM_CARD = 5;
-	private static final BigDecimal VALOR_MINIMO_TRANSFERENCIA_ALABASTRUM_CARD = new BigDecimal(200);
+    private static final Integer DIA_MAXIMO_TRANSFERENCIA_ALABASTRUM_CARD = 5;
+    private static final BigDecimal VALOR_MINIMO_TRANSFERENCIA_ALABASTRUM_CARD = new BigDecimal(200);
 
-	private Result result;
-	private HibernateUtil hibernateUtil;
-	private SessaoUsuario sessaoUsuario;
-	private Validator validator;
+    private Result result;
+    private HibernateUtil hibernateUtil;
+    private SessaoUsuario sessaoUsuario;
+    private Validator validator;
 
-	public TransferenciaController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario, Validator validator) {
-		this.result = result;
-		this.hibernateUtil = hibernateUtil;
-		this.sessaoUsuario = sessaoUsuario;
-		this.validator = validator;
+    public TransferenciaController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario, Validator validator) {
+	this.result = result;
+	this.hibernateUtil = hibernateUtil;
+	this.sessaoUsuario = sessaoUsuario;
+	this.validator = validator;
+    }
+
+    @Funcionalidade
+    public void acessarTelaTransferencia() {
+    }
+
+    @Funcionalidade
+    public void acessarTelaTransferenciaParaAlabastrumCard() throws Exception {
+	result.include("diaMaximo", DIA_MAXIMO_TRANSFERENCIA_ALABASTRUM_CARD);
+	result.include("valorMinimo", VALOR_MINIMO_TRANSFERENCIA_ALABASTRUM_CARD);
+	result.include("saldoLiberado", gerarSaldoLiberado());
+    }
+
+    @Funcionalidade
+    public void acessarTelaTransferenciaParaOutroDistribuidor() throws Exception {
+	result.include("saldoLiberado", gerarSaldoLiberado());
+    }
+
+    @Funcionalidade
+    public void transferirParaOutroDistribuidor(Integer codigoOutroDistribuidor, BigDecimal valor) throws Exception {
+
+	BigDecimal saldoLiberado = gerarSaldoLiberado();
+
+	if (valor.compareTo(saldoLiberado) > 0 || valor.compareTo(BigDecimal.ZERO) <= 0) {
+	    validator.add(new ValidationMessage("O valor a ser transferido não pode ser maior do que o seu saldo liberado atual", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaOutroDistribuidor();
+	    return;
 	}
 
-	@Funcionalidade
-	public void acessarTelaTransferencia() {
+	if (codigoOutroDistribuidor == 0 || hibernateUtil.selecionar(new Usuario(codigoOutroDistribuidor)) == null) {
+
+	    validator.add(new ValidationMessage("O distribuidor com código " + codigoOutroDistribuidor + " não foi encontrado", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaOutroDistribuidor();
+	    return;
 	}
 
-	@Funcionalidade
-	public void acessarTelaTransferenciaParaAlabastrumCard() {
-		result.include("diaMaximo", DIA_MAXIMO_TRANSFERENCIA_ALABASTRUM_CARD);
-		result.include("valorMinimo", VALOR_MINIMO_TRANSFERENCIA_ALABASTRUM_CARD);
-		result.include("saldoLiberado", gerarSaldoLiberado());
+	if (codigoOutroDistribuidor == this.sessaoUsuario.getUsuario().getId_Codigo()) {
+
+	    validator.add(new ValidationMessage("Código inválido", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaOutroDistribuidor();
+	    return;
 	}
 
-	@Funcionalidade
-	public void acessarTelaTransferenciaParaOutroDistribuidor() {
-		result.include("saldoLiberado", gerarSaldoLiberado());
+	Transferencia transferencia = new Transferencia();
+	transferencia.setData(new GregorianCalendar());
+	transferencia.setDe(this.sessaoUsuario.getUsuario().getId_Codigo());
+	transferencia.setPara(codigoOutroDistribuidor);
+	transferencia.setValor(valor);
+	transferencia.setTipo(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR);
+	hibernateUtil.salvarOuAtualizar(transferencia);
+
+	result.redirectTo(ExtratoController.class).gerarExtrato(Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+    }
+
+    @Funcionalidade
+    public void transferirParaAlabastrumCard(BigDecimal valor) throws Exception {
+
+	BigDecimal saldoLiberado = gerarSaldoLiberado();
+
+	if (valor.compareTo(saldoLiberado) > 0) {
+	    validator.add(new ValidationMessage("O valor a ser transferido não pode ser maior do que o seu saldo atual", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaAlabastrumCard();
+	    return;
 	}
 
-	@Funcionalidade
-	public void transferirParaOutroDistribuidor(Integer codigoOutroDistribuidor, BigDecimal valor) {
-
-		BigDecimal saldoLiberado = gerarSaldoLiberado();
-
-		if (valor.compareTo(saldoLiberado) > 0 || valor.compareTo(BigDecimal.ZERO) <= 0) {
-			validator.add(new ValidationMessage("O valor a ser transferido não pode ser maior do que o seu saldo liberado atual", "Erro"));
-			validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaOutroDistribuidor();
-			return;
-		}
-
-		if (codigoOutroDistribuidor == 0 || hibernateUtil.selecionar(new Usuario(codigoOutroDistribuidor)) == null) {
-
-			validator.add(new ValidationMessage("O distribuidor com código " + codigoOutroDistribuidor + " não foi encontrado", "Erro"));
-			validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaOutroDistribuidor();
-			return;
-		}
-
-		if (codigoOutroDistribuidor == this.sessaoUsuario.getUsuario().getId_Codigo()) {
-
-			validator.add(new ValidationMessage("Código inválido", "Erro"));
-			validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaOutroDistribuidor();
-			return;
-		}
-
-		Transferencia transferencia = new Transferencia();
-		transferencia.setData(new GregorianCalendar());
-		transferencia.setDe(this.sessaoUsuario.getUsuario().getId_Codigo());
-		transferencia.setPara(codigoOutroDistribuidor);
-		transferencia.setValor(valor);
-		transferencia.setTipo(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR);
-		hibernateUtil.salvarOuAtualizar(transferencia);
-
-		result.redirectTo(ExtratoController.class).gerarExtrato(Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+	if (valor.compareTo(VALOR_MINIMO_TRANSFERENCIA_ALABASTRUM_CARD) < 0) {
+	    validator.add(new ValidationMessage("O valor a ser transferido não pode ser menor que " + VALOR_MINIMO_TRANSFERENCIA_ALABASTRUM_CARD + " reais", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaAlabastrumCard();
+	    return;
 	}
 
-	@Funcionalidade
-	public void transferirParaAlabastrumCard(BigDecimal valor) {
-
-		BigDecimal saldoLiberado = gerarSaldoLiberado();
-
-		if (valor.compareTo(saldoLiberado) > 0) {
-			validator.add(new ValidationMessage("O valor a ser transferido não pode ser maior do que o seu saldo atual", "Erro"));
-			validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaAlabastrumCard();
-			return;
-		}
-
-		if (valor.compareTo(VALOR_MINIMO_TRANSFERENCIA_ALABASTRUM_CARD) < 0) {
-			validator.add(new ValidationMessage("O valor a ser transferido não pode ser menor que " + VALOR_MINIMO_TRANSFERENCIA_ALABASTRUM_CARD + " reais", "Erro"));
-			validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaAlabastrumCard();
-			return;
-		}
-
-		if (Util.getTempoCorrenteAMeiaNoite().get(Calendar.DAY_OF_MONTH) > DIA_MAXIMO_TRANSFERENCIA_ALABASTRUM_CARD) {
-			validator.add(new ValidationMessage("A transferência só pode ser feita até o dia " + DIA_MAXIMO_TRANSFERENCIA_ALABASTRUM_CARD, "Erro"));
-			validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaAlabastrumCard();
-			return;
-		}
-
-		Transferencia transferencia = new Transferencia();
-		transferencia.setData(new GregorianCalendar());
-		transferencia.setDe(this.sessaoUsuario.getUsuario().getId_Codigo());
-		transferencia.setValor(valor);
-		transferencia.setTipo(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD);
-		hibernateUtil.salvarOuAtualizar(transferencia);
-
-		result.redirectTo(ExtratoController.class).gerarExtrato(Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+	if (Util.getTempoCorrenteAMeiaNoite().get(Calendar.DAY_OF_MONTH) > DIA_MAXIMO_TRANSFERENCIA_ALABASTRUM_CARD) {
+	    validator.add(new ValidationMessage("A transferência só pode ser feita até o dia " + DIA_MAXIMO_TRANSFERENCIA_ALABASTRUM_CARD, "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaTransferenciaParaAlabastrumCard();
+	    return;
 	}
 
-	@Funcionalidade(administrativa = "true")
-	public void acessarTelaTransferenciasParaAlabastrumCardAdministrativa() {
+	Transferencia transferencia = new Transferencia();
+	transferencia.setData(new GregorianCalendar());
+	transferencia.setDe(this.sessaoUsuario.getUsuario().getId_Codigo());
+	transferencia.setValor(valor);
+	transferencia.setTipo(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD);
+	hibernateUtil.salvarOuAtualizar(transferencia);
 
-		Transferencia transferenciaFiltro = new Transferencia();
-		transferenciaFiltro.setTipo(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD);
-		result.include("transferencias", hibernateUtil.buscar(transferenciaFiltro));
-	}
+	result.redirectTo(ExtratoController.class).gerarExtrato(Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+    }
 
-	private BigDecimal gerarSaldoLiberado() {
+    @Funcionalidade(administrativa = "true")
+    public void acessarTelaTransferenciasParaAlabastrumCardAdministrativa() {
 
-		Integer idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
-		SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(idCodigo, Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
-		return saldoDTO.getSaldoLiberado();
-	}
+	Transferencia transferenciaFiltro = new Transferencia();
+	transferenciaFiltro.setTipo(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD);
+	result.include("transferencias", hibernateUtil.buscar(transferenciaFiltro));
+    }
+
+    private BigDecimal gerarSaldoLiberado() throws Exception {
+
+	Integer idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
+	SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(idCodigo, Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+	return saldoDTO.getSaldoLiberado();
+    }
 }

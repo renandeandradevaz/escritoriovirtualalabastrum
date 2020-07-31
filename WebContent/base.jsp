@@ -84,6 +84,10 @@
 				<a href="<c:url value="/pedido/acessarCarrinho"/>" class="submenu-accordion"> Meu Carrinho </a>
 				<a href="<c:url value="/pedido/meusPedidos"/>" class="submenu-accordion"> Meus Pedidos </a>
 			</div>
+			<h3 class="menu-accordion has-child">Financeiro</h3>
+			<div>
+				<a href="<c:url value="/extrato/acessarTelaExtrato"/>" class="submenu-accordion"> Extrato </a>
+			</div>
 			<h3 class="menu-accordion has-child">Downloads</h3>
 			<div>
 				<a href="<c:url value="/download/downloads"/>" class="submenu-accordion"> Downloads </a>
@@ -94,7 +98,6 @@
 					<a href="<c:url value="/assumirIdentidade/acessarTelaAssumirIdentidade"/>" class="submenu-accordion"> Assumir Identidade </a>
 					<a href="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" class="submenu-accordion"> Gerenciar Pedidos </a>
 					<a href="<c:url value="/pedidoFranquia/todosPedidosFranquia"/>" class="submenu-accordion"> Gerenciar Pedidos para Estoque </a>
-					<a href="<c:url value="/transferencia/acessarTelaTransferenciasParaAlabastrumCardAdministrativa"/>" class="submenu-accordion"> Transferências para Alabastrum Card </a>
 					<a href="<c:url value="/saldoGeral/acessarTelaSaldoGeral"/>" class="submenu-accordion"> Saldo Geral </a>
 					<a href="<c:url value="/configuracao/acessarTelaConfiguracaoAdministrativa"/>" class="submenu-accordion"> Configurações Administrativas </a>
 				</div>

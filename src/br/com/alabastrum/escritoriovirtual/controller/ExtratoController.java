@@ -14,41 +14,41 @@ import br.com.caelum.vraptor.Result;
 @Resource
 public class ExtratoController {
 
-	private Result result;
-	private HibernateUtil hibernateUtil;
-	private SessaoUsuario sessaoUsuario;
+    private Result result;
+    private HibernateUtil hibernateUtil;
+    private SessaoUsuario sessaoUsuario;
 
-	public ExtratoController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario) {
+    public ExtratoController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario) {
 
-		this.result = result;
-		this.hibernateUtil = hibernateUtil;
-		this.sessaoUsuario = sessaoUsuario;
+	this.result = result;
+	this.hibernateUtil = hibernateUtil;
+	this.sessaoUsuario = sessaoUsuario;
+    }
+
+    @Funcionalidade
+    public void acessarTelaExtrato(Integer mes, Integer ano) {
+
+	if (mes == null || ano == null) {
+	    mes = Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH);
+	    ano = Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR);
 	}
 
-	@Funcionalidade
-	public void acessarTelaExtrato(Integer mes, Integer ano) {
+	result.include("mes", mes);
+	result.include("ano", ano);
+    }
 
-		if (mes == null || ano == null) {
-			mes = Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH);
-			ano = Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR);
-		}
+    @Funcionalidade
+    public void gerarExtrato(Integer mes, Integer ano) throws Exception {
 
-		result.include("mes", mes);
-		result.include("ano", ano);
-	}
+	Integer idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
 
-	@Funcionalidade
-	public void gerarExtrato(Integer mes, Integer ano) {
+	SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(idCodigo, mes, ano);
 
-		Integer idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
-
-		SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(idCodigo, mes, ano);
-
-		result.include("saldoLiberado", saldoDTO.getSaldoLiberado());
-		result.include("saldoPrevistoNoMes", saldoDTO.getSaldoPrevistoNoMes());
-		result.include("saldoPrevistoTotal", saldoDTO.getSaldoPrevistoTotal());
-		result.include("ganhosAteHoje", saldoDTO.getGanhosAteHoje());
-		result.include("extratoDoMes", saldoDTO.getExtratoDoMes());
-		result.forwardTo(this).acessarTelaExtrato(mes, ano);
-	}
+	result.include("saldoLiberado", saldoDTO.getSaldoLiberado());
+	result.include("saldoPrevistoNoMes", saldoDTO.getSaldoPrevistoNoMes());
+	result.include("saldoPrevistoTotal", saldoDTO.getSaldoPrevistoTotal());
+	result.include("ganhosAteHoje", saldoDTO.getGanhosAteHoje());
+	result.include("extratoDoMes", saldoDTO.getExtratoDoMes());
+	result.forwardTo(this).acessarTelaExtrato(mes, ano);
+    }
 }

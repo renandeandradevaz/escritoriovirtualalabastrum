@@ -17,47 +17,47 @@ import br.com.caelum.vraptor.Result;
 @Resource
 public class SaldoGeralController {
 
-	private Result result;
-	private HibernateUtil hibernateUtil;
+    private Result result;
+    private HibernateUtil hibernateUtil;
 
-	public SaldoGeralController(Result result, HibernateUtil hibernateUtil) {
+    public SaldoGeralController(Result result, HibernateUtil hibernateUtil) {
 
-		this.result = result;
-		this.hibernateUtil = hibernateUtil;
+	this.result = result;
+	this.hibernateUtil = hibernateUtil;
+    }
+
+    @Funcionalidade(administrativa = "true")
+    public void acessarTelaSaldoGeral() {
+    }
+
+    @Funcionalidade(administrativa = "true")
+    public void gerarSaldoGeral() throws Exception {
+
+	List<Usuario> usuarios = hibernateUtil.buscar(new Usuario());
+
+	List<SaldoDTO> saldos = new ArrayList<SaldoDTO>();
+	BigDecimal saldoPrevistoNoMesSomatorio = BigDecimal.ZERO;
+	BigDecimal saldoPrevistoTotalSomatorio = BigDecimal.ZERO;
+	BigDecimal saldoLiberadoSomatorio = BigDecimal.ZERO;
+
+	for (Usuario usuario : usuarios) {
+
+	    SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(usuario.getId_Codigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+	    saldoDTO.setUsuario(usuario);
+
+	    if (saldoDTO.getSaldoPrevistoTotal().compareTo(BigDecimal.ZERO) > 0) {
+
+		saldos.add(saldoDTO);
+
+		saldoPrevistoNoMesSomatorio = saldoPrevistoNoMesSomatorio.add(saldoDTO.getSaldoPrevistoNoMes());
+		saldoPrevistoTotalSomatorio = saldoPrevistoTotalSomatorio.add(saldoDTO.getSaldoPrevistoTotal());
+		saldoLiberadoSomatorio = saldoLiberadoSomatorio.add(saldoDTO.getSaldoLiberado());
+	    }
 	}
 
-	@Funcionalidade(administrativa = "true")
-	public void acessarTelaSaldoGeral() {
-	}
-
-	@Funcionalidade(administrativa = "true")
-	public void gerarSaldoGeral() {
-
-		List<Usuario> usuarios = hibernateUtil.buscar(new Usuario());
-
-		List<SaldoDTO> saldos = new ArrayList<SaldoDTO>();
-		BigDecimal saldoPrevistoNoMesSomatorio = BigDecimal.ZERO;
-		BigDecimal saldoPrevistoTotalSomatorio = BigDecimal.ZERO;
-		BigDecimal saldoLiberadoSomatorio = BigDecimal.ZERO;
-
-		for (Usuario usuario : usuarios) {
-
-			SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(usuario.getId_Codigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
-			saldoDTO.setUsuario(usuario);
-
-			if (saldoDTO.getSaldoPrevistoTotal().compareTo(BigDecimal.ZERO) > 0) {
-
-				saldos.add(saldoDTO);
-
-				saldoPrevistoNoMesSomatorio = saldoPrevistoNoMesSomatorio.add(saldoDTO.getSaldoPrevistoNoMes());
-				saldoPrevistoTotalSomatorio = saldoPrevistoTotalSomatorio.add(saldoDTO.getSaldoPrevistoTotal());
-				saldoLiberadoSomatorio = saldoLiberadoSomatorio.add(saldoDTO.getSaldoLiberado());
-			}
-		}
-
-		result.include("saldos", saldos);
-		result.include("saldoPrevistoNoMesSomatorio", saldoPrevistoNoMesSomatorio);
-		result.include("saldoPrevistoTotalSomatorio", saldoPrevistoTotalSomatorio);
-		result.include("saldoLiberadoSomatorio", saldoLiberadoSomatorio);
-	}
+	result.include("saldos", saldos);
+	result.include("saldoPrevistoNoMesSomatorio", saldoPrevistoNoMesSomatorio);
+	result.include("saldoPrevistoTotalSomatorio", saldoPrevistoTotalSomatorio);
+	result.include("saldoLiberadoSomatorio", saldoLiberadoSomatorio);
+    }
 }

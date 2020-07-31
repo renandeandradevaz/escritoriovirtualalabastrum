@@ -247,7 +247,7 @@ hr {
 		</div>
 		<div class="corClara divFormulario" style="margin: 5%; border: 1px solid black;">
 			<h5>Após finalizar a atualização dos seus dados aqui no Escritório virtual, você deve enviar por e-mail as fotos dos seus documentos.</h5>
-			<h5>O título do email deve ser: Fotos dos documentos do distribuidor com ID XXX (Coloque aqui o seu código de distribuidor).</h5>
+			<h5>O título do email deve ser: Fotos dos documentos do distribuidor com nickname XXX (Coloque aqui o seu nickname).</h5>
 			<h5>As fotos devem ir em anexo no email.</h5>
 			<br>
 			<h5>Os documentos necessários são:</h5>

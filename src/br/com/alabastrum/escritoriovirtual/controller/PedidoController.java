@@ -587,7 +587,7 @@ public class PedidoController {
 
     @Funcionalidade
     @Get("/pedido/realizarPagamento/{idPedido}")
-    public void realizarPagamento(Integer idPedido) {
+    public void realizarPagamento(Integer idPedido) throws Exception {
 
 	if (verificarPermissaoPedidosAdministrativos()) {
 
