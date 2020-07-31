@@ -45,7 +45,7 @@
 <br>
 <c:if test="${not empty extratoDoMes}">
 	<div class="fundo-branco">
-		<table class="table table-striped table-bordered">
+		<table class="table table-striped table-bordered" style="font-size: 10px">
 			<thead>
 				<tr>
 					<th>Data</th>
