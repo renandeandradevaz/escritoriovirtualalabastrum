@@ -36,11 +36,11 @@ public class ExtratoService {
 //		extratoCompleto.addAll(new BonusUnilevelService(hibernateUtil).obterBonificacoesUnilevel(idCodigo));
 //		extratoCompleto.addAll(new BonusDivisaoLucroService(hibernateUtil).obterBonificacoesDivisaoLucro(idCodigo));
 	extratoCompleto.addAll(new BonusDePrimeiraCompraService(hibernateUtil).obterBonificacoesDePrimeiraCompra(idCodigo));
-//	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeOutroDistribuidor(idCodigo));
-//	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaOutroDistribuidor(idCodigo));
-//	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaAlabastrumCard(idCodigo));
-//	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaPagamentoDePedido(idCodigo));
-//	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasPorCompressaoDeBonus(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeOutroDistribuidor(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaOutroDistribuidor(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaAlabastrumCard(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaPagamentoDePedido(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasPorCompressaoDeBonus(idCodigo));
 	extratoCompleto = ordenarExtratoPorDataCrescente(extratoCompleto);
 
 	GregorianCalendar tempoCorrente = Util.getTempoCorrenteAMeiaNoite();
