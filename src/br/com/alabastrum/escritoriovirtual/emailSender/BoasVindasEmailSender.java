@@ -66,7 +66,7 @@ public class BoasVindasEmailSender {
 	}
     }
 
-    private static void apagarSenha(HibernateUtil hibernateUtil, Usuario usuario) {
+    private static void apagarSenha(HibernateUtil hibernateUtil, Usuario usuario) throws Exception {
 	hibernateUtil.executarSQL("delete from informacoesfixasusuario where codigoUsuario = " + usuario.getId_Codigo());
     }
 
