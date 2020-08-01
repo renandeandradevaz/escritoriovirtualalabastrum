@@ -1,8 +1,9 @@
 <%@ include file="/base.jsp"%>
 <div class="fundo-branco">
-	<h4>O escritório ainda está em construção. Em breve você terá novidades.</h4>
-	<h4>Mas você já pode fazer a sua primeira compra clicando no botão abaixo:</h4>
-	<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="btn btn-primary"> Primeira compra </a>
+	<h4>NOSSO ESCRITÓRIO ESTÁ EM CONSTRUÇÃO. EM BREVE VOCÊ TERÁ NOVIDADES!</h4>
+	<h4>Logo abriremos o carrinho para que você possa garantir seu posicionamento e efetivar o seu cadastro.</h4>
+	<!-- 	<h4>Mas você já pode fazer a sua primeira compra clicando no botão abaixo:</h4> -->
+	<%-- 	<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="btn btn-primary"> Primeira compra </a> --%>
 	<br>
 	<br>
 	<br>
