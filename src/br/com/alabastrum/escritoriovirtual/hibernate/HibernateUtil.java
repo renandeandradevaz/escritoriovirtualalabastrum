@@ -2,6 +2,7 @@ package br.com.alabastrum.escritoriovirtual.hibernate;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Transient;
@@ -110,7 +111,7 @@ public class HibernateUtil {
 	}
     }
 
-    public <E extends Entidade> void salvarOuAtualizar(List<E> entidades) {
+    public <E extends Entidade> void salvarOuAtualizar(Collection<E> entidades) {
 
 	try {
 
