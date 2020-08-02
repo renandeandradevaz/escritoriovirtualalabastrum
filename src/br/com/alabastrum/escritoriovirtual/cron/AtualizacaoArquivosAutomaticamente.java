@@ -59,7 +59,7 @@ public class AtualizacaoArquivosAutomaticamente implements Runnable {
 
 	Scheduler scheduler = new Scheduler();
 
-	scheduler.schedule("*/10 * * * *", task);
+	scheduler.schedule("0,30 * * * *", task);
 
 	scheduler.start();
     }
