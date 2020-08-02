@@ -4,26 +4,22 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import br.com.alabastrum.escritoriovirtual.emailSender.BoasVindasEmailSender;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.service.AtualizacaoArquivosService;
 import br.com.alabastrum.escritoriovirtual.util.Mail;
 import it.sauronsoftware.cron4j.Scheduler;
 
-public class AtualizacaoArquivosAutomaticamente implements Runnable {
+public class AtualizacaoArquivosAutomaticamentePeriodoLongo implements Runnable {
 
     public void run() {
 
-	List<String> pastaAtualizacaoCSV = Arrays.asList(new File(ArquivoService.PASTA_ATUALIZACAO_CSV).list());
+	List<String> pastaAtualizacaoCSV = Arrays.asList(new File(ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO).list());
 
-	if (pastaAtualizacaoCSV.contains("tblRelacionamentos.csv") //
-		&& pastaAtualizacaoCSV.contains("tblPosicoes.csv") //
-		&& pastaAtualizacaoCSV.contains("tblQualificacoes.csv") //
+	if (pastaAtualizacaoCSV.contains("tblPosicoes.csv") //
 		&& pastaAtualizacaoCSV.contains("tblCDA.csv") //
 		&& pastaAtualizacaoCSV.contains("tblCategorias.csv") //
 		&& pastaAtualizacaoCSV.contains("tblProdutos.csv") //
-		&& pastaAtualizacaoCSV.contains("tblParametrosIngresso.csv") //
 		&& pastaAtualizacaoCSV.contains("tblDivisaoLucro.csv") //
 		&& pastaAtualizacaoCSV.contains("tblReceitaDivisaoLucro.csv") //
 		&& pastaAtualizacaoCSV.contains("tblVIP.csv") //
@@ -33,11 +29,11 @@ public class AtualizacaoArquivosAutomaticamente implements Runnable {
 
 	    try {
 		HibernateUtil hibernateUtil = new HibernateUtil();
-		new AtualizacaoArquivosService(hibernateUtil).processarArquivos();
+		new AtualizacaoArquivosService(hibernateUtil).processarArquivosPeriodoLongo();
 		moverArquivos();
-		BoasVindasEmailSender.enviarEmail();
 		hibernateUtil.fecharSessao();
 	    } catch (Exception e) {
+		e.printStackTrace();
 		Mail.enviarEmail("Erro ao processar arquivos", "Erro: " + e.getMessage());
 	    }
 	}
@@ -45,21 +41,21 @@ public class AtualizacaoArquivosAutomaticamente implements Runnable {
 
     private void moverArquivos() {
 
-	File folder = new File(ArquivoService.PASTA_ATUALIZACAO_CSV);
+	File folder = new File(ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
 
 	for (File file : folder.listFiles()) {
 
-	    file.renameTo(new File(ArquivoService.PASTA_BACKUP_CSV + file.getName()));
+	    file.renameTo(new File(ArquivoService.PASTA_BACKUP_CSV_PERIODO_LONGO + file.getName()));
 	}
     }
 
     public void iniciarRotina() {
 
-	AtualizacaoArquivosAutomaticamente task = new AtualizacaoArquivosAutomaticamente();
+	AtualizacaoArquivosAutomaticamentePeriodoLongo task = new AtualizacaoArquivosAutomaticamentePeriodoLongo();
 
 	Scheduler scheduler = new Scheduler();
 
-	scheduler.schedule("0,30 * * * *", task);
+	scheduler.schedule("0 */4 * * *", task);
 
 	scheduler.start();
     }

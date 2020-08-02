@@ -45,6 +45,11 @@ public class LoginController {
     @Public
     public void efetuarLogin(Usuario usuario) throws Exception {
 
+	if (usuario == null || usuario.getApelido() == null || usuario.getInformacoesFixasUsuario() == null || usuario.getInformacoesFixasUsuario().getSenha() == null) {
+	    codigoOuSenhaIncorretos();
+	    return;
+	}
+
 	String apelido = usuario.getApelido().toLowerCase();
 	String senhaInformada = usuario.getInformacoesFixasUsuario().getSenha();
 

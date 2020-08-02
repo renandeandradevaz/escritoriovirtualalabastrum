@@ -2,13 +2,10 @@ package br.com.alabastrum.escritoriovirtual.service;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -20,13 +17,13 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import au.com.bytecode.opencsv.CSVReader;
+import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Adesao;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroAtividade;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroDivisaoLucro;
-import br.com.alabastrum.escritoriovirtual.modelo.ParametroIngresso;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroUnilevel;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroVip;
 import br.com.alabastrum.escritoriovirtual.modelo.Pontuacao;
@@ -35,7 +32,6 @@ import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 import br.com.alabastrum.escritoriovirtual.modelo.Qualificacao;
 import br.com.alabastrum.escritoriovirtual.modelo.ReceitaDivisaoLucro;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
-import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class AtualizacaoArquivosService {
@@ -47,13 +43,10 @@ public class AtualizacaoArquivosService {
 	this.hibernateUtil = hibernateUtil;
     }
 
-    public void processarArquivos() throws Exception {
+    public void processarArquivosPeriodoLongo() throws Exception {
 
-	processarCSVRelacionamentos();
 	processarCSVPosicoes();
-	processarCSVQualificacao();
 	processarCSVPontuacao();
-	processarCSVParametroIngresso();
 	processarCSVParametroAtividade();
 	processarCSVParametroUnilevel();
 	processarCSVParametroDivisaoLucro();
@@ -65,100 +58,49 @@ public class AtualizacaoArquivosService {
 	processarCSVAdesao();
     }
 
-    private void processarCSVRelacionamentos() throws Exception {
+    public void processarArquivosPeriodoCurto() throws Exception {
 
-	CSVReader reader = lerArquivo("tblRelacionamentos.csv");
-	List<Usuario> usuarios = new ArrayList<Usuario>();
-	int quantidadeLinhas = preencherObjeto(reader, usuarios, "Usuario");
-	this.hibernateUtil.executarSQL("delete from usuario");
-	System.out.println("Quantidade de usuários no banco após delete: " + this.hibernateUtil.contar(new Usuario()));
-	Map<Integer, Usuario> usuariosMap = new HashMap<Integer, Usuario>();
-	for (Usuario usuario : usuarios) {
-	    usuariosMap.put(usuario.getId_Codigo(), usuario);
-	}
-	Collection<Usuario> usuariosValues = usuariosMap.values();
-	this.hibernateUtil.salvarOuAtualizar(usuariosValues);
-	if (quantidadeLinhas != usuariosValues.size()) {
-	    Mail.enviarEmail("Quantidade de linhas do csv não bate com quantidade de registros salvos", String.format("csv: tblRelacionamentos, quantidadeLinhas: %s, registros salvos: %s", quantidadeLinhas, usuariosValues.size()));
-	}
+	processarCSVRelacionamentos();
+	processarCSVQualificacao();
     }
 
-    private void processarCSVPosicoes() throws Exception {
+    private void processarCSVRelacionamentos() throws Exception {
 
-	CSVReader reader = lerArquivo("tblPosicoes.csv");
-	List<Posicao> posicoes = new ArrayList<Posicao>();
-	int quantidadeLinhas = preencherObjeto(reader, posicoes, "Posicao");
-	this.hibernateUtil.executarSQL("delete from posicao");
-	System.out.println("Quantidade de posicoes no banco após delete: " + this.hibernateUtil.contar(new Posicao()));
-	Map<Integer, Posicao> posicoesMap = new HashMap<Integer, Posicao>();
-	for (Posicao posicao : posicoes) {
-	    posicoesMap.put(posicao.getPosicao(), posicao);
-	}
-	Collection<Posicao> posicoesValues = posicoesMap.values();
-	this.hibernateUtil.salvarOuAtualizar(posicoesValues);
-	if (quantidadeLinhas != posicoesValues.size()) {
-	    Mail.enviarEmail("Quantidade de linhas do csv não bate com quantidade de registros salvos", String.format("csv: tblPosicoes, quantidadeLinhas: %s, registros salvos: %s", quantidadeLinhas, posicoesValues.size()));
-	}
+	CSVReader reader = lerArquivo("tblRelacionamentos.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_CURTO);
+	List<Usuario> usuarios = new ArrayList<Usuario>();
+	preencherObjeto(reader, usuarios, "Usuario");
+	this.hibernateUtil.salvarOuAtualizar(usuarios);
     }
 
     private void processarCSVQualificacao() throws Exception {
 
-	CSVReader reader = lerArquivo("tblQualificacoes.csv");
+	CSVReader reader = lerArquivo("tblQualificacoes.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_CURTO);
 	List<Qualificacao> qualificacoes = new ArrayList<Qualificacao>();
-	int quantidadeLinhas = preencherObjeto(reader, qualificacoes, "Qualificacao");
-	this.hibernateUtil.executarSQL("delete from qualificacao");
-	System.out.println("Quantidade de qualificacoes no banco após delete: " + this.hibernateUtil.contar(new Qualificacao()));
-	Map<String, Qualificacao> qualificacoesMap = new HashMap<String, Qualificacao>();
-	for (Qualificacao qualificacao : qualificacoes) {
-	    qualificacoesMap.put(qualificacao.getId_Codigo() + "-" + String.valueOf(qualificacao.getData().get(Calendar.YEAR)) + "-" + String.valueOf(qualificacao.getData().get(Calendar.MONTH)) + "-" + String.valueOf(qualificacao.getData().get(Calendar.DAY_OF_MONTH)), qualificacao);
-	}
-	Collection<Qualificacao> qualificacoesValues = qualificacoesMap.values();
-	this.hibernateUtil.salvarOuAtualizar(qualificacoesValues);
-	if (quantidadeLinhas != qualificacoesValues.size()) {
-	    Mail.enviarEmail("Quantidade de linhas do csv não bate com quantidade de registros salvos", String.format("csv: tblQualificacoes, quantidadeLinhas: %s, registros salvos: %s", quantidadeLinhas, qualificacoesValues.size()));
-	}
+	preencherObjeto(reader, qualificacoes, "Qualificacao");
+	this.hibernateUtil.salvarOuAtualizar(qualificacoes);
+    }
+
+    private void processarCSVPosicoes() throws Exception {
+
+	CSVReader reader = lerArquivo("tblPosicoes.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
+	List<Posicao> posicoes = new ArrayList<Posicao>();
+	preencherObjeto(reader, posicoes, "Posicao");
+	this.hibernateUtil.executarSQL("delete from posicao");
+	this.hibernateUtil.salvarOuAtualizar(posicoes);
     }
 
     private void processarCSVPontuacao() throws Exception {
 
-	CSVReader reader = lerArquivo("tblPontuacao.csv");
+	CSVReader reader = lerArquivo("tblPontuacao.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
 	List<Pontuacao> pontuacoes = new ArrayList<Pontuacao>();
-	int quantidadeLinhas = preencherObjeto(reader, pontuacoes, "Pontuacao");
+	preencherObjeto(reader, pontuacoes, "Pontuacao");
 	this.hibernateUtil.executarSQL("delete from pontuacao");
-	System.out.println("Quantidade de pontuacoes no banco após delete: " + this.hibernateUtil.contar(new Pontuacao()));
-	Map<String, Pontuacao> pontuacoesMap = new HashMap<String, Pontuacao>();
-	for (Pontuacao pontuacao : pontuacoes) {
-	    pontuacoesMap.put(pontuacao.getId_Codigo() + "-" + String.valueOf(pontuacao.getDt_Pontos().get(Calendar.YEAR)) + "-" + String.valueOf(pontuacao.getDt_Pontos().get(Calendar.MONTH)) + "-" + String.valueOf(pontuacao.getDt_Pontos().get(Calendar.DAY_OF_MONTH)), pontuacao);
-	}
-	Collection<Pontuacao> pontuacoesValues = pontuacoesMap.values();
-	this.hibernateUtil.salvarOuAtualizar(pontuacoesValues);
-	if (quantidadeLinhas != pontuacoesValues.size()) {
-	    Mail.enviarEmail("Quantidade de linhas do csv não bate com quantidade de registros salvos", String.format("csv: tblPontuacao, quantidadeLinhas: %s, registros salvos: %s", quantidadeLinhas, pontuacoesValues.size()));
-	}
-    }
-
-    private void processarCSVParametroIngresso() throws Exception {
-
-	CSVReader reader = lerArquivo("tblParametrosIngresso.csv");
-	List<ParametroIngresso> parametrosIngresso = new ArrayList<ParametroIngresso>();
-	int quantidadeLinhas = preencherObjeto(reader, parametrosIngresso, "ParametroIngresso");
-	this.hibernateUtil.executarSQL("delete from parametroingresso");
-
-	System.out.println("Quantidade de parametrosIngresso no banco após delete: " + this.hibernateUtil.contar(new ParametroIngresso()));
-	Map<String, ParametroIngresso> parametrosIngressoMap = new HashMap<String, ParametroIngresso>();
-	for (ParametroIngresso parametroIngresso : parametrosIngresso) {
-	    parametrosIngressoMap.put(parametroIngresso.getNivel() + "-" + String.valueOf(parametroIngresso.getData().get(Calendar.YEAR)) + "-" + String.valueOf(parametroIngresso.getData().get(Calendar.MONTH)) + "-" + String.valueOf(parametroIngresso.getData().get(Calendar.DAY_OF_MONTH)), parametroIngresso);
-	}
-	Collection<ParametroIngresso> parametrosIngressoValues = parametrosIngressoMap.values();
-	this.hibernateUtil.salvarOuAtualizar(parametrosIngressoValues);
-	if (quantidadeLinhas != parametrosIngressoValues.size()) {
-	    Mail.enviarEmail("Quantidade de linhas do csv não bate com quantidade de registros salvos", String.format("csv: tblParametrosIngresso, quantidadeLinhas: %s, registros salvos: %s", quantidadeLinhas, parametrosIngressoValues.size()));
-	}
+	this.hibernateUtil.salvarOuAtualizar(pontuacoes);
     }
 
     private void processarCSVParametroAtividade() throws Exception {
 
-	CSVReader reader = lerArquivo("tblAtividade.csv");
+	CSVReader reader = lerArquivo("tblAtividade.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
 	List<ParametroAtividade> parametrosAtividades = new ArrayList<ParametroAtividade>();
 	preencherObjeto(reader, parametrosAtividades, "ParametroAtividade");
 	this.hibernateUtil.executarSQL("delete from parametroatividade");
@@ -167,7 +109,7 @@ public class AtualizacaoArquivosService {
 
     private void processarCSVParametroUnilevel() throws Exception {
 
-	CSVReader reader = lerArquivo("tblUnilevel.csv");
+	CSVReader reader = lerArquivo("tblUnilevel.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
 	List<ParametroUnilevel> parametrosUnilevel = new ArrayList<ParametroUnilevel>();
 	preencherObjeto(reader, parametrosUnilevel, "ParametroUnilevel");
 	this.hibernateUtil.executarSQL("delete from parametrounilevel");
@@ -176,7 +118,7 @@ public class AtualizacaoArquivosService {
 
     private void processarCSVParametroDivisaoLucro() throws Exception {
 
-	CSVReader reader = lerArquivo("tblDivisaoLucro.csv");
+	CSVReader reader = lerArquivo("tblDivisaoLucro.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
 	List<ParametroDivisaoLucro> parametrosDivisaoLucro = new ArrayList<ParametroDivisaoLucro>();
 	preencherObjeto(reader, parametrosDivisaoLucro, "ParametroDivisaoLucro");
 	this.hibernateUtil.executarSQL("delete from parametrodivisaolucro");
@@ -185,7 +127,7 @@ public class AtualizacaoArquivosService {
 
     private void processarCSVReceitaDivisaoLucro() throws Exception {
 
-	CSVReader reader = lerArquivo("tblReceitaDivisaoLucro.csv");
+	CSVReader reader = lerArquivo("tblReceitaDivisaoLucro.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
 	List<ReceitaDivisaoLucro> receitasDivisaoLucro = new ArrayList<ReceitaDivisaoLucro>();
 	preencherObjeto(reader, receitasDivisaoLucro, "ReceitaDivisaoLucro");
 	this.hibernateUtil.executarSQL("delete from receitadivisaolucro");
@@ -194,7 +136,7 @@ public class AtualizacaoArquivosService {
 
     private void processarCSVParametroVip() throws Exception {
 
-	CSVReader reader = lerArquivo("tblVIP.csv");
+	CSVReader reader = lerArquivo("tblVIP.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
 	List<ParametroVip> parametrosVip = new ArrayList<ParametroVip>();
 	preencherObjeto(reader, parametrosVip, "ParametroVip");
 	this.hibernateUtil.executarSQL("delete from parametrovip");
@@ -203,7 +145,7 @@ public class AtualizacaoArquivosService {
 
     private void processarCSVFranquia() throws Exception {
 
-	CSVReader reader = lerArquivo("tblCDA.csv");
+	CSVReader reader = lerArquivo("tblCDA.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
 	List<Franquia> franquias = new ArrayList<Franquia>();
 	preencherObjeto(reader, franquias, "Franquia");
 	this.hibernateUtil.executarSQL("delete from franquia");
@@ -212,7 +154,7 @@ public class AtualizacaoArquivosService {
 
     private void processarCSVCategoria() throws Exception {
 
-	CSVReader reader = lerArquivo("tblCategorias.csv");
+	CSVReader reader = lerArquivo("tblCategorias.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
 	List<Categoria> categorias = new ArrayList<Categoria>();
 	preencherObjeto(reader, categorias, "Categoria");
 	this.hibernateUtil.executarSQL("delete from categoria");
@@ -221,7 +163,7 @@ public class AtualizacaoArquivosService {
 
     private void processarCSVProduto() throws Exception {
 
-	CSVReader reader = lerArquivo("tblProdutos.csv");
+	CSVReader reader = lerArquivo("tblProdutos.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
 	List<Produto> produtos = new ArrayList<Produto>();
 	preencherObjeto(reader, produtos, "Produto");
 	this.hibernateUtil.executarSQL("delete from produto");
@@ -230,16 +172,15 @@ public class AtualizacaoArquivosService {
 
     private void processarCSVAdesao() throws Exception {
 
-	CSVReader reader = lerArquivo("tblAdesao.csv");
+	CSVReader reader = lerArquivo("tblAdesao.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
 	List<Adesao> adesoes = new ArrayList<Adesao>();
 	preencherObjeto(reader, adesoes, "Adesao");
 	this.hibernateUtil.executarSQL("delete from adesao");
 	this.hibernateUtil.salvarOuAtualizar(adesoes);
     }
 
-    private CSVReader lerArquivo(String nomeCsv) throws Exception {
+    private CSVReader lerArquivo(String nomeCsv, String caminho) throws Exception {
 
-	String caminho = ArquivoService.PASTA_ATUALIZACAO_CSV;
 	String caminhoCompletoArquivo = caminho + File.separator + nomeCsv;
 	File arquivoNoDisco = new File(caminhoCompletoArquivo);
 	String content = FileUtils.readFileToString(arquivoNoDisco, "ISO8859_1");
@@ -248,7 +189,9 @@ public class AtualizacaoArquivosService {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private int preencherObjeto(CSVReader reader, List listaDeEntidades, String nomeDaClasse) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+    private void preencherObjeto(CSVReader reader, List listaDeEntidades, String nomeDaClasse) throws Exception {
+
+	Map<String, Entidade> entidadesMap = new HashMap<String, Entidade>();
 
 	HashMap<Integer, String> hashColunas = new HashMap<Integer, String>();
 
@@ -280,9 +223,10 @@ public class AtualizacaoArquivosService {
 
 			field.setAccessible(true);
 
+			String coluna = colunas[i];
 			try {
 
-			    BigDecimal numero = Util.converterStringParaBigDecimal(colunas[i]);
+			    BigDecimal numero = Util.converterStringParaBigDecimal(coluna);
 			    field.set(entidade, numero);
 			}
 
@@ -291,7 +235,7 @@ public class AtualizacaoArquivosService {
 			    try {
 
 				DecimalFormatSymbols dsf = new DecimalFormatSymbols();
-				field.set(entidade, (int) Double.parseDouble(colunas[i].replace(dsf.getDecimalSeparator(), '.')));
+				field.set(entidade, (int) Double.parseDouble(coluna.replace(dsf.getDecimalSeparator(), '.')));
 			    }
 
 			    catch (Exception e2) {
@@ -299,7 +243,7 @@ public class AtualizacaoArquivosService {
 				try {
 
 				    DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yy");
-				    DateTime data = formatter.parseDateTime("01/" + colunas[i]);
+				    DateTime data = formatter.parseDateTime("01/" + coluna);
 
 				    field.set(entidade, data.toGregorianCalendar());
 				}
@@ -310,12 +254,12 @@ public class AtualizacaoArquivosService {
 
 					DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yy");
 					GregorianCalendar gregorianCalendar = new GregorianCalendar();
-					gregorianCalendar.setTime(formatter.parseLocalDateTime(colunas[i]).toDate());
+					gregorianCalendar.setTime(formatter.parseLocalDateTime(coluna).toDate());
 					field.set(entidade, gregorianCalendar);
 
 				    } catch (Exception e4) {
 
-					field.set(entidade, colunas[i]);
+					field.set(entidade, coluna);
 				    }
 				}
 			    }
@@ -325,18 +269,22 @@ public class AtualizacaoArquivosService {
 		    }
 		}
 
-		listaDeEntidades.add(entidade);
+		entidadesMap.put(colunas[0], (Entidade) entidade);
 	    }
 
 	    else {
 
 		for (int i = 0; i < colunas.length; i++) {
 
+		    if (!colunas[0].equals("linha_csv")) {
+			throw new Exception("Primeira coluna do arquivo referente a " + nomeDaClasse + " nao é linha_csv");
+		    }
+
 		    hashColunas.put(i, colunas[i].replaceAll(" ", ""));
 		}
 	    }
 	}
 
-	return line;
+	listaDeEntidades.addAll(entidadesMap.values());
     }
 }

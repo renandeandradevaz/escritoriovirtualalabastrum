@@ -14,5 +14,5 @@ body {
 	<br>
 	<br>
 	<h4>Dentro de poucos minutos, você receberá um e-mail com todas as instruções necessárias para acessar o Escritório virtual</h4>
-	<h4>Obs: Caso não receba o email em até 1 hora. Verifique sua caixa de spam.</h4>
+	<h4>Obs: Caso não receba o email em até 30 minutos, verifique sua caixa de spam.</h4>
 </div>
