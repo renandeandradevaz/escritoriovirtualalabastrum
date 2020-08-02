@@ -6,8 +6,6 @@
 <div class="fundo-branco">
 	<p>Clique para baixar os arquivos</p>
 	<br>
-	<a download href="<c:url value="/downloadArquivo/Teste.pdf"/>"> Teste.pdf </a>
-	<br>
-	<a download href="<c:url value="/downloadArquivo/Teste.pdf"/>"> Teste.pdf </a>
+	<a download href="<c:url value="/downloadArquivo/APN_Oficial_DNT.pdf"/>"> APN_Oficial_DNT.pdf </a>
 	<br>
 </div>

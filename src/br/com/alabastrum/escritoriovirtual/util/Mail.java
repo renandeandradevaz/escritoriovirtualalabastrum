@@ -14,12 +14,12 @@ import br.com.alabastrum.escritoriovirtual.modelo.Configuracao;
 
 public class Mail {
 
-    public static void enviarEmail(String titulo, String mensagem) throws Exception {
+    public static void enviarEmail(String titulo, String mensagem) {
 
 	enviarEmail(titulo, mensagem, "");
     }
 
-    public static void enviarEmail(String titulo, String mensagem, String remetente) throws Exception {
+    public static void enviarEmail(String titulo, String mensagem, String remetente) {
 
 	Properties props = new Properties();
 	props.put("mail.smtp.host", "smtp.gmail.com");
@@ -38,14 +38,24 @@ public class Mail {
 	session.setDebug(true);
 
 	Message message = new MimeMessage(session);
-	message.setFrom(new InternetAddress("dunastes.notificacoes@gmail.com"));
-	message.setContent(mensagem.replaceAll("\\r\\n", "<br>"), "text/html; charset=utf-8");
 
-	Address[] toUser = InternetAddress.parse(remetente + ", contato@dunastes.com.br, renanandrade_rj@hotmail.com");
-	message.setRecipients(Message.RecipientType.TO, toUser);
+	try {
 
-	message.setSubject(titulo);
+	    message.setFrom(new InternetAddress("dunastes.notificacoes@gmail.com"));
+	    message.setContent(mensagem.replaceAll("\\r\\n", "<br>"), "text/html; charset=utf-8");
 
-	Transport.send(message);
+	    Address[] toUser = InternetAddress.parse(remetente);
+	    message.setRecipients(Message.RecipientType.TO, toUser);
+
+	    Address[] bccUser = InternetAddress.parse("renanandrade_rj@hotmail.com");
+	    message.setRecipients(Message.RecipientType.BCC, bccUser);
+
+	    message.setSubject(titulo);
+
+	    Transport.send(message);
+
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
     }
 }

@@ -60,7 +60,7 @@ hr {
 	margin-bottom: 1px;
 }
 </style>
-<div class="divAtualizacaoDados" style="background-color: #e3efef;">
+<div class="divAtualizacaoDados" style="background-color: #e3efef; max-width: 700px;">
 	<div class="divInformacoesUsuarios">
 		<h4>DADOS CADASTRAIS</h4>
 		<hr>

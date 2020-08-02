@@ -7,8 +7,10 @@ import org.joda.time.DateTime;
 public class ArquivoService {
 
     public static final String PASTA_RAIZ = "/root/Dropbox/";
-    public static final String PASTA_ATUALIZACAO_CSV = PASTA_RAIZ + "do-desktop-para-o-escritorio/csvs";
-    public static final String PASTA_BACKUP_CSV = PASTA_RAIZ + "backup-csvs/";
+    public static final String PASTA_ATUALIZACAO_CSV_PERIODO_LONGO = PASTA_RAIZ + "do-desktop-para-o-escritorio/csvs-periodo-longo";
+    public static final String PASTA_ATUALIZACAO_CSV_PERIODO_CURTO = PASTA_RAIZ + "do-desktop-para-o-escritorio/csvs-periodo-curto";
+    public static final String PASTA_BACKUP_CSV_PERIODO_LONGO = PASTA_RAIZ + "backup-csvs-periodo-longo/";
+    public static final String PASTA_BACKUP_CSV_PERIODO_CURTO = PASTA_RAIZ + "backup-csvs-periodo-curto/";
     public static final String PASTA_IMAGEM_PRODUTOS = PASTA_RAIZ + "do-desktop-para-o-escritorio/imagens-produtos/";
     public static final String PASTA_ARQUIVOS = PASTA_RAIZ + "do-desktop-para-o-escritorio/arquivos/";
     public static final String PASTA_PRE_CADASTRO = PASTA_RAIZ + "do-escritorio-para-o-desktop/pre-cadastro-de-distribuidor-pelo-site/";

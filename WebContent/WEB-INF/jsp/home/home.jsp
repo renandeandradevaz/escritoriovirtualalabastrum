@@ -8,7 +8,7 @@
 	<br>
 	<br>
 	<h6>Quer indicar alguém?</h6>
-	<h6>Passe o link abaixo pra pessoa que você quer indicar. Para ela poder realizar o cadastro:</h6>
+	<h6>Passe o link abaixo para a pessoa que você quer indicar. Para ela poder realizar o cadastro:</h6>
 	<a style="font-size: 10px" href="<c:url value="/cadastro?nickname=${sessaoUsuario.usuario.apelido}"/>"> https://ev.dunastes.com.br/cadastro?nickname=${sessaoUsuario.usuario.apelido} </a>
 </div>
 <!-- <div class="fundo-branco"> -->

@@ -80,9 +80,44 @@ public class AtualizacaoDadosController {
 	textoArquivo += "agenciaPessoaJuridicaBancoEspecifico: \'" + usuario.getAgenciaPessoaJuridicaBancoEspecifico() + "\'\r\n";
 	textoArquivo += "contaPessoaJuridicaBancoEspecifico: \'" + usuario.getContaPessoaJuridicaBancoEspecifico() + "\'\r\n";
 
+	Usuario usuarioBanco = this.hibernateUtil.selecionar(new Usuario(this.sessaoUsuario.getUsuario().getId_Codigo()));
+	usuarioBanco.setCPF(this.sessaoUsuario.getUsuario().getCPF());
+	usuarioBanco.setvNome(usuario.getvNome());
+	usuarioBanco.setDt_Nasc(usuario.getDt_Nasc());
+	usuarioBanco.setCadRG(usuario.getCadRG());
+	usuarioBanco.setCadOrgaoExpedidor(usuario.getCadOrgaoExpedidor());
+	usuarioBanco.setCadSexo(usuario.getCadSexo());
+	usuarioBanco.setCadEstCivil(usuario.getCadEstCivil());
+	usuarioBanco.setCadCEP(usuario.getCadCEP());
+	usuarioBanco.setCadEndereco(usuario.getCadEndereco());
+	usuarioBanco.setCadBairro(usuario.getCadBairro());
+	usuarioBanco.setCadCidade(usuario.getCadCidade());
+	usuarioBanco.setCadUF(usuario.getCadUF());
+	usuarioBanco.setTel(usuario.getTel());
+	usuarioBanco.setCadCelular(usuario.getCadCelular());
+	usuarioBanco.seteMail(usuario.geteMail());
+	usuarioBanco.setCadBanco(usuario.getCadBanco());
+	usuarioBanco.setCadTipoConta(usuario.getCadTipoConta());
+	usuarioBanco.setCadAgencia(usuario.getCadAgencia());
+	usuarioBanco.setCadCCorrente(usuario.getCadCCorrente());
+	usuarioBanco.setPisMis(usuario.getPisMis());
+	usuarioBanco.setPasep(usuario.getPasep());
+	usuarioBanco.setCnpj(usuario.getCnpj());
+	usuarioBanco.setRazaoSocial(usuario.getRazaoSocial());
+	usuarioBanco.setNomeFantasia(usuario.getNomeFantasia());
+	usuarioBanco.setInscricaoEstadual(usuario.getInscricaoEstadual());
+	usuarioBanco.setAgenciaBancoEspecifico(usuario.getAgenciaBancoEspecifico());
+	usuarioBanco.setContaBancoEspecifico(usuario.getContaBancoEspecifico());
+	usuarioBanco.setBancoPessoaJuridica(usuario.getBancoPessoaJuridica());
+	usuarioBanco.setAgenciaPessoaJuridica(usuario.getAgenciaPessoaJuridica());
+	usuarioBanco.setContaPessoaJuridica(usuario.getContaPessoaJuridica());
+	usuarioBanco.setAgenciaPessoaJuridicaBancoEspecifico(usuario.getAgenciaPessoaJuridicaBancoEspecifico());
+	usuarioBanco.setContaPessoaJuridicaBancoEspecifico(usuario.getContaPessoaJuridicaBancoEspecifico());
+	this.hibernateUtil.salvarOuAtualizar(usuarioBanco);
+
 	ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_ATUALIZACAO_DADOS);
 
-	result.include("sucesso", "Sua solicitação de alteração de dados cadastrais foi feita com sucesso. Estamos avaliando seus dados, e em breve faremos a atualização no sistema.");
+	result.include("sucesso", "Seus dados foram alterados com sucesso");
 
 	result.redirectTo(HomeController.class).home();
     }
