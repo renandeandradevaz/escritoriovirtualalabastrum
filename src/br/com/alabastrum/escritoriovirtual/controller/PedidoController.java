@@ -473,6 +473,8 @@ public class PedidoController {
 	    String xml = new PagSeguroService(hibernateUtil).consultarTransacao(notificationCode);
 
 	    try {
+		
+		System.out.println("Pagseguro XML: " + xml);
 
 		String status = xml.split("<status>")[1].split("</status>")[0];
 		Integer idPedido = Integer.valueOf(xml.split("<items><item><id>")[1].split("</id>")[0]);
