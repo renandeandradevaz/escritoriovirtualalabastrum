@@ -9,7 +9,17 @@
 	<br>
 	<h6>Quer indicar alguém?</h6>
 	<h6>Passe o link abaixo para a pessoa que você quer indicar. Para ela poder realizar o cadastro:</h6>
-	<a style="font-size: 10px" href="<c:url value="/cadastro?nickname=${sessaoUsuario.usuario.apelido}"/>"> https://ev.dunastes.com.br/cadastro?nickname=${sessaoUsuario.usuario.apelido} </a>
+	<input type="text" value="https://ev.dunastes.com.br/cadastro?nickname=${sessaoUsuario.usuario.apelido}" id="copylink">
+	<br>
+	<button class="btn" onclick="copiarLink()">Copiar link</button>
+	<script>
+		function copiarLink() {
+			var copyText = document.getElementById("copylink");
+			copyText.select();
+			copyText.setSelectionRange(0, 99999)
+			document.execCommand("copy");
+		}
+	</script>
 </div>
 <!-- <div class="fundo-branco"> -->
 <!-- 	<h4>Início</h4> -->
