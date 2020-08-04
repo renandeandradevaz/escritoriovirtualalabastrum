@@ -382,45 +382,51 @@ public class PedidoController {
     @Funcionalidade
     public void mostrarValorFinalPedido(String formaDePagamento) throws Exception {
 
+	if (formaDePagamento == null || formaDePagamento.equals("")) {
+	    validator.add(new ValidationMessage("Selecione a forma de pagamento", "Erro"));
+	    validator.onErrorRedirectTo(this).escolherFormaDePagamento();
+	    return;
+	}
+
 	this.sessaoGeral.adicionar("formaDePagamento", formaDePagamento);
 
-	BigDecimal precoFinal = calcularPrecoFinal(formaDePagamento);
+	Pedido pedido = selecionarPedidoAberto();
+	alterarValorItensPedidoDeAcordoComFormaDePagamento(pedido, formaDePagamento);
+	BigDecimal precoFinal = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal();
 	result.include("precoFinal", precoFinal);
     }
 
-    private BigDecimal calcularPrecoFinal(String formaDePagamento) {
-
-	Pedido pedido = selecionarPedidoAberto();
-	BigDecimal totalPedido = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal();
+    private void alterarValorItensPedidoDeAcordoComFormaDePagamento(Pedido pedido, String formaDePagamento) throws Exception {
 
 	String tipoDoPedido = definirTipoDoPedido();
 
 	if (tipoDoPedido.equals(PedidoService.RECOMPRA)) {
 
-	    BigDecimal precoCheio = totalPedido.multiply(new BigDecimal("2"));
+	    for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
+		Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
+		BigDecimal precoUnitarioProduto = produto.getPrdPreco_Unit();
+		BigDecimal precoUnitarioItemPedido = precoUnitarioProduto.multiply(new BigDecimal("2"));
 
-	    if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
-		totalPedido = precoCheio.subtract(precoCheio.multiply(new BigDecimal("0.50")));
-	    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebito") || formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
-		totalPedido = precoCheio.subtract(precoCheio.multiply(new BigDecimal("0.48")));
-	    } else if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
-		totalPedido = precoCheio.subtract(precoCheio.multiply(new BigDecimal("0.45")));
+		if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebito") || formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.48")));
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCredito")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.45")));
+		} else {
+		    throw new Exception("Forma de pagamento desconhecida: " + formaDePagamento);
+		}
+
+		itemPedido.setPrecoUnitario(precoUnitarioItemPedido);
+		this.hibernateUtil.salvarOuAtualizar(itemPedido);
 	    }
 	}
-
-	return totalPedido;
     }
 
     @Funcionalidade
     public void concluirPedido() throws Exception {
 
 	String formaDePagamento = (String) this.sessaoGeral.getValor("formaDePagamento");
-
-	if (formaDePagamento == null || formaDePagamento.equals("")) {
-	    validator.add(new ValidationMessage("Selecione a forma de pagamento", "Erro"));
-	    validator.onErrorRedirectTo(this).escolherFormaDePagamento();
-	    return;
-	}
 
 	if (formaDePagamento.equals("pagarComCartaoDeCredito")) {
 
@@ -431,7 +437,7 @@ public class PedidoController {
 
 	Pedido pedido = selecionarPedidoAberto();
 
-	BigDecimal totalPedido = calcularPrecoFinal(formaDePagamento);
+	BigDecimal totalPedido = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal();
 
 	for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 
