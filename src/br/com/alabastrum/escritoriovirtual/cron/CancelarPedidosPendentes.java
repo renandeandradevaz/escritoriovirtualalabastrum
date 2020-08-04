@@ -11,40 +11,40 @@ import it.sauronsoftware.cron4j.Scheduler;
 
 public class CancelarPedidosPendentes implements Runnable {
 
-	public void run() {
+    public void run() {
 
-		HibernateUtil hibernateUtil = new HibernateUtil();
+	HibernateUtil hibernateUtil = new HibernateUtil();
 
-		Calendar calendar = new GregorianCalendar();
-		calendar.add(Calendar.DATE, -3);
+	Calendar calendar = new GregorianCalendar();
+	calendar.add(Calendar.DATE, -14);
 
-		Pedido pedidoFiltro = new Pedido();
-		pedidoFiltro.setStatus("PENDENTE");
-		pedidoFiltro.setCompleted(true);
-		List<Pedido> pedidosPendentes = hibernateUtil.buscar(pedidoFiltro);
+	Pedido pedidoFiltro = new Pedido();
+	pedidoFiltro.setStatus("PENDENTE");
+	pedidoFiltro.setCompleted(true);
+	List<Pedido> pedidosPendentes = hibernateUtil.buscar(pedidoFiltro);
 
-		for (Pedido pedidoPendente : pedidosPendentes) {
+	for (Pedido pedidoPendente : pedidosPendentes) {
 
-			if (pedidoPendente.getData().before(calendar)) {
+	    if (pedidoPendente.getData().before(calendar)) {
 
-				new PedidoService(hibernateUtil).cancelarPedido(pedidoPendente);
+		new PedidoService(hibernateUtil).cancelarPedido(pedidoPendente);
 
-				pedidoPendente.setStatus("CANCELADO");
-				hibernateUtil.salvarOuAtualizar(pedidoPendente);
-			}
-		}
-
-		hibernateUtil.fecharSessao();
+		pedidoPendente.setStatus("CANCELADO");
+		hibernateUtil.salvarOuAtualizar(pedidoPendente);
+	    }
 	}
 
-	public void iniciarRotina() {
+	hibernateUtil.fecharSessao();
+    }
 
-		CancelarPedidosPendentes task = new CancelarPedidosPendentes();
+    public void iniciarRotina() {
 
-		Scheduler scheduler = new Scheduler();
+	CancelarPedidosPendentes task = new CancelarPedidosPendentes();
 
-		scheduler.schedule("30 3 * * *", task);
+	Scheduler scheduler = new Scheduler();
 
-		scheduler.start();
-	}
+	scheduler.schedule("30 3 * * *", task);
+
+	scheduler.start();
+    }
 }

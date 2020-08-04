@@ -407,12 +407,21 @@ public class PedidoController {
 		BigDecimal precoUnitarioProduto = produto.getPrdPreco_Unit();
 		BigDecimal precoUnitarioItemPedido = precoUnitarioProduto.multiply(new BigDecimal("2"));
 
-		if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro") || formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
+		if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
 		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
+
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
+
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComSaldo")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
+
 		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebito")) {
 		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.48")));
+
 		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCredito")) {
 		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.45")));
+
 		} else {
 		    throw new Exception("Forma de pagamento desconhecida: " + formaDePagamento);
 		}
@@ -494,8 +503,13 @@ public class PedidoController {
 	    if (!formaDePagamento.equalsIgnoreCase("pagamentoFinalizadoComCartaoDeCredito")) {
 		result.include("sucesso", "Pedido realizado com sucesso.");
 	    }
-
-	    if (this.sessaoUsuario.getUsuario().getId() == null) {
+	    
+	    if (formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
+		
+		
+		
+		
+	    } else if (this.sessaoUsuario.getUsuario().getId() == null) {
 		result.forwardTo(this).finalizarCompraLojaPessoal();
 	    } else {
 		result.forwardTo(this).meusPedidos();
