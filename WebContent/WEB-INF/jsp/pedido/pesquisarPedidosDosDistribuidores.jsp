@@ -27,6 +27,7 @@
 				<th>Data</th>
 				<th>Valor</th>
 				<th>Status</th>
+				<th>Forma de pagamento</th>
 				<th></th>
 				<th></th>
 				<th></th>
@@ -46,6 +47,7 @@
 						<fmt:formatNumber value="${item.valorTotal}" pattern="#,##0.00" />
 					</td>
 					<td class="centralizado">${item.pedido.status}</td>
+					<td class="centralizado">${item.pedido.formaDePagamento}</td>
 					<td style="text-align: center;">
 						<a class="btn btn-default" href="<c:url value="/pedido/verItens/${item.pedido.id}"/>"> Detalhar </a>
 					</td>

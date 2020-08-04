@@ -478,6 +478,7 @@ public class PedidoController {
 
 	pedido.setCompleted(true);
 	pedido.setData(new GregorianCalendar());
+	pedido.setFormaDePagamento(formaDePagamento);
 	hibernateUtil.salvarOuAtualizar(pedido);
 
 	for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {

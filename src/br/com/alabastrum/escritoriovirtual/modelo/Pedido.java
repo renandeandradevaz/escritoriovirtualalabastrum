@@ -23,6 +23,7 @@ public class Pedido implements Entidade {
     private Integer idFranquia;
     private String status;
     private String tipo;
+    private String formaDePagamento;
 
     @ManyToOne
     private Comprador comprador;
@@ -99,5 +100,13 @@ public class Pedido implements Entidade {
 
     public void setTipo(String tipo) {
 	this.tipo = tipo;
+    }
+
+    public String getFormaDePagamento() {
+	return formaDePagamento;
+    }
+
+    public void setFormaDePagamento(String formaDePagamento) {
+	this.formaDePagamento = formaDePagamento;
     }
 }
