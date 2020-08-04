@@ -22,7 +22,7 @@ public class AtualizacaoArquivosAutomaticamenteUsuarios implements Runnable {
 
 	    try {
 		HibernateUtil hibernateUtil = new HibernateUtil();
-		new AtualizacaoArquivosService(hibernateUtil).processarArquivosPeriodoCurto();
+		new AtualizacaoArquivosService(hibernateUtil).processarArquivoAtualizacaoUsuario();
 		moverArquivos();
 		hibernateUtil.fecharSessao();
 	    } catch (Exception e) {
