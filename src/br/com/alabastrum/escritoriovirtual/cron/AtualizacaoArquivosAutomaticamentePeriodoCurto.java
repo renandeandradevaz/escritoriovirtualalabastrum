@@ -9,6 +9,7 @@ import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.service.AtualizacaoArquivosService;
 import br.com.alabastrum.escritoriovirtual.util.Mail;
+import br.com.alabastrum.escritoriovirtual.util.Util;
 import it.sauronsoftware.cron4j.Scheduler;
 
 public class AtualizacaoArquivosAutomaticamentePeriodoCurto implements Runnable {
@@ -28,7 +29,7 @@ public class AtualizacaoArquivosAutomaticamentePeriodoCurto implements Runnable 
 		hibernateUtil.fecharSessao();
 	    } catch (Exception e) {
 		e.printStackTrace();
-		Mail.enviarEmail("Erro ao processar arquivos", "Erro: " + e.getMessage());
+		Mail.enviarEmail("Erro ao processar arquivos de período curto", "Erro: " + Util.getExceptionMessage(e));
 	    }
 	}
     }

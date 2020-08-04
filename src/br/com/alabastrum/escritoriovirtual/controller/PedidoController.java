@@ -300,8 +300,11 @@ public class PedidoController {
 	Pedido pedido = selecionarPedidoAberto();
 	Integer valorTotal = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal().intValue();
 
+	boolean mostrarDialogoDescontos = true;
+
 	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
 	if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
+	    mostrarDialogoDescontos = false;
 
 	    Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
 	    Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
@@ -315,6 +318,7 @@ public class PedidoController {
 
 	Object isInativo = this.sessaoGeral.getValor("isInativo");
 	if (isInativo != null && (Boolean) isInativo) {
+	    mostrarDialogoDescontos = false;
 
 	    Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
 	    Integer valorMaximoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAtividade"));
@@ -325,6 +329,8 @@ public class PedidoController {
 		return;
 	    }
 	}
+
+	result.include("mostrarDialogoDescontos", mostrarDialogoDescontos);
 
 	verificarPagamentoComSaldoHabilitado(pedido);
     }
@@ -357,7 +363,9 @@ public class PedidoController {
 	pedido.setComprador(comprador);
 	hibernateUtil.salvarOuAtualizar(pedido);
 
-	result.forwardTo(this).concluirPedido("pagarComCartaoDeCredito");
+	this.sessaoGeral.adicionar("formaDePagamento", "pagarComCartaoDeCredito");
+
+	result.forwardTo(this).concluirPedido();
     }
 
     private void verificarPagamentoComSaldoHabilitado(Pedido pedido) {
@@ -372,7 +380,41 @@ public class PedidoController {
     }
 
     @Funcionalidade
-    public void concluirPedido(String formaDePagamento) throws Exception {
+    public void mostrarValorFinalPedido(String formaDePagamento) throws Exception {
+
+	this.sessaoGeral.adicionar("formaDePagamento", formaDePagamento);
+
+	BigDecimal precoFinal = calcularPrecoFinal(formaDePagamento);
+	result.include("precoFinal", precoFinal);
+    }
+
+    private BigDecimal calcularPrecoFinal(String formaDePagamento) {
+
+	Pedido pedido = selecionarPedidoAberto();
+	BigDecimal totalPedido = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal();
+
+	String tipoDoPedido = definirTipoDoPedido();
+
+	if (tipoDoPedido.equals(PedidoService.RECOMPRA)) {
+
+	    BigDecimal precoCheio = totalPedido.multiply(new BigDecimal("2"));
+
+	    if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
+		totalPedido = precoCheio.subtract(precoCheio.multiply(new BigDecimal("0.50")));
+	    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebito") || formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
+		totalPedido = precoCheio.subtract(precoCheio.multiply(new BigDecimal("0.48")));
+	    } else if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
+		totalPedido = precoCheio.subtract(precoCheio.multiply(new BigDecimal("0.45")));
+	    }
+	}
+
+	return totalPedido;
+    }
+
+    @Funcionalidade
+    public void concluirPedido() throws Exception {
+
+	String formaDePagamento = (String) this.sessaoGeral.getValor("formaDePagamento");
 
 	if (formaDePagamento == null || formaDePagamento.equals("")) {
 	    validator.add(new ValidationMessage("Selecione a forma de pagamento", "Erro"));
@@ -388,7 +430,8 @@ public class PedidoController {
 	}
 
 	Pedido pedido = selecionarPedidoAberto();
-	BigDecimal totalPedido = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal();
+
+	BigDecimal totalPedido = calcularPrecoFinal(formaDePagamento);
 
 	for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 
@@ -442,7 +485,7 @@ public class PedidoController {
 	} else {
 
 	    if (!formaDePagamento.equalsIgnoreCase("pagamentoFinalizadoComCartaoDeCredito")) {
-		result.include("sucesso", "Pedido feito com sucesso. Você pode buscar no endereço escolhido. De segunda a sexta-feira. De 9h as 17h.");
+		result.include("sucesso", "Pedido realizado com sucesso.");
 	    }
 
 	    if (this.sessaoUsuario.getUsuario().getId() == null) {
@@ -461,7 +504,10 @@ public class PedidoController {
 	new PagSeguroService(hibernateUtil).executarTransacao(senderHash, creditCardToken, String.valueOf(pedido.getId()), new DecimalFormat("0.00").format(new BigDecimal(new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal().toString())).replaceAll(",", "."), nomeCartao, parcelas, (Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())));
 
 	result.include("sucesso", "Seu cartão de crédito está passando por avaliação junto com sua operadora. Assim que o pagamento for confirmado, você receberá um e-mail de confirmação");
-	concluirPedido("pagamentoFinalizadoComCartaoDeCredito");
+
+	this.sessaoGeral.adicionar("formaDePagamento", "pagamentoFinalizadoComCartaoDeCredito");
+
+	concluirPedido();
     }
 
     @Public
@@ -473,7 +519,7 @@ public class PedidoController {
 	    String xml = new PagSeguroService(hibernateUtil).consultarTransacao(notificationCode);
 
 	    try {
-		
+
 		System.out.println("Pagseguro XML: " + xml);
 
 		String status = xml.split("<status>")[1].split("</status>")[0];
