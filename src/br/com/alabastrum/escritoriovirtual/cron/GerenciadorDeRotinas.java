@@ -9,6 +9,7 @@ public class GerenciadorDeRotinas {
 	ThreadRestartHibernate.iniciarThread();
 	new AtualizacaoArquivosAutomaticamentePeriodoLongo().iniciarRotina();
 	new AtualizacaoArquivosAutomaticamentePeriodoCurto().iniciarRotina();
+	new AtualizacaoArquivosAutomaticamenteUsuarios().iniciarRotina();
 	new CancelarPedidosPendentes().iniciarRotina();
 	new CompressaoDeBonus().iniciarRotina();
 	new NotificarPedidosPagosNaoFinalizados().iniciarRotina();

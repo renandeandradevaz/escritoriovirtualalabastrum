@@ -8,6 +8,7 @@ import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
+import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
@@ -128,25 +129,9 @@ public class AtualizacaoDadosController {
 	result.include("preCadastro", preCadastro);
 
 	Usuario usuario = preCadastro;
+	usuario.setCPF(usuario.getCPF().replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", ""));
 
 	String apelido = Normalizer.normalize(usuario.getApelido().toLowerCase().replaceAll(" ", ""), Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
-
-	String textoArquivo = "Nome: \'" + usuario.getvNome() + "\'\r\n";
-	textoArquivo += "apelido: \'" + apelido + "\'\r\n";
-	textoArquivo += "Data_de_nascimento: \'" + usuario.getDt_Nasc() + "\'\r\n";
-	textoArquivo += "CPF: \'" + usuario.getCPF() + "\'\r\n";
-	textoArquivo += "RG: \'" + usuario.getCadRG() + "\'\r\n";
-	textoArquivo += "Emissor: \'" + usuario.getCadOrgaoExpedidor() + "\'\r\n";
-	textoArquivo += "Sexo: \'" + usuario.getCadSexo() + "\'\r\n";
-	textoArquivo += "Estado_civil: \'" + usuario.getCadEstCivil() + "\'\r\n";
-	textoArquivo += "CEP: \'" + usuario.getCadCEP() + "\'\r\n";
-	textoArquivo += "Endereco: \'" + usuario.getCadEndereco() + "\'\r\n";
-	textoArquivo += "Bairro: \'" + usuario.getCadBairro() + "\'\r\n";
-	textoArquivo += "Cidade: \'" + usuario.getCadCidade() + "\'\r\n";
-	textoArquivo += "Estado: \'" + usuario.getCadUF() + "\'\r\n";
-	textoArquivo += "Telefone_residencial: \'" + usuario.getTel() + "\'\r\n";
-	textoArquivo += "Telefone_celular: \'" + usuario.getCadCelular() + "\'\r\n";
-	textoArquivo += "Email: \'" + usuario.geteMail() + "\'\r\n";
 
 	Usuario usuarioFiltro = new Usuario();
 	usuarioFiltro.setApelido(usuario.getApelido());
@@ -164,7 +149,30 @@ public class AtualizacaoDadosController {
 	    return;
 	}
 
+	if (!Util.isValidCPF(usuario.getCPF())) {
+	    validator.add(new ValidationMessage("CPF incorreto: " + usuario.getCPF(), "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaCadastro();
+	    return;
+	}
+
 	Usuario usuarioQuemIndicou = hibernateUtil.selecionar(usuarioFiltro);
+
+	String textoArquivo = "Nome: \'" + usuario.getvNome() + "\'\r\n";
+	textoArquivo += "apelido: \'" + apelido + "\'\r\n";
+	textoArquivo += "Data_de_nascimento: \'" + usuario.getDt_Nasc() + "\'\r\n";
+	textoArquivo += "CPF: \'" + usuario.getCPF() + "\'\r\n";
+	textoArquivo += "RG: \'" + usuario.getCadRG() + "\'\r\n";
+	textoArquivo += "Emissor: \'" + usuario.getCadOrgaoExpedidor() + "\'\r\n";
+	textoArquivo += "Sexo: \'" + usuario.getCadSexo() + "\'\r\n";
+	textoArquivo += "Estado_civil: \'" + usuario.getCadEstCivil() + "\'\r\n";
+	textoArquivo += "CEP: \'" + usuario.getCadCEP() + "\'\r\n";
+	textoArquivo += "Endereco: \'" + usuario.getCadEndereco() + "\'\r\n";
+	textoArquivo += "Bairro: \'" + usuario.getCadBairro() + "\'\r\n";
+	textoArquivo += "Cidade: \'" + usuario.getCadCidade() + "\'\r\n";
+	textoArquivo += "Estado: \'" + usuario.getCadUF() + "\'\r\n";
+	textoArquivo += "Telefone_residencial: \'" + usuario.getTel() + "\'\r\n";
+	textoArquivo += "Telefone_celular: \'" + usuario.getCadCelular() + "\'\r\n";
+	textoArquivo += "Email: \'" + usuario.geteMail() + "\'\r\n";
 	textoArquivo += "codigo_quem_indicou: \'" + usuarioQuemIndicou.getId_Codigo() + "\'\r\n";
 
 	ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PRE_CADASTRO);

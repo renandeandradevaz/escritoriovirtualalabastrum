@@ -2,6 +2,7 @@ package br.com.alabastrum.escritoriovirtual.cron;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
@@ -51,6 +52,8 @@ public class AtualizacaoArquivosAutomaticamentePeriodoLongo implements Runnable 
     }
 
     public void iniciarRotina() {
+
+	System.out.println(new Date() + ". Iniciando rotina AtualizacaoArquivosAutomaticamentePeriodoLongo");
 
 	AtualizacaoArquivosAutomaticamentePeriodoLongo task = new AtualizacaoArquivosAutomaticamentePeriodoLongo();
 

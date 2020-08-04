@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,8 @@ public class AtualizacaoArquivosService {
 
     public void processarArquivosPeriodoLongo() throws Exception {
 
+	System.out.println(new Date() + ". Executando metodo processarArquivosPeriodoLongo");
+
 	processarCSVPosicoes();
 	processarCSVPontuacao();
 	processarCSVParametroAtividade();
@@ -60,8 +63,31 @@ public class AtualizacaoArquivosService {
 
     public void processarArquivosPeriodoCurto() throws Exception {
 
+	System.out.println(new Date() + ". Executando metodo processarArquivosPeriodoCurto");
+
 	processarCSVRelacionamentos();
 	processarCSVQualificacao();
+    }
+
+    public void processarArquivoAtualizacaoUsuario() throws Exception {
+
+	System.out.println(new Date() + ". Executando metodo processarArquivoAtualizacaoUsuario");
+
+	CSVReader reader = lerArquivo("tblRelacionamentos.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_DISTRIBUIDOR);
+	List<Usuario> usuarios = new ArrayList<Usuario>();
+	preencherObjeto(reader, usuarios, "Usuario");
+
+	for (Usuario usuario : usuarios) {
+	    Usuario usuarioBanco = this.hibernateUtil.selecionar(new Usuario(usuario.getId_Codigo()));
+	    if (usuarioBanco == null) {
+		throw new Exception("Usuario nao encontrado no banco: " + usuario.getId_Codigo());
+	    }
+	    this.hibernateUtil.deletar(usuarioBanco);
+	    this.hibernateUtil.salvarOuAtualizar(usuario);
+	}
+
+	System.out.println("Quantidade de usuários atualizados salvos: " + usuarios.size());
+
     }
 
     private void processarCSVRelacionamentos() throws Exception {
@@ -70,6 +96,7 @@ public class AtualizacaoArquivosService {
 	List<Usuario> usuarios = new ArrayList<Usuario>();
 	preencherObjeto(reader, usuarios, "Usuario");
 	this.hibernateUtil.salvarOuAtualizar(usuarios);
+	System.out.println("Quantidade de usuários novos salvos: " + usuarios.size());
     }
 
     private void processarCSVQualificacao() throws Exception {
@@ -78,6 +105,7 @@ public class AtualizacaoArquivosService {
 	List<Qualificacao> qualificacoes = new ArrayList<Qualificacao>();
 	preencherObjeto(reader, qualificacoes, "Qualificacao");
 	this.hibernateUtil.salvarOuAtualizar(qualificacoes);
+	System.out.println("Quantidade de qualificacoes salvas: " + qualificacoes.size());
     }
 
     private void processarCSVPosicoes() throws Exception {

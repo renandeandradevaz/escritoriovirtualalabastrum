@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import br.com.alabastrum.escritoriovirtual.emailSender.BoasVindasEmailSender;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.service.AtualizacaoArquivosService;
@@ -13,20 +12,18 @@ import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import it.sauronsoftware.cron4j.Scheduler;
 
-public class AtualizacaoArquivosAutomaticamentePeriodoCurto implements Runnable {
+public class AtualizacaoArquivosAutomaticamenteUsuarios implements Runnable {
 
     public void run() {
 
-	List<String> pastaAtualizacaoCSV = Arrays.asList(new File(ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_CURTO).list());
+	List<String> pastaAtualizacaoCSV = Arrays.asList(new File(ArquivoService.PASTA_ATUALIZACAO_CSV_DISTRIBUIDOR).list());
 
-	if (pastaAtualizacaoCSV.contains("tblRelacionamentos.csv")//
-		&& pastaAtualizacaoCSV.contains("tblQualificacoes.csv")) {
+	if (pastaAtualizacaoCSV.contains("tblRelacionamentos.csv")) {
 
 	    try {
 		HibernateUtil hibernateUtil = new HibernateUtil();
 		new AtualizacaoArquivosService(hibernateUtil).processarArquivosPeriodoCurto();
 		moverArquivos();
-		BoasVindasEmailSender.enviarEmail();
 		hibernateUtil.fecharSessao();
 	    } catch (Exception e) {
 		e.printStackTrace();
@@ -37,23 +34,23 @@ public class AtualizacaoArquivosAutomaticamentePeriodoCurto implements Runnable 
 
     private void moverArquivos() {
 
-	File folder = new File(ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_CURTO);
+	File folder = new File(ArquivoService.PASTA_ATUALIZACAO_CSV_DISTRIBUIDOR);
 
 	for (File file : folder.listFiles()) {
 
-	    file.renameTo(new File(ArquivoService.PASTA_BACKUP_CSV_PERIODO_CURTO + file.getName()));
+	    file.renameTo(new File(ArquivoService.PASTA_BACKUP_CSV_DISTRIBUIDOR + file.getName()));
 	}
     }
 
     public void iniciarRotina() {
 
-	System.out.println(new Date() + ". Iniciando rotina AtualizacaoArquivosAutomaticamentePeriodoCurto");
+	System.out.println(new Date() + ". Iniciando rotina AtualizacaoArquivosAutomaticamenteUsuarios");
 
-	AtualizacaoArquivosAutomaticamentePeriodoCurto task = new AtualizacaoArquivosAutomaticamentePeriodoCurto();
+	AtualizacaoArquivosAutomaticamenteUsuarios task = new AtualizacaoArquivosAutomaticamenteUsuarios();
 
 	Scheduler scheduler = new Scheduler();
 
-	scheduler.schedule("*/5 * * * *", task);
+	scheduler.schedule("*/30 * * * *", task);
 
 	scheduler.start();
     }
