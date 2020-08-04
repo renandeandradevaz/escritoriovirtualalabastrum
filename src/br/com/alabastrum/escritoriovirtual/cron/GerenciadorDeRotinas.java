@@ -4,14 +4,21 @@ import br.com.alabastrum.escritoriovirtual.hibernate.ThreadRestartHibernate;
 
 public class GerenciadorDeRotinas {
 
+    private static boolean rotinasIniciadas = false;
+
     public static void iniciarRotinas() {
 
-	ThreadRestartHibernate.iniciarThread();
-	new AtualizacaoArquivosAutomaticamentePeriodoLongo().iniciarRotina();
-	new AtualizacaoArquivosAutomaticamentePeriodoCurto().iniciarRotina();
-	new AtualizacaoArquivosAutomaticamenteUsuarios().iniciarRotina();
-	new CancelarPedidosPendentes().iniciarRotina();
-	new CompressaoDeBonus().iniciarRotina();
-	new NotificarPedidosPagosNaoFinalizados().iniciarRotina();
+	if (!rotinasIniciadas) {
+
+	    rotinasIniciadas = true;
+
+	    ThreadRestartHibernate.iniciarThread();
+	    new AtualizacaoArquivosAutomaticamentePeriodoLongo().iniciarRotina();
+	    new AtualizacaoArquivosAutomaticamentePeriodoCurto().iniciarRotina();
+	    new AtualizacaoArquivosAutomaticamenteUsuarios().iniciarRotina();
+	    new CancelarPedidosPendentes().iniciarRotina();
+	    new CompressaoDeBonus().iniciarRotina();
+	    new NotificarPedidosPagosNaoFinalizados().iniciarRotina();
+	}
     }
 }

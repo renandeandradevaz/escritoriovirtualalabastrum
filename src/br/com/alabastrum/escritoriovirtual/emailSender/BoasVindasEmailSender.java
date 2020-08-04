@@ -5,8 +5,10 @@ import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.BoasVindas;
+import br.com.alabastrum.escritoriovirtual.modelo.InformacoesFixasUsuario;
 import br.com.alabastrum.escritoriovirtual.modelo.Qualificacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
+import br.com.alabastrum.escritoriovirtual.util.GeradorDeMd5;
 import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 
@@ -44,7 +46,7 @@ public class BoasVindasEmailSender {
 		    if (boasVindas == null) {
 			enviarEmail(usuario, hibernateUtil);
 			salvarBoasVindas(hibernateUtil, hoje, usuario);
-			apagarSenha(hibernateUtil, usuario);
+			resetarSenha(hibernateUtil, usuario);
 		    }
 		}
 	    }
@@ -66,8 +68,20 @@ public class BoasVindasEmailSender {
 	}
     }
 
-    private static void apagarSenha(HibernateUtil hibernateUtil, Usuario usuario) throws Exception {
-	hibernateUtil.executarSQL("delete from informacoesfixasusuario where codigoUsuario = " + usuario.getId_Codigo());
+    private static void resetarSenha(HibernateUtil hibernateUtil, Usuario usuario) throws Exception {
+	try {
+	    hibernateUtil.executarSQL("delete from informacoesfixasusuario where codigoUsuario = " + usuario.getId_Codigo());
+
+	} catch (Exception e) {
+	    InformacoesFixasUsuario informacoesFixasUsuario = new InformacoesFixasUsuario();
+	    informacoesFixasUsuario.setCodigoUsuario(usuario.getId_Codigo());
+	    informacoesFixasUsuario = hibernateUtil.selecionar(informacoesFixasUsuario);
+
+	    if (informacoesFixasUsuario != null) {
+		informacoesFixasUsuario.setSenha(GeradorDeMd5.converter("dunastes"));
+		hibernateUtil.salvarOuAtualizar(informacoesFixasUsuario);
+	    }
+	}
     }
 
     private static void salvarBoasVindas(HibernateUtil hibernateUtil, GregorianCalendar hoje, Usuario usuario) {
