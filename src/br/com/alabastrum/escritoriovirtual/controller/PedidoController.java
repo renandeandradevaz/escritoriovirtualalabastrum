@@ -529,10 +529,10 @@ public class PedidoController {
 		System.out.println("Pagseguro XML: " + xml);
 
 		String status = xml.split("<status>")[1].split("</status>")[0];
-		Integer idPedido = Integer.valueOf(xml.split("<items><item><id>")[1].split("</id>")[0]);
 
 		if (status.equals("3") || status.equals("4")) {
 
+		    Integer idPedido = Integer.valueOf(xml.split("<items><item><id>")[1].split("</id>")[0]);
 		    Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 
 		    if (pedido != null && !pedido.getStatus().equals(PedidoService.FINALIZADO)) {
@@ -545,7 +545,9 @@ public class PedidoController {
 			Mail.enviarEmail("Cartão de crédito confirmado", "Seu cartão de crédito foi confirmado e o pagamento concluído. Seu pedido de código " + idPedido + " está pronto para entrega.", usuario.geteMail());
 		    }
 
-		    result.use(json()).from("Pagamento realizado com sucesso. Status pagseguro = 3").serialize();
+		    Mail.enviarEmail("Pagamento confirmado para o pedido: " + idPedido, "Status: " + status);
+
+		    result.use(json()).from("Pagamento realizado com sucesso. Status pagseguro = " + status).serialize();
 
 		} else {
 
@@ -565,6 +567,7 @@ public class PedidoController {
 		result.use(json()).from("Ocorreu um erro. Exception: " + exceptionMessage).serialize();
 	    }
 	} else {
+	    Mail.enviarEmail("tokenEV incorreto no momento da confirmação do pedido vinda do pagSeguro", "Esperado: " + new Configuracao().retornarConfiguracao("tokenEV") + " <br> Atual: " + tokenEV);
 	    result.use(json()).from("tokenEV incorreto").serialize();
 	}
     }
