@@ -407,9 +407,9 @@ public class PedidoController {
 		BigDecimal precoUnitarioProduto = produto.getPrdPreco_Unit();
 		BigDecimal precoUnitarioItemPedido = precoUnitarioProduto.multiply(new BigDecimal("2"));
 
-		if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
+		if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro") || formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
 		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
-		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebito") || formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebito")) {
 		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.48")));
 		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCredito")) {
 		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.45")));

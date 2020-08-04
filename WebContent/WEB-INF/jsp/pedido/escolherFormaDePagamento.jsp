@@ -33,7 +33,8 @@
 	<c:if test="${mostrarDialogoDescontos}">
 		<div style="border: 1px solid black; border-radius: 10px; padding: 5px; max-width: 500px">
 			<h5>* Pagamento com dinheiro: Desconto de 50%</h5>
-			<h5>* Pagamento com cartão de débito ou boleto: Desconto de 48%</h5>
+			<h5>* Pagamento com boleto: Desconto de 50%</h5>
+			<h5>* Pagamento com cartão de débito: Desconto de 48%</h5>
 			<h5>* Pagamento com cartão de crédito: Desconto de 45%</h5>
 		</div>
 	</c:if>
