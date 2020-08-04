@@ -74,6 +74,10 @@
 	</form>
 </div>
 <br>
+<div class="fundo-branco">
+	<h5>Total de Cadastros: ${totalCadastros}</h5>
+</div>
+<br>
 <table class="table table-striped table-bordered" style="background-color: white; font-size: 10px">
 	<thead>
 		<tr>

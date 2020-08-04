@@ -39,6 +39,7 @@ public class EquipeController {
 	Usuario usuario = this.sessaoUsuario.getUsuario();
 
 	Collection<ArvoreHierarquicaDTO> arvoreHierarquica = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo()).values();
+	int totalCadastros = arvoreHierarquica.size();
 
 	if (Util.vazio(pesquisaEquipeDTO)) {
 	    pesquisaEquipeDTO = new PesquisaEquipeDTO();
@@ -52,6 +53,7 @@ public class EquipeController {
 	arvoreHierarquica = filtrarPorMesAniversario(arvoreHierarquica, pesquisaEquipeDTO.getMesAniversario());
 	List<EquipeDTO> equipe = gerarEquipe(arvoreHierarquica);
 
+	result.include("totalCadastros", totalCadastros);
 	result.include("pesquisa", pesquisa);
 	result.include("posicoes", hibernateUtil.buscar(new Posicao()));
 	result.include("pesquisaEquipeDTO", pesquisaEquipeDTO);
