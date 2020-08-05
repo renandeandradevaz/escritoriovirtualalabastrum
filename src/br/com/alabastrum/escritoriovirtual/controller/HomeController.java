@@ -17,28 +17,28 @@ import br.com.caelum.vraptor.Result;
 @Resource
 public class HomeController {
 
-	private Result result;
-	private HibernateUtil hibernateUtil;
-	private SessaoUsuario sessaoUsuario;
+    private Result result;
+    private HibernateUtil hibernateUtil;
+    private SessaoUsuario sessaoUsuario;
 
-	public HomeController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario) {
+    public HomeController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario) {
 
-		this.result = result;
-		this.hibernateUtil = hibernateUtil;
-		this.sessaoUsuario = sessaoUsuario;
-	}
+	this.result = result;
+	this.hibernateUtil = hibernateUtil;
+	this.sessaoUsuario = sessaoUsuario;
+    }
 
-	@Path("/home")
-	@Funcionalidade
-	public void home() throws Exception {
+    @Path("/home")
+    @Funcionalidade
+    public void home() throws Exception {
 
-		Usuario usuario = this.sessaoUsuario.getUsuario();
+	Usuario usuario = this.sessaoUsuario.getUsuario();
 
-		TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo());
-		result.include("quantidadeAfiliados", arvoreHierarquica.size());
-		result.include("ultimosQualificados", new QualificacaoService(hibernateUtil).obterUltimosQualificados(arvoreHierarquica));
-		result.include("ultimosCadastros", new QualificacaoService(hibernateUtil).obterUltimosCadastros(arvoreHierarquica));
-		result.include("posicaoAtual", usuario.getPosAtual().replaceAll(" ", "").toLowerCase());
-		result.include("proximaPosicao", new PosicoesService(hibernateUtil).obterNomeProximaPosicao(usuario.getPosAtual()).replaceAll(" ", "").toLowerCase());
-	}
+	TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo());
+	result.include("quantidadeAfiliados", arvoreHierarquica.size());
+	result.include("ultimosQualificados", new QualificacaoService(hibernateUtil).obterUltimosQualificados(arvoreHierarquica));
+	result.include("ultimosCadastros", new QualificacaoService(hibernateUtil).obterUltimosCadastros(arvoreHierarquica));
+	result.include("posicaoAtual", usuario.getPosAtual().replaceAll(" ", "").toLowerCase());
+	result.include("proximaPosicao", new PosicoesService(hibernateUtil).obterNomeProximaPosicao(usuario.getPosAtual()).replaceAll(" ", "").toLowerCase());
+    }
 }

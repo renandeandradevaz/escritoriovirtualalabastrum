@@ -180,10 +180,10 @@ public class PagSeguroService {
 	return response.toString();
     }
 
-    public void gerarBoleto(String pedidoId, String valorTotal, Usuario usuario) throws Exception {
+    public String gerarBoleto(Integer pedidoId, String valorTotal, Usuario usuario) throws Exception {
 
 	DateTime validade = new DateTime();
-	validade.plusDays(7);
+	validade = validade.plusDays(7);
 	String dataDeValidade = validade.toString("YYYY-MM-dd");
 
 	String tokenEV = new Configuracao().retornarConfiguracao("tokenEV");
@@ -199,22 +199,23 @@ public class PagSeguroService {
 	conn.setDoInput(true);
 	conn.setRequestMethod("POST");
 
-	String json = "{  \n" + "	    \"notificationURL\": \"https://ev.dunates.com.br/pedido/pagseguroNotificacao?tokenEV=" + tokenEV + "\",\n" + "	    \"reference\": \"" + pedidoId + "\",\n" + "	    \"periodicity\":\"monthly\",\n" + "	    \"firstDueDate\":\"" + dataDeValidade + "\",\n" + "	    \"numberOfPayments\":1,\n" + "	    \"amount\":\"" + valorTotal + "\",\n" + "	    \"customer\":{  \n" + "	       \"document\":{  \n" + "	          \"type\":\"CPF\",\n" + "	          \"value\":\"" + usuario.getCPF() + "\"\n" + "	       },                          \n" + "	       \"name\":\"" + usuario.getvNome() + "\",\n" + "	       \"email\":\"" + usuario.geteMail() + "\",\n" + "	       \"phone\":{                              \n" + "	          \"areaCode\":\"21\",\n" + "	          \"number\":\"900000000\"\n" + "	       }                 \n" + "	    }    \n" + "	 }";
-
-	System.out.println(json);
+	String json = "{  \n" + "	    \"notificationURL\": \"https://ev.dunates.com.br/pedido/pagseguroNotificacao?tokenEV=" + tokenEV + "\",\n" + "	    \"reference\": \"" + pedidoId + "\",\n" + "        \"description\": \"Dunastes\",\n" + "	    \"periodicity\":\"monthly\",\n" + "	    \"firstDueDate\":\"" + dataDeValidade + "\",\n" + "	    \"numberOfPayments\":1,\n" + "	    \"amount\":\"" + valorTotal + "\",\n" + "	    \"customer\":{  \n" + "	       \"document\":{  \n" + "	          \"type\":\"CPF\",\n" + "	          \"value\":\"" + usuario.getCPF() + "\"\n" + "	       },                          \n" + "	       \"name\":\"" + usuario.getvNome() + "\",\n" + "	       \"email\":\"" + usuario.geteMail() + "\",\n" + "	       \"phone\":{                              \n" + "	          \"areaCode\":\"21\",\n" + "	          \"number\":\"900000000\"\n" + "	       }                 \n" + "	    }    \n" + "	 }";
 
 	OutputStream os = conn.getOutputStream();
 	os.write(json.getBytes("UTF-8"));
 	os.close();
 
-	// read the response
 	InputStream in = new BufferedInputStream(conn.getInputStream());
 	String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
 
-	System.out.println(result);
-
 	in.close();
+
+	if (!(conn.getResponseCode() == 200 || conn.getResponseCode() == 201)) {
+	    throw new Exception("Pagseguro retornou um código inesperado: " + conn.getResponseCode());
+	}
+
 	conn.disconnect();
 
+	return result.split("\"paymentLink\":\"")[1].split("\"")[0];
     }
 }

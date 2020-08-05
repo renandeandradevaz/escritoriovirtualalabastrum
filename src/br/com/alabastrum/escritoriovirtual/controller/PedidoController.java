@@ -503,12 +503,13 @@ public class PedidoController {
 	    if (!formaDePagamento.equalsIgnoreCase("pagamentoFinalizadoComCartaoDeCredito")) {
 		result.include("sucesso", "Pedido realizado com sucesso.");
 	    }
-	    
+
 	    if (formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
-		
-		
-		
-		
+
+		String urlPagamento = new PagSeguroService(hibernateUtil).gerarBoleto(pedido.getId(), new DecimalFormat("0.00").format(totalPedido), (Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())));
+		result.include("urlPagamento", urlPagamento);
+		result.forwardTo("/WEB-INF/jsp/pedido/informacoesBoleto.jsp");
+
 	    } else if (this.sessaoUsuario.getUsuario().getId() == null) {
 		result.forwardTo(this).finalizarCompraLojaPessoal();
 	    } else {
