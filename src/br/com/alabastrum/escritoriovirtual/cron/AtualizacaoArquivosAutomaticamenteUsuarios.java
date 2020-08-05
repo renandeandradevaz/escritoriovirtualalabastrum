@@ -27,7 +27,7 @@ public class AtualizacaoArquivosAutomaticamenteUsuarios implements Runnable {
 		hibernateUtil.fecharSessao();
 	    } catch (Exception e) {
 		e.printStackTrace();
-		Mail.enviarEmail("Erro ao processar arquivos de período curto", "Erro: " + Util.getExceptionMessage(e));
+		Mail.enviarEmail("Erro ao processar arquivos de atualização de usuário", "Erro: " + Util.getExceptionMessage(e));
 	    }
 	}
     }

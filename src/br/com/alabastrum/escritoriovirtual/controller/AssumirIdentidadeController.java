@@ -9,6 +9,8 @@ import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.Validator;
+import br.com.caelum.vraptor.validator.ValidationMessage;
 
 @Resource
 public class AssumirIdentidadeController {
@@ -16,12 +18,14 @@ public class AssumirIdentidadeController {
     private Result result;
     private SessaoUsuario sessaoUsuario;
     private HibernateUtil hibernateUtil;
+    private Validator validator;
 
-    public AssumirIdentidadeController(Result result, SessaoUsuario sessaoUsuario, HibernateUtil hibernateUtil) {
+    public AssumirIdentidadeController(Result result, SessaoUsuario sessaoUsuario, HibernateUtil hibernateUtil, Validator validator) {
 
 	this.result = result;
 	this.sessaoUsuario = sessaoUsuario;
 	this.hibernateUtil = hibernateUtil;
+	this.validator = validator;
     }
 
     @Funcionalidade(administrativa = "true")
@@ -35,6 +39,15 @@ public class AssumirIdentidadeController {
 	Usuario usuario = new Usuario();
 	usuario.setApelido(nickname);
 	usuario = this.hibernateUtil.selecionar(usuario, MatchMode.EXACT);
+
+	if (usuario == null) {
+
+	    validator.add(new ValidationMessage("O usuário com nickname " + nickname + " não existe no Escritório Virtual. Entre em contato com o suporte da empresa", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaAssumirIdentidade();
+	    return;
+
+	}
+
 	usuario.setInformacoesFixasUsuario(new InformacoesFixasUsuario());
 	usuario.getInformacoesFixasUsuario().setAdministrador(true);
 	this.sessaoUsuario.login(usuario);
