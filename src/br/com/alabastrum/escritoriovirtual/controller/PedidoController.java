@@ -546,9 +546,22 @@ public class PedidoController {
 
 		String status = xml.split("<status>")[1].split("</status>")[0];
 
+		if (status.equals("1")) {
+		    System.out.println("Boleto recem criado com status 1. xml: " + xml);
+		    result.use(json()).from("Boleto recem criado com status 1").serialize();
+		    return;
+		}
+
 		if (status.equals("3") || status.equals("4")) {
 
-		    Integer idPedido = Integer.valueOf(xml.split("<items><item><id>")[1].split("</id>")[0]);
+		    Integer idPedido;
+
+		    if (xml.contains("<reference>")) {
+			idPedido = Integer.valueOf(xml.split("<reference>")[1].split("</reference>")[0]);
+		    } else {
+			idPedido = Integer.valueOf(xml.split("<items><item><id>")[1].split("</id>")[0]);
+		    }
+
 		    Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 
 		    if (pedido != null && !pedido.getStatus().equals(PedidoService.FINALIZADO)) {
