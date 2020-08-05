@@ -79,11 +79,10 @@ public class AtualizacaoArquivosService {
 
 	for (Usuario usuario : usuarios) {
 	    Usuario usuarioBanco = this.hibernateUtil.selecionar(new Usuario(usuario.getId_Codigo()));
-	    if (usuarioBanco == null) {
-		throw new Exception("Usuario nao encontrado no banco: " + usuario.getId_Codigo());
+	    if (usuarioBanco != null) {
+		this.hibernateUtil.deletar(usuarioBanco);
+		this.hibernateUtil.salvarOuAtualizar(usuario);
 	    }
-	    this.hibernateUtil.deletar(usuarioBanco);
-	    this.hibernateUtil.salvarOuAtualizar(usuario);
 	}
 
 	System.out.println("Quantidade de usuários atualizados salvos: " + usuarios.size());
