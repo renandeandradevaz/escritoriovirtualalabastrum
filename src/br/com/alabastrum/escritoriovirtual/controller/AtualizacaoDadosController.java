@@ -1,6 +1,9 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.text.Normalizer;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Public;
@@ -142,6 +145,14 @@ public class AtualizacaoDadosController {
 	}
 
 	usuarioFiltro = new Usuario();
+	usuarioFiltro.setCPF(usuario.getCPF());
+	if (hibernateUtil.contar(usuarioFiltro) != 0) {
+	    validator.add(new ValidationMessage("Já existe alguem cadastrado com este CPF: " + usuario.getCPF(), "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaCadastro();
+	    return;
+	}
+
+	usuarioFiltro = new Usuario();
 	usuarioFiltro.setApelido(usuario.getNicknameQuemIndicou());
 	if (hibernateUtil.contar(usuarioFiltro) != 1) {
 	    validator.add(new ValidationMessage("Nao foi encontrado ninguém com este nickname: " + usuario.getNicknameQuemIndicou(), "Erro"));
@@ -151,6 +162,25 @@ public class AtualizacaoDadosController {
 
 	if (!Util.isValidCPF(usuario.getCPF())) {
 	    validator.add(new ValidationMessage("CPF incorreto: " + usuario.getCPF(), "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaCadastro();
+	    return;
+	}
+
+	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+	try {
+	    format.setLenient(false);
+	    format.parse(usuario.getDt_Nasc());
+	} catch (Exception e) {
+	    validator.add(new ValidationMessage("Data de nascimento no formato incorreto. O formato correto é: dd/MM/yyyy", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaCadastro();
+	    return;
+	}
+
+	Integer anoCadastro = Integer.valueOf(usuario.getDt_Nasc().split("/")[2]);
+	Integer anoAtual = new GregorianCalendar().get(Calendar.YEAR);
+
+	if (anoAtual - anoCadastro < 18) {
+	    validator.add(new ValidationMessage("Você precisa ser maior de 18 anos pra se cadastrar", "Erro"));
 	    validator.onErrorRedirectTo(this).acessarTelaCadastro();
 	    return;
 	}
