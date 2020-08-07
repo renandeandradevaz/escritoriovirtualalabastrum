@@ -10,12 +10,14 @@
 			<c:if test="${pagamentoComSaldoHabilitado}">
 				<option value="pagarComSaldo">Pagar com saldo</option>
 			</c:if>
-			<option value="pagarComDinheiro">Pagar em dinheiro diretamente no centro de distribuição</option>
 			<option value="pagarComBoleto">Pagar com boleto</option>
-			<option value="pagarComCartaoDeDebitoNoPA">Pagar com cartão de débito diretamente no centro de distribuição</option>
 			<!-- 			<option value="pagarComCartaoDeDebitoOnline">Pagar com cartão de débito online</option> -->
-			<option value="pagarComCartaoDeCreditoNoPA">Pagar com cartão de crédito diretamente no centro de distribuição</option>
 			<!-- 			<option value="pagarComCartaoDeCreditoOnline">Pagar com cartão de crédito online</option> -->
+			<c:if test="${formaDeEntrega == 'receberNoPA'}">
+				<option value="pagarComDinheiro">Pagar em dinheiro diretamente no centro de distribuição</option>
+				<option value="pagarComCartaoDeDebitoNoPA">Pagar com cartão de débito diretamente no centro de distribuição</option>
+				<option value="pagarComCartaoDeCreditoNoPA">Pagar com cartão de crédito diretamente no centro de distribuição</option>
+			</c:if>
 		</select>
 		<br>
 		<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Avançar</button>

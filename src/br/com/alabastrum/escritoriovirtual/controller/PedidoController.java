@@ -5,7 +5,6 @@ import static br.com.caelum.vraptor.view.Results.json;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -34,6 +33,7 @@ import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
 import br.com.alabastrum.escritoriovirtual.service.EstoqueService;
 import br.com.alabastrum.escritoriovirtual.service.ExtratoService;
+import br.com.alabastrum.escritoriovirtual.service.FreteService;
 import br.com.alabastrum.escritoriovirtual.service.PagSeguroService;
 import br.com.alabastrum.escritoriovirtual.service.PedidoService;
 import br.com.alabastrum.escritoriovirtual.service.PosicoesService;
@@ -78,7 +78,7 @@ public class PedidoController {
 	    this.sessaoGeral.adicionar("isPrimeiroPedido", true);
 	    Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
 	    Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
-	    result.include("errors", Arrays.asList(new ValidationMessage(String.format("Você ainda não fez um pedido de adesão. Você precisa realizar este pedido para ingressar, de fato, na empresa, e poder ficar ativo este mês. Para realizar a adesão à empresa, você precisa fazer um pedido com valor mínimo de R$%s e máximo de R$%s", valorMinimoPedidoAdesao, valorMaximoPedidoAdesao), "Erro")));
+	    result.include("alerta", new ValidationMessage(String.format("Você ainda não fez um pedido de adesão. Você precisa realizar este pedido para ingressar, de fato, na empresa, e poder ficar ativo este mês. Para realizar a adesão à empresa, você precisa fazer um pedido com valor mínimo de R$%s e máximo de R$%s", valorMinimoPedidoAdesao, valorMaximoPedidoAdesao), "Erro"));
 	    return;
 	}
 
@@ -86,7 +86,7 @@ public class PedidoController {
 	    this.sessaoGeral.adicionar("isInativo", true);
 	    Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
 	    Integer valorMaximoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAtividade"));
-	    result.include("errors", Arrays.asList(new ValidationMessage(String.format("Você ainda não está ativo este mês. Você precisa fazer um pedido para ficar ativo. O valor mínimo do pedido de atividade é R$%s e o valor máximo é R$%s", valorMinimoPedidoAtividade, valorMaximoPedidoAtividade), "Erro")));
+	    result.include("alerta", new ValidationMessage(String.format("Você ainda não está ativo este mês. Você precisa fazer um pedido para ficar ativo. O valor mínimo do pedido de atividade é R$%s e o valor máximo é R$%s", valorMinimoPedidoAtividade, valorMaximoPedidoAtividade), "Erro"));
 	    return;
 	}
     }
@@ -261,7 +261,7 @@ public class PedidoController {
 	if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
 	    if (new PedidoService(hibernateUtil).listarItensPedido(pedido).size() == 0) {
 
-		Produto produto = hibernateUtil.selecionar(new Produto("tx_ads"));
+		Produto produto = hibernateUtil.selecionar(new Produto(PedidoService.PRODUTO_TAXA_ADESAO_ID));
 		ItemPedido itemPedidoTaxaAdesao = new ItemPedido();
 		itemPedidoTaxaAdesao.setPedido(pedido);
 		itemPedidoTaxaAdesao.setIdProduto(produto.getId_Produtos());
@@ -273,13 +273,18 @@ public class PedidoController {
     }
 
     @Funcionalidade
-    public void acessarCarrinho() {
+    public void acessarCarrinho() throws Exception {
 
 	List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
 
 	Pedido pedido = selecionarPedidoAberto();
 
 	if (pedido != null) {
+
+	    String formaDeEntrega = (String) this.sessaoGeral.getValor(PedidoService.FORMA_DE_ENTREGA);
+	    if (PedidoService.RECEBER_EM_CASA.equals(formaDeEntrega)) {
+		calcularFrete(pedido);
+	    }
 
 	    for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 		Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
@@ -292,9 +297,36 @@ public class PedidoController {
 	result.include("totais", new PedidoService(hibernateUtil).calcularTotais(pedido));
     }
 
+    private void calcularFrete(Pedido pedido) throws Exception {
+
+	ItemPedido itemPedidoFrete = null;
+
+	List<ItemPedido> itensPedido = new PedidoService(hibernateUtil).listarItensPedido(pedido);
+	for (ItemPedido itemPedido : itensPedido) {
+	    Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
+	    if (produto.getId_Produtos().equals(PedidoService.PRODUTO_FRETE_ID)) {
+		itemPedidoFrete = itemPedido;
+		break;
+	    }
+	}
+
+	if (itemPedidoFrete == null) {
+	    itemPedidoFrete = new ItemPedido();
+	    itemPedidoFrete.setIdProduto(PedidoService.PRODUTO_FRETE_ID);
+	    itemPedidoFrete.setPedido(pedido);
+	    itemPedidoFrete.setQuantidade(1);
+	}
+
+	Franquia franquia = hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia()));
+	Usuario distribuidorPedido = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+
+	itemPedidoFrete.setPrecoUnitario(new FreteService(hibernateUtil).calcularPrecoFrete(franquia.getEstqCEP(), distribuidorPedido.getCadCEP(), itensPedido));
+	hibernateUtil.salvarOuAtualizar(itemPedidoFrete);
+    }
+
     @Funcionalidade
     @Get("/pedido/removerProduto/{idProduto}")
-    public void removerProduto(String idProduto) {
+    public void removerProduto(String idProduto) throws Exception {
 
 	Pedido pedido = selecionarPedidoAberto();
 	ItemPedido itemPedido = selecionarItemPedido(idProduto, pedido);
@@ -303,7 +335,7 @@ public class PedidoController {
     }
 
     @Funcionalidade
-    public void escolherFormaDePagamento() {
+    public void escolherFormaDePagamento() throws Exception {
 
 	Pedido pedido = selecionarPedidoAberto();
 	Integer valorTotal = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal().intValue();
@@ -339,6 +371,7 @@ public class PedidoController {
 	}
 
 	result.include("mostrarDialogoDescontos", mostrarDialogoDescontos);
+	result.include(PedidoService.FORMA_DE_ENTREGA, this.sessaoGeral.getValor(PedidoService.FORMA_DE_ENTREGA));
 
 	verificarPagamentoComSaldoHabilitado(pedido);
     }
@@ -774,7 +807,7 @@ public class PedidoController {
 	franquia.setEstqNome("VENDA ONLINE");
 	franquia = this.hibernateUtil.selecionar(franquia);
 
-	this.escolherProdutos(franquia.getId_Estoque(), idUsuario, "receberEmCasa");
+	this.escolherProdutos(franquia.getId_Estoque(), idUsuario, PedidoService.RECEBER_EM_CASA);
 	result.forwardTo("/WEB-INF/jsp//pedido/escolherProdutos.jsp");
     }
 

@@ -120,7 +120,7 @@
 			<div class="alert alert-success">${sucesso}</div>
 		</c:if>
 		<c:if test="${not empty alerta}">
-			<div class="alert alert-alerta">${alerta}</div>
+			<div class="alert alert-alerta">${alerta.message}</div>
 		</c:if>
 		<c:if test="${not empty errors}">
 			<div class="alert alert-error">
