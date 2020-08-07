@@ -14,6 +14,7 @@ public class ConfiguracaoAdministrativaDTO {
     private String valorMinimoPedidosPrimeiraPosicao;
     private String emailPagseguro;
     private String tokenPagseguro;
+    private String tokenMelhorEnvio;
     private String tokenEV;
 
     public String getSenhaEmail() {
@@ -118,5 +119,13 @@ public class ConfiguracaoAdministrativaDTO {
 
     public void setTokenEV(String tokenEV) {
 	this.tokenEV = tokenEV;
+    }
+
+    public String getTokenMelhorEnvio() {
+	return tokenMelhorEnvio;
+    }
+
+    public void setTokenMelhorEnvio(String tokenMelhorEnvio) {
+	this.tokenMelhorEnvio = tokenMelhorEnvio;
     }
 }

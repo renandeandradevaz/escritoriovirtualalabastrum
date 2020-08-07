@@ -44,10 +44,17 @@
 		<br>
 		<br>
 		<c:if test="${sessaoUsuario.usuario.id_Codigo != null}">
-			<a href="<c:url value="/pedido/escolherFormaDePagamento"/>" class="btn btn-success">Escolher forma de pagamento</a>
-		</c:if>
-		<c:if test="${sessaoUsuario.usuario.id_Codigo == null}">
-			<a href="<c:url value="/pedido/informarDadosComprador"/>" class="btn btn-success">Avançar</a>
+			<c:choose>
+				<c:when test="${formaDeEntrega == 'receberEmCasa'}">
+					<a href="<c:url value="/pedido/escolherFormaDeEnvio"/>" class="btn btn-success">Escolher forma de envio</a>
+				</c:when>
+				<c:otherwise>
+					<a href="<c:url value="/pedido/escolherFormaDePagamento"/>" class="btn btn-success">Escolher forma de pagamento</a>
+				</c:otherwise>
+			</c:choose>
+			<c:if test="${sessaoUsuario.usuario.id_Codigo == null}">
+				<a href="<c:url value="/pedido/informarDadosComprador"/>" class="btn btn-success">Avançar</a>
+			</c:if>
 		</c:if>
 	</c:if>
 	<c:if test="${empty itensPedidoDTO}">

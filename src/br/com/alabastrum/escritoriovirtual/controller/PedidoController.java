@@ -16,6 +16,7 @@ import org.hibernate.criterion.Restrictions;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Public;
+import br.com.alabastrum.escritoriovirtual.dto.FreteResponseDTO;
 import br.com.alabastrum.escritoriovirtual.dto.ItemPedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.PedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
@@ -281,10 +282,7 @@ public class PedidoController {
 
 	if (pedido != null) {
 
-	    String formaDeEntrega = (String) this.sessaoGeral.getValor(PedidoService.FORMA_DE_ENTREGA);
-	    if (PedidoService.RECEBER_EM_CASA.equals(formaDeEntrega)) {
-		calcularFrete(pedido);
-	    }
+	    result.include(PedidoService.FORMA_DE_ENTREGA, this.sessaoGeral.getValor(PedidoService.FORMA_DE_ENTREGA));
 
 	    for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 		Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
@@ -297,7 +295,22 @@ public class PedidoController {
 	result.include("totais", new PedidoService(hibernateUtil).calcularTotais(pedido));
     }
 
-    private void calcularFrete(Pedido pedido) throws Exception {
+    @Funcionalidade
+    public void escolherFormaDeEnvio() throws Exception {
+
+	Pedido pedido = selecionarPedidoAberto();
+	List<ItemPedido> itensPedido = new PedidoService(hibernateUtil).listarItensPedido(pedido);
+	Franquia franquia = hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia()));
+	Usuario distribuidorPedido = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+
+	List<FreteResponseDTO> opcoesDeFrete = new FreteService(hibernateUtil).buscarOpcoesDeFrete(franquia.getEstqCEP(), distribuidorPedido.getCadCEP(), itensPedido);
+	result.include(PedidoService.OPCOES_DE_FRETE, opcoesDeFrete);
+	this.sessaoGeral.adicionar(PedidoService.OPCOES_DE_FRETE, opcoesDeFrete);
+    }
+
+    @Funcionalidade
+    @Get("/pedido/escolherFormaDeEnvioPorId/{formaDeEnvioId}")
+    public void escolherFormaDeEnvioPorId(Integer formaDeEnvioId) throws Exception {
 
 	ItemPedido itemPedidoFrete = null;
 
@@ -320,7 +333,7 @@ public class PedidoController {
 	Franquia franquia = hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia()));
 	Usuario distribuidorPedido = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
 
-	itemPedidoFrete.setPrecoUnitario(new FreteService(hibernateUtil).calcularPrecoFrete(franquia.getEstqCEP(), distribuidorPedido.getCadCEP(), itensPedido));
+	itemPedidoFrete.setPrecoUnitario(BigDecimal.ZERO);
 	hibernateUtil.salvarOuAtualizar(itemPedidoFrete);
     }
 

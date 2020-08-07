@@ -6,15 +6,20 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.criterion.MatchMode;
 
+import com.google.gson.Gson;
+
+import br.com.alabastrum.escritoriovirtual.dto.FreteResponseDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Caixa;
 import br.com.alabastrum.escritoriovirtual.modelo.Configuracao;
 import br.com.alabastrum.escritoriovirtual.modelo.ItemPedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
+import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class FreteService {
 
@@ -25,7 +30,7 @@ public class FreteService {
 	this.hibernateUtil = hibernateUtil;
     }
 
-    public BigDecimal calcularPrecoFrete(String cepOrigem, String cepDestino, List<ItemPedido> itensPedido) throws Exception {
+    public List<FreteResponseDTO> buscarOpcoesDeFrete(String cepOrigem, String cepDestino, List<ItemPedido> itensPedido) throws Exception {
 
 	BigDecimal tamanhoTotal = BigDecimal.ZERO;
 	BigDecimal pesoProdutos = BigDecimal.ZERO;
@@ -65,12 +70,22 @@ public class FreteService {
 	    pesoProdutos = pesoProdutos.divide(new BigDecimal(quantidadeDeCaixas));
 	}
 
-	calcularFreteApiMelhorEnvio(cepOrigem, cepDestino, caixaEscolhida, pesoProdutos);
+	FreteResponseDTO[] opcoesDeFrete = buscarOpcoesDeFreteAPIMelhorEnvio(cepOrigem, cepDestino, caixaEscolhida, pesoProdutos);
 
-	return BigDecimal.ZERO;
+	List<FreteResponseDTO> opcoesValidasDeFrete = new ArrayList<FreteResponseDTO>();
+
+	for (FreteResponseDTO freteResponseDTO : opcoesDeFrete) {
+
+	    if (Util.vazio(freteResponseDTO.getError())) {
+		freteResponseDTO.setPrice(new BigDecimal(freteResponseDTO.getPrice()).multiply(new BigDecimal(quantidadeDeCaixas)).toString());
+		opcoesValidasDeFrete.add(freteResponseDTO);
+	    }
+	}
+
+	return opcoesValidasDeFrete;
     }
 
-    public String calcularFreteApiMelhorEnvio(String cepOrigem, String cepDestino, Caixa caixa, BigDecimal pesoProdutos) throws Exception {
+    private FreteResponseDTO[] buscarOpcoesDeFreteAPIMelhorEnvio(String cepOrigem, String cepDestino, Caixa caixa, BigDecimal pesoProdutos) throws Exception {
 
 	BigDecimal peso = pesoProdutos.add(BigDecimal.valueOf(caixa.getPesoCaixa())).divide(new BigDecimal(1000));
 	Integer largura = caixa.getLarguraCaixa();
@@ -90,10 +105,10 @@ public class FreteService {
 
 	String json = "{\n" + //
 		"    \"from\": {\n" + //
-		"      \"postal_code\": \"" + cepOrigem + "\"\n" + //
+		"      \"postal_code\": \"" + cepOrigem.replaceAll(" ", "").replace("-", "") + "\"\n" + //
 		"    },\n" + //
 		"    \"to\": {\n" + //
-		"      \"postal_code\": \"" + cepDestino + "\"\n" + //
+		"      \"postal_code\": \"" + cepDestino.replaceAll(" ", "").replace("-", "") + "\"\n" + //
 		"    },\n" + //
 		"    \"package\": {\n" + //
 		"      \"weight\":" + peso + ",\n" + //
@@ -118,8 +133,6 @@ public class FreteService {
 
 	conn.disconnect();
 
-	System.out.println(result);
-
-	return result;
+	return new Gson().fromJson(result, FreteResponseDTO[].class);
     }
 }

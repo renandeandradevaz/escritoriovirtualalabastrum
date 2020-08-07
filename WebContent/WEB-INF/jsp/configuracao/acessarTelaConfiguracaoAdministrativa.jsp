@@ -76,6 +76,12 @@
 				</div>
 			</div>
 			<div class="control-group">
+				<label class="control-label"> Token Melhor envio </label>
+				<div class="controls">
+					<input type="text" name="configuracaoAdministrativaDTO.tokenMelhorEnvio" value="${configuracaoAdministrativaDTO.tokenMelhorEnvio}">
+				</div>
+			</div>
+			<div class="control-group">
 				<label class="control-label"> Token EV</label>
 				<div class="controls">
 					<input type="text" name="configuracaoAdministrativaDTO.tokenEV" value="${configuracaoAdministrativaDTO.tokenEV}">
