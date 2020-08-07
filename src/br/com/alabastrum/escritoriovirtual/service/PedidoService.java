@@ -21,6 +21,7 @@ public class PedidoService {
     public static final String ATIVIDADE = "atividade";
     public static final String ADESAO = "adesao";
     public static final String ID_USUARIO_PEDIDO = "idUsuarioPedido";
+    public static final String FORMA_DE_ENTREGA = "formaDeEntrega";
     public static final String ID_USUARIO_LOJA_PESSOAL = "idUsuarioLojaPessoal";
     public static final String FINALIZADO = "FINALIZADO";
     public static final String PENDENTE = "PENDENTE";

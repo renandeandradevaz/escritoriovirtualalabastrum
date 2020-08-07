@@ -114,7 +114,15 @@ public class PedidoController {
     }
 
     @Funcionalidade
-    public void escolherProdutos(Integer idFranquia, Integer idCodigo) {
+    public void escolherProdutos(Integer idFranquia, Integer idCodigo, String formaDeEntrega) {
+
+	if (Util.vazio(formaDeEntrega)) {
+
+	    validator.add(new ValidationMessage("Selecione uma forma de entrega", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
+	    return;
+	}
+	this.sessaoGeral.adicionar(PedidoService.FORMA_DE_ENTREGA, formaDeEntrega);
 
 	if (this.sessaoUsuario.getUsuario().getId() == null) {
 	    idCodigo = (Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_LOJA_PESSOAL);
@@ -205,7 +213,7 @@ public class PedidoController {
 	result.include("itensPedidoDTO", itensPedidoDTO);
 
 	result.include("totais", new PedidoService(hibernateUtil).calcularTotais(pedido));
-	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), pedido.getIdCodigo());
+	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), pedido.getIdCodigo(), (String) sessaoGeral.getValor(PedidoService.FORMA_DE_ENTREGA));
     }
 
     private BigDecimal calcularPrecoUnitarioProduto(BigDecimal precoUnitario) {
@@ -363,7 +371,7 @@ public class PedidoController {
 	pedido.setComprador(comprador);
 	hibernateUtil.salvarOuAtualizar(pedido);
 
-	this.sessaoGeral.adicionar("formaDePagamento", "pagarComCartaoDeCredito");
+	this.sessaoGeral.adicionar("formaDePagamento", "pagarComCartaoDeCreditoOnline");
 
 	result.forwardTo(this).concluirPedido();
     }
@@ -407,22 +415,30 @@ public class PedidoController {
 		BigDecimal precoUnitarioProduto = produto.getPrdPreco_Unit();
 		BigDecimal precoUnitarioItemPedido = precoUnitarioProduto.multiply(new BigDecimal("2"));
 
-		if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
+		if (formaDePagamento.equalsIgnoreCase("pagarComSaldo")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
+
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
 		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
 
 		} else if (formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
-		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
 
-		} else if (formaDePagamento.equalsIgnoreCase("pagarComSaldo")) {
-		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebitoNoPA")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
 
-		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebito")) {
-		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.48")));
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebitoOnline")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
 
-		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCredito")) {
-		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.45")));
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoNoPA")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.44")));
 
-		} else {
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoOnline")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.44")));
+
+		}
+
+		else {
 		    throw new Exception("Forma de pagamento desconhecida: " + formaDePagamento);
 		}
 
@@ -437,7 +453,7 @@ public class PedidoController {
 
 	String formaDePagamento = (String) this.sessaoGeral.getValor("formaDePagamento");
 
-	if (formaDePagamento.equals("pagarComCartaoDeCredito")) {
+	if (formaDePagamento.equals("pagarComCartaoDeCreditoOnline")) {
 
 	    result.include("pagseguroSessionId", new PagSeguroService(hibernateUtil).gerarSessionId());
 	    result.forwardTo("/WEB-INF/jsp/pedido/pagarComCartaoDeCredito.jsp");
@@ -751,14 +767,14 @@ public class PedidoController {
 	this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_LOJA_PESSOAL, idUsuario);
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idUsuario));
 	Usuario usuarioFakeLojaPessoal = new Usuario();
-	usuarioFakeLojaPessoal.setvNome("Bem vindo à loja de " + usuario.getvNome());
+	usuarioFakeLojaPessoal.setApelido("Bem vindo à loja de " + usuario.getApelido());
 	this.sessaoUsuario.login(usuarioFakeLojaPessoal);
 
 	Franquia franquia = new Franquia();
 	franquia.setEstqNome("VENDA ONLINE");
 	franquia = this.hibernateUtil.selecionar(franquia);
 
-	this.escolherProdutos(franquia.getId_Estoque(), idUsuario);
+	this.escolherProdutos(franquia.getId_Estoque(), idUsuario, "receberEmCasa");
 	result.forwardTo("/WEB-INF/jsp//pedido/escolherProdutos.jsp");
     }
 

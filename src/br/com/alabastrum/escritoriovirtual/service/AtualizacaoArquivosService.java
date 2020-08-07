@@ -21,6 +21,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Adesao;
+import br.com.alabastrum.escritoriovirtual.modelo.Caixa;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroAtividade;
@@ -58,6 +59,7 @@ public class AtualizacaoArquivosService {
 	processarCSVFranquia();
 	processarCSVCategoria();
 	processarCSVProduto();
+	processarCSVCaixa();
 	processarCSVAdesao();
     }
 
@@ -195,6 +197,15 @@ public class AtualizacaoArquivosService {
 	preencherObjeto(reader, produtos, "Produto");
 	this.hibernateUtil.executarSQL("delete from produto");
 	this.hibernateUtil.salvarOuAtualizar(produtos);
+    }
+
+    private void processarCSVCaixa() throws Exception {
+
+	CSVReader reader = lerArquivo("tblCaixa.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
+	List<Caixa> caixas = new ArrayList<Caixa>();
+	preencherObjeto(reader, caixas, "Caixa");
+	this.hibernateUtil.executarSQL("delete from caixa");
+	this.hibernateUtil.salvarOuAtualizar(caixas);
     }
 
     private void processarCSVAdesao() throws Exception {

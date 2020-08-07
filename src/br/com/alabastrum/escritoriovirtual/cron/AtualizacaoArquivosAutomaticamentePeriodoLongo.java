@@ -22,6 +22,7 @@ public class AtualizacaoArquivosAutomaticamentePeriodoLongo implements Runnable 
 		&& pastaAtualizacaoCSV.contains("tblCDA.csv") //
 		&& pastaAtualizacaoCSV.contains("tblCategorias.csv") //
 		&& pastaAtualizacaoCSV.contains("tblProdutos.csv") //
+		&& pastaAtualizacaoCSV.contains("tblCaixa.csv") //
 		&& pastaAtualizacaoCSV.contains("tblDivisaoLucro.csv") //
 		&& pastaAtualizacaoCSV.contains("tblReceitaDivisaoLucro.csv") //
 		&& pastaAtualizacaoCSV.contains("tblVIP.csv") //
