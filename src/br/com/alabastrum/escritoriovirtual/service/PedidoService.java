@@ -30,6 +30,7 @@ public class PedidoService {
     public static final String RECEBER_EM_CASA = "receberEmCasa";
     public static final String PRODUTO_FRETE_ID = "F01";
     public static final String PRODUTO_TAXA_ADESAO_ID = "tx_ads";
+    public static final String TAXAS = "taxas";
 
     private HibernateUtil hibernateUtil;
 
@@ -87,6 +88,26 @@ public class PedidoService {
 	}
 
 	return new PedidoDTO(pedido, null, valorTotal, totalItens, totalPontos);
+    }
+
+    public BigDecimal calcularTotalSemFrete(Pedido pedido) {
+
+	BigDecimal valorTotal = BigDecimal.ZERO;
+
+	List<ItemPedido> itens = new PedidoService(hibernateUtil).listarItensPedido(pedido);
+
+	for (ItemPedido itemPedido : itens) {
+
+	    Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
+
+	    if (!produto.getId_Produtos().equals(PedidoService.PRODUTO_FRETE_ID)) {
+
+		Integer quantidade = itemPedido.getQuantidade();
+		valorTotal = valorTotal.add(itemPedido.getPrecoUnitario().multiply(BigDecimal.valueOf(quantidade)));
+	    }
+	}
+
+	return valorTotal;
     }
 
     public List<ItemPedido> listarItensPedido(Pedido pedido) {

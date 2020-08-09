@@ -5,7 +5,7 @@ public class FreteResponseDTO {
     private String error;
     private Integer id;
     private String price;
-    private Integer deliveryTime;
+    private Integer delivery_time;
     private CompanyDTO company;
 
     public String getPrice() {
@@ -14,14 +14,6 @@ public class FreteResponseDTO {
 
     public void setPrice(String price) {
 	this.price = price;
-    }
-
-    public Integer getDeliveryTime() {
-	return deliveryTime;
-    }
-
-    public void setDeliveryTime(Integer deliveryTime) {
-	this.deliveryTime = deliveryTime;
     }
 
     public CompanyDTO getCompany() {
@@ -46,5 +38,13 @@ public class FreteResponseDTO {
 
     public void setId(Integer id) {
 	this.id = id;
+    }
+
+    public Integer getDelivery_time() {
+	return delivery_time;
+    }
+
+    public void setDelivery_time(Integer delivery_time) {
+	this.delivery_time = delivery_time;
     }
 }

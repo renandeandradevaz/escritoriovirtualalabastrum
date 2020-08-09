@@ -11,7 +11,7 @@
 					<th></th>
 					<th>Forma de envio</th>
 					<th>Valor</th>
-					<th>Tempo para entrega aproximado (dias úteis)</th>
+					<th>Dias úteis para entrega</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -25,7 +25,7 @@
 							R$
 							<fmt:formatNumber value="${item.price}" pattern="#,##0.00" />
 						</td>
-						<td class="centralizado">${item.deliveryTime}</td>
+						<td class="centralizado">${item.delivery_time}</td>
 						<td style="text-align: center;">
 							<a class="btn" href="<c:url value="/pedido/escolherFormaDeEnvioPorId/${item.id}"/>"> Escolher </a>
 						</td>

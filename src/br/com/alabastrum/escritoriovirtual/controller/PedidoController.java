@@ -123,7 +123,6 @@ public class PedidoController {
 	    validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
 	    return;
 	}
-	this.sessaoGeral.adicionar(PedidoService.FORMA_DE_ENTREGA, formaDeEntrega);
 
 	if (this.sessaoUsuario.getUsuario().getId() == null) {
 	    idCodigo = (Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_LOJA_PESSOAL);
@@ -157,6 +156,7 @@ public class PedidoController {
 	    pedido.setTipo(definirTipoDoPedido());
 	}
 
+	pedido.setFormaDeEntrega(formaDeEntrega);
 	pedido.setIdFranquia(idFranquia);
 	hibernateUtil.salvarOuAtualizar(pedido);
 
@@ -165,7 +165,7 @@ public class PedidoController {
 	List<Categoria> todasCategorias = hibernateUtil.buscar(new Categoria(), Order.asc("catNome"));
 	List<Categoria> categoriasSemTaxas = new ArrayList<Categoria>();
 	for (Categoria categoria : todasCategorias) {
-	    if (!categoria.getCatNome().equalsIgnoreCase("taxas")) {
+	    if (!categoria.getCatNome().equalsIgnoreCase(PedidoService.TAXAS)) {
 		categoriasSemTaxas.add(categoria);
 	    }
 	}
@@ -214,7 +214,7 @@ public class PedidoController {
 	result.include("itensPedidoDTO", itensPedidoDTO);
 
 	result.include("totais", new PedidoService(hibernateUtil).calcularTotais(pedido));
-	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), pedido.getIdCodigo(), (String) sessaoGeral.getValor(PedidoService.FORMA_DE_ENTREGA));
+	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), pedido.getIdCodigo(), pedido.getFormaDeEntrega());
     }
 
     private BigDecimal calcularPrecoUnitarioProduto(BigDecimal precoUnitario) {
@@ -282,7 +282,7 @@ public class PedidoController {
 
 	if (pedido != null) {
 
-	    result.include(PedidoService.FORMA_DE_ENTREGA, this.sessaoGeral.getValor(PedidoService.FORMA_DE_ENTREGA));
+	    result.include(PedidoService.FORMA_DE_ENTREGA, pedido.getFormaDeEntrega());
 
 	    for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 		Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
@@ -308,33 +308,44 @@ public class PedidoController {
 	this.sessaoGeral.adicionar(PedidoService.OPCOES_DE_FRETE, opcoesDeFrete);
     }
 
+    @SuppressWarnings("unchecked")
     @Funcionalidade
     @Get("/pedido/escolherFormaDeEnvioPorId/{formaDeEnvioId}")
     public void escolherFormaDeEnvioPorId(Integer formaDeEnvioId) throws Exception {
 
-	ItemPedido itemPedidoFrete = null;
+	List<FreteResponseDTO> opcoesDeFrete = (List<FreteResponseDTO>) this.sessaoGeral.getValor(PedidoService.OPCOES_DE_FRETE);
+	for (FreteResponseDTO opcaoDeFrete : opcoesDeFrete) {
+	    if (opcaoDeFrete.getId().equals(formaDeEnvioId)) {
 
-	List<ItemPedido> itensPedido = new PedidoService(hibernateUtil).listarItensPedido(pedido);
-	for (ItemPedido itemPedido : itensPedido) {
-	    Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
-	    if (produto.getId_Produtos().equals(PedidoService.PRODUTO_FRETE_ID)) {
-		itemPedidoFrete = itemPedido;
+		ItemPedido itemPedidoFrete = null;
+		Pedido pedido = selecionarPedidoAberto();
+		List<ItemPedido> itensPedido = new PedidoService(hibernateUtil).listarItensPedido(pedido);
+		for (ItemPedido itemPedido : itensPedido) {
+		    Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
+		    if (produto.getId_Produtos().equals(PedidoService.PRODUTO_FRETE_ID)) {
+			itemPedidoFrete = itemPedido;
+			break;
+		    }
+		}
+
+		if (itemPedidoFrete == null) {
+		    itemPedidoFrete = new ItemPedido();
+		    itemPedidoFrete.setIdProduto(PedidoService.PRODUTO_FRETE_ID);
+		    itemPedidoFrete.setPedido(pedido);
+		    itemPedidoFrete.setQuantidade(1);
+		}
+
+		itemPedidoFrete.setPrecoUnitario(new BigDecimal(opcaoDeFrete.getPrice()));
+		hibernateUtil.salvarOuAtualizar(itemPedidoFrete);
+
+		pedido.setEmpresaParaEntrega(opcaoDeFrete.getCompany().getName());
+		hibernateUtil.salvarOuAtualizar(pedido);
+
 		break;
 	    }
 	}
 
-	if (itemPedidoFrete == null) {
-	    itemPedidoFrete = new ItemPedido();
-	    itemPedidoFrete.setIdProduto(PedidoService.PRODUTO_FRETE_ID);
-	    itemPedidoFrete.setPedido(pedido);
-	    itemPedidoFrete.setQuantidade(1);
-	}
-
-	Franquia franquia = hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia()));
-	Usuario distribuidorPedido = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
-
-	itemPedidoFrete.setPrecoUnitario(BigDecimal.ZERO);
-	hibernateUtil.salvarOuAtualizar(itemPedidoFrete);
+	result.forwardTo(this).escolherFormaDePagamento();
     }
 
     @Funcionalidade
@@ -343,7 +354,15 @@ public class PedidoController {
 
 	Pedido pedido = selecionarPedidoAberto();
 	ItemPedido itemPedido = selecionarItemPedido(idProduto, pedido);
-	hibernateUtil.deletar(itemPedido);
+	Produto produto = this.hibernateUtil.selecionar(new Produto(idProduto));
+	Categoria categoria = new Categoria();
+	categoria.setId_Categoria(produto.getId_Categoria());
+	categoria = this.hibernateUtil.selecionar(categoria);
+
+	if (!categoria.getCatNome().equalsIgnoreCase(PedidoService.TAXAS)) {
+	    hibernateUtil.deletar(itemPedido);
+	}
+
 	result.forwardTo(this).acessarCarrinho();
     }
 
@@ -351,7 +370,7 @@ public class PedidoController {
     public void escolherFormaDePagamento() throws Exception {
 
 	Pedido pedido = selecionarPedidoAberto();
-	Integer valorTotal = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal().intValue();
+	Integer valorTotal = new PedidoService(hibernateUtil).calcularTotalSemFrete(pedido).intValue();
 
 	boolean mostrarDialogoDescontos = true;
 
@@ -384,7 +403,7 @@ public class PedidoController {
 	}
 
 	result.include("mostrarDialogoDescontos", mostrarDialogoDescontos);
-	result.include(PedidoService.FORMA_DE_ENTREGA, this.sessaoGeral.getValor(PedidoService.FORMA_DE_ENTREGA));
+	result.include(PedidoService.FORMA_DE_ENTREGA, pedido.getFormaDeEntrega());
 
 	verificarPagamentoComSaldoHabilitado(pedido);
     }
@@ -458,38 +477,42 @@ public class PedidoController {
 
 	    for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 		Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
-		BigDecimal precoUnitarioProduto = produto.getPrdPreco_Unit();
-		BigDecimal precoUnitarioItemPedido = precoUnitarioProduto.multiply(new BigDecimal("2"));
 
-		if (formaDePagamento.equalsIgnoreCase("pagarComSaldo")) {
-		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
+		if (!produto.getId_Produtos().equals(PedidoService.PRODUTO_FRETE_ID)) {
 
-		} else if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
-		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
+		    BigDecimal precoUnitarioProduto = produto.getPrdPreco_Unit();
+		    BigDecimal precoUnitarioItemPedido = precoUnitarioProduto.multiply(new BigDecimal("2"));
 
-		} else if (formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
-		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
+		    if (formaDePagamento.equalsIgnoreCase("pagarComSaldo")) {
+			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
 
-		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebitoNoPA")) {
-		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
+		    } else if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
+			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
 
-		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebitoOnline")) {
-		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
+		    } else if (formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
+			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
 
-		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoNoPA")) {
-		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.44")));
+		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebitoNoPA")) {
+			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
 
-		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoOnline")) {
-		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.44")));
+		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebitoOnline")) {
+			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
 
+		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoNoPA")) {
+			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.44")));
+
+		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoOnline")) {
+			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.44")));
+
+		    }
+
+		    else {
+			throw new Exception("Forma de pagamento desconhecida: " + formaDePagamento);
+		    }
+
+		    itemPedido.setPrecoUnitario(precoUnitarioItemPedido);
+		    this.hibernateUtil.salvarOuAtualizar(itemPedido);
 		}
-
-		else {
-		    throw new Exception("Forma de pagamento desconhecida: " + formaDePagamento);
-		}
-
-		itemPedido.setPrecoUnitario(precoUnitarioItemPedido);
-		this.hibernateUtil.salvarOuAtualizar(itemPedido);
 	    }
 	}
     }
@@ -517,10 +540,15 @@ public class PedidoController {
 	    if (itemPedido.getQuantidade() > quantidadeEmEstoque) {
 
 		Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()));
+		Categoria categoria = new Categoria();
+		categoria.setId_Categoria(produto.getId_Categoria());
+		categoria = this.hibernateUtil.selecionar(categoria);
 
-		validator.add(new ValidationMessage("O produto " + produto.getPrdNome() + " possui " + quantidadeEmEstoque + " unidades no estoque", "Erro"));
-		validator.onErrorRedirectTo(this).acessarCarrinho();
-		return;
+		if (!categoria.getCatNome().equalsIgnoreCase(PedidoService.TAXAS)) {
+		    validator.add(new ValidationMessage("O produto " + produto.getPrdNome() + " possui " + quantidadeEmEstoque + " unidades no estoque", "Erro"));
+		    validator.onErrorRedirectTo(this).acessarCarrinho();
+		    return;
+		}
 	    }
 	}
 

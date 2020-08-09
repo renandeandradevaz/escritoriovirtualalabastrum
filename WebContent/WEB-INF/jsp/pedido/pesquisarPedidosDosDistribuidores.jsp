@@ -28,6 +28,8 @@
 				<th>Valor</th>
 				<th>Status</th>
 				<th>Forma de pagamento</th>
+				<th>Forma de entrega</th>
+				<th>Empresa para entrega</th>
 				<th></th>
 				<th></th>
 				<th></th>
@@ -48,6 +50,8 @@
 					</td>
 					<td class="centralizado">${item.pedido.status}</td>
 					<td class="centralizado">${item.pedido.formaDePagamento}</td>
+					<td class="centralizado">${item.pedido.formaDeEntrega}</td>
+					<td class="centralizado">${item.pedido.empresaParaEntrega}</td>
 					<td style="text-align: center;">
 						<a class="btn btn-default" href="<c:url value="/pedido/verItens/${item.pedido.id}"/>"> Detalhar </a>
 					</td>
