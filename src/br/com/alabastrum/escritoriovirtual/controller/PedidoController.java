@@ -338,7 +338,7 @@ public class PedidoController {
 		itemPedidoFrete.setPrecoUnitario(new BigDecimal(opcaoDeFrete.getPrice()));
 		hibernateUtil.salvarOuAtualizar(itemPedidoFrete);
 
-		pedido.setEmpresaParaEntrega(opcaoDeFrete.getCompany().getName());
+		pedido.setEmpresaParaEntrega(opcaoDeFrete.getCompany().getName() + " - " + opcaoDeFrete.getName());
 		hibernateUtil.salvarOuAtualizar(pedido);
 
 		break;

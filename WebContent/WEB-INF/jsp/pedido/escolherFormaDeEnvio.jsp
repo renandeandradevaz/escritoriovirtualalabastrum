@@ -10,6 +10,7 @@
 				<tr>
 					<th></th>
 					<th>Forma de envio</th>
+					<th>Empresa</th>
 					<th>Valor</th>
 					<th>Dias úteis para entrega</th>
 				</tr>
@@ -20,6 +21,7 @@
 						<td class="centralizado">
 							<img style="width: 50px" src="${item.company.picture}" />
 						</td>
+						<td class="centralizado">${item.name}</td>
 						<td class="centralizado">${item.company.name}</td>
 						<td class="centralizado">
 							R$

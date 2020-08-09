@@ -4,6 +4,7 @@ public class FreteResponseDTO {
 
     private String error;
     private Integer id;
+    private String name;
     private String price;
     private Integer delivery_time;
     private CompanyDTO company;
@@ -46,5 +47,13 @@ public class FreteResponseDTO {
 
     public void setDelivery_time(Integer delivery_time) {
 	this.delivery_time = delivery_time;
+    }
+
+    public String getName() {
+	return name;
+    }
+
+    public void setName(String name) {
+	this.name = name;
     }
 }
