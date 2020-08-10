@@ -5,8 +5,7 @@
 <c:if test="${sessaoUsuario.usuario.id_Codigo != null}">
 	<br>
 	<div class="fundo-branco">
-		<h5>Forma de entrega:</h5>
-		<p>Retirar em ${franquia.estqUF} - ${franquia.estqCidade} - ${franquia.estqBairro} - ${franquia.estqEndereco} - ${franquia.estqTelefone}</p>
+		<p>Ponto de Apoio escolhido: ${franquia.estqUF} - ${franquia.estqCidade} - ${franquia.estqBairro} - ${franquia.estqEndereco} - ${franquia.estqTelefone}</p>
 		<a class="btn btn-default" href="<c:url value="/pedido/acessarTelaNovoPedido"/>"> Trocar </a>
 	</div>
 </c:if>

@@ -51,7 +51,7 @@ public class FreteService {
 	Integer capacidadeEscolhida = Integer.MAX_VALUE;
 	List<Caixa> caixas = this.hibernateUtil.buscar(new Caixa());
 	for (Caixa caixa : caixas) {
-	    if (caixa.getCapacidadeCaixa() > tamanhoTotalInteiro && caixa.getCapacidadeCaixa() < capacidadeEscolhida) {
+	    if (caixa.getCapacidadeCaixa() >= tamanhoTotalInteiro && caixa.getCapacidadeCaixa() <= capacidadeEscolhida) {
 		capacidadeEscolhida = caixa.getCapacidadeCaixa();
 		caixaEscolhida = caixa;
 	    }
