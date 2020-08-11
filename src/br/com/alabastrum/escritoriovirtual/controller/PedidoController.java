@@ -124,6 +124,10 @@ public class PedidoController {
 	    return;
 	}
 
+	if (Util.vazio(nickname)) {
+	    nickname = this.sessaoUsuario.getUsuario().getApelido();
+	}
+
 	Usuario usuario = new Usuario();
 	usuario.setApelido(nickname);
 	usuario = this.hibernateUtil.selecionar(usuario);
