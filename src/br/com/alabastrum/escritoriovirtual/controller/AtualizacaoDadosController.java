@@ -166,6 +166,12 @@ public class AtualizacaoDadosController {
 	    return;
 	}
 
+	if (!usuario.getvNome().contains(" ")) {
+	    validator.add(new ValidationMessage("Informe o seu nome completo. No padrão: Nome + Sobrenome", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaCadastro();
+	    return;
+	}
+
 	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 	try {
 	    format.setLenient(false);
