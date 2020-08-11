@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class FreteService {
 	    }
 
 	    quantidadeDeCaixas = (tamanhoTotalInteiro / tamanhoMaiorCaixa) + 1;
-	    pesoProdutos = pesoProdutos.divide(new BigDecimal(quantidadeDeCaixas));
+	    pesoProdutos = pesoProdutos.divide(new BigDecimal(quantidadeDeCaixas), 2, RoundingMode.HALF_UP);
 	}
 
 	FreteResponseDTO[] opcoesDeFrete = buscarOpcoesDeFreteAPIMelhorEnvio(cepOrigem, cepDestino, caixaEscolhida, pesoProdutos);
