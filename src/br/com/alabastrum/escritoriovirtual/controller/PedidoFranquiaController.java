@@ -18,6 +18,7 @@ import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.dto.ItemPedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.PedidoFranquiaDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.ItemPedidoFranquia;
 import br.com.alabastrum.escritoriovirtual.modelo.PedidoFranquia;
@@ -33,243 +34,245 @@ import br.com.caelum.vraptor.Result;
 @Resource
 public class PedidoFranquiaController {
 
-	private Result result;
-	private HibernateUtil hibernateUtil;
-	private SessaoUsuario sessaoUsuario;
-	private SessaoGeral sessaoGeral;
+    private Result result;
+    private HibernateUtil hibernateUtil;
+    private SessaoUsuario sessaoUsuario;
+    private SessaoGeral sessaoGeral;
 
-	public PedidoFranquiaController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario, SessaoGeral sessaoGeral) {
-		this.result = result;
-		this.hibernateUtil = hibernateUtil;
-		this.sessaoUsuario = sessaoUsuario;
-		this.sessaoGeral = sessaoGeral;
+    public PedidoFranquiaController(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario, SessaoGeral sessaoGeral) {
+	this.result = result;
+	this.hibernateUtil = hibernateUtil;
+	this.sessaoUsuario = sessaoUsuario;
+	this.sessaoGeral = sessaoGeral;
+    }
+
+    @Funcionalidade
+    public void pedidosFranquia(String status) {
+
+	if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+
+	    if (Util.vazio(status)) {
+		status = "PENDENTE";
+	    }
+
+	    PedidoFranquia filtro = new PedidoFranquia();
+	    filtro.setStatus(status);
+
+	    List<Criterion> restricoes = new ArrayList<Criterion>();
+
+	    Franquia franquiaFiltro = new Franquia();
+	    franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+	    List<Franquia> franquias = hibernateUtil.buscar(franquiaFiltro);
+
+	    List<Integer> idFranquias = new ArrayList<Integer>();
+
+	    for (Franquia franquia : franquias) {
+		idFranquias.add(franquia.getId_Estoque());
+	    }
+
+	    restricoes.add(Restrictions.in("idFranquia", idFranquias));
+
+	    List<PedidoFranquia> pedidos = hibernateUtil.buscar(filtro, restricoes, Order.desc("id"));
+
+	    List<PedidoFranquiaDTO> pedidosDTO = new ArrayList<PedidoFranquiaDTO>();
+	    for (PedidoFranquia pedidoFranquia : pedidos) {
+
+		Franquia franquia = hibernateUtil.selecionar(new Franquia(pedidoFranquia.getIdFranquia()));
+
+		pedidosDTO.add(new PedidoFranquiaDTO(pedidoFranquia, franquia, pedidoFranquia.obterValorTotal()));
+	    }
+
+	    result.include("searchEndpoint", "pedidosFranquia");
+	    result.include("pedidos", pedidosDTO);
+	    result.include("status", status);
+	}
+    }
+
+    @Funcionalidade(administrativa = "true")
+    public void todosPedidosFranquia(String status) {
+
+	if (Util.vazio(status)) {
+	    status = "PENDENTE";
 	}
 
-	@Funcionalidade
-	public void pedidosFranquia(String status) {
+	PedidoFranquia filtro = new PedidoFranquia();
+	filtro.setStatus(status);
 
-		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+	List<PedidoFranquia> pedidos = hibernateUtil.buscar(filtro, Order.desc("id"));
 
-			if (Util.vazio(status)) {
-				status = "PENDENTE";
-			}
+	List<PedidoFranquiaDTO> pedidosDTO = new ArrayList<PedidoFranquiaDTO>();
+	for (PedidoFranquia pedidoFranquia : pedidos) {
 
-			PedidoFranquia filtro = new PedidoFranquia();
-			filtro.setStatus(status);
+	    Franquia franquia = hibernateUtil.selecionar(new Franquia(pedidoFranquia.getIdFranquia()));
 
-			List<Criterion> restricoes = new ArrayList<Criterion>();
-
-			Franquia franquiaFiltro = new Franquia();
-			franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
-			List<Franquia> franquias = hibernateUtil.buscar(franquiaFiltro);
-
-			List<Integer> idFranquias = new ArrayList<Integer>();
-
-			for (Franquia franquia : franquias) {
-				idFranquias.add(franquia.getId_Estoque());
-			}
-
-			restricoes.add(Restrictions.in("idFranquia", idFranquias));
-
-			List<PedidoFranquia> pedidos = hibernateUtil.buscar(filtro, restricoes, Order.desc("id"));
-
-			List<PedidoFranquiaDTO> pedidosDTO = new ArrayList<PedidoFranquiaDTO>();
-			for (PedidoFranquia pedidoFranquia : pedidos) {
-
-				Franquia franquia = hibernateUtil.selecionar(new Franquia(pedidoFranquia.getIdFranquia()));
-
-				pedidosDTO.add(new PedidoFranquiaDTO(pedidoFranquia, franquia, pedidoFranquia.obterValorTotal()));
-			}
-
-			result.include("searchEndpoint", "pedidosFranquia");
-			result.include("pedidos", pedidosDTO);
-			result.include("status", status);
-		}
+	    pedidosDTO.add(new PedidoFranquiaDTO(pedidoFranquia, franquia, pedidoFranquia.obterValorTotal()));
 	}
 
-	@Funcionalidade(administrativa = "true")
-	public void todosPedidosFranquia(String status) {
+	result.include("searchEndpoint", "todosPedidosFranquia");
+	result.include("pedidos", pedidosDTO);
+	result.include("status", status);
 
-		if (Util.vazio(status)) {
-			status = "PENDENTE";
-		}
+	result.forwardTo("/WEB-INF/jsp//pedidoFranquia/pedidosFranquia.jsp");
+    }
 
-		PedidoFranquia filtro = new PedidoFranquia();
-		filtro.setStatus(status);
+    @Funcionalidade
+    public void novoPedido() {
 
-		List<PedidoFranquia> pedidos = hibernateUtil.buscar(filtro, Order.desc("id"));
+	if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
 
-		List<PedidoFranquiaDTO> pedidosDTO = new ArrayList<PedidoFranquiaDTO>();
-		for (PedidoFranquia pedidoFranquia : pedidos) {
+	    this.sessaoGeral.adicionar("idPedido", null);
 
-			Franquia franquia = hibernateUtil.selecionar(new Franquia(pedidoFranquia.getIdFranquia()));
+	    Franquia franquiaFiltro = new Franquia();
+	    franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+	    result.include("franquias", hibernateUtil.buscar(franquiaFiltro));
+	}
+    }
 
-			pedidosDTO.add(new PedidoFranquiaDTO(pedidoFranquia, franquia, pedidoFranquia.obterValorTotal()));
-		}
+    @Funcionalidade
+    public void listarProdutos(Integer idFranquia) {
 
-		result.include("searchEndpoint", "todosPedidosFranquia");
-		result.include("pedidos", pedidosDTO);
-		result.include("status", status);
+	this.sessaoGeral.adicionar("idFranquia", idFranquia);
 
-		result.forwardTo("/WEB-INF/jsp//pedidoFranquia/pedidosFranquia.jsp");
+	List<Produto> produtos = hibernateUtil.buscar(new Produto(), Order.asc("id_Categoria"));
+
+	List<ItemPedidoDTO> itens = new ArrayList<ItemPedidoDTO>();
+
+	for (Produto produto : produtos) {
+
+	    itens.add(new ItemPedidoDTO(produto, 0, calcularPrecoUnitario(produto), new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(produto.getId_Produtos(), idFranquia), produto.obterCategoria()));
 	}
 
-	@Funcionalidade
-	public void novoPedido() {
+	result.include("permitirAlterar", true);
+	result.include("itens", itens);
+    }
 
-		if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+    private BigDecimal calcularPrecoUnitario(Produto produto) {
 
-			this.sessaoGeral.adicionar("idPedido", null);
+	BigDecimal precoUnitario = produto.getPrdPreco_Unit();
 
-			Franquia franquiaFiltro = new Franquia();
-			franquiaFiltro.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
-			result.include("franquias", hibernateUtil.buscar(franquiaFiltro));
-		}
+	Categoria categoria = produto.obterCategoria();
+
+	if (categoria != null && !categoria.getCatNome().equalsIgnoreCase("material de apoio")) {
+	    precoUnitario = precoUnitario.subtract(precoUnitario.multiply(new BigDecimal("0.1")));
 	}
+	return precoUnitario;
+    }
 
-	@Funcionalidade
-	public void listarProdutos(Integer idFranquia) {
+    @Funcionalidade
+    public void concluirPedido(HashMap<String, String> quantidades) {
 
-		this.sessaoGeral.adicionar("idFranquia", idFranquia);
+	if (this.sessaoGeral.getValor("idPedido") == null) {
 
-		List<Produto> produtos = hibernateUtil.buscar(new Produto(), Order.asc("id_Categoria"));
+	    Integer idFranquia = (Integer) this.sessaoGeral.getValor("idFranquia");
 
-		List<ItemPedidoDTO> itens = new ArrayList<ItemPedidoDTO>();
+	    PedidoFranquia pedidoFranquia = new PedidoFranquia();
+	    pedidoFranquia.setData(new GregorianCalendar());
+	    pedidoFranquia.setIdFranquia(idFranquia);
+	    pedidoFranquia.setStatus("PENDENTE");
+	    hibernateUtil.salvarOuAtualizar(pedidoFranquia);
 
-		for (Produto produto : produtos) {
+	    for (Entry<String, String> quantidadeEntry : quantidades.entrySet()) {
 
-			itens.add(new ItemPedidoDTO(produto, 0, calcularPrecoUnitario(produto), new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(produto.getId_Produtos(), idFranquia), produto.obterCategoria()));
+		Integer quantidade = Integer.valueOf(quantidadeEntry.getValue());
+
+		if (quantidade > 0) {
+
+		    Produto produto = hibernateUtil.selecionar(new Produto(String.valueOf(quantidadeEntry.getKey())));
+
+		    ItemPedidoFranquia itemPedidoFranquia = new ItemPedidoFranquia();
+		    itemPedidoFranquia.setPedidoFranquia(pedidoFranquia);
+		    itemPedidoFranquia.setIdProduto(produto.getId_Produtos());
+		    itemPedidoFranquia.setQuantidade(quantidade);
+		    itemPedidoFranquia.setPrecoUnitario(calcularPrecoUnitario(produto));
+		    hibernateUtil.salvarOuAtualizar(itemPedidoFranquia);
 		}
+	    }
 
-		result.include("permitirAlterar", true);
-		result.include("itens", itens);
-	}
+	} else {
 
-	private BigDecimal calcularPrecoUnitario(Produto produto) {
+	    Integer idPedido = (Integer) this.sessaoGeral.getValor("idPedido");
 
-		BigDecimal precoUnitario = produto.getPrdPreco_Unit();
+	    ItemPedidoFranquia filtro = new ItemPedidoFranquia();
+	    filtro.setPedidoFranquia(new PedidoFranquia(idPedido));
+	    List<ItemPedidoFranquia> itens = hibernateUtil.buscar(filtro);
 
-		if (!produto.obterCategoria().getCatNome().equalsIgnoreCase("material de apoio")) {
-			precoUnitario = precoUnitario.subtract(precoUnitario.multiply(new BigDecimal("0.1")));
-		}
-		return precoUnitario;
-	}
+	    for (ItemPedidoFranquia item : itens) {
 
-	@Funcionalidade
-	public void concluirPedido(HashMap<String, String> quantidades) {
+		Integer quantidade = Integer.valueOf(quantidades.get(item.getIdProduto()));
 
-		if (this.sessaoGeral.getValor("idPedido") == null) {
-
-			Integer idFranquia = (Integer) this.sessaoGeral.getValor("idFranquia");
-
-			PedidoFranquia pedidoFranquia = new PedidoFranquia();
-			pedidoFranquia.setData(new GregorianCalendar());
-			pedidoFranquia.setIdFranquia(idFranquia);
-			pedidoFranquia.setStatus("PENDENTE");
-			hibernateUtil.salvarOuAtualizar(pedidoFranquia);
-
-			for (Entry<String, String> quantidadeEntry : quantidades.entrySet()) {
-
-				Integer quantidade = Integer.valueOf(quantidadeEntry.getValue());
-
-				if (quantidade > 0) {
-
-					Produto produto = hibernateUtil.selecionar(new Produto(String.valueOf(quantidadeEntry.getKey())));
-
-					ItemPedidoFranquia itemPedidoFranquia = new ItemPedidoFranquia();
-					itemPedidoFranquia.setPedidoFranquia(pedidoFranquia);
-					itemPedidoFranquia.setIdProduto(produto.getId_Produtos());
-					itemPedidoFranquia.setQuantidade(quantidade);
-					itemPedidoFranquia.setPrecoUnitario(calcularPrecoUnitario(produto));
-					hibernateUtil.salvarOuAtualizar(itemPedidoFranquia);
-				}
-			}
-
-		} else {
-
-			Integer idPedido = (Integer) this.sessaoGeral.getValor("idPedido");
-
-			ItemPedidoFranquia filtro = new ItemPedidoFranquia();
-			filtro.setPedidoFranquia(new PedidoFranquia(idPedido));
-			List<ItemPedidoFranquia> itens = hibernateUtil.buscar(filtro);
-
-			for (ItemPedidoFranquia item : itens) {
-
-				Integer quantidade = Integer.valueOf(quantidades.get(item.getIdProduto()));
-
-				if (quantidade < 0) {
-					quantidade = 0;
-				}
-
-				if (quantidade == 0) {
-					hibernateUtil.deletar(item);
-				}
-
-				if (quantidade > 0) {
-					item.setQuantidade(quantidade);
-					hibernateUtil.salvarOuAtualizar(item);
-				}
-			}
+		if (quantidade < 0) {
+		    quantidade = 0;
 		}
 
-		result.forwardTo(this).pedidosFranquia(null);
-	}
-
-	@Funcionalidade
-	@Get("/pedidoFranquia/verItens/{idPedido}")
-	public void verItens(Integer idPedido) {
-
-		this.sessaoGeral.adicionar("idPedido", idPedido);
-
-		List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
-
-		PedidoFranquia pedidoFranquia = hibernateUtil.selecionar(new PedidoFranquia(idPedido));
-
-		ItemPedidoFranquia filtro = new ItemPedidoFranquia();
-		filtro.setPedidoFranquia(pedidoFranquia);
-		List<ItemPedidoFranquia> itens = hibernateUtil.buscar(filtro);
-
-		for (ItemPedidoFranquia item : itens) {
-
-			Produto produto = hibernateUtil.selecionar(new Produto(item.getIdProduto()), MatchMode.EXACT);
-			itensPedidoDTO.add(new ItemPedidoDTO(produto, item.getQuantidade(), item.getPrecoUnitario(), new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(produto.getId_Produtos(), pedidoFranquia.getIdFranquia()), produto.obterCategoria()));
+		if (quantidade == 0) {
+		    hibernateUtil.deletar(item);
 		}
 
-		itensPedidoDTO = ordenarPorCategoria(itensPedidoDTO);
-
-		result.include("itens", itensPedidoDTO);
-		result.include("permitirAlterar", pedidoFranquia.getStatus().equals("PENDENTE"));
-		result.forwardTo("/WEB-INF/jsp//pedidoFranquia/listarProdutos.jsp");
-	}
-
-	private List<ItemPedidoDTO> ordenarPorCategoria(List<ItemPedidoDTO> itens) {
-
-		Collections.sort(itens, new Comparator<ItemPedidoDTO>() {
-
-			public int compare(ItemPedidoDTO item1, ItemPedidoDTO item2) {
-				return item1.getCategoria().getCatNome().compareTo(item2.getCategoria().getCatNome());
-			}
-		});
-
-		return itens;
-	}
-
-	@Funcionalidade(administrativa = "true")
-	@Get("/pedidoFranquia/marcarComoEntregue/{idPedido}")
-	public void marcarComoEntregue(Integer idPedido) {
-
-		PedidoFranquia pedidoFranquia = hibernateUtil.selecionar(new PedidoFranquia(idPedido));
-		ItemPedidoFranquia filtro = new ItemPedidoFranquia();
-		filtro.setPedidoFranquia(pedidoFranquia);
-		List<ItemPedidoFranquia> itens = hibernateUtil.buscar(filtro);
-
-		for (ItemPedidoFranquia item : itens) {
-			new EstoqueService(hibernateUtil).adicionarAoEstoque(item.getIdProduto(), pedidoFranquia.getIdFranquia(), item.getQuantidade());
+		if (quantidade > 0) {
+		    item.setQuantidade(quantidade);
+		    hibernateUtil.salvarOuAtualizar(item);
 		}
-
-		pedidoFranquia.setStatus("ENTREGUE");
-		hibernateUtil.salvarOuAtualizar(pedidoFranquia);
-
-		result.forwardTo(this).pedidosFranquia(null);
+	    }
 	}
+
+	result.forwardTo(this).pedidosFranquia(null);
+    }
+
+    @Funcionalidade
+    @Get("/pedidoFranquia/verItens/{idPedido}")
+    public void verItens(Integer idPedido) {
+
+	this.sessaoGeral.adicionar("idPedido", idPedido);
+
+	List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
+
+	PedidoFranquia pedidoFranquia = hibernateUtil.selecionar(new PedidoFranquia(idPedido));
+
+	ItemPedidoFranquia filtro = new ItemPedidoFranquia();
+	filtro.setPedidoFranquia(pedidoFranquia);
+	List<ItemPedidoFranquia> itens = hibernateUtil.buscar(filtro);
+
+	for (ItemPedidoFranquia item : itens) {
+
+	    Produto produto = hibernateUtil.selecionar(new Produto(item.getIdProduto()), MatchMode.EXACT);
+	    itensPedidoDTO.add(new ItemPedidoDTO(produto, item.getQuantidade(), item.getPrecoUnitario(), new EstoqueService(hibernateUtil).getQuantidadeEmEstoque(produto.getId_Produtos(), pedidoFranquia.getIdFranquia()), produto.obterCategoria()));
+	}
+
+	itensPedidoDTO = ordenarPorCategoria(itensPedidoDTO);
+
+	result.include("itens", itensPedidoDTO);
+	result.include("permitirAlterar", pedidoFranquia.getStatus().equals("PENDENTE"));
+	result.forwardTo("/WEB-INF/jsp//pedidoFranquia/listarProdutos.jsp");
+    }
+
+    private List<ItemPedidoDTO> ordenarPorCategoria(List<ItemPedidoDTO> itens) {
+
+	Collections.sort(itens, new Comparator<ItemPedidoDTO>() {
+
+	    public int compare(ItemPedidoDTO item1, ItemPedidoDTO item2) {
+		return item1.getCategoria().getCatNome().compareTo(item2.getCategoria().getCatNome());
+	    }
+	});
+
+	return itens;
+    }
+
+    @Funcionalidade(administrativa = "true")
+    @Get("/pedidoFranquia/marcarComoEntregue/{idPedido}")
+    public void marcarComoEntregue(Integer idPedido) {
+
+	PedidoFranquia pedidoFranquia = hibernateUtil.selecionar(new PedidoFranquia(idPedido));
+	ItemPedidoFranquia filtro = new ItemPedidoFranquia();
+	filtro.setPedidoFranquia(pedidoFranquia);
+	List<ItemPedidoFranquia> itens = hibernateUtil.buscar(filtro);
+
+	for (ItemPedidoFranquia item : itens) {
+	    new EstoqueService(hibernateUtil).adicionarAoEstoque(item.getIdProduto(), pedidoFranquia.getIdFranquia(), item.getQuantidade());
+	}
+
+	pedidoFranquia.setStatus("ENTREGUE");
+	hibernateUtil.salvarOuAtualizar(pedidoFranquia);
+
+	result.forwardTo(this).pedidosFranquia(null);
+    }
 }

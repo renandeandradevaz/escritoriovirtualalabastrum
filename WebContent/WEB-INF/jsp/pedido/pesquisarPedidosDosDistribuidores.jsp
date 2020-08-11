@@ -39,7 +39,7 @@
 			<c:forEach items="${pedidosDTO}" var="item">
 				<tr>
 					<td class="centralizado">${item.pedido.id}</td>
-					<td class="centralizado">${item.pedido.idCodigo}</td>
+					<td class="centralizado">${item.distribuidor.apelido}</td>
 					<td class="centralizado">${item.franquia.estqUF}-${item.franquia.estqCidade}-${item.franquia.estqBairro}</td>
 					<td class="centralizado">
 						<fmt:formatDate value="${item.pedido.data.time}" type="DATE" />

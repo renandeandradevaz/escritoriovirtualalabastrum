@@ -115,7 +115,7 @@ public class PedidoController {
     }
 
     @Funcionalidade
-    public void escolherProdutos(Integer idFranquia, Integer idCodigo, String formaDeEntrega) {
+    public void escolherProdutos(Integer idFranquia, String nickname, String formaDeEntrega) {
 
 	if (Util.vazio(formaDeEntrega)) {
 
@@ -123,6 +123,19 @@ public class PedidoController {
 	    validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
 	    return;
 	}
+
+	Usuario usuario = new Usuario();
+	usuario.setApelido(nickname);
+	usuario = this.hibernateUtil.selecionar(usuario);
+
+	if (Util.vazio(usuario)) {
+
+	    validator.add(new ValidationMessage("Nao existe ninguem cadastrado com este nickname: " + nickname, "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
+	    return;
+	}
+
+	Integer idCodigo = usuario.getId_Codigo();
 
 	if (this.sessaoUsuario.getUsuario().getId() == null) {
 	    idCodigo = (Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_LOJA_PESSOAL);
@@ -214,7 +227,8 @@ public class PedidoController {
 	result.include("itensPedidoDTO", itensPedidoDTO);
 
 	result.include("totais", new PedidoService(hibernateUtil).calcularTotais(pedido));
-	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), pedido.getIdCodigo(), pedido.getFormaDeEntrega());
+	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), usuario.getApelido(), pedido.getFormaDeEntrega());
     }
 
     private BigDecimal calcularPrecoUnitarioProduto(BigDecimal precoUnitario) {
@@ -848,7 +862,7 @@ public class PedidoController {
 	franquia.setEstqNome("VENDA ONLINE");
 	franquia = this.hibernateUtil.selecionar(franquia);
 
-	this.escolherProdutos(franquia.getId_Estoque(), idUsuario, PedidoService.RECEBER_EM_CASA);
+	this.escolherProdutos(franquia.getId_Estoque(), usuario.getApelido(), PedidoService.RECEBER_EM_CASA);
 	result.forwardTo("/WEB-INF/jsp//pedido/escolherProdutos.jsp");
     }
 
@@ -880,7 +894,8 @@ public class PedidoController {
 	List<PedidoDTO> pedidosDTO = new ArrayList<PedidoDTO>();
 
 	for (Pedido pedido : pedidos) {
-	    pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal(), null, null));
+	    Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+	    pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal(), null, null, usuario));
 	}
 
 	result.include("pedidosDTO", pedidosDTO);

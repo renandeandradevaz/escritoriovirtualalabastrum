@@ -87,7 +87,7 @@ public class PedidoService {
 	    totalPontos = totalPontos.add(produto.getPrdPontos().multiply(new BigDecimal(quantidade)));
 	}
 
-	return new PedidoDTO(pedido, null, valorTotal, totalItens, totalPontos);
+	return new PedidoDTO(pedido, null, valorTotal, totalItens, totalPontos, null);
     }
 
     public BigDecimal calcularTotalSemFrete(Pedido pedido) {

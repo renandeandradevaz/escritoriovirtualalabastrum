@@ -84,6 +84,10 @@
 				<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="submenu-accordion"> Produtos </a>
 				<a href="<c:url value="/pedido/acessarCarrinho"/>" class="submenu-accordion"> Meu Carrinho </a>
 				<a href="<c:url value="/pedido/meusPedidos"/>" class="submenu-accordion"> Meus Pedidos </a>
+				<c:if test="${sessaoUsuario.usuario.donoDeFranquia}">
+					<a href="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" class="submenu-accordion"> Pedidos da franquia </a>
+					<a href="<c:url value="/pedidoFranquia/pedidosFranquia"/>" class="submenu-accordion"> Pedidos para estoque </a>
+				</c:if>
 			</div>
 			<h3 class="menu-accordion has-child">Financeiro</h3>
 			<div>
