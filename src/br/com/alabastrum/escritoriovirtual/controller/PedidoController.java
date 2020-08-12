@@ -75,7 +75,7 @@ public class PedidoController {
 	}
 	buscarFranquias();
 
-	if (isPrimeiroPedido()) {
+	if (isPrimeiroPedido(this.sessaoUsuario.getUsuario().getId_Codigo())) {
 	    this.sessaoGeral.adicionar("isPrimeiroPedido", true);
 	    Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
 	    Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
@@ -83,7 +83,7 @@ public class PedidoController {
 	    return;
 	}
 
-	if (isInativo()) {
+	if (isInativo(this.sessaoUsuario.getUsuario().getId_Codigo())) {
 	    this.sessaoGeral.adicionar("isInativo", true);
 	    Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
 	    Integer valorMaximoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAtividade"));
@@ -92,17 +92,17 @@ public class PedidoController {
 	}
     }
 
-    private boolean isPrimeiroPedido() {
+    private boolean isPrimeiroPedido(Integer idCodigo) {
 
 	Pedido pedidoFiltro = new Pedido();
-	pedidoFiltro.setIdCodigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+	pedidoFiltro.setIdCodigo(idCodigo);
 	pedidoFiltro.setStatus(PedidoService.FINALIZADO);
 	return hibernateUtil.contar(pedidoFiltro) == 0;
     }
 
-    private boolean isInativo() {
+    private boolean isInativo(Integer idCodigo) {
 
-	return !new AtividadeService(hibernateUtil).isAtivo(this.sessaoUsuario.getUsuario().getId_Codigo());
+	return !new AtividadeService(hibernateUtil).isAtivo(idCodigo);
     }
 
     private void buscarFranquias() {
@@ -140,6 +140,9 @@ public class PedidoController {
 	}
 
 	Integer idCodigo = usuario.getId_Codigo();
+
+	this.sessaoGeral.adicionar("isPrimeiroPedido", isPrimeiroPedido(idCodigo));
+	this.sessaoGeral.adicionar("isInativo", isInativo(idCodigo));
 
 	if (this.sessaoUsuario.getUsuario().getId() == null) {
 	    idCodigo = (Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_LOJA_PESSOAL);
