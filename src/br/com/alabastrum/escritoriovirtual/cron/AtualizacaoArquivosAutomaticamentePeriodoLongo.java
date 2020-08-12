@@ -60,7 +60,7 @@ public class AtualizacaoArquivosAutomaticamentePeriodoLongo implements Runnable 
 
 	Scheduler scheduler = new Scheduler();
 
-	scheduler.schedule("0 */4 * * *", task);
+	scheduler.schedule("0 */2 * * *", task);
 
 	scheduler.start();
     }

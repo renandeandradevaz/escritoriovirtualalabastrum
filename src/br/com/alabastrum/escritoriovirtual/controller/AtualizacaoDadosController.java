@@ -2,8 +2,10 @@ package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Public;
@@ -20,6 +22,8 @@ import br.com.caelum.vraptor.validator.ValidationMessage;
 
 @Resource
 public class AtualizacaoDadosController {
+
+    private static final List<String> nicknamesCadastradosRecentemente = new ArrayList<String>();
 
     private Result result;
     private SessaoUsuario sessaoUsuario;
@@ -211,7 +215,10 @@ public class AtualizacaoDadosController {
 	textoArquivo += "Email: \'" + usuario.geteMail() + "\'\r\n";
 	textoArquivo += "codigo_quem_indicou: \'" + usuarioQuemIndicou.getId_Codigo() + "\'\r\n";
 
-	ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PRE_CADASTRO);
+	if (!nicknamesCadastradosRecentemente.contains(apelido)) {
+	    nicknamesCadastradosRecentemente.add(apelido);
+	    ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PRE_CADASTRO);
+	}
 
 	result.redirectTo(this).sucessoCadastro();
     }
