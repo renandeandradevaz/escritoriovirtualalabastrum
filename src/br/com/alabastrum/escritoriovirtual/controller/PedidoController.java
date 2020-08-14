@@ -284,12 +284,12 @@ public class PedidoController {
 	    itemPedido.setPrecoUnitario(calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()));
 	}
 
-	itemPedido.setQuantidade(quantidade);
-	hibernateUtil.salvarOuAtualizar(itemPedido);
-
 	if (quantidade == null) {
 	    quantidade = 1;
 	}
+
+	itemPedido.setQuantidade(quantidade);
+	hibernateUtil.salvarOuAtualizar(itemPedido);
 
 	if (quantidade <= 0) {
 	    hibernateUtil.deletar(itemPedido);
