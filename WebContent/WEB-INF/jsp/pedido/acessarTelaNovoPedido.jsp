@@ -26,6 +26,12 @@
 					</c:forEach>
 				</select>
 				<br>
+				<br>
+				<input type="checkbox" name='adesaoPontoDeApoio' />
+				<span>Desejo fazer uma adesão de Ponto de Apoio </span>
+				<br>
+				<br>
+				<br>
 				<div style="border: 1px black solid; padding: 10px; max-width: 300px; border-radius: 10px">
 					<h6>Obs: Para receber os seus produtos em casa, é necessário que o seu endereço esteja devidamente cadastrado e revisado nos seus dados cadastrais.</h6>
 					<h6>Os seus dados para entrega são:</h6>

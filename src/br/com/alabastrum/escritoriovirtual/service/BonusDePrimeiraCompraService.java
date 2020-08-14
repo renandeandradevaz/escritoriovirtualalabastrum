@@ -62,32 +62,43 @@ public class BonusDePrimeiraCompraService {
 		    }
 
 		    if (adesaoNoNivel != null) {
-
-			Pedido pedidoFiltro = new Pedido();
-			pedidoFiltro.setIdCodigo(arvoreHierarquicaEntry.getValue().getUsuario().getId_Codigo());
-			pedidoFiltro.setStatus(PedidoService.FINALIZADO);
-			pedidoFiltro.setTipo(PedidoService.ADESAO);
-
-			List<Criterion> restricoes = new ArrayList<Criterion>();
-			restricoes.add(Restrictions.between("data", primeiroDiaDoMes, primeiroDiaDoProximoMes));
-
-			List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes);
-
-			if (Util.preenchido(pedidos)) {
-			    for (Pedido pedido : pedidos) {
-				PedidoDTO pedidoDTO = new PedidoService(hibernateUtil).calcularTotais(pedido);
-				BigDecimal valorTotal = pedidoDTO.getValorTotal();
-
-				if (valorTotal.compareTo(new BigDecimal("120")) != -1) {
-				    extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesao(), "Bônus de primeira compra"));
-				}
-			    }
-			}
+			buscarPedidosEAdicionarAoExtrato(extratos, primeiroDiaDoMes, primeiroDiaDoProximoMes, arvoreHierarquicaEntry, adesaoNoNivel, PedidoService.ADESAO);
+			buscarPedidosEAdicionarAoExtrato(extratos, primeiroDiaDoMes, primeiroDiaDoProximoMes, arvoreHierarquicaEntry, adesaoNoNivel, PedidoService.ADESAO_PA);
 		    }
 		}
 	    }
 	}
 
 	return extratos;
+    }
+
+    private void buscarPedidosEAdicionarAoExtrato(List<ExtratoDTO> extratos, GregorianCalendar primeiroDiaDoMes, GregorianCalendar primeiroDiaDoProximoMes, Entry<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEntry, Adesao adesaoNoNivel, String tipoDeAdesao) {
+
+	Pedido pedidoFiltro = new Pedido();
+	pedidoFiltro.setIdCodigo(arvoreHierarquicaEntry.getValue().getUsuario().getId_Codigo());
+	pedidoFiltro.setStatus(PedidoService.FINALIZADO);
+	pedidoFiltro.setTipo(tipoDeAdesao);
+
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+	restricoes.add(Restrictions.between("data", primeiroDiaDoMes, primeiroDiaDoProximoMes));
+
+	List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes);
+
+	if (Util.preenchido(pedidos)) {
+	    for (Pedido pedido : pedidos) {
+		PedidoDTO pedidoDTO = new PedidoService(hibernateUtil).calcularTotais(pedido);
+		BigDecimal valorTotal = pedidoDTO.getValorTotal();
+
+		if (tipoDeAdesao.equals(PedidoService.ADESAO)) {
+		    if (valorTotal.compareTo(new BigDecimal("120")) != -1) {
+			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesao(), "Bônus de primeira compra"));
+		    }
+		} else if (tipoDeAdesao.equals(PedidoService.ADESAO_PA)) {
+		    if (valorTotal.compareTo(new BigDecimal("1000")) != -1) {
+			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesaoPA(), "Bônus de adesão de ponto de apoio"));
+		    }
+		}
+	    }
+	}
     }
 }

@@ -18,6 +18,7 @@ public class Adesao implements Entidade {
 
     private GregorianCalendar data_referencia;
     private BigDecimal bonusAdesao;
+    private BigDecimal bonusAdesaoPA;
     private Integer geracao;
 
     public Integer getId() {
@@ -50,5 +51,13 @@ public class Adesao implements Entidade {
 
     public void setBonusAdesao(BigDecimal bonusAdesao) {
 	this.bonusAdesao = bonusAdesao;
+    }
+
+    public BigDecimal getBonusAdesaoPA() {
+	return bonusAdesaoPA;
+    }
+
+    public void setBonusAdesaoPA(BigDecimal bonusAdesaoPA) {
+	this.bonusAdesaoPA = bonusAdesaoPA;
     }
 }

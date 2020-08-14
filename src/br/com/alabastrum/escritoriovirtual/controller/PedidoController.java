@@ -115,7 +115,7 @@ public class PedidoController {
     }
 
     @Funcionalidade
-    public void escolherProdutos(Integer idFranquia, String nickname, String formaDeEntrega) {
+    public void escolherProdutos(Integer idFranquia, String nickname, String formaDeEntrega, Boolean adesaoPontoDeApoio) {
 
 	if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
 	    formaDeEntrega = PedidoService.RECEBER_NO_PA;
@@ -150,9 +150,6 @@ public class PedidoController {
 
 	Integer idCodigo = usuario.getId_Codigo();
 
-	this.sessaoGeral.adicionar("isPrimeiroPedido", isPrimeiroPedido(idCodigo));
-	this.sessaoGeral.adicionar("isInativo", isInativo(idCodigo));
-
 	if (this.sessaoUsuario.getUsuario().getId() == null) {
 	    idCodigo = (Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_LOJA_PESSOAL);
 
@@ -166,6 +163,9 @@ public class PedidoController {
 	    idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
 	}
 	this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_PEDIDO, idCodigo);
+	this.sessaoGeral.adicionar("isPrimeiroPedido", isPrimeiroPedido(idCodigo));
+	this.sessaoGeral.adicionar("isInativo", isInativo(idCodigo));
+	this.sessaoGeral.adicionar("adesaoPontoDeApoio", adesaoPontoDeApoio);
 
 	if (formaDeEntrega.equals(PedidoService.RECEBER_EM_CASA)) {
 	    idFranquia = 1;
@@ -207,9 +207,13 @@ public class PedidoController {
 
     private String definirTipoDoPedido() {
 
+	Object adesaoPontoDeApoio = this.sessaoGeral.getValor("adesaoPontoDeApoio");
 	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
 	Object isInativo = this.sessaoGeral.getValor("isInativo");
-	if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido)
+
+	if (adesaoPontoDeApoio != null && (Boolean) adesaoPontoDeApoio)
+	    return PedidoService.ADESAO_PA;
+	else if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido)
 	    return PedidoService.ADESAO;
 	else if (isInativo != null && (Boolean) isInativo)
 	    return PedidoService.ATIVIDADE;
@@ -248,7 +252,7 @@ public class PedidoController {
 
 	result.include("totais", new PedidoService(hibernateUtil).calcularTotais(pedido));
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
-	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), usuario.getApelido(), pedido.getFormaDeEntrega());
+	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), usuario.getApelido(), pedido.getFormaDeEntrega(), (Boolean) this.sessaoGeral.getValor("adesaoPontoDeApoio"));
     }
 
     private BigDecimal calcularPrecoUnitarioProduto(BigDecimal precoUnitario) {
@@ -882,7 +886,7 @@ public class PedidoController {
 	franquia.setEstqNome("VENDA ONLINE");
 	franquia = this.hibernateUtil.selecionar(franquia);
 
-	this.escolherProdutos(franquia.getId_Estoque(), usuario.getApelido(), PedidoService.RECEBER_EM_CASA);
+	this.escolherProdutos(franquia.getId_Estoque(), usuario.getApelido(), PedidoService.RECEBER_EM_CASA, null);
 	result.forwardTo("/WEB-INF/jsp//pedido/escolherProdutos.jsp");
     }
 

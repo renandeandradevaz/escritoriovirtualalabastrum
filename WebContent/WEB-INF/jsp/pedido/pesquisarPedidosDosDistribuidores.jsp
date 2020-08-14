@@ -22,6 +22,7 @@
 		<thead>
 			<tr>
 				<th>Código do pedido</th>
+				<th>Tipo do pedido</th>
 				<th>Distribuidor</th>
 				<th>Franquia</th>
 				<th>Data</th>
@@ -39,6 +40,7 @@
 			<c:forEach items="${pedidosDTO}" var="item">
 				<tr>
 					<td class="centralizado">${item.pedido.id}</td>
+					<td class="centralizado">${item.pedido.tipo}</td>
 					<td class="centralizado">${item.distribuidor.apelido}</td>
 					<td class="centralizado">${item.franquia.estqUF}-${item.franquia.estqCidade}-${item.franquia.estqBairro}</td>
 					<td class="centralizado">
