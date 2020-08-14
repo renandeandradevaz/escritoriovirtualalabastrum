@@ -32,13 +32,13 @@ public class HomeController {
     @Funcionalidade
     public void home() throws Exception {
 
-	Usuario usuario = this.sessaoUsuario.getUsuario();
-
-	TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo());
-	result.include("quantidadeAfiliados", arvoreHierarquica.size());
-	result.include("ultimosQualificados", new QualificacaoService(hibernateUtil).obterUltimosQualificados(arvoreHierarquica));
-	result.include("ultimosCadastros", new QualificacaoService(hibernateUtil).obterUltimosCadastros(arvoreHierarquica));
-	result.include("posicaoAtual", usuario.getPosAtual().replaceAll(" ", "").toLowerCase());
-	result.include("proximaPosicao", new PosicoesService(hibernateUtil).obterNomeProximaPosicao(usuario.getPosAtual()).replaceAll(" ", "").toLowerCase());
+//	Usuario usuario = this.sessaoUsuario.getUsuario();
+//
+//	TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo());
+//	result.include("quantidadeAfiliados", arvoreHierarquica.size());
+//	result.include("ultimosQualificados", new QualificacaoService(hibernateUtil).obterUltimosQualificados(arvoreHierarquica));
+//	result.include("ultimosCadastros", new QualificacaoService(hibernateUtil).obterUltimosCadastros(arvoreHierarquica));
+//	result.include("posicaoAtual", usuario.getPosAtual().replaceAll(" ", "").toLowerCase());
+//	result.include("proximaPosicao", new PosicoesService(hibernateUtil).obterNomeProximaPosicao(usuario.getPosAtual()).replaceAll(" ", "").toLowerCase());
     }
 }

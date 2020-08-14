@@ -287,6 +287,10 @@ public class PedidoController {
 	itemPedido.setQuantidade(quantidade);
 	hibernateUtil.salvarOuAtualizar(itemPedido);
 
+	if (quantidade == null) {
+	    quantidade = 1;
+	}
+
 	if (quantidade <= 0) {
 	    hibernateUtil.deletar(itemPedido);
 	}
