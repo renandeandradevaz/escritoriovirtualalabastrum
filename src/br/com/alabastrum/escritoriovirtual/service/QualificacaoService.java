@@ -16,153 +16,155 @@ import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 
 public class QualificacaoService {
 
-	private HibernateUtil hibernateUtil;
+    private HibernateUtil hibernateUtil;
 
-	public QualificacaoService(HibernateUtil hibernateUtil) {
+    public QualificacaoService(HibernateUtil hibernateUtil) {
 
-		this.hibernateUtil = hibernateUtil;
+	this.hibernateUtil = hibernateUtil;
+    }
+
+    public List<QualificacaoDTO> obterIndicadosDiretosNaPosicao(Integer idCodigo, Integer posicao) {
+
+	Usuario usuarioFiltro = new Usuario();
+	usuarioFiltro.setId_Indicante(idCodigo);
+	List<Usuario> usuarios = hibernateUtil.buscar(usuarioFiltro);
+
+	List<QualificacaoDTO> qualificacoes = new ArrayList<QualificacaoDTO>();
+
+	for (Usuario usuario : usuarios) {
+
+	    Qualificacao qualificacaoFiltro = new Qualificacao();
+	    qualificacaoFiltro.setId_Codigo(usuario.getId_Codigo());
+	    List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
+
+	    if (qualificacoesDoDistribuidor.size() >= posicao) {
+		Qualificacao qualificacaoNaPosicao = qualificacoesDoDistribuidor.get(posicao - 1);
+		qualificacoes.add(new QualificacaoDTO(usuario, qualificacaoNaPosicao));
+	    }
 	}
 
-	public List<QualificacaoDTO> obterIndicadosDiretosNaPosicao(Integer idCodigo, Integer posicao) {
+	return qualificacoes;
+    }
 
-		Usuario usuarioFiltro = new Usuario();
-		usuarioFiltro.setId_Indicante(idCodigo);
-		List<Usuario> usuarios = hibernateUtil.buscar(usuarioFiltro);
+    public Qualificacao obterQualificacaoNaPosicao(Integer idCodigo, Integer posicao) {
 
-		List<QualificacaoDTO> qualificacoes = new ArrayList<QualificacaoDTO>();
+	Qualificacao qualificacaoFiltro = new Qualificacao();
+	qualificacaoFiltro.setId_Codigo(idCodigo);
+	List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
 
-		for (Usuario usuario : usuarios) {
-
-			Qualificacao qualificacaoFiltro = new Qualificacao();
-			qualificacaoFiltro.setId_Codigo(usuario.getId_Codigo());
-			List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
-
-			if (qualificacoesDoDistribuidor.size() >= posicao) {
-				Qualificacao qualificacaoNaPosicao = qualificacoesDoDistribuidor.get(posicao - 1);
-				qualificacoes.add(new QualificacaoDTO(usuario, qualificacaoNaPosicao));
-			}
-		}
-
-		return qualificacoes;
+	if (qualificacoesDoDistribuidor.size() >= posicao) {
+	    return qualificacoesDoDistribuidor.get(posicao - 1);
 	}
 
-	public Qualificacao obterQualificacaoNaPosicao(Integer idCodigo, Integer posicao) {
+	return null;
+    }
 
-		Qualificacao qualificacaoFiltro = new Qualificacao();
-		qualificacaoFiltro.setId_Codigo(idCodigo);
-		List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
+    public List<QualificacaoDTO> obterUltimosQualificados(TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
 
-		if (qualificacoesDoDistribuidor.size() >= posicao) {
-			return qualificacoesDoDistribuidor.get(posicao - 1);
-		}
+	List<QualificacaoDTO> qualificacoes = new ArrayList<QualificacaoDTO>();
 
-		return null;
+	for (Entry<Integer, ArvoreHierarquicaDTO> entry : arvoreHierarquica.entrySet()) {
+
+	    Usuario usuario = entry.getValue().getUsuario();
+
+	    Qualificacao filtro = new Qualificacao();
+	    filtro.setId_Codigo(usuario.getId_Codigo());
+	    List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(filtro);
+
+	    if (qualificacoesDoDistribuidor.size() > 2) {
+		Qualificacao ultimaQualificacao = qualificacoesDoDistribuidor.get(qualificacoesDoDistribuidor.size() - 1);
+		qualificacoes.add(new QualificacaoDTO(usuario, ultimaQualificacao));
+	    }
 	}
 
-	public List<QualificacaoDTO> obterUltimosQualificados(TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
+	qualificacoes = ordenarQualificacoesPorDataDescrescente(qualificacoes);
 
-		List<QualificacaoDTO> qualificacoes = new ArrayList<QualificacaoDTO>();
-
-		for (Entry<Integer, ArvoreHierarquicaDTO> entry : arvoreHierarquica.entrySet()) {
-
-			Usuario usuario = entry.getValue().getUsuario();
-
-			Qualificacao filtro = new Qualificacao();
-			filtro.setId_Codigo(usuario.getId_Codigo());
-			List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(filtro);
-
-			if (qualificacoesDoDistribuidor.size() > 2) {
-				Qualificacao ultimaQualificacao = qualificacoesDoDistribuidor.get(qualificacoesDoDistribuidor.size() - 1);
-				qualificacoes.add(new QualificacaoDTO(usuario, ultimaQualificacao));
-			}
-		}
-
-		qualificacoes = ordenarQualificacoesPorDataDescrescente(qualificacoes);
-
-		if (qualificacoes.size() > 7) {
-			return qualificacoes.subList(0, 6);
-		}
-
-		return qualificacoes;
+	if (qualificacoes.size() > 7) {
+	    return qualificacoes.subList(0, 6);
 	}
 
-	public List<QualificacaoDTO> obterUltimosCadastros(TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
+	return qualificacoes;
+    }
 
-		List<QualificacaoDTO> qualificacoes = new ArrayList<QualificacaoDTO>();
+    public List<QualificacaoDTO> obterUltimosCadastros(TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
 
-		for (Entry<Integer, ArvoreHierarquicaDTO> entry : arvoreHierarquica.entrySet()) {
+	List<QualificacaoDTO> qualificacoes = new ArrayList<QualificacaoDTO>();
 
-			Usuario usuario = entry.getValue().getUsuario();
+	for (Entry<Integer, ArvoreHierarquicaDTO> entry : arvoreHierarquica.entrySet()) {
 
-			Qualificacao filtro = new Qualificacao();
-			filtro.setId_Codigo(usuario.getId_Codigo());
-			List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(filtro);
+	    Usuario usuario = entry.getValue().getUsuario();
 
-			if (qualificacoesDoDistribuidor.size() <= 2) {
-				Qualificacao qualificacao = qualificacoesDoDistribuidor.get(0);
-				qualificacoes.add(new QualificacaoDTO(usuario, qualificacao));
-			}
-		}
+	    Qualificacao filtro = new Qualificacao();
+	    filtro.setId_Codigo(usuario.getId_Codigo());
+	    List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(filtro);
 
-		qualificacoes = ordenarQualificacoesPorDataDescrescente(qualificacoes);
-
-		if (qualificacoes.size() > 20) {
-			return qualificacoes.subList(0, 19);
-		}
-
-		return qualificacoes;
+	    if (qualificacoesDoDistribuidor.size() <= 2) {
+		Qualificacao qualificacao = qualificacoesDoDistribuidor.get(0);
+		qualificacoes.add(new QualificacaoDTO(usuario, qualificacao));
+	    }
 	}
 
-	public List<Qualificacao> obterQualificacoes(Integer idCodigo) {
+	qualificacoes = ordenarQualificacoesPorDataDescrescente(qualificacoes);
 
-		Qualificacao qualificacaoFiltro = new Qualificacao();
-		qualificacaoFiltro.setId_Codigo(idCodigo);
-		return hibernateUtil.buscar(qualificacaoFiltro);
+	if (qualificacoes.size() > 20) {
+	    return qualificacoes.subList(0, 19);
 	}
 
-	public Qualificacao obterUltimaQualificacao(Integer idCodigo) {
+	return qualificacoes;
+    }
 
-		Qualificacao qualificacaoFiltro = new Qualificacao();
-		qualificacaoFiltro.setId_Codigo(idCodigo);
-		List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
-		return qualificacoesDoDistribuidor.get(qualificacoesDoDistribuidor.size() - 1);
+    public List<Qualificacao> obterQualificacoes(Integer idCodigo) {
+
+	Qualificacao qualificacaoFiltro = new Qualificacao();
+	qualificacaoFiltro.setId_Codigo(idCodigo);
+	return hibernateUtil.buscar(qualificacaoFiltro);
+    }
+
+    public Qualificacao obterUltimaQualificacao(Integer idCodigo) {
+
+	Qualificacao qualificacaoFiltro = new Qualificacao();
+	qualificacaoFiltro.setId_Codigo(idCodigo);
+	List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
+	return qualificacoesDoDistribuidor.get(qualificacoesDoDistribuidor.size() - 1);
+    }
+
+    public String obterPosicaoNaData(Integer idCodigo, GregorianCalendar data) {
+
+	Qualificacao qualificacaoFiltro = new Qualificacao();
+	qualificacaoFiltro.setId_Codigo(idCodigo);
+	List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
+
+	List<Qualificacao> qualificacoesAntesDaData = new ArrayList<Qualificacao>();
+
+	for (Qualificacao qualificacao : qualificacoesDoDistribuidor) {
+
+	    if (qualificacao.getData().before(data)) {
+		qualificacoesAntesDaData.add(qualificacao);
+	    }
 	}
 
-	public String obterPosicaoNaData(Integer idCodigo, GregorianCalendar data) {
-
-		Qualificacao qualificacaoFiltro = new Qualificacao();
-		qualificacaoFiltro.setId_Codigo(idCodigo);
-		List<Qualificacao> qualificacoesDoDistribuidor = hibernateUtil.buscar(qualificacaoFiltro);
-
-		List<Qualificacao> qualificacoesAntesDaData = new ArrayList<Qualificacao>();
-
-		for (Qualificacao qualificacao : qualificacoesDoDistribuidor) {
-
-			if (qualificacao.getData().before(data)) {
-				qualificacoesAntesDaData.add(qualificacao);
-			}
-		}
-
-		if (qualificacoesAntesDaData.size() > 0) {
-			return new PosicoesService(hibernateUtil).obterNomeDaPosicao(qualificacoesAntesDaData.size());
-		}
-
-		return "Desconhecido";
+	if (qualificacoesAntesDaData.size() > 0) {
+	    return new PosicoesService(hibernateUtil).obterNomeDaPosicao(qualificacoesAntesDaData.size());
 	}
 
-	private List<QualificacaoDTO> ordenarQualificacoesPorDataDescrescente(List<QualificacaoDTO> qualificacoes) {
+	return "Desconhecido";
+    }
 
-		Collections.sort(qualificacoes, new Comparator<QualificacaoDTO>() {
+    private List<QualificacaoDTO> ordenarQualificacoesPorDataDescrescente(List<QualificacaoDTO> qualificacoes) {
 
-			public int compare(QualificacaoDTO q1, QualificacaoDTO q2) {
+	Collections.sort(qualificacoes, new Comparator<QualificacaoDTO>() {
 
-				if (q1.getQualificacao().getData().getTimeInMillis() > q2.getQualificacao().getData().getTimeInMillis()) {
-					return -1;
-				}
-				return 1;
-			}
-		});
+	    public int compare(QualificacaoDTO q1, QualificacaoDTO q2) {
 
-		return qualificacoes;
-	}
+		if (q1.getQualificacao().getData().getTimeInMillis() > q2.getQualificacao().getData().getTimeInMillis())
+		    return -1;
+		else if (q1.getQualificacao().getData().getTimeInMillis() <= q2.getQualificacao().getData().getTimeInMillis())
+		    return 1;
+		else
+		    return 0;
+	    }
+	});
+
+	return qualificacoes;
+    }
 }
