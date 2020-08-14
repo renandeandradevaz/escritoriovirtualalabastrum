@@ -284,7 +284,7 @@ public class PedidoController {
 	    itemPedido.setPrecoUnitario(calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()));
 	}
 
-	if (quantidade == null) {
+	if (quantidade == null || quantidade == 0) {
 	    quantidade = 1;
 	}
 
