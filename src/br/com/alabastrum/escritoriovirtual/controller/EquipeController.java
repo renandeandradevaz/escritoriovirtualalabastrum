@@ -13,7 +13,6 @@ import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
 import br.com.alabastrum.escritoriovirtual.service.HierarquiaService;
-import br.com.alabastrum.escritoriovirtual.service.QualificacaoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Resource;
@@ -51,6 +50,7 @@ public class EquipeController {
 	arvoreHierarquica = filtrarPorApenasIndicados(arvoreHierarquica, pesquisaEquipeDTO.getApenasIndicados());
 	arvoreHierarquica = filtrarPorAtividade(arvoreHierarquica, pesquisaEquipeDTO.getAtivos());
 	arvoreHierarquica = filtrarPorMesAniversario(arvoreHierarquica, pesquisaEquipeDTO.getMesAniversario());
+	arvoreHierarquica = filtrarPorPagosEPendentes(arvoreHierarquica, pesquisaEquipeDTO.getPagosEPendentes());
 	List<EquipeDTO> equipe = gerarEquipe(arvoreHierarquica);
 
 	result.include("totalCadastros", totalCadastros);
@@ -69,11 +69,6 @@ public class EquipeController {
 	    EquipeDTO equipeDTO = new EquipeDTO();
 	    equipeDTO.setUsuario(arvoreHierarquicaDTO.getUsuario());
 	    equipeDTO.setNivel(arvoreHierarquicaDTO.getNivel());
-
-	    if (new QualificacaoService(hibernateUtil).obterQualificacoes(arvoreHierarquicaDTO.getUsuario().getId_Codigo()).size() == 1)
-		equipeDTO.setPreCadastro("Sim");
-	    else
-		equipeDTO.setPreCadastro("Não");
 
 	    equipe.add(equipeDTO);
 	}
@@ -176,6 +171,27 @@ public class EquipeController {
 		boolean usuarioAtivo = new AtividadeService(hibernateUtil).isAtivo(arvoreHierarquicaDTO.getUsuario().getId_Codigo());
 
 		if ((ativosFiltro && usuarioAtivo) || (!ativosFiltro && !usuarioAtivo)) {
+		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
+		}
+	    }
+	    return arvoreHierarquicaFiltrada;
+	}
+	return arvoreHierarquica;
+    }
+
+    private Collection<ArvoreHierarquicaDTO> filtrarPorPagosEPendentes(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, String pagosEPendentesFiltro) {
+
+	if (Util.preenchido(pagosEPendentesFiltro)) {
+
+	    List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+
+		Usuario usuario = this.hibernateUtil.selecionar(new Usuario(arvoreHierarquicaDTO.getUsuario().getId_Codigo()));
+
+		if (pagosEPendentesFiltro.equals("pagos") && usuario.getCadPreCadastro().equals(0)) {
+		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
+		} else if (pagosEPendentesFiltro.equals("pendentes") && usuario.getCadPreCadastro().equals(1)) {
 		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
 		}
 	    }

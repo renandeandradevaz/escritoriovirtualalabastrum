@@ -8,6 +8,7 @@ public class PesquisaEquipeDTO {
     private Boolean apenasIndicados;
     private Boolean ativos;
     private String mesAniversario;
+    private String pagosEPendentes;
 
     public String getApelido() {
 	return apelido;
@@ -55,5 +56,13 @@ public class PesquisaEquipeDTO {
 
     public void setMesAniversario(String mesAniversario) {
 	this.mesAniversario = mesAniversario;
+    }
+
+    public String getPagosEPendentes() {
+	return pagosEPendentes;
+    }
+
+    public void setPagosEPendentes(String pagosEPendentes) {
+	this.pagosEPendentes = pagosEPendentes;
     }
 }

@@ -19,453 +19,462 @@ import br.com.alabastrum.escritoriovirtual.util.Util;
 @Entity
 public class Usuario implements Entidade {
 
-	@Id
-	@GeneratedValue
-	private Integer id;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	private InformacoesFixasUsuario informacoesFixasUsuario;
-
-	private String CPF;
-	private String PosAtual;
-	private String PosAbrev;
-	private String vNome;
-	private String Tel;
-	private String eMail;
-	private String Dt_Nasc;
-	private String EV;
-	private String cadSexo;
-	private String cadEstCivil;
-	private String cadCEP;
-	private String cadBairro;
-	private String cadCidade;
-	private String cadUF;
-	private String cadCelular;
-	private String cadEndereco;
-	private String cadCCorrente;
-	private String cadBanco;
-	private String cadAgencia;
-	private String cadTipoConta;
-	private String cadRG;
-	private String cadOrgaoExpedidor;
-	private String apelido;
-	private String pisMis;
-	private String pasep;
-	private String cnpj;
-	private String razaoSocial;
-	private String nomeFantasia;
-	private String inscricaoEstadual;
-	private String agenciaBancoEspecifico;
-	private String contaBancoEspecifico;
-	private String bancoPessoaJuridica;
-	private String agenciaPessoaJuridica;
-	private String contaPessoaJuridica;
-	private String agenciaPessoaJuridicaBancoEspecifico;
-	private String contaPessoaJuridicaBancoEspecifico;
-
-	@Index(name = "index_id_Codigo")
-	private Integer id_Codigo;
-
-	@Index(name = "index_id_lider")
-	private Integer id_lider;
-
-	@Index(name = "index_id_Indicante")
-	private Integer id_Indicante;
-
-	@Transient
-	private String nicknameQuemIndicou;
-
-	@Transient
-	private Boolean donoDeFranquia;
-
-	public Usuario() {
+    @Id
+    @GeneratedValue
+    private Integer id;
 
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    private InformacoesFixasUsuario informacoesFixasUsuario;
 
-	public Usuario(Integer id_Codigo) {
-		this.id_Codigo = id_Codigo;
-	}
+    private String CPF;
+    private String PosAtual;
+    private String PosAbrev;
+    private String vNome;
+    private String Tel;
+    private String eMail;
+    private String Dt_Nasc;
+    private String EV;
+    private String cadSexo;
+    private String cadEstCivil;
+    private String cadCEP;
+    private String cadBairro;
+    private String cadCidade;
+    private String cadUF;
+    private String cadCelular;
+    private String cadEndereco;
+    private String cadCCorrente;
+    private String cadBanco;
+    private String cadAgencia;
+    private String cadTipoConta;
+    private String cadRG;
+    private String cadOrgaoExpedidor;
+    private String apelido;
+    private String pisMis;
+    private String pasep;
+    private String cnpj;
+    private String razaoSocial;
+    private String nomeFantasia;
+    private String inscricaoEstadual;
+    private String agenciaBancoEspecifico;
+    private String contaBancoEspecifico;
+    private String bancoPessoaJuridica;
+    private String agenciaPessoaJuridica;
+    private String contaPessoaJuridica;
+    private String agenciaPessoaJuridicaBancoEspecifico;
+    private String contaPessoaJuridicaBancoEspecifico;
+    private Integer cadPreCadastro;
 
-	public InformacoesFixasUsuario obterInformacoesFixasUsuario() {
+    @Index(name = "index_id_Codigo")
+    private Integer id_Codigo;
 
-		if (Util.preenchido(informacoesFixasUsuario)) {
+    @Index(name = "index_id_lider")
+    private Integer id_lider;
 
-			return informacoesFixasUsuario;
-		}
+    @Index(name = "index_id_Indicante")
+    private Integer id_Indicante;
 
-		InformacoesFixasUsuario informacoesFixasUsuario = new InformacoesFixasUsuario();
-		informacoesFixasUsuario.setCodigoUsuario(this.id_Codigo);
+    @Transient
+    private String nicknameQuemIndicou;
 
-		HibernateUtil hibernateUtil = new HibernateUtil();
+    @Transient
+    private Boolean donoDeFranquia;
 
-		informacoesFixasUsuario = hibernateUtil.selecionar(informacoesFixasUsuario, MatchMode.EXACT);
-		this.setInformacoesFixasUsuario(informacoesFixasUsuario);
+    public Usuario() {
 
-		hibernateUtil.fecharSessao();
+    }
 
-		return informacoesFixasUsuario;
-	}
+    public Usuario(Integer id_Codigo) {
+	this.id_Codigo = id_Codigo;
+    }
 
-	public Boolean getDonoDeFranquia() {
+    public InformacoesFixasUsuario obterInformacoesFixasUsuario() {
 
-		if (this.id_Codigo == null) {
-			return false;
-		}
+	if (Util.preenchido(informacoesFixasUsuario)) {
 
-		if (Util.preenchido(this.donoDeFranquia)) {
+	    return informacoesFixasUsuario;
+	}
 
-			return this.donoDeFranquia;
-		}
+	InformacoesFixasUsuario informacoesFixasUsuario = new InformacoesFixasUsuario();
+	informacoesFixasUsuario.setCodigoUsuario(this.id_Codigo);
 
-		HibernateUtil hibernateUtil = new HibernateUtil();
+	HibernateUtil hibernateUtil = new HibernateUtil();
 
-		Franquia franquiaFiltro = new Franquia();
-		franquiaFiltro.setId_Codigo(this.id_Codigo);
-		List<Franquia> franquias = hibernateUtil.buscar(franquiaFiltro);
+	informacoesFixasUsuario = hibernateUtil.selecionar(informacoesFixasUsuario, MatchMode.EXACT);
+	this.setInformacoesFixasUsuario(informacoesFixasUsuario);
 
-		if (franquias != null && franquias.size() > 0)
-			this.donoDeFranquia = true;
-		else
-			this.donoDeFranquia = false;
+	hibernateUtil.fecharSessao();
 
-		hibernateUtil.fecharSessao();
+	return informacoesFixasUsuario;
+    }
 
-		return this.donoDeFranquia;
-	}
+    public Boolean getDonoDeFranquia() {
 
-	public Integer getId() {
-		return id;
+	if (this.id_Codigo == null) {
+	    return false;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	if (Util.preenchido(this.donoDeFranquia)) {
 
-	public InformacoesFixasUsuario getInformacoesFixasUsuario() {
-		return informacoesFixasUsuario;
+	    return this.donoDeFranquia;
 	}
 
-	public void setInformacoesFixasUsuario(InformacoesFixasUsuario informacoesFixasUsuario) {
-		this.informacoesFixasUsuario = informacoesFixasUsuario;
-	}
+	HibernateUtil hibernateUtil = new HibernateUtil();
 
-	public String getCPF() {
-		return CPF;
-	}
+	Franquia franquiaFiltro = new Franquia();
+	franquiaFiltro.setId_Codigo(this.id_Codigo);
+	List<Franquia> franquias = hibernateUtil.buscar(franquiaFiltro);
 
-	public void setCPF(String cPF) {
-		CPF = cPF;
-	}
+	if (franquias != null && franquias.size() > 0)
+	    this.donoDeFranquia = true;
+	else
+	    this.donoDeFranquia = false;
 
-	public String getPosAtual() {
-		return PosAtual;
-	}
+	hibernateUtil.fecharSessao();
 
-	public void setPosAtual(String posAtual) {
-		PosAtual = posAtual;
-	}
+	return this.donoDeFranquia;
+    }
 
-	public String getPosAbrev() {
-		return PosAbrev;
-	}
+    public Integer getId() {
+	return id;
+    }
 
-	public void setPosAbrev(String posAbrev) {
-		PosAbrev = posAbrev;
-	}
+    public void setId(Integer id) {
+	this.id = id;
+    }
 
-	public String getvNome() {
-		return vNome;
-	}
+    public InformacoesFixasUsuario getInformacoesFixasUsuario() {
+	return informacoesFixasUsuario;
+    }
 
-	public void setvNome(String vNome) {
-		this.vNome = vNome;
-	}
+    public void setInformacoesFixasUsuario(InformacoesFixasUsuario informacoesFixasUsuario) {
+	this.informacoesFixasUsuario = informacoesFixasUsuario;
+    }
 
-	public String getTel() {
-		return Tel;
-	}
+    public String getCPF() {
+	return CPF;
+    }
 
-	public void setTel(String tel) {
-		Tel = tel;
-	}
+    public void setCPF(String cPF) {
+	CPF = cPF;
+    }
 
-	public String geteMail() {
-		return eMail;
-	}
+    public String getPosAtual() {
+	return PosAtual;
+    }
 
-	public void seteMail(String eMail) {
-		this.eMail = eMail;
-	}
+    public void setPosAtual(String posAtual) {
+	PosAtual = posAtual;
+    }
 
-	public String getDt_Nasc() {
-		return Dt_Nasc;
-	}
+    public String getPosAbrev() {
+	return PosAbrev;
+    }
 
-	public void setDt_Nasc(String dt_Nasc) {
-		Dt_Nasc = dt_Nasc;
-	}
+    public void setPosAbrev(String posAbrev) {
+	PosAbrev = posAbrev;
+    }
 
-	public String getEV() {
-		return EV;
-	}
+    public String getvNome() {
+	return vNome;
+    }
 
-	public void setEV(String eV) {
-		EV = eV;
-	}
+    public void setvNome(String vNome) {
+	this.vNome = vNome;
+    }
 
-	public String getCadSexo() {
-		return cadSexo;
-	}
+    public String getTel() {
+	return Tel;
+    }
 
-	public void setCadSexo(String cadSexo) {
-		this.cadSexo = cadSexo;
-	}
+    public void setTel(String tel) {
+	Tel = tel;
+    }
 
-	public String getCadEstCivil() {
-		return cadEstCivil;
-	}
+    public String geteMail() {
+	return eMail;
+    }
 
-	public void setCadEstCivil(String cadEstCivil) {
-		this.cadEstCivil = cadEstCivil;
-	}
+    public void seteMail(String eMail) {
+	this.eMail = eMail;
+    }
 
-	public String getCadCEP() {
-		return cadCEP;
-	}
+    public String getDt_Nasc() {
+	return Dt_Nasc;
+    }
 
-	public void setCadCEP(String cadCEP) {
-		this.cadCEP = cadCEP;
-	}
+    public void setDt_Nasc(String dt_Nasc) {
+	Dt_Nasc = dt_Nasc;
+    }
 
-	public String getCadBairro() {
-		return cadBairro;
-	}
+    public String getEV() {
+	return EV;
+    }
 
-	public void setCadBairro(String cadBairro) {
-		this.cadBairro = cadBairro;
-	}
+    public void setEV(String eV) {
+	EV = eV;
+    }
 
-	public String getCadCidade() {
-		return cadCidade;
-	}
+    public String getCadSexo() {
+	return cadSexo;
+    }
 
-	public void setCadCidade(String cadCidade) {
-		this.cadCidade = cadCidade;
-	}
+    public void setCadSexo(String cadSexo) {
+	this.cadSexo = cadSexo;
+    }
 
-	public String getCadUF() {
-		return cadUF;
-	}
+    public String getCadEstCivil() {
+	return cadEstCivil;
+    }
 
-	public void setCadUF(String cadUF) {
-		this.cadUF = cadUF;
-	}
+    public void setCadEstCivil(String cadEstCivil) {
+	this.cadEstCivil = cadEstCivil;
+    }
 
-	public String getCadCelular() {
-		return cadCelular;
-	}
+    public String getCadCEP() {
+	return cadCEP;
+    }
 
-	public void setCadCelular(String cadCelular) {
-		this.cadCelular = cadCelular;
-	}
+    public void setCadCEP(String cadCEP) {
+	this.cadCEP = cadCEP;
+    }
 
-	public String getCadEndereco() {
-		return cadEndereco;
-	}
+    public String getCadBairro() {
+	return cadBairro;
+    }
 
-	public void setCadEndereco(String cadEndereco) {
-		this.cadEndereco = cadEndereco;
-	}
+    public void setCadBairro(String cadBairro) {
+	this.cadBairro = cadBairro;
+    }
 
-	public String getCadCCorrente() {
-		return cadCCorrente;
-	}
+    public String getCadCidade() {
+	return cadCidade;
+    }
 
-	public void setCadCCorrente(String cadCCorrente) {
-		this.cadCCorrente = cadCCorrente;
-	}
+    public void setCadCidade(String cadCidade) {
+	this.cadCidade = cadCidade;
+    }
 
-	public String getCadBanco() {
-		return cadBanco;
-	}
+    public String getCadUF() {
+	return cadUF;
+    }
 
-	public void setCadBanco(String cadBanco) {
-		this.cadBanco = cadBanco;
-	}
+    public void setCadUF(String cadUF) {
+	this.cadUF = cadUF;
+    }
 
-	public String getCadAgencia() {
-		return cadAgencia;
-	}
+    public String getCadCelular() {
+	return cadCelular;
+    }
 
-	public void setCadAgencia(String cadAgencia) {
-		this.cadAgencia = cadAgencia;
-	}
+    public void setCadCelular(String cadCelular) {
+	this.cadCelular = cadCelular;
+    }
 
-	public String getCadTipoConta() {
-		return cadTipoConta;
-	}
+    public String getCadEndereco() {
+	return cadEndereco;
+    }
 
-	public void setCadTipoConta(String cadTipoConta) {
-		this.cadTipoConta = cadTipoConta;
-	}
+    public void setCadEndereco(String cadEndereco) {
+	this.cadEndereco = cadEndereco;
+    }
 
-	public String getCadRG() {
-		return cadRG;
-	}
+    public String getCadCCorrente() {
+	return cadCCorrente;
+    }
 
-	public void setCadRG(String cadRG) {
-		this.cadRG = cadRG;
-	}
+    public void setCadCCorrente(String cadCCorrente) {
+	this.cadCCorrente = cadCCorrente;
+    }
 
-	public String getCadOrgaoExpedidor() {
-		return cadOrgaoExpedidor;
-	}
+    public String getCadBanco() {
+	return cadBanco;
+    }
 
-	public void setCadOrgaoExpedidor(String cadOrgaoExpedidor) {
-		this.cadOrgaoExpedidor = cadOrgaoExpedidor;
-	}
+    public void setCadBanco(String cadBanco) {
+	this.cadBanco = cadBanco;
+    }
 
-	public String getApelido() {
-		return apelido;
-	}
+    public String getCadAgencia() {
+	return cadAgencia;
+    }
 
-	public void setApelido(String apelido) {
-		this.apelido = apelido;
-	}
+    public void setCadAgencia(String cadAgencia) {
+	this.cadAgencia = cadAgencia;
+    }
 
-	public Integer getId_Codigo() {
-		return id_Codigo;
-	}
+    public String getCadTipoConta() {
+	return cadTipoConta;
+    }
 
-	public void setId_Codigo(Integer id_Codigo) {
-		this.id_Codigo = id_Codigo;
-	}
+    public void setCadTipoConta(String cadTipoConta) {
+	this.cadTipoConta = cadTipoConta;
+    }
 
-	public Integer getId_lider() {
-		return id_lider;
-	}
+    public String getCadRG() {
+	return cadRG;
+    }
 
-	public void setId_lider(Integer id_lider) {
-		this.id_lider = id_lider;
-	}
+    public void setCadRG(String cadRG) {
+	this.cadRG = cadRG;
+    }
 
-	public Integer getId_Indicante() {
-		return id_Indicante;
-	}
+    public String getCadOrgaoExpedidor() {
+	return cadOrgaoExpedidor;
+    }
 
-	public void setId_Indicante(Integer id_Indicante) {
-		this.id_Indicante = id_Indicante;
-	}
+    public void setCadOrgaoExpedidor(String cadOrgaoExpedidor) {
+	this.cadOrgaoExpedidor = cadOrgaoExpedidor;
+    }
 
-	public String getPisMis() {
-	    return pisMis;
-	}
+    public String getApelido() {
+	return apelido;
+    }
 
-	public void setPisMis(String pisMis) {
-	    this.pisMis = pisMis;
-	}
+    public void setApelido(String apelido) {
+	this.apelido = apelido;
+    }
 
-	public String getPasep() {
-	    return pasep;
-	}
+    public Integer getId_Codigo() {
+	return id_Codigo;
+    }
 
-	public void setPasep(String pasep) {
-	    this.pasep = pasep;
-	}
+    public void setId_Codigo(Integer id_Codigo) {
+	this.id_Codigo = id_Codigo;
+    }
 
-	public String getCnpj() {
-	    return cnpj;
-	}
+    public Integer getId_lider() {
+	return id_lider;
+    }
 
-	public void setCnpj(String cnpj) {
-	    this.cnpj = cnpj;
-	}
+    public void setId_lider(Integer id_lider) {
+	this.id_lider = id_lider;
+    }
 
-	public String getRazaoSocial() {
-	    return razaoSocial;
-	}
+    public Integer getId_Indicante() {
+	return id_Indicante;
+    }
 
-	public void setRazaoSocial(String razaoSocial) {
-	    this.razaoSocial = razaoSocial;
-	}
+    public void setId_Indicante(Integer id_Indicante) {
+	this.id_Indicante = id_Indicante;
+    }
 
-	public String getNomeFantasia() {
-	    return nomeFantasia;
-	}
+    public String getPisMis() {
+	return pisMis;
+    }
 
-	public void setNomeFantasia(String nomeFantasia) {
-	    this.nomeFantasia = nomeFantasia;
-	}
+    public void setPisMis(String pisMis) {
+	this.pisMis = pisMis;
+    }
 
-	public String getInscricaoEstadual() {
-	    return inscricaoEstadual;
-	}
+    public String getPasep() {
+	return pasep;
+    }
 
-	public void setInscricaoEstadual(String inscricaoEstadual) {
-	    this.inscricaoEstadual = inscricaoEstadual;
-	}
+    public void setPasep(String pasep) {
+	this.pasep = pasep;
+    }
 
-	public String getAgenciaBancoEspecifico() {
-	    return agenciaBancoEspecifico;
-	}
+    public String getCnpj() {
+	return cnpj;
+    }
 
-	public void setAgenciaBancoEspecifico(String agenciaBancoEspecifico) {
-	    this.agenciaBancoEspecifico = agenciaBancoEspecifico;
-	}
+    public void setCnpj(String cnpj) {
+	this.cnpj = cnpj;
+    }
 
-	public String getContaBancoEspecifico() {
-	    return contaBancoEspecifico;
-	}
+    public String getRazaoSocial() {
+	return razaoSocial;
+    }
 
-	public void setContaBancoEspecifico(String contaBancoEspecifico) {
-	    this.contaBancoEspecifico = contaBancoEspecifico;
-	}
+    public void setRazaoSocial(String razaoSocial) {
+	this.razaoSocial = razaoSocial;
+    }
 
-	public String getBancoPessoaJuridica() {
-	    return bancoPessoaJuridica;
-	}
+    public String getNomeFantasia() {
+	return nomeFantasia;
+    }
 
-	public void setBancoPessoaJuridica(String bancoPessoaJuridica) {
-	    this.bancoPessoaJuridica = bancoPessoaJuridica;
-	}
+    public void setNomeFantasia(String nomeFantasia) {
+	this.nomeFantasia = nomeFantasia;
+    }
 
-	public String getAgenciaPessoaJuridica() {
-	    return agenciaPessoaJuridica;
-	}
+    public String getInscricaoEstadual() {
+	return inscricaoEstadual;
+    }
 
-	public void setAgenciaPessoaJuridica(String agenciaPessoaJuridica) {
-	    this.agenciaPessoaJuridica = agenciaPessoaJuridica;
-	}
+    public void setInscricaoEstadual(String inscricaoEstadual) {
+	this.inscricaoEstadual = inscricaoEstadual;
+    }
 
-	public String getContaPessoaJuridica() {
-	    return contaPessoaJuridica;
-	}
+    public String getAgenciaBancoEspecifico() {
+	return agenciaBancoEspecifico;
+    }
 
-	public void setContaPessoaJuridica(String contaPessoaJuridica) {
-	    this.contaPessoaJuridica = contaPessoaJuridica;
-	}
+    public void setAgenciaBancoEspecifico(String agenciaBancoEspecifico) {
+	this.agenciaBancoEspecifico = agenciaBancoEspecifico;
+    }
 
-	public String getAgenciaPessoaJuridicaBancoEspecifico() {
-	    return agenciaPessoaJuridicaBancoEspecifico;
-	}
+    public String getContaBancoEspecifico() {
+	return contaBancoEspecifico;
+    }
 
-	public void setAgenciaPessoaJuridicaBancoEspecifico(String agenciaPessoaJuridicaBancoEspecifico) {
-	    this.agenciaPessoaJuridicaBancoEspecifico = agenciaPessoaJuridicaBancoEspecifico;
-	}
+    public void setContaBancoEspecifico(String contaBancoEspecifico) {
+	this.contaBancoEspecifico = contaBancoEspecifico;
+    }
 
-	public String getContaPessoaJuridicaBancoEspecifico() {
-	    return contaPessoaJuridicaBancoEspecifico;
-	}
+    public String getBancoPessoaJuridica() {
+	return bancoPessoaJuridica;
+    }
 
-	public void setContaPessoaJuridicaBancoEspecifico(String contaPessoaJuridicaBancoEspecifico) {
-	    this.contaPessoaJuridicaBancoEspecifico = contaPessoaJuridicaBancoEspecifico;
-	}
+    public void setBancoPessoaJuridica(String bancoPessoaJuridica) {
+	this.bancoPessoaJuridica = bancoPessoaJuridica;
+    }
 
-	public String getNicknameQuemIndicou() {
-	    return nicknameQuemIndicou;
-	}
+    public String getAgenciaPessoaJuridica() {
+	return agenciaPessoaJuridica;
+    }
 
-	public void setNicknameQuemIndicou(String nicknameQuemIndicou) {
-	    this.nicknameQuemIndicou = nicknameQuemIndicou;
-	}
+    public void setAgenciaPessoaJuridica(String agenciaPessoaJuridica) {
+	this.agenciaPessoaJuridica = agenciaPessoaJuridica;
+    }
+
+    public String getContaPessoaJuridica() {
+	return contaPessoaJuridica;
+    }
+
+    public void setContaPessoaJuridica(String contaPessoaJuridica) {
+	this.contaPessoaJuridica = contaPessoaJuridica;
+    }
+
+    public String getAgenciaPessoaJuridicaBancoEspecifico() {
+	return agenciaPessoaJuridicaBancoEspecifico;
+    }
+
+    public void setAgenciaPessoaJuridicaBancoEspecifico(String agenciaPessoaJuridicaBancoEspecifico) {
+	this.agenciaPessoaJuridicaBancoEspecifico = agenciaPessoaJuridicaBancoEspecifico;
+    }
+
+    public String getContaPessoaJuridicaBancoEspecifico() {
+	return contaPessoaJuridicaBancoEspecifico;
+    }
+
+    public void setContaPessoaJuridicaBancoEspecifico(String contaPessoaJuridicaBancoEspecifico) {
+	this.contaPessoaJuridicaBancoEspecifico = contaPessoaJuridicaBancoEspecifico;
+    }
+
+    public String getNicknameQuemIndicou() {
+	return nicknameQuemIndicou;
+    }
+
+    public void setNicknameQuemIndicou(String nicknameQuemIndicou) {
+	this.nicknameQuemIndicou = nicknameQuemIndicou;
+    }
+
+    public Integer getCadPreCadastro() {
+	return cadPreCadastro;
+    }
+
+    public void setCadPreCadastro(Integer cadPreCadastro) {
+	this.cadPreCadastro = cadPreCadastro;
+    }
 }

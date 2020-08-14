@@ -65,6 +65,17 @@
 			</div>
 			<br>
 			<div class="control-group">
+				<label class="control-label">Pagos e pendentes</label>
+				<div class="controls">
+					<select id='pagosEPendentes' name="pesquisaEquipeDTO.pagosEPendentes">
+						<option value="">Selecione</option>
+						<option value="pagos">Pagos</option>
+						<option value="pendentes">Pendentes</option>
+					</select>
+				</div>
+			</div>
+			<br>
+			<div class="control-group">
 				<input <c:if test="${pesquisaEquipeDTO.apenasIndicados}"> checked="checked" </c:if> type="checkbox" name="pesquisaEquipeDTO.apenasIndicados">
 				<span> Apenas indicados </span>
 			</div>
@@ -111,4 +122,5 @@
 	$('#posicao').val('${pesquisaEquipeDTO.posicao}');
 	$('#ativos').val('${pesquisaEquipeDTO.ativos}');
 	$('#mesAniversario').val('${pesquisaEquipeDTO.mesAniversario}');
+	$('#pagosEPendentes').val('${pesquisaEquipeDTO.pagosEPendentes}');
 </script>

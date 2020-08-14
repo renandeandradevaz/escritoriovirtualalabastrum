@@ -117,6 +117,15 @@ public class PedidoController {
     @Funcionalidade
     public void escolherProdutos(Integer idFranquia, String nickname, String formaDeEntrega) {
 
+	if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
+	    formaDeEntrega = PedidoService.RECEBER_NO_PA;
+
+	    Franquia franquia = new Franquia();
+	    franquia.setId_Codigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+	    franquia = (Franquia) hibernateUtil.buscar(franquia).get(0);
+	    idFranquia = franquia.getId_Estoque();
+	}
+
 	if (Util.vazio(formaDeEntrega)) {
 
 	    validator.add(new ValidationMessage("Selecione uma forma de entrega", "Erro"));
@@ -157,6 +166,10 @@ public class PedidoController {
 	    idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
 	}
 	this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_PEDIDO, idCodigo);
+
+	if (formaDeEntrega.equals(PedidoService.RECEBER_EM_CASA)) {
+	    idFranquia = 1;
+	}
 
 	if (idFranquia == null) {
 

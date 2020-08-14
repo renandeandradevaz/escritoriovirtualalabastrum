@@ -28,6 +28,7 @@ public class PedidoService {
     public static final String PENDENTE = "PENDENTE";
     public static final String CANCELADO = "CANCELADO";
     public static final String RECEBER_EM_CASA = "receberEmCasa";
+    public static final String RECEBER_NO_PA = "receberNoPA";
     public static final String PRODUTO_FRETE_ID = "F01";
     public static final String PRODUTO_TAXA_ADESAO_ID = "tx_ads";
     public static final String TAXAS = "taxas";

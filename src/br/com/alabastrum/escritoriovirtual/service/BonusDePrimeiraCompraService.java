@@ -78,18 +78,14 @@ public class BonusDePrimeiraCompraService {
 				PedidoDTO pedidoDTO = new PedidoService(hibernateUtil).calcularTotais(pedido);
 				BigDecimal valorTotal = pedidoDTO.getValorTotal();
 
-				if (valorTotal.compareTo(new BigDecimal("120")) == -1) {
-				    throw new Exception(String.format("Valor total do pedido %s é menor do que 120 reais", pedido.getId()));
+				if (valorTotal.compareTo(new BigDecimal("120")) != -1) {
+				    extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesao(), "Bônus de primeira compra"));
 				}
-
-				extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesao(), "Bônus de primeira compra"));
 			    }
 			}
 		    }
 		}
-
 	    }
-
 	}
 
 	return extratos;
