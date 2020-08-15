@@ -28,7 +28,7 @@
 				<br>
 				<br>
 				<input type="checkbox" name='adesaoPontoDeApoio' />
-				<span>Desejo fazer uma adesão de Ponto de Apoio </span>
+				<span>Desejo fazer uma adesão de Ponto de Apoio (Obs: Para adquirir um P.A. é necessário fazer uma compra de produtos no valor mínimo de R$2.500,00) </span>
 				<br>
 				<br>
 				<br>

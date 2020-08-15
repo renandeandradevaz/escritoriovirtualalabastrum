@@ -620,6 +620,13 @@ public class PedidoController {
 	pedido.setCompleted(true);
 	pedido.setData(new GregorianCalendar());
 	pedido.setFormaDePagamento(formaDePagamento);
+
+	if (pedido.getTipo().equals(PedidoService.ADESAO_PA)) {
+	    if (totalPedido.compareTo(new BigDecimal(2500)) < 0) {
+		pedido.setTipo(PedidoService.ADESAO);
+	    }
+	}
+
 	hibernateUtil.salvarOuAtualizar(pedido);
 
 	for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
