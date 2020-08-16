@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -75,20 +76,27 @@ public class AtualizacaoArquivosService {
 
 	System.out.println(new Date() + ". Executando metodo processarArquivoAtualizacaoUsuario");
 
-	CSVReader reader = lerArquivo("tblRelacionamentos.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_DISTRIBUIDOR);
-	List<Usuario> usuarios = new ArrayList<Usuario>();
-	preencherObjeto(reader, usuarios, "Usuario");
+	List<String> pastaAtualizacaoCSV = Arrays.asList(new File(ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_CURTO).list());
 
-	for (Usuario usuario : usuarios) {
-	    Usuario usuarioBanco = this.hibernateUtil.selecionar(new Usuario(usuario.getId_Codigo()));
-	    if (usuarioBanco != null) {
-		this.hibernateUtil.deletar(usuarioBanco);
-		this.hibernateUtil.salvarOuAtualizar(usuario);
+	if (pastaAtualizacaoCSV.contains("tblRelacionamentos.csv")) {
+	    CSVReader reader = lerArquivo("tblRelacionamentos.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_DISTRIBUIDOR);
+	    List<Usuario> usuarios = new ArrayList<Usuario>();
+	    preencherObjeto(reader, usuarios, "Usuario");
+
+	    for (Usuario usuario : usuarios) {
+		Usuario usuarioBanco = this.hibernateUtil.selecionar(new Usuario(usuario.getId_Codigo()));
+		if (usuarioBanco != null) {
+		    this.hibernateUtil.deletar(usuarioBanco);
+		    this.hibernateUtil.salvarOuAtualizar(usuario);
+		}
 	    }
+
+	    System.out.println("Quantidade de usuários atualizados salvos: " + usuarios.size());
 	}
 
-	System.out.println("Quantidade de usuários atualizados salvos: " + usuarios.size());
-
+	if (pastaAtualizacaoCSV.contains("tblQualificacoes.csv")) {
+	    processarCSVQualificacao();
+	}
     }
 
     private void processarCSVRelacionamentos() throws Exception {

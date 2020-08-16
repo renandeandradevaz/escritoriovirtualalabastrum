@@ -18,7 +18,7 @@ public class AtualizacaoArquivosAutomaticamenteUsuarios implements Runnable {
 
 	List<String> pastaAtualizacaoCSV = Arrays.asList(new File(ArquivoService.PASTA_ATUALIZACAO_CSV_DISTRIBUIDOR).list());
 
-	if (pastaAtualizacaoCSV.contains("tblRelacionamentos.csv")) {
+	if (pastaAtualizacaoCSV.contains("tblRelacionamentos.csv") || pastaAtualizacaoCSV.contains("tblQualificacoes.csv")) {
 
 	    try {
 		HibernateUtil hibernateUtil = new HibernateUtil();

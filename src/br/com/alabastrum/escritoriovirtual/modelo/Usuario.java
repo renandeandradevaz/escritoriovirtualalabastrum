@@ -141,7 +141,7 @@ public class Usuario implements Entidade {
     }
 
     public InformacoesFixasUsuario getInformacoesFixasUsuario() {
-	return obterInformacoesFixasUsuario();
+	return this.informacoesFixasUsuario;
     }
 
     public void setInformacoesFixasUsuario(InformacoesFixasUsuario informacoesFixasUsuario) {

@@ -257,10 +257,11 @@ public class PedidoController {
 
     private BigDecimal calcularPrecoUnitarioProduto(BigDecimal precoUnitario) {
 
+	Object adesaoPontoDeApoio = this.sessaoGeral.getValor("adesaoPontoDeApoio");
 	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
 	Object isInativo = this.sessaoGeral.getValor("isInativo");
 
-	if (this.sessaoUsuario.getUsuario().getId() == null || (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) || (isInativo != null && (Boolean) isInativo)) {
+	if (this.sessaoUsuario.getUsuario().getId() == null || (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) || (isInativo != null && (Boolean) isInativo) || (adesaoPontoDeApoio != null && (Boolean) adesaoPontoDeApoio)) {
 	    return precoUnitario.multiply(new BigDecimal("2"));
 	}
 	return precoUnitario;
@@ -416,8 +417,19 @@ public class PedidoController {
 
 	boolean mostrarDialogoDescontos = true;
 
+	Object adesaoPontoDeApoio = this.sessaoGeral.getValor("adesaoPontoDeApoio");
 	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
-	if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
+	Object isInativo = this.sessaoGeral.getValor("isInativo");
+
+	if (adesaoPontoDeApoio != null && (Boolean) adesaoPontoDeApoio) {
+	    mostrarDialogoDescontos = false;
+
+	    if (valorTotal < 2500) {
+		validator.add(new ValidationMessage("O valor mínimo para pedido de adesão de Ponto de apoio é de R$2500", "Erro"));
+		validator.onErrorRedirectTo(this).acessarCarrinho();
+		return;
+	    }
+	} else if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
 	    mostrarDialogoDescontos = false;
 
 	    Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
@@ -428,10 +440,7 @@ public class PedidoController {
 		validator.onErrorRedirectTo(this).acessarCarrinho();
 		return;
 	    }
-	}
-
-	Object isInativo = this.sessaoGeral.getValor("isInativo");
-	if (isInativo != null && (Boolean) isInativo) {
+	} else if (isInativo != null && (Boolean) isInativo) {
 	    mostrarDialogoDescontos = false;
 
 	    Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
