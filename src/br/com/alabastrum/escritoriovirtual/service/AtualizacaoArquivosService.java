@@ -69,17 +69,19 @@ public class AtualizacaoArquivosService {
 	System.out.println(new Date() + ". Executando metodo processarArquivosPeriodoCurto");
 
 	processarCSVRelacionamentos();
-	processarCSVQualificacao();
+	processarCSVQualificacao(ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_CURTO);
     }
 
     public void processarArquivoAtualizacaoUsuario() throws Exception {
 
 	System.out.println(new Date() + ". Executando metodo processarArquivoAtualizacaoUsuario");
 
-	List<String> pastaAtualizacaoCSV = Arrays.asList(new File(ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_CURTO).list());
+	String pasta = ArquivoService.PASTA_ATUALIZACAO_CSV_DISTRIBUIDOR;
+
+	List<String> pastaAtualizacaoCSV = Arrays.asList(new File(pasta).list());
 
 	if (pastaAtualizacaoCSV.contains("tblRelacionamentos.csv")) {
-	    CSVReader reader = lerArquivo("tblRelacionamentos.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_DISTRIBUIDOR);
+	    CSVReader reader = lerArquivo("tblRelacionamentos.csv", pasta);
 	    List<Usuario> usuarios = new ArrayList<Usuario>();
 	    preencherObjeto(reader, usuarios, "Usuario");
 
@@ -95,7 +97,7 @@ public class AtualizacaoArquivosService {
 	}
 
 	if (pastaAtualizacaoCSV.contains("tblQualificacoes.csv")) {
-	    processarCSVQualificacao();
+	    processarCSVQualificacao(pasta);
 	}
     }
 
@@ -108,9 +110,9 @@ public class AtualizacaoArquivosService {
 	System.out.println("Quantidade de usuários novos salvos: " + usuarios.size());
     }
 
-    private void processarCSVQualificacao() throws Exception {
+    private void processarCSVQualificacao(String pasta) throws Exception {
 
-	CSVReader reader = lerArquivo("tblQualificacoes.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_CURTO);
+	CSVReader reader = lerArquivo("tblQualificacoes.csv", pasta);
 	List<Qualificacao> qualificacoes = new ArrayList<Qualificacao>();
 	preencherObjeto(reader, qualificacoes, "Qualificacao");
 	this.hibernateUtil.salvarOuAtualizar(qualificacoes);
