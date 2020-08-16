@@ -3,10 +3,8 @@ package br.com.alabastrum.escritoriovirtual.modelo;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Index;
@@ -22,9 +20,6 @@ public class Usuario implements Entidade {
     @Id
     @GeneratedValue
     private Integer id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private InformacoesFixasUsuario informacoesFixasUsuario;
 
     private String CPF;
     private String PosAtual;
@@ -78,6 +73,9 @@ public class Usuario implements Entidade {
 
     @Transient
     private Boolean donoDeFranquia;
+
+    @Transient
+    private InformacoesFixasUsuario informacoesFixasUsuario;
 
     public Usuario() {
 
