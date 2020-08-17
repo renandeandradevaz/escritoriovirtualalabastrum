@@ -16,7 +16,7 @@ public class CancelarPedidosPendentes implements Runnable {
 	HibernateUtil hibernateUtil = new HibernateUtil();
 
 	Calendar calendar = new GregorianCalendar();
-	calendar.add(Calendar.DATE, -14);
+	calendar.add(Calendar.DATE, -7);
 
 	Pedido pedidoFiltro = new Pedido();
 	pedidoFiltro.setStatus("PENDENTE");
