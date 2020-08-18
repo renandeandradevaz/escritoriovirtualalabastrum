@@ -719,7 +719,7 @@ public class PedidoController {
 
 			Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
 
-			Mail.enviarEmail("Cartão de crédito confirmado", "Seu cartão de crédito foi confirmado e o pagamento concluído. Seu pedido de código " + idPedido + " está pronto para entrega.", usuario.geteMail());
+			Mail.enviarEmail("Pagamento confirmado", "Seu pagamento foi confirmado. Seu pedido de código " + idPedido + " está pronto para entrega.", usuario.geteMail());
 		    }
 
 		    Mail.enviarEmail("Pagamento confirmado para o pedido: " + idPedido, "Status: " + status);

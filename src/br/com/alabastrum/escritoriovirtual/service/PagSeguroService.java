@@ -174,7 +174,7 @@ public class PagSeguroService {
 	in.close();
 
 	if (con.getResponseCode() != 200) {
-	    throw new RuntimeException("Pagseguro retornou um código inesperado: " + con.getResponseCode() + ". Erro: " + response.toString());
+	    throw new RuntimeException("Pagseguro retornou um código inesperado: " + con.getResponseCode() + ". NotificationCode recebido: " + notificationCode + ". Erro: " + response.toString());
 	}
 
 	return response.toString();
