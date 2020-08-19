@@ -712,9 +712,9 @@ public class PedidoController {
 
 		    Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 
-		    if (pedido != null && !pedido.getStatus().equals(PedidoService.FINALIZADO)) {
+		    if (pedido != null) {
 
-			pedido.setStatus("PAGO");
+			pedido.setStatus(PedidoService.FINALIZADO);
 			hibernateUtil.salvarOuAtualizar(pedido);
 
 			Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
