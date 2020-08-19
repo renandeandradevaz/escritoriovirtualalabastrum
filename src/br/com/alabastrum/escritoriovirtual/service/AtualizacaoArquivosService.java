@@ -106,8 +106,13 @@ public class AtualizacaoArquivosService {
 	CSVReader reader = lerArquivo("tblRelacionamentos.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_CURTO);
 	List<Usuario> usuarios = new ArrayList<Usuario>();
 	preencherObjeto(reader, usuarios, "Usuario");
-	this.hibernateUtil.salvarOuAtualizar(usuarios);
-	System.out.println("Quantidade de usuários novos salvos: " + usuarios.size());
+
+	for (Usuario usuario : usuarios) {
+	    Usuario usuarioBanco = this.hibernateUtil.selecionar(new Usuario(usuario.getId_Codigo()));
+	    if (usuarioBanco == null) {
+		this.hibernateUtil.salvarOuAtualizar(usuario);
+	    }
+	}
     }
 
     private void processarCSVQualificacao(String pasta) throws Exception {
@@ -115,8 +120,18 @@ public class AtualizacaoArquivosService {
 	CSVReader reader = lerArquivo("tblQualificacoes.csv", pasta);
 	List<Qualificacao> qualificacoes = new ArrayList<Qualificacao>();
 	preencherObjeto(reader, qualificacoes, "Qualificacao");
-	this.hibernateUtil.salvarOuAtualizar(qualificacoes);
-	System.out.println("Quantidade de qualificacoes salvas: " + qualificacoes.size());
+
+	for (Qualificacao qualificacao : qualificacoes) {
+
+	    Qualificacao qualificacaoFiltro = new Qualificacao();
+	    qualificacaoFiltro.setId_Codigo(qualificacao.getId_Codigo());
+	    qualificacaoFiltro.setData(qualificacao.getData());
+
+	    Qualificacao qualificacaoBanco = this.hibernateUtil.selecionar(qualificacaoFiltro);
+	    if (qualificacaoBanco == null) {
+		this.hibernateUtil.salvarOuAtualizar(qualificacao);
+	    }
+	}
     }
 
     private void processarCSVPosicoes() throws Exception {
