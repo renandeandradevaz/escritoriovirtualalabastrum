@@ -58,6 +58,7 @@ public class Usuario implements Entidade {
     private String agenciaPessoaJuridicaBancoEspecifico;
     private String contaPessoaJuridicaBancoEspecifico;
     private Integer cadPreCadastro;
+    private Integer Fila_unica;
 
     @Index(name = "index_id_Codigo")
     private Integer id_Codigo;
@@ -474,5 +475,13 @@ public class Usuario implements Entidade {
 
     public void setCadPreCadastro(Integer cadPreCadastro) {
 	this.cadPreCadastro = cadPreCadastro;
+    }
+
+    public Integer getFila_unica() {
+	return Fila_unica;
+    }
+
+    public void setFila_unica(Integer fila_unica) {
+	Fila_unica = fila_unica;
     }
 }

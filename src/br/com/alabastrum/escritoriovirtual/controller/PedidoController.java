@@ -205,6 +205,27 @@ public class PedidoController {
 	result.include("categorias", categoriasSemTaxas);
     }
 
+    @Funcionalidade
+    @Get("/pedido/imprimirPedido/{idPedido}")
+    public void imprimirPedido(Integer idPedido) {
+
+	Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
+	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+	BigDecimal valorTotal = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal();
+
+	List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
+	for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
+	    Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
+	    Integer quantidade = itemPedido.getQuantidade();
+	    itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, itemPedido.getPrecoUnitario(), 0, null));
+	}
+
+	result.include("pedido", pedido);
+	result.include("valorTotal", valorTotal);
+	result.include("usuarioPedido", usuario);
+	result.include("itensPedidoDTO", itensPedidoDTO);
+    }
+
     private String definirTipoDoPedido() {
 
 	Object adesaoPontoDeApoio = this.sessaoGeral.getValor("adesaoPontoDeApoio");
@@ -309,8 +330,15 @@ public class PedidoController {
 		ItemPedido itemPedidoTaxaAdesao = new ItemPedido();
 		itemPedidoTaxaAdesao.setPedido(pedido);
 		itemPedidoTaxaAdesao.setIdProduto(produto.getId_Produtos());
-		itemPedidoTaxaAdesao.setPrecoUnitario(calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()));
 		itemPedidoTaxaAdesao.setQuantidade(1);
+
+		Object adesaoPontoDeApoio = this.sessaoGeral.getValor("adesaoPontoDeApoio");
+		if (adesaoPontoDeApoio != null && (Boolean) adesaoPontoDeApoio) {
+		    itemPedidoTaxaAdesao.setPrecoUnitario(new BigDecimal(300));
+		} else {
+		    itemPedidoTaxaAdesao.setPrecoUnitario(calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()));
+		}
+
 		hibernateUtil.salvarOuAtualizar(itemPedidoTaxaAdesao);
 	    }
 	}
@@ -664,6 +692,21 @@ public class PedidoController {
 		result.forwardTo(this).meusPedidos();
 	    }
 	}
+    }
+
+    @Funcionalidade
+    public void cancelarPedidoAtual() {
+
+	Pedido pedido = selecionarPedidoAberto();
+
+	if (pedido != null) {
+	    pedido.setCompleted(true);
+	    pedido.setData(new GregorianCalendar());
+	    pedido.setStatus(PedidoService.CANCELADO);
+	    hibernateUtil.salvarOuAtualizar(pedido);
+	}
+
+	result.forwardTo(this).meusPedidos();
     }
 
     @Funcionalidade

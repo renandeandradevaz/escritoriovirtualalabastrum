@@ -1,14 +1,10 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
-import java.util.TreeMap;
+import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
-import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
-import br.com.alabastrum.escritoriovirtual.service.HierarquiaService;
-import br.com.alabastrum.escritoriovirtual.service.PosicoesService;
-import br.com.alabastrum.escritoriovirtual.service.QualificacaoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Resource;
@@ -32,13 +28,20 @@ public class HomeController {
     @Funcionalidade
     public void home() throws Exception {
 
-//	Usuario usuario = this.sessaoUsuario.getUsuario();
-//
-//	TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo());
-//	result.include("quantidadeAfiliados", arvoreHierarquica.size());
-//	result.include("ultimosQualificados", new QualificacaoService(hibernateUtil).obterUltimosQualificados(arvoreHierarquica));
-//	result.include("ultimosCadastros", new QualificacaoService(hibernateUtil).obterUltimosCadastros(arvoreHierarquica));
-//	result.include("posicaoAtual", usuario.getPosAtual().replaceAll(" ", "").toLowerCase());
-//	result.include("proximaPosicao", new PosicoesService(hibernateUtil).obterNomeProximaPosicao(usuario.getPosAtual()).replaceAll(" ", "").toLowerCase());
+	Usuario usuarioLogado = this.sessaoUsuario.getUsuario();
+
+	Integer totalAbaixoFilaUnica = 0;
+
+	if (usuarioLogado.getFila_unica() != null && usuarioLogado.getFila_unica() > 0) {
+
+	    List<Usuario> usuarios = this.hibernateUtil.buscar(new Usuario());
+	    for (Usuario usuario : usuarios) {
+		if (usuario.getFila_unica() != null && usuario.getFila_unica() > usuarioLogado.getFila_unica()) {
+		    totalAbaixoFilaUnica++;
+		}
+	    }
+	}
+
+	result.include("totalAbaixoFilaUnica", totalAbaixoFilaUnica);
     }
 }

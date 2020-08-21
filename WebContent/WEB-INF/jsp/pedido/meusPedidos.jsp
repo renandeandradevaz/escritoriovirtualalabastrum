@@ -11,6 +11,7 @@
 				<th>Franquia</th>
 				<th>Valor</th>
 				<th></th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -29,6 +30,9 @@
 					</td>
 					<td style="text-align: center;">
 						<a class="btn btn-info" href="<c:url value="/pedido/verItens/${item.pedido.id}"/>"> Detalhar </a>
+					</td>
+					<td style="text-align: center;">
+						<a class="btn btn-info" href="<c:url value="/pedido/imprimirPedido/${item.pedido.id}"/>"> Imprimir </a>
 					</td>
 				</tr>
 			</c:forEach>

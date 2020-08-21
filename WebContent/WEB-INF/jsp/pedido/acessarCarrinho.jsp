@@ -63,4 +63,8 @@
 	<br>
 	<br>
 	<a class="btn btn-info" href="<c:url value="/pedido/escolherProdutos"/>"> Escolher mais produtos</a>
+	<br>
+	<br>
+	<br>
+	<a class="btn btn-danger" href="<c:url value="/pedido/cancelarPedidoAtual"/>"> Cancelar pedido atual</a>
 </div>
