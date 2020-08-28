@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -184,15 +185,12 @@ public class PontuacaoService {
 	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(hoje);
 	GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(hoje);
 
-	List<Criterion> restricoes = new ArrayList<Criterion>();
-	restricoes.add(Restrictions.between("Dt_Pontos", primeiroDiaDoMes, ultimoDiaDoMes));
-	Pontuacao pontuacaoFiltro = new Pontuacao();
-	pontuacaoFiltro.setId_Codigo(idCodigo);
-	List<Pontuacao> pontuacoes = hibernateUtil.buscar(pontuacaoFiltro, restricoes);
+	BigDecimal somaPontuacao = calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
 
-	BigDecimal somaPontuacao = BigDecimal.ZERO;
-	for (Pontuacao pontuacao : pontuacoes) {
-	    somaPontuacao = somaPontuacao.add(pontuacao.getPntProduto());
+	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo(), null);
+
+	for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaCompleta.values()) {
+	    somaPontuacao = somaPontuacao.add(calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDTO.getUsuario().getId_Codigo()));
 	}
 
 	Posicao posicaoAtual = new PosicoesService(hibernateUtil).obterPosicaoPorNome(usuario.getPosAtual());
@@ -213,6 +211,23 @@ public class PontuacaoService {
 	}
 
 	return graduacaoMensalDTO;
+    }
+
+    private BigDecimal calcularPontuacaoDeProdutos(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo) {
+
+	BigDecimal somaPontuacao = BigDecimal.ZERO;
+
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+	restricoes.add(Restrictions.between("Dt_Pontos", primeiroDiaDoMes, ultimoDiaDoMes));
+	Pontuacao pontuacaoFiltro = new Pontuacao();
+	pontuacaoFiltro.setId_Codigo(idCodigo);
+	List<Pontuacao> pontuacoes = hibernateUtil.buscar(pontuacaoFiltro, restricoes);
+
+	for (Pontuacao pontuacao : pontuacoes) {
+	    somaPontuacao = somaPontuacao.add(pontuacao.getPntProduto());
+	}
+
+	return somaPontuacao;
     }
 
     public BigDecimal getValorIngresso(Integer codigo, GregorianCalendar data) {
