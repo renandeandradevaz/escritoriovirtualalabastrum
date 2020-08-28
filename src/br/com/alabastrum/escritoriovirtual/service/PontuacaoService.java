@@ -208,7 +208,7 @@ public class PontuacaoService {
 	if (graduacaoMensalDTO.getPontosFeitosAteOMomento().equals(0)) {
 	    graduacaoMensalDTO.setPorcentagemConclusao(0);
 	} else {
-	    graduacaoMensalDTO.setPorcentagemConclusao(new BigDecimal(graduacaoMensalDTO.getPontuacaoDaProximaPosicao()).divide(new BigDecimal(graduacaoMensalDTO.getPontosFeitosAteOMomento()).multiply(new BigDecimal(100)), 2, RoundingMode.HALF_UP).intValue());
+	    graduacaoMensalDTO.setPorcentagemConclusao(new BigDecimal(graduacaoMensalDTO.getPontosFeitosAteOMomento()).divide(new BigDecimal(graduacaoMensalDTO.getPontuacaoDaProximaPosicao()).multiply(new BigDecimal(100)), 2, RoundingMode.HALF_UP).intValue());
 	}
 
 	return graduacaoMensalDTO;
