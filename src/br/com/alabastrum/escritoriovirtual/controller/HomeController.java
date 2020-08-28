@@ -5,6 +5,7 @@ import java.util.List;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
+import br.com.alabastrum.escritoriovirtual.service.PontuacaoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Resource;
@@ -43,5 +44,6 @@ public class HomeController {
 	}
 
 	result.include("totalAbaixoFilaUnica", totalAbaixoFilaUnica);
+	result.include("graduacaoMensal", new PontuacaoService(this.hibernateUtil).calcularGraduacaoMensalPorPontuacaoDeProduto(usuarioLogado.getId_Codigo()));
     }
 }

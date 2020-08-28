@@ -12,6 +12,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
+import br.com.alabastrum.escritoriovirtual.dto.GraduacaoMensalDTO;
 import br.com.alabastrum.escritoriovirtual.dto.PontuacaoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Configuracao;
@@ -23,180 +24,219 @@ import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class PontuacaoService {
 
-	private static final Integer NIVEL_MAXIMO_PONTUACAO = 10;
+    private static final Integer NIVEL_MAXIMO_PONTUACAO = 10;
 
-	private HibernateUtil hibernateUtil;
+    private HibernateUtil hibernateUtil;
 
-	public PontuacaoService(HibernateUtil hibernateUtil) {
+    public PontuacaoService(HibernateUtil hibernateUtil) {
 
-		this.hibernateUtil = hibernateUtil;
+	this.hibernateUtil = hibernateUtil;
+    }
+
+    public PontuacaoDTO calcularPontuacoesRelatorio(Integer idCodigo) {
+
+	Usuario usuario = hibernateUtil.selecionar(new Usuario(idCodigo));
+
+	Integer quantidadeDeMesesSomatorioPontuacao = Integer.valueOf(new Configuracao().retornarConfiguracao("quantidadeDeMesesSomatorioPontuacao"));
+	Integer valorMinimoPontuacaoPessoalParaQualificacao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPontuacaoPessoalParaQualificacao"));
+	Integer pontuacaoMaximaPorLinhaEmPorcentagem = Integer.valueOf(new Configuracao().retornarConfiguracao("pontuacaoMaximaPorLinhaEmPorcentagem"));
+	Integer pontuacaoMinimaPorLinhaEmPorcentagem = Integer.valueOf(new Configuracao().retornarConfiguracao("pontuacaoMinimaPorLinhaEmPorcentagem"));
+	Object[] distribuidoresPrimeiroNivel = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(idCodigo, 1).values().toArray();
+
+	Qualificacao ultimaQualificao = new QualificacaoService(hibernateUtil).obterUltimaQualificacao(idCodigo);
+	GregorianCalendar dataUltimaQualificacao = ultimaQualificao.getData();
+	Posicao proximaPosicao = new PosicoesService(hibernateUtil).obterProximaPosicao(usuario.getPosAtual());
+	Integer pontuacaoProximaPosicao = proximaPosicao.getPontuacao();
+	Integer pontuacaoMaximaPorLinha = pontuacaoProximaPosicao * pontuacaoMaximaPorLinhaEmPorcentagem / 100;
+	Integer pontuacaoMinimaPorLinha = pontuacaoProximaPosicao * pontuacaoMinimaPorLinhaEmPorcentagem / 100;
+
+	PontuacaoDTO pontuacaoDTO = new PontuacaoDTO();
+
+	List<String> meses = new ArrayList<String>();
+	List<Integer> pontuacoesPessoais = new ArrayList<Integer>();
+	List<Integer> pontuacoesPessoaisParaQualificacao = new ArrayList<Integer>();
+	List<Integer> pontuacoesLinhaDaEsquerda = new ArrayList<Integer>();
+	List<Integer> pontuacoesLinhaDaEsquerdaParaQualificacao = new ArrayList<Integer>();
+	List<Integer> pontuacoesLinhaDoMeio = new ArrayList<Integer>();
+	List<Integer> pontuacoesLinhaDoMeioParaQualificacao = new ArrayList<Integer>();
+	List<Integer> pontuacoesLinhaDaDireita = new ArrayList<Integer>();
+	List<Integer> pontuacoesLinhaDaDireitaParaQualificacao = new ArrayList<Integer>();
+	List<Integer> pontuacoesTotais = new ArrayList<Integer>();
+	Integer total = 0;
+
+	for (int mesesAtras = quantidadeDeMesesSomatorioPontuacao - 1; mesesAtras >= 0; mesesAtras--) {
+
+	    GregorianCalendar primeiroDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
+	    primeiroDiaDoMes.add(Calendar.MONTH, -mesesAtras);
+	    primeiroDiaDoMes.set(Calendar.DAY_OF_MONTH, 1);
+
+	    GregorianCalendar ultimoDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
+	    ultimoDiaDoMes.add(Calendar.MONTH, -mesesAtras);
+	    ultimoDiaDoMes.set(Calendar.DAY_OF_MONTH, ultimoDiaDoMes.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+	    if (primeiroDiaDoMes.before(dataUltimaQualificacao)) {
+		primeiroDiaDoMes = dataUltimaQualificacao;
+	    }
+
+	    meses.add(Util.getMesString(ultimoDiaDoMes.get(Calendar.MONTH)));
+
+	    pontuacoesPessoais.add(calcularPontuacao(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes));
+	    int pontuacaoPessoalParaQualificacao = calcularPontuacao(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes) - valorMinimoPontuacaoPessoalParaQualificacao;
+	    if (pontuacaoPessoalParaQualificacao < 0) {
+		pontuacaoPessoalParaQualificacao = 0;
+	    }
+	    pontuacoesPessoaisParaQualificacao.add(pontuacaoPessoalParaQualificacao);
+
+	    if (distribuidoresPrimeiroNivel.length < 3) {
+		return null;
+	    }
+
+	    ArvoreHierarquicaDTO liderEsquerda = (ArvoreHierarquicaDTO) distribuidoresPrimeiroNivel[0];
+	    ArvoreHierarquicaDTO liderMeio = (ArvoreHierarquicaDTO) distribuidoresPrimeiroNivel[1];
+	    ArvoreHierarquicaDTO liderDireita = (ArvoreHierarquicaDTO) distribuidoresPrimeiroNivel[2];
+
+	    TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEsquerda = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(liderEsquerda.getUsuario().getId_Codigo(), NIVEL_MAXIMO_PONTUACAO - 1);
+	    TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMeio = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(liderMeio.getUsuario().getId_Codigo(), NIVEL_MAXIMO_PONTUACAO - 1);
+	    TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaDireita = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(liderDireita.getUsuario().getId_Codigo(), NIVEL_MAXIMO_PONTUACAO - 1);
+
+	    Integer pontuacaoRedeEsquerda = calcularPontuacaoRede(liderEsquerda.getUsuario().getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaEsquerda);
+	    Integer pontuacaoRedeMeio = calcularPontuacaoRede(liderMeio.getUsuario().getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaMeio);
+	    Integer pontuacaoRedeDireita = calcularPontuacaoRede(liderDireita.getUsuario().getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDireita);
+	    pontuacoesLinhaDaEsquerda.add(pontuacaoRedeEsquerda);
+	    pontuacoesLinhaDoMeio.add(pontuacaoRedeMeio);
+	    pontuacoesLinhaDaDireita.add(pontuacaoRedeDireita);
+
+	    Integer pontuacaoLinhaDaEsquerdaParaQualificacao = pontuacaoRedeEsquerda;
+	    if (pontuacaoRedeEsquerda > pontuacaoMaximaPorLinha) {
+		pontuacaoLinhaDaEsquerdaParaQualificacao = pontuacaoMaximaPorLinha;
+	    }
+
+	    Integer pontuacaoLinhaDoMeioParaQualificacao = pontuacaoRedeMeio;
+	    if (pontuacaoRedeMeio > pontuacaoMaximaPorLinha) {
+		pontuacaoLinhaDoMeioParaQualificacao = pontuacaoMaximaPorLinha;
+	    }
+
+	    Integer pontuacaoLinhaDaDireitaParaQualificacao = pontuacaoRedeDireita;
+	    if (pontuacaoRedeDireita > pontuacaoMaximaPorLinha) {
+		pontuacaoLinhaDaDireitaParaQualificacao = pontuacaoMaximaPorLinha;
+	    }
+
+	    pontuacoesLinhaDaEsquerdaParaQualificacao.add(pontuacaoLinhaDaEsquerdaParaQualificacao);
+	    pontuacoesLinhaDoMeioParaQualificacao.add(pontuacaoLinhaDoMeioParaQualificacao);
+	    pontuacoesLinhaDaDireitaParaQualificacao.add(pontuacaoLinhaDaDireitaParaQualificacao);
+
+	    int pontuacaoTotal = pontuacaoPessoalParaQualificacao + pontuacaoLinhaDaEsquerdaParaQualificacao + pontuacaoLinhaDoMeioParaQualificacao + pontuacaoLinhaDaDireitaParaQualificacao;
+	    pontuacoesTotais.add(pontuacaoTotal);
+	    total += pontuacaoTotal;
 	}
 
-	public PontuacaoDTO calcularPontuacoesRelatorio(Integer idCodigo) {
+	pontuacaoDTO.setMeses(meses);
+	pontuacaoDTO.setPontuacaoMaximaPorLinha(pontuacaoMaximaPorLinha);
+	pontuacaoDTO.setPontuacaoMinimaPorLinha(pontuacaoMinimaPorLinha);
+	pontuacaoDTO.setPontuacaoParaOProximoNivel(pontuacaoProximaPosicao);
+	pontuacaoDTO.setPontuacoesLinhaDaEsquerda(pontuacoesLinhaDaEsquerda);
+	pontuacaoDTO.setPontuacoesLinhaDoMeio(pontuacoesLinhaDoMeio);
+	pontuacaoDTO.setPontuacoesLinhaDaDireita(pontuacoesLinhaDaDireita);
+	pontuacaoDTO.setPontuacoesLinhaDaEsquerdaParaQualificacao(pontuacoesLinhaDaEsquerdaParaQualificacao);
+	pontuacaoDTO.setPontuacoesLinhaDoMeioParaQualificacao(pontuacoesLinhaDoMeioParaQualificacao);
+	pontuacaoDTO.setPontuacoesLinhaDaDireitaParaQualificacao(pontuacoesLinhaDaDireitaParaQualificacao);
+	pontuacaoDTO.setPontuacoesPessoais(pontuacoesPessoais);
+	pontuacaoDTO.setPontuacoesPessoaisParaQualificacao(pontuacoesPessoaisParaQualificacao);
+	pontuacaoDTO.setPontuacoesTotais(pontuacoesTotais);
+	pontuacaoDTO.setTotal(total);
+	pontuacaoDTO.setValorMinimoPontuacaoPessoalParaQualificacao(valorMinimoPontuacaoPessoalParaQualificacao);
 
-		Usuario usuario = hibernateUtil.selecionar(new Usuario(idCodigo));
+	return pontuacaoDTO;
+    }
 
-		Integer quantidadeDeMesesSomatorioPontuacao = Integer.valueOf(new Configuracao().retornarConfiguracao("quantidadeDeMesesSomatorioPontuacao"));
-		Integer valorMinimoPontuacaoPessoalParaQualificacao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPontuacaoPessoalParaQualificacao"));
-		Integer pontuacaoMaximaPorLinhaEmPorcentagem = Integer.valueOf(new Configuracao().retornarConfiguracao("pontuacaoMaximaPorLinhaEmPorcentagem"));
-		Integer pontuacaoMinimaPorLinhaEmPorcentagem = Integer.valueOf(new Configuracao().retornarConfiguracao("pontuacaoMinimaPorLinhaEmPorcentagem"));
-		Object[] distribuidoresPrimeiroNivel = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(idCodigo, 1).values().toArray();
+    private Integer calcularPontuacaoRede(Integer idCodigo, GregorianCalendar inicio, GregorianCalendar fim, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
 
-		Qualificacao ultimaQualificao = new QualificacaoService(hibernateUtil).obterUltimaQualificacao(idCodigo);
-		GregorianCalendar dataUltimaQualificacao = ultimaQualificao.getData();
-		Posicao proximaPosicao = new PosicoesService(hibernateUtil).obterProximaPosicao(usuario.getPosAtual());
-		Integer pontuacaoProximaPosicao = proximaPosicao.getPontuacao();
-		Integer pontuacaoMaximaPorLinha = pontuacaoProximaPosicao * pontuacaoMaximaPorLinhaEmPorcentagem / 100;
-		Integer pontuacaoMinimaPorLinha = pontuacaoProximaPosicao * pontuacaoMinimaPorLinhaEmPorcentagem / 100;
+	Integer pontuacaoRede = calcularPontuacao(idCodigo, inicio, fim);
 
-		PontuacaoDTO pontuacaoDTO = new PontuacaoDTO();
-
-		List<String> meses = new ArrayList<String>();
-		List<Integer> pontuacoesPessoais = new ArrayList<Integer>();
-		List<Integer> pontuacoesPessoaisParaQualificacao = new ArrayList<Integer>();
-		List<Integer> pontuacoesLinhaDaEsquerda = new ArrayList<Integer>();
-		List<Integer> pontuacoesLinhaDaEsquerdaParaQualificacao = new ArrayList<Integer>();
-		List<Integer> pontuacoesLinhaDoMeio = new ArrayList<Integer>();
-		List<Integer> pontuacoesLinhaDoMeioParaQualificacao = new ArrayList<Integer>();
-		List<Integer> pontuacoesLinhaDaDireita = new ArrayList<Integer>();
-		List<Integer> pontuacoesLinhaDaDireitaParaQualificacao = new ArrayList<Integer>();
-		List<Integer> pontuacoesTotais = new ArrayList<Integer>();
-		Integer total = 0;
-
-		for (int mesesAtras = quantidadeDeMesesSomatorioPontuacao - 1; mesesAtras >= 0; mesesAtras--) {
-
-			GregorianCalendar primeiroDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
-			primeiroDiaDoMes.add(Calendar.MONTH, -mesesAtras);
-			primeiroDiaDoMes.set(Calendar.DAY_OF_MONTH, 1);
-
-			GregorianCalendar ultimoDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
-			ultimoDiaDoMes.add(Calendar.MONTH, -mesesAtras);
-			ultimoDiaDoMes.set(Calendar.DAY_OF_MONTH, ultimoDiaDoMes.getActualMaximum(Calendar.DAY_OF_MONTH));
-
-			if (primeiroDiaDoMes.before(dataUltimaQualificacao)) {
-				primeiroDiaDoMes = dataUltimaQualificacao;
-			}
-
-			meses.add(Util.getMesString(ultimoDiaDoMes.get(Calendar.MONTH)));
-
-			pontuacoesPessoais.add(calcularPontuacao(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes));
-			int pontuacaoPessoalParaQualificacao = calcularPontuacao(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes) - valorMinimoPontuacaoPessoalParaQualificacao;
-			if (pontuacaoPessoalParaQualificacao < 0) {
-				pontuacaoPessoalParaQualificacao = 0;
-			}
-			pontuacoesPessoaisParaQualificacao.add(pontuacaoPessoalParaQualificacao);
-
-			if (distribuidoresPrimeiroNivel.length < 3) {
-				return null;
-			}
-
-			ArvoreHierarquicaDTO liderEsquerda = (ArvoreHierarquicaDTO) distribuidoresPrimeiroNivel[0];
-			ArvoreHierarquicaDTO liderMeio = (ArvoreHierarquicaDTO) distribuidoresPrimeiroNivel[1];
-			ArvoreHierarquicaDTO liderDireita = (ArvoreHierarquicaDTO) distribuidoresPrimeiroNivel[2];
-
-			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEsquerda = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(liderEsquerda.getUsuario().getId_Codigo(), NIVEL_MAXIMO_PONTUACAO - 1);
-			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMeio = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(liderMeio.getUsuario().getId_Codigo(), NIVEL_MAXIMO_PONTUACAO - 1);
-			TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaDireita = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(liderDireita.getUsuario().getId_Codigo(), NIVEL_MAXIMO_PONTUACAO - 1);
-
-			Integer pontuacaoRedeEsquerda = calcularPontuacaoRede(liderEsquerda.getUsuario().getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaEsquerda);
-			Integer pontuacaoRedeMeio = calcularPontuacaoRede(liderMeio.getUsuario().getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaMeio);
-			Integer pontuacaoRedeDireita = calcularPontuacaoRede(liderDireita.getUsuario().getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDireita);
-			pontuacoesLinhaDaEsquerda.add(pontuacaoRedeEsquerda);
-			pontuacoesLinhaDoMeio.add(pontuacaoRedeMeio);
-			pontuacoesLinhaDaDireita.add(pontuacaoRedeDireita);
-
-			Integer pontuacaoLinhaDaEsquerdaParaQualificacao = pontuacaoRedeEsquerda;
-			if (pontuacaoRedeEsquerda > pontuacaoMaximaPorLinha) {
-				pontuacaoLinhaDaEsquerdaParaQualificacao = pontuacaoMaximaPorLinha;
-			}
-
-			Integer pontuacaoLinhaDoMeioParaQualificacao = pontuacaoRedeMeio;
-			if (pontuacaoRedeMeio > pontuacaoMaximaPorLinha) {
-				pontuacaoLinhaDoMeioParaQualificacao = pontuacaoMaximaPorLinha;
-			}
-
-			Integer pontuacaoLinhaDaDireitaParaQualificacao = pontuacaoRedeDireita;
-			if (pontuacaoRedeDireita > pontuacaoMaximaPorLinha) {
-				pontuacaoLinhaDaDireitaParaQualificacao = pontuacaoMaximaPorLinha;
-			}
-
-			pontuacoesLinhaDaEsquerdaParaQualificacao.add(pontuacaoLinhaDaEsquerdaParaQualificacao);
-			pontuacoesLinhaDoMeioParaQualificacao.add(pontuacaoLinhaDoMeioParaQualificacao);
-			pontuacoesLinhaDaDireitaParaQualificacao.add(pontuacaoLinhaDaDireitaParaQualificacao);
-
-			int pontuacaoTotal = pontuacaoPessoalParaQualificacao + pontuacaoLinhaDaEsquerdaParaQualificacao + pontuacaoLinhaDoMeioParaQualificacao + pontuacaoLinhaDaDireitaParaQualificacao;
-			pontuacoesTotais.add(pontuacaoTotal);
-			total += pontuacaoTotal;
-		}
-
-		pontuacaoDTO.setMeses(meses);
-		pontuacaoDTO.setPontuacaoMaximaPorLinha(pontuacaoMaximaPorLinha);
-		pontuacaoDTO.setPontuacaoMinimaPorLinha(pontuacaoMinimaPorLinha);
-		pontuacaoDTO.setPontuacaoParaOProximoNivel(pontuacaoProximaPosicao);
-		pontuacaoDTO.setPontuacoesLinhaDaEsquerda(pontuacoesLinhaDaEsquerda);
-		pontuacaoDTO.setPontuacoesLinhaDoMeio(pontuacoesLinhaDoMeio);
-		pontuacaoDTO.setPontuacoesLinhaDaDireita(pontuacoesLinhaDaDireita);
-		pontuacaoDTO.setPontuacoesLinhaDaEsquerdaParaQualificacao(pontuacoesLinhaDaEsquerdaParaQualificacao);
-		pontuacaoDTO.setPontuacoesLinhaDoMeioParaQualificacao(pontuacoesLinhaDoMeioParaQualificacao);
-		pontuacaoDTO.setPontuacoesLinhaDaDireitaParaQualificacao(pontuacoesLinhaDaDireitaParaQualificacao);
-		pontuacaoDTO.setPontuacoesPessoais(pontuacoesPessoais);
-		pontuacaoDTO.setPontuacoesPessoaisParaQualificacao(pontuacoesPessoaisParaQualificacao);
-		pontuacaoDTO.setPontuacoesTotais(pontuacoesTotais);
-		pontuacaoDTO.setTotal(total);
-		pontuacaoDTO.setValorMinimoPontuacaoPessoalParaQualificacao(valorMinimoPontuacaoPessoalParaQualificacao);
-
-		return pontuacaoDTO;
+	for (Entry<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEntry : arvoreHierarquica.entrySet()) {
+	    pontuacaoRede += calcularPontuacao(arvoreHierarquicaEntry.getValue().getUsuario().getId_Codigo(), inicio, fim);
 	}
 
-	private Integer calcularPontuacaoRede(Integer idCodigo, GregorianCalendar inicio, GregorianCalendar fim, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica) {
+	return pontuacaoRede;
+    }
 
-		Integer pontuacaoRede = calcularPontuacao(idCodigo, inicio, fim);
+    private Integer calcularPontuacao(Integer idCodigo, GregorianCalendar inicio, GregorianCalendar fim) {
 
-		for (Entry<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEntry : arvoreHierarquica.entrySet()) {
-			pontuacaoRede += calcularPontuacao(arvoreHierarquicaEntry.getValue().getUsuario().getId_Codigo(), inicio, fim);
-		}
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+	restricoes.add(Restrictions.between("Dt_Pontos", inicio, fim));
+	Pontuacao pontuacaoFiltro = new Pontuacao();
+	pontuacaoFiltro.setId_Codigo(idCodigo);
+	List<Pontuacao> pontuacoes = hibernateUtil.buscar(pontuacaoFiltro, restricoes);
+	BigDecimal somaPontuacao = BigDecimal.ZERO;
 
-		return pontuacaoRede;
+	for (Pontuacao pontuacao : pontuacoes) {
+	    somaPontuacao = somaPontuacao.add(pontuacao.getPntAtividade().add(pontuacao.getPntIngresso().add(pontuacao.getPntProduto())));
 	}
 
-	private Integer calcularPontuacao(Integer idCodigo, GregorianCalendar inicio, GregorianCalendar fim) {
+	return somaPontuacao.intValue();
+    }
 
-		List<Criterion> restricoes = new ArrayList<Criterion>();
-		restricoes.add(Restrictions.between("Dt_Pontos", inicio, fim));
-		Pontuacao pontuacaoFiltro = new Pontuacao();
-		pontuacaoFiltro.setId_Codigo(idCodigo);
-		List<Pontuacao> pontuacoes = hibernateUtil.buscar(pontuacaoFiltro, restricoes);
-		BigDecimal somaPontuacao = BigDecimal.ZERO;
+    public GraduacaoMensalDTO calcularGraduacaoMensalPorPontuacaoDeProduto(Integer idCodigo) {
 
-		for (Pontuacao pontuacao : pontuacoes) {
-			somaPontuacao = somaPontuacao.add(pontuacao.getPntAtividade().add(pontuacao.getPntIngresso().add(pontuacao.getPntProduto())));
-		}
+	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idCodigo));
 
-		return somaPontuacao.intValue();
+	GregorianCalendar hoje = Util.getTempoCorrenteAMeiaNoite();
+	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(hoje);
+	GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(hoje);
+
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+	restricoes.add(Restrictions.between("Dt_Pontos", primeiroDiaDoMes, ultimoDiaDoMes));
+	Pontuacao pontuacaoFiltro = new Pontuacao();
+	pontuacaoFiltro.setId_Codigo(idCodigo);
+	List<Pontuacao> pontuacoes = hibernateUtil.buscar(pontuacaoFiltro, restricoes);
+
+	BigDecimal somaPontuacao = BigDecimal.ZERO;
+	for (Pontuacao pontuacao : pontuacoes) {
+	    somaPontuacao = somaPontuacao.add(pontuacao.getPntProduto());
 	}
 
-	public BigDecimal getValorIngresso(Integer codigo, GregorianCalendar data) {
+	Posicao posicaoAtual = new PosicoesService(hibernateUtil).obterPosicaoPorNome(usuario.getPosAtual());
+	Posicao proximaPosicao = new PosicoesService(hibernateUtil).obterProximaPosicao(usuario.getPosAtual());
 
-		GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(data);
-		GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(data);
+	GraduacaoMensalDTO graduacaoMensalDTO = new GraduacaoMensalDTO();
+	graduacaoMensalDTO.setPosicaoAtual(usuario.getPosAtual());
+	graduacaoMensalDTO.setPontuacaoDaPosicaoAtual(posicaoAtual.getPontuacao());
+	graduacaoMensalDTO.setProximaPosicao(proximaPosicao.getNome());
+	graduacaoMensalDTO.setPontuacaoDaProximaPosicao(proximaPosicao.getPontuacao());
+	graduacaoMensalDTO.setPontosFeitosAteOMomento(somaPontuacao.intValue());
+	graduacaoMensalDTO.setPontosRestantesParaProximaPosicao(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() - graduacaoMensalDTO.getPontosFeitosAteOMomento());
 
-		List<Pontuacao> pontuacoes = buscarPontuacoes(codigo, primeiroDiaDoMes, ultimoDiaDoMes);
-
-		BigDecimal valorIngresso = BigDecimal.ZERO;
-
-		for (Pontuacao pontuacao : pontuacoes) {
-			valorIngresso = valorIngresso.add(pontuacao.getValorIngresso());
-		}
-
-		return valorIngresso;
+	if (graduacaoMensalDTO.getPontosFeitosAteOMomento().equals(0)) {
+	    graduacaoMensalDTO.setPorcentagemConclusao(0);
+	} else {
+	    graduacaoMensalDTO.setPorcentagemConclusao(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() / graduacaoMensalDTO.getPontosFeitosAteOMomento() * 100);
 	}
 
-	public List<Pontuacao> buscarPontuacoes(Integer codigo, GregorianCalendar dataInicial, GregorianCalendar dataFinal) {
+	return graduacaoMensalDTO;
+    }
 
-		List<Criterion> restricoes = new ArrayList<Criterion>();
-		restricoes.add(Restrictions.between("Dt_Pontos", dataInicial, dataFinal));
-		Pontuacao filtro = new Pontuacao();
-		filtro.setId_Codigo(codigo);
-		return hibernateUtil.buscar(filtro, restricoes);
+    public BigDecimal getValorIngresso(Integer codigo, GregorianCalendar data) {
+
+	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(data);
+	GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(data);
+
+	List<Pontuacao> pontuacoes = buscarPontuacoes(codigo, primeiroDiaDoMes, ultimoDiaDoMes);
+
+	BigDecimal valorIngresso = BigDecimal.ZERO;
+
+	for (Pontuacao pontuacao : pontuacoes) {
+	    valorIngresso = valorIngresso.add(pontuacao.getValorIngresso());
 	}
+
+	return valorIngresso;
+    }
+
+    public List<Pontuacao> buscarPontuacoes(Integer codigo, GregorianCalendar dataInicial, GregorianCalendar dataFinal) {
+
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+	restricoes.add(Restrictions.between("Dt_Pontos", dataInicial, dataFinal));
+	Pontuacao filtro = new Pontuacao();
+	filtro.setId_Codigo(codigo);
+	return hibernateUtil.buscar(filtro, restricoes);
+    }
 }
