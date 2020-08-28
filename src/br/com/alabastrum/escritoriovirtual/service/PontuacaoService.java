@@ -1,6 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -207,7 +208,7 @@ public class PontuacaoService {
 	if (graduacaoMensalDTO.getPontosFeitosAteOMomento().equals(0)) {
 	    graduacaoMensalDTO.setPorcentagemConclusao(0);
 	} else {
-	    graduacaoMensalDTO.setPorcentagemConclusao(new BigDecimal(graduacaoMensalDTO.getPontuacaoDaProximaPosicao()).divide(new BigDecimal(graduacaoMensalDTO.getPontosFeitosAteOMomento()).multiply(new BigDecimal(100))).intValue());
+	    graduacaoMensalDTO.setPorcentagemConclusao(new BigDecimal(graduacaoMensalDTO.getPontuacaoDaProximaPosicao()).divide(new BigDecimal(graduacaoMensalDTO.getPontosFeitosAteOMomento()).multiply(new BigDecimal(100)), 2, RoundingMode.HALF_UP).intValue());
 	}
 
 	return graduacaoMensalDTO;
