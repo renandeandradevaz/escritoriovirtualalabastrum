@@ -320,6 +320,16 @@ public class PedidoController {
 	result.forwardTo(this).selecionarCategoria(produto.getId_Categoria());
     }
 
+    @Funcionalidade(administrativa = "true")
+    @Post("/pedido/removerDoEstoque/{idProduto}")
+    public void removerDoEstoque(String idProduto, Integer quantidade) {
+
+	Pedido pedido = selecionarPedidoAberto();
+	new EstoqueService(hibernateUtil).retirarDoEstoque(idProduto, pedido.getIdFranquia(), quantidade);
+	Produto produto = hibernateUtil.selecionar(new Produto(idProduto), MatchMode.EXACT);
+	result.forwardTo(this).selecionarCategoria(produto.getId_Categoria());
+    }
+
     private void adicionarItemPedidoTaxaAdesao(String idProduto, Pedido pedido) {
 
 	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");

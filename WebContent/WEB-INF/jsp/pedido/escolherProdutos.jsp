@@ -52,6 +52,22 @@
 					<input type="number" min="0" max="${item.quantidadeEmEstoque}" name="quantidade" style="width: 90px; margin-top: 10px" placeholder="Quantidade" value="${item.quantidade}">
 					<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Adicionar</button>
 				</form>
+				<c:if test="${sessaoUsuario.usuario.informacoesFixasUsuario.administrador}">
+					<br>
+					<br>
+					<p>---------------------</p>
+					<br>
+					<h4>REMOVER PRODUTO DO ESTOQUE</h4>
+					<br>
+					<h6>(Escolha a quantidade abaixo)</h6>
+					<form action="<c:url value="/pedido/removerDoEstoque/${item.produto.id_Produtos}"/>" method="post">
+						<input type="number" min="0" max="${item.quantidadeEmEstoque}" name="quantidade" style="width: 90px; margin-top: 10px" placeholder="Quantidade" value="${item.quantidade}">
+						<button type="submit" class="btn btn-danger" onclick="this.disabled=true;this.form.submit();">REMOVER DO ESTOQUE</button>
+					</form>
+					<br>
+					<br>
+					<br>
+				</c:if>
 			</div>
 		</c:forEach>
 	</div>
