@@ -6,7 +6,7 @@ public class GraduacaoMensalDTO {
     private Integer pontuacaoDaPosicaoAtual;
     private String proximaPosicao;
     private Integer pontuacaoDaProximaPosicao;
-    private Integer pontosFeitosAteOMomento;
+    private Integer pontosAproveitados;
     private Integer pontosRestantesParaProximaPosicao;
     private Integer porcentagemConclusao;
 
@@ -42,14 +42,6 @@ public class GraduacaoMensalDTO {
 	this.pontuacaoDaProximaPosicao = pontuacaoDaProximaPosicao;
     }
 
-    public Integer getPontosFeitosAteOMomento() {
-	return pontosFeitosAteOMomento;
-    }
-
-    public void setPontosFeitosAteOMomento(Integer pontosFeitosAteOMomento) {
-	this.pontosFeitosAteOMomento = pontosFeitosAteOMomento;
-    }
-
     public Integer getPontosRestantesParaProximaPosicao() {
 	return pontosRestantesParaProximaPosicao;
     }
@@ -64,5 +56,13 @@ public class GraduacaoMensalDTO {
 
     public void setPorcentagemConclusao(Integer porcentagemConclusao) {
 	this.porcentagemConclusao = porcentagemConclusao;
+    }
+
+    public Integer getPontosAproveitados() {
+	return pontosAproveitados;
+    }
+
+    public void setPontosAproveitados(Integer pontosAproveitados) {
+	this.pontosAproveitados = pontosAproveitados;
     }
 }

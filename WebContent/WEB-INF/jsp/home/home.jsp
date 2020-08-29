@@ -45,7 +45,7 @@
 </style>
 <div class="fundo-branco">
 	<div style="margin: 5%; border: 1px solid black; border-radius: 5px; padding: 10px; max-width: 300px;">
-		<h3>Fila única</h3>
+		<h3>Fila Única</h3>
 		<br>
 		<h5>Total abaixo: ${totalAbaixoFilaUnica}</h5>
 	</div>
@@ -73,7 +73,7 @@
 		</div>
 		<br>
 		<br>
-		<p style="text-align: left;">Pontos aproveitados: ${graduacaoMensal.pontosFeitosAteOMomento}</p>
+		<p style="text-align: left;">Pontos aproveitados: ${graduacaoMensal.pontosAproveitados}</p>
 		<p style="text-align: left;">Pontos restantes para a próxima posição: ${graduacaoMensal.pontosRestantesParaProximaPosicao}</p>
 		<p></p>
 	</div>

@@ -182,18 +182,6 @@ public class PontuacaoService {
 
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idCodigo));
 
-	GregorianCalendar hoje = Util.getTempoCorrenteAMeiaNoite();
-	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(hoje);
-	GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(hoje);
-
-	BigDecimal somaPontuacao = calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
-
-	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuario.getId_Codigo(), null);
-
-	for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaCompleta.values()) {
-	    somaPontuacao = somaPontuacao.add(calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDTO.getUsuario().getId_Codigo()));
-	}
-
 	Posicao posicaoAtual = new PosicoesService(hibernateUtil).obterPosicaoPorNome(usuario.getPosAtual());
 	Posicao proximaPosicao = new PosicoesService(hibernateUtil).obterProximaPosicao(usuario.getPosAtual());
 
@@ -202,13 +190,39 @@ public class PontuacaoService {
 	graduacaoMensalDTO.setPontuacaoDaPosicaoAtual(posicaoAtual.getPontuacao());
 	graduacaoMensalDTO.setProximaPosicao(proximaPosicao.getNome());
 	graduacaoMensalDTO.setPontuacaoDaProximaPosicao(proximaPosicao.getPontuacao());
-	graduacaoMensalDTO.setPontosFeitosAteOMomento(somaPontuacao.intValue());
-	graduacaoMensalDTO.setPontosRestantesParaProximaPosicao(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() - graduacaoMensalDTO.getPontosFeitosAteOMomento());
 
-	if (graduacaoMensalDTO.getPontosFeitosAteOMomento().equals(0)) {
+	GregorianCalendar hoje = Util.getTempoCorrenteAMeiaNoite();
+	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(hoje);
+	GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(hoje);
+
+	BigDecimal somaPontuacaoTotal = calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
+
+	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaNivel1 = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(usuario.getId_Codigo(), 1);
+
+	for (ArvoreHierarquicaDTO distribuidorNivel1 : arvoreHierarquicaNivel1.values()) {
+
+	    BigDecimal somaPontuacaoPorLinha = calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, distribuidorNivel1.getUsuario().getId_Codigo());
+
+	    Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaTodosOsNiveis = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(distribuidorNivel1.getUsuario().getId_Codigo());
+
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaTodosOsNiveis.values()) {
+		somaPontuacaoPorLinha = somaPontuacaoPorLinha.add(calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDTO.getUsuario().getId_Codigo()));
+	    }
+
+	    if (somaPontuacaoPorLinha.intValue() > graduacaoMensalDTO.getPontuacaoDaProximaPosicao() * 0.5) {
+		somaPontuacaoPorLinha = new BigDecimal(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() * 0.5);
+	    }
+
+	    somaPontuacaoTotal = somaPontuacaoTotal.add(somaPontuacaoPorLinha);
+	}
+
+	graduacaoMensalDTO.setPontosAproveitados(somaPontuacaoTotal.intValue());
+	graduacaoMensalDTO.setPontosRestantesParaProximaPosicao(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() - graduacaoMensalDTO.getPontosAproveitados());
+
+	if (graduacaoMensalDTO.getPontosAproveitados().equals(0)) {
 	    graduacaoMensalDTO.setPorcentagemConclusao(0);
 	} else {
-	    graduacaoMensalDTO.setPorcentagemConclusao(new BigDecimal(graduacaoMensalDTO.getPontosFeitosAteOMomento()).divide(new BigDecimal(graduacaoMensalDTO.getPontuacaoDaProximaPosicao()), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).intValue());
+	    graduacaoMensalDTO.setPorcentagemConclusao(new BigDecimal(graduacaoMensalDTO.getPontosAproveitados()).divide(new BigDecimal(graduacaoMensalDTO.getPontuacaoDaProximaPosicao()), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).intValue());
 	}
 
 	return graduacaoMensalDTO;
