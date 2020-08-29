@@ -219,7 +219,7 @@ public class PontuacaoService {
 	graduacaoMensalDTO.setPontosAproveitados(somaPontuacaoTotal.intValue());
 	graduacaoMensalDTO.setPontosRestantesParaProximaPosicao(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() - graduacaoMensalDTO.getPontosAproveitados());
 
-	if (graduacaoMensalDTO.getPontosAproveitados().equals(0)) {
+	if (graduacaoMensalDTO.getPontuacaoDaProximaPosicao().equals(0)) {
 	    graduacaoMensalDTO.setPorcentagemConclusao(0);
 	} else {
 	    graduacaoMensalDTO.setPorcentagemConclusao(new BigDecimal(graduacaoMensalDTO.getPontosAproveitados()).divide(new BigDecimal(graduacaoMensalDTO.getPontuacaoDaProximaPosicao()), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).intValue());
