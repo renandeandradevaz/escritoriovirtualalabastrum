@@ -219,6 +219,10 @@ public class PontuacaoService {
 	graduacaoMensalDTO.setPontosAproveitados(somaPontuacaoTotal.intValue());
 	graduacaoMensalDTO.setPontosRestantesParaProximaPosicao(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() - graduacaoMensalDTO.getPontosAproveitados());
 
+	if (graduacaoMensalDTO.getPontosRestantesParaProximaPosicao() < 0) {
+	    graduacaoMensalDTO.setPontosRestantesParaProximaPosicao(0);
+	}
+
 	if (graduacaoMensalDTO.getPontuacaoDaProximaPosicao().equals(0)) {
 	    graduacaoMensalDTO.setPorcentagemConclusao(0);
 	} else {

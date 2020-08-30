@@ -92,6 +92,7 @@
 			<h3 class="menu-accordion has-child">Financeiro</h3>
 			<div>
 				<a href="<c:url value="/extrato/acessarTelaExtrato"/>" class="submenu-accordion"> Extrato </a>
+				<a href="<c:url value="/solicitacaoSaque/acessarTelaSolicitacaoSaque"/>" class="submenu-accordion"> Solicitar Saque </a>
 			</div>
 			<h3 class="menu-accordion has-child">Downloads</h3>
 			<div>

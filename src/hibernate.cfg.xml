@@ -47,6 +47,7 @@
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Produto" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Qualificacao" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ReceitaDivisaoLucro" />
+		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.SolicitacaoSaque" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Transferencia" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Usuario" />
 

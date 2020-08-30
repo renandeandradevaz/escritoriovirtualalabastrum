@@ -247,19 +247,13 @@ hr {
 			<input type="text" name="usuario.contaPessoaJuridicaBancoEspecifico" value="${usuario.contaPessoaJuridicaBancoEspecifico}">
 		</div>
 		<div class="corClara divFormulario" style="margin: 5%; border: 1px solid black;">
-			<h5>Após finalizar a atualização dos seus dados aqui no Escritório virtual, você deve enviar por e-mail as fotos dos seus documentos.</h5>
-			<h5>O título do email deve ser: Fotos dos documentos do distribuidor com nickname XXX (Coloque aqui o seu nickname).</h5>
-			<h5>As fotos devem ir em anexo no email.</h5>
-			<br>
-			<h5>Os documentos necessários são:</h5>
-			<h5>* RG/CNH</h5>
-			<h5>* CPF</h5>
-			<h5>* Comprovante PIS/MIS/PASEP</h5>
-			<h5>* Comprovante de Residência no próprio nome</h5>
-			<h5>* Declaração de Isenção do INSS com firma reconhecida (próprio punho)</h5>
+			<h5>Após finalizar a atualização dos seus dados aqui no Escritório virtual, você deve enviar as fotos dos seus documentos.</h5>
+			<h5>Para enviar, basta acessar o link abaixo e preencher todos os campos do formulário.</h5>
 			<br>
 			<br>
-			<h6>Todos documentos devem ser enviados para: documentos@dunastes.com.br</h6>
+			<a href="http://miguelprado.com.br">CLIQUE AQUI PARA ENVIAR SUA DOCUMENTAÇÃO</a>
+			<br>
+			<br>
 		</div>
 		<div style="margin-top: 20px; margin-left: 20px">
 			<button type="submit" class="btn btn-primary">Enviar</button>
