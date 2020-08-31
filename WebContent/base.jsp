@@ -86,7 +86,7 @@
 				<a href="<c:url value="/pedido/meusPedidos"/>" class="submenu-accordion"> Meus Pedidos </a>
 				<c:if test="${sessaoUsuario.usuario.donoDeFranquia}">
 					<a href="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" class="submenu-accordion"> Pedidos da franquia </a>
-					<a href="<c:url value="/pedidoFranquia/pedidosFranquia"/>" class="submenu-accordion"> Pedidos para estoque </a>
+					<a href="<c:url value="/pedidoFranquia/pedidosFranquia"/>" class="submenu-accordion"> Pedidos para Estoque </a>
 				</c:if>
 			</div>
 			<h3 class="menu-accordion has-child">Financeiro</h3>
@@ -104,6 +104,7 @@
 					<a href="<c:url value="/assumirIdentidade/acessarTelaAssumirIdentidade"/>" class="submenu-accordion"> Assumir Identidade </a>
 					<a href="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" class="submenu-accordion"> Gerenciar Pedidos </a>
 					<a href="<c:url value="/pedidoFranquia/todosPedidosFranquia"/>" class="submenu-accordion"> Gerenciar Pedidos para Estoque </a>
+					<a href="<c:url value="/solicitacaoSaque/solicitacoesSaqueAdministrativa"/>" class="submenu-accordion"> Solicitações de Saque </a>
 					<a href="<c:url value="/saldoGeral/acessarTelaSaldoGeral"/>" class="submenu-accordion"> Saldo Geral </a>
 					<a href="<c:url value="/configuracao/acessarTelaConfiguracaoAdministrativa"/>" class="submenu-accordion"> Configurações Administrativas </a>
 				</div>

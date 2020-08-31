@@ -40,6 +40,7 @@ public class ExtratoService {
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaOutroDistribuidor(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaAlabastrumCard(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaPagamentoDePedido(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaSaque(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasPorCompressaoDeBonus(idCodigo));
 	extratoCompleto = ordenarExtratoPorDataCrescente(extratoCompleto);
 
@@ -64,6 +65,7 @@ public class ExtratoService {
 		if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR) //
 			|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD) //
 			|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO) //
+			|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_SAQUE) //
 			|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS)) {
 
 		    saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
