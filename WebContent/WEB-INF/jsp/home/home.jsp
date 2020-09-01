@@ -73,6 +73,7 @@
 		</div>
 		<br>
 		<br>
+		<p style="text-align: left;">Pontuação geral da equipe: ${graduacaoMensal.pontuacaoTotal}</p>
 		<p style="text-align: left;">Pontos aproveitados: ${graduacaoMensal.pontosAproveitados}</p>
 		<p style="text-align: left;">Pontos restantes para a próxima posição: ${graduacaoMensal.pontosRestantesParaProximaPosicao}</p>
 		<p></p>

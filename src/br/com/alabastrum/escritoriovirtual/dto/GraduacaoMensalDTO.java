@@ -7,6 +7,7 @@ public class GraduacaoMensalDTO {
     private String proximaPosicao;
     private Integer pontuacaoDaProximaPosicao;
     private Integer pontosAproveitados;
+    private Integer pontuacaoTotal;
     private Integer pontosRestantesParaProximaPosicao;
     private Integer porcentagemConclusao;
 
@@ -64,5 +65,13 @@ public class GraduacaoMensalDTO {
 
     public void setPontosAproveitados(Integer pontosAproveitados) {
 	this.pontosAproveitados = pontosAproveitados;
+    }
+
+    public Integer getPontuacaoTotal() {
+	return pontuacaoTotal;
+    }
+
+    public void setPontuacaoTotal(Integer pontuacaoTotal) {
+	this.pontuacaoTotal = pontuacaoTotal;
     }
 }

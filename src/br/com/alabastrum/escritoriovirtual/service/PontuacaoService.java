@@ -195,28 +195,33 @@ public class PontuacaoService {
 	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(hoje);
 	GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(hoje);
 
-	BigDecimal somaPontuacaoTotal = calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
+	BigDecimal somaPontuacaoAproveitadaTotal = calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
+	BigDecimal somaPontuacaoTotal = new BigDecimal(somaPontuacaoAproveitadaTotal.intValue());
 
 	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaNivel1 = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(usuario.getId_Codigo(), 1);
 
 	for (ArvoreHierarquicaDTO distribuidorNivel1 : arvoreHierarquicaNivel1.values()) {
 
-	    BigDecimal somaPontuacaoPorLinha = calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, distribuidorNivel1.getUsuario().getId_Codigo());
+	    BigDecimal somaPontuacaoAproveitadaPorLinha = calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, distribuidorNivel1.getUsuario().getId_Codigo());
 
 	    Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaTodosOsNiveis = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(distribuidorNivel1.getUsuario().getId_Codigo());
 
 	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaTodosOsNiveis.values()) {
-		somaPontuacaoPorLinha = somaPontuacaoPorLinha.add(calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDTO.getUsuario().getId_Codigo()));
+		somaPontuacaoAproveitadaPorLinha = somaPontuacaoAproveitadaPorLinha.add(calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDTO.getUsuario().getId_Codigo()));
 	    }
 
-	    if (somaPontuacaoPorLinha.intValue() > graduacaoMensalDTO.getPontuacaoDaProximaPosicao() * 0.5) {
-		somaPontuacaoPorLinha = new BigDecimal(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() * 0.5);
+	    BigDecimal somaPontuacaoTotalPorLinha = new BigDecimal(somaPontuacaoAproveitadaPorLinha.intValue());
+
+	    if (somaPontuacaoAproveitadaPorLinha.intValue() > graduacaoMensalDTO.getPontuacaoDaProximaPosicao() * 0.5) {
+		somaPontuacaoAproveitadaPorLinha = new BigDecimal(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() * 0.5);
 	    }
 
-	    somaPontuacaoTotal = somaPontuacaoTotal.add(somaPontuacaoPorLinha);
+	    somaPontuacaoAproveitadaTotal = somaPontuacaoAproveitadaTotal.add(somaPontuacaoAproveitadaPorLinha);
+	    somaPontuacaoTotal = somaPontuacaoTotal.add(somaPontuacaoTotalPorLinha);
 	}
 
-	graduacaoMensalDTO.setPontosAproveitados(somaPontuacaoTotal.intValue());
+	graduacaoMensalDTO.setPontosAproveitados(somaPontuacaoAproveitadaTotal.intValue());
+	graduacaoMensalDTO.setPontuacaoTotal(somaPontuacaoTotal.intValue());
 	graduacaoMensalDTO.setPontosRestantesParaProximaPosicao(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() - graduacaoMensalDTO.getPontosAproveitados());
 
 	if (graduacaoMensalDTO.getPontosRestantesParaProximaPosicao() < 0) {
