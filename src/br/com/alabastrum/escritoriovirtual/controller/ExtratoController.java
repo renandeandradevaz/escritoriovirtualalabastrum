@@ -49,6 +49,7 @@ public class ExtratoController {
 	result.include("saldoPrevistoTotal", saldoDTO.getSaldoPrevistoTotal());
 	result.include("ganhosAteHoje", saldoDTO.getGanhosAteHoje());
 	result.include("extratoDoMes", saldoDTO.getExtratoDoMes());
+	result.include("inss", saldoDTO.getInss());
 	result.forwardTo(this).acessarTelaExtrato(mes, ano);
     }
 }

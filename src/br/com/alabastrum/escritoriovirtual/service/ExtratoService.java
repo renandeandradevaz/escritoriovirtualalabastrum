@@ -94,7 +94,10 @@ public class ExtratoService {
 	}
 
 	BigDecimal saldoPrevistoTotal = saldoPrevistoNoMes.add(saldoLiberado);
-	return new SaldoDTO(saldoPrevistoNoMes, saldoPrevistoTotal, saldoLiberado, ganhosAteHoje, extratoDoMes);
+	BigDecimal inss = saldoLiberado.multiply(new BigDecimal("0.11"));
+	saldoLiberado = saldoLiberado.subtract(inss);
+
+	return new SaldoDTO(saldoPrevistoNoMes, saldoPrevistoTotal, saldoLiberado, ganhosAteHoje, inss, extratoDoMes);
     }
 
     private void adicionarNoExtratoDoMes(Integer mes, Integer ano, BigDecimal saldo, List<ExtratoDTO> extratoDoMes, ExtratoDTO extratoDTO) {

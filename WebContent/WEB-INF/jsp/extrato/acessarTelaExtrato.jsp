@@ -77,12 +77,6 @@
 <c:if test="${not empty saldoLiberado}">
 	<div class="fundo-branco">
 		<span style="font-weight: bold; font-size: 18px;">
-			Saldo liberado atual: R$
-			<fmt:formatNumber value="${saldoLiberado}" pattern="#,##0.00" />
-		</span>
-		<br>
-		<br>
-		<span style="font-weight: bold; font-size: 18px;">
 			Saldo previsto no mês atual: R$
 			<fmt:formatNumber value="${saldoPrevistoNoMes}" pattern="#,##0.00" />
 		</span>
@@ -92,6 +86,18 @@
 		<span style="font-weight: bold; font-size: 18px;">
 			Saldo previsto total atual: R$
 			<fmt:formatNumber value="${saldoPrevistoTotal}" pattern="#,##0.00" />
+		</span>
+		<br>
+		<br>
+		<span style="font-weight: bold; font-size: 18px;">
+			INSS: R$
+			<fmt:formatNumber value="${inss}" pattern="#,##0.00" />
+		</span>
+		<br>
+		<br>
+		<span style="font-weight: bold; font-size: 18px;">
+			Saldo liberado atual: R$
+			<fmt:formatNumber value="${saldoLiberado}" pattern="#,##0.00" />
 		</span>
 		<br>
 		<br>

@@ -60,12 +60,12 @@
 		</div>
 		<input type="hidden" id="percent" name="percent" value="${graduacaoMensal.porcentagemConclusao}">
 		<div style="display: inline-block;">
-			<div style="display: inline-block; width: 50%; margin-left: -20px">
+			<div style="display: inline-block; width: 70%; margin-left: -50px">
 				<h5>ATUAL</h5>
 				<h4>${graduacaoMensal.pontuacaoDaPosicaoAtual}</h4>
 				<h5>${graduacaoMensal.posicaoAtual}</h5>
 			</div>
-			<div style="display: inline-block; width: 50%; float: right; margin-left: 20px">
+			<div style="display: inline-block; width: 30%; float: right; margin-left: 50px">
 				<h5>PRÓXIMA</h5>
 				<h4>${graduacaoMensal.pontuacaoDaProximaPosicao}</h4>
 				<h5>${graduacaoMensal.proximaPosicao}</h5>
@@ -73,9 +73,18 @@
 		</div>
 		<br>
 		<br>
-		<p style="text-align: left;">Pontuação geral da equipe: ${graduacaoMensal.pontuacaoTotal}</p>
-		<p style="text-align: left;">Pontos aproveitados: ${graduacaoMensal.pontosAproveitados}</p>
-		<p style="text-align: left;">Pontos restantes para a próxima posição: ${graduacaoMensal.pontosRestantesParaProximaPosicao}</p>
+		<p style="text-align: left;">
+			Pontuação geral da equipe:
+			<span style="font-weight: bold;">${graduacaoMensal.pontuacaoTotal} </span>
+		</p>
+		<p style="text-align: left;">
+			Pontos aproveitados:
+			<span style="font-weight: bold; color: green">${graduacaoMensal.pontosAproveitados} </span>
+		</p>
+		<p style="text-align: left;">
+			Pontos restantes para a próxima posição:
+			<span style="font-weight: bold; color: red">${graduacaoMensal.pontosRestantesParaProximaPosicao} </span>
+		</p>
 		<p></p>
 	</div>
 	<div style="margin: 5%; border: 1px solid black; max-width: 300px; padding: 10px">
