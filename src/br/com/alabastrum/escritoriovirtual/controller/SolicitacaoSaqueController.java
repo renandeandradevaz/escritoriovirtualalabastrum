@@ -143,9 +143,11 @@ public class SolicitacaoSaqueController {
 
 	BigDecimal valorBigDecimal = new BigDecimal(valor);
 	BigDecimal descontoTarifaBancaria = new BigDecimal("10");
-	BigDecimal descontoINSS = valorBigDecimal.multiply(new BigDecimal("0.11"));
-	//BigDecimal descontoImpostoDeRenda = valorBigDecimal.multiply(new BigDecimal("0.10"));
+	// BigDecimal descontoINSS = valorBigDecimal.multiply(new BigDecimal("0.11"));
+	// BigDecimal descontoImpostoDeRenda = valorBigDecimal.multiply(new
+	// BigDecimal("0.10"));
 	BigDecimal descontoImpostoDeRenda = BigDecimal.ZERO;
+	BigDecimal descontoINSS = BigDecimal.ZERO;
 
 	return valorBigDecimal.subtract(descontoTarifaBancaria).subtract(descontoINSS).subtract(descontoImpostoDeRenda);
     }
