@@ -40,6 +40,7 @@ import br.com.alabastrum.escritoriovirtual.service.PedidoService;
 import br.com.alabastrum.escritoriovirtual.service.PosicoesService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
+import br.com.alabastrum.escritoriovirtual.util.Constants;
 import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Get;
@@ -556,6 +557,10 @@ public class PedidoController {
 	alterarValorItensPedidoDeAcordoComFormaDePagamento(pedido, formaDePagamento);
 	BigDecimal precoFinal = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal();
 	result.include("precoFinal", precoFinal);
+
+	if (formaDePagamento.equals("pagarComSaldo")) {
+	    result.include("tarifas", precoFinal.multiply(Constants.TARIFA_INSS));
+	}
     }
 
     private void alterarValorItensPedidoDeAcordoComFormaDePagamento(Pedido pedido, String formaDePagamento) throws Exception {
@@ -653,7 +658,7 @@ public class PedidoController {
 	if (formaDePagamento.equals("pagarComSaldo")) {
 
 	    BigDecimal saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado();
-	    BigDecimal valorASerDescontadoDoSaldo = totalPedido.add(totalPedido.multiply(new BigDecimal("0.11")));
+	    BigDecimal valorASerDescontadoDoSaldo = totalPedido.add(totalPedido.multiply(Constants.TARIFA_INSS));
 
 	    if (valorASerDescontadoDoSaldo.compareTo(saldoLiberado) > 0) {
 		validator.add(new ValidationMessage("Você não possui saldo suficiente para pagar este pedido. Saldo atual: R$" + String.format("%.2f", saldoLiberado) + ". Valor do pedido(com descontos): R$" + String.format("%.2f", valorASerDescontadoDoSaldo), "Erro"));
@@ -901,7 +906,7 @@ public class PedidoController {
 	    Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 	    SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
 	    BigDecimal saldoLiberado = saldoDTO.getSaldoLiberado();
-	    BigDecimal valorASerDescontadoDoSaldo = valor.add(valor.multiply(new BigDecimal("0.11")));
+	    BigDecimal valorASerDescontadoDoSaldo = valor.add(valor.multiply(Constants.TARIFA_INSS));
 
 	    if (valorASerDescontadoDoSaldo.compareTo(saldoLiberado) > 0) {
 		validator.add(new ValidationMessage(String.format("O valor a ser debitado não pode ser maior do que o saldo atual. Valor(com descontos): R$%s. Saldo atual: R$%s", String.format("%.2f", valorASerDescontadoDoSaldo), String.format("%.2f", saldoLiberado)), "Erro"));

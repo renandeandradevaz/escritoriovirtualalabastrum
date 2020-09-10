@@ -17,7 +17,7 @@ public class Transferencia implements Entidade {
     public static final String TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR = "Transferência para outro distribuidor";
     public static final String TRANSFERENCIA_PARA_ALABASTRUM_CARD = "Transferência para Alabastrum Card";
     public static final String TRANSFERENCIA_PARA_SAQUE = "Transferência para Saque";
-    public static final String TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO = "Transferência para pagamento de pedido";
+    public static final String TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO = "Transferência para pagamento de pedido (+ Tarifas)";
     public static final String TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS = "Transferência por compressão de bônus";
 
     @Id

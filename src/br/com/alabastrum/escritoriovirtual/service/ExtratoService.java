@@ -12,6 +12,7 @@ import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Transferencia;
+import br.com.alabastrum.escritoriovirtual.util.Constants;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class ExtratoService {
@@ -98,7 +99,7 @@ public class ExtratoService {
 	}
 
 	BigDecimal saldoPrevistoTotal = saldoPrevistoNoMes.add(saldoLiberado);
-	BigDecimal inss = saldoLiberado.multiply(new BigDecimal("0.11"));
+	BigDecimal inss = saldoLiberado.multiply(Constants.TARIFA_INSS);
 	BigDecimal saldoComDescontos = saldoLiberado.subtract(inss);
 
 	return new SaldoDTO(saldoPrevistoNoMes, saldoPrevistoTotal, saldoLiberado, ganhosAteHoje, inss, saldoDoMesAtual, saldoComDescontos, extratoDoMes);
