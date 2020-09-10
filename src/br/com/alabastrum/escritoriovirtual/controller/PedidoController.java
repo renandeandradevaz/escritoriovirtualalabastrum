@@ -660,8 +660,10 @@ public class PedidoController {
 		return;
 	    }
 
-	    salvarTransferencia(totalPedido, pedido);
-	    pedido.setStatus("PAGO");
+	    BigDecimal valorASerDescontadoDoSaldo = totalPedido.add(totalPedido.multiply(new BigDecimal("0.11")));
+
+	    salvarTransferencia(valorASerDescontadoDoSaldo, pedido.getIdCodigo());
+	    pedido.setStatus("FINALIZADO");
 	}
 
 	pedido.setCompleted(true);
@@ -907,19 +909,21 @@ public class PedidoController {
 		return;
 	    }
 
-	    salvarTransferencia(valor, pedido);
+	    BigDecimal valorASerDescontadoDoSaldo = valor.add(valor.multiply(new BigDecimal("0.11")));
+
+	    salvarTransferencia(valorASerDescontadoDoSaldo, pedido.getIdCodigo());
 
 	    result.forwardTo(this).alterarStatus(PedidoService.FINALIZADO, idPedido);
 	}
     }
 
-    private void salvarTransferencia(BigDecimal valor, Pedido pedido) {
+    private void salvarTransferencia(BigDecimal valor, Integer idCodigo) {
 
 	if (valor.compareTo(BigDecimal.ZERO) > 0) {
 
 	    Transferencia transferencia = new Transferencia();
 	    transferencia.setData(new GregorianCalendar());
-	    transferencia.setDe(pedido.getIdCodigo());
+	    transferencia.setDe(idCodigo);
 	    transferencia.setValor(valor);
 	    transferencia.setTipo(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO);
 	    hibernateUtil.salvarOuAtualizar(transferencia);

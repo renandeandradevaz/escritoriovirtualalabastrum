@@ -9,19 +9,23 @@ public class SaldoDTO {
 
     private Usuario usuario;
     private BigDecimal saldoPrevistoNoMes;
+    private BigDecimal saldoDoMesAtual;
     private BigDecimal saldoPrevistoTotal;
     private BigDecimal saldoLiberado;
+    private BigDecimal saldoComDescontos;
     private BigDecimal ganhosAteHoje;
     private BigDecimal inss;
     private List<ExtratoDTO> extratoDoMes;
 
-    public SaldoDTO(BigDecimal saldoPrevistoNoMes, BigDecimal saldoPrevistoTotal, BigDecimal saldoLiberado, BigDecimal ganhosAteHoje, BigDecimal inss, List<ExtratoDTO> extratoDoMes) {
+    public SaldoDTO(BigDecimal saldoPrevistoNoMes, BigDecimal saldoPrevistoTotal, BigDecimal saldoLiberado, BigDecimal ganhosAteHoje, BigDecimal inss, BigDecimal saldoDoMesAtual, BigDecimal saldoComDescontos, List<ExtratoDTO> extratoDoMes) {
 	this.saldoPrevistoNoMes = saldoPrevistoNoMes;
 	this.saldoPrevistoTotal = saldoPrevistoTotal;
 	this.saldoLiberado = saldoLiberado;
 	this.ganhosAteHoje = ganhosAteHoje;
 	this.extratoDoMes = extratoDoMes;
 	this.inss = inss;
+	this.saldoDoMesAtual = saldoDoMesAtual;
+	this.saldoComDescontos = saldoComDescontos;
     }
 
     public BigDecimal getSaldoPrevistoNoMes() {
@@ -78,5 +82,21 @@ public class SaldoDTO {
 
     public void setInss(BigDecimal inss) {
 	this.inss = inss;
+    }
+
+    public BigDecimal getSaldoDoMesAtual() {
+	return saldoDoMesAtual;
+    }
+
+    public void setSaldoDoMesAtual(BigDecimal saldoDoMesAtual) {
+	this.saldoDoMesAtual = saldoDoMesAtual;
+    }
+
+    public BigDecimal getSaldoComDescontos() {
+	return saldoComDescontos;
+    }
+
+    public void setSaldoComDescontos(BigDecimal saldoComDescontos) {
+	this.saldoComDescontos = saldoComDescontos;
     }
 }

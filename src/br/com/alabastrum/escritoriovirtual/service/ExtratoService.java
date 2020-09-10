@@ -54,6 +54,7 @@ public class ExtratoService {
 	int anoAtual = tempoCorrente.get(Calendar.YEAR);
 
 	BigDecimal saldoPrevistoNoMes = BigDecimal.ZERO;
+	BigDecimal saldoDoMesAtual = BigDecimal.ZERO;
 	BigDecimal saldoLiberado = BigDecimal.ZERO;
 	BigDecimal ganhosAteHoje = BigDecimal.ZERO;
 
@@ -81,10 +82,13 @@ public class ExtratoService {
 			saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
 			adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
 			ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
+
+			if (extratoDTO.getData().get(Calendar.MONTH) == mesAtual && extratoDTO.getData().get(Calendar.YEAR) == anoAtual) {
+			    saldoDoMesAtual = saldoDoMesAtual.add(extratoDTO.getValor());
+			}
 		    } else {
 
 			if (extratoDTO.getData().get(Calendar.MONTH) == mesAtual && extratoDTO.getData().get(Calendar.YEAR) == anoAtual) {
-
 			    saldoPrevistoNoMes = saldoPrevistoNoMes.add(extratoDTO.getValor());
 			    adicionarNoExtratoDoMes(mes, ano, saldoPrevistoNoMes, extratoDoMes, extratoDTO);
 			}
@@ -95,9 +99,9 @@ public class ExtratoService {
 
 	BigDecimal saldoPrevistoTotal = saldoPrevistoNoMes.add(saldoLiberado);
 	BigDecimal inss = saldoLiberado.multiply(new BigDecimal("0.11"));
-	saldoLiberado = saldoLiberado.subtract(inss);
+	BigDecimal saldoComDescontos = saldoLiberado.subtract(inss);
 
-	return new SaldoDTO(saldoPrevistoNoMes, saldoPrevistoTotal, saldoLiberado, ganhosAteHoje, inss, extratoDoMes);
+	return new SaldoDTO(saldoPrevistoNoMes, saldoPrevistoTotal, saldoLiberado, ganhosAteHoje, inss, saldoDoMesAtual, saldoComDescontos, extratoDoMes);
     }
 
     private void adicionarNoExtratoDoMes(Integer mes, Integer ano, BigDecimal saldo, List<ExtratoDTO> extratoDoMes, ExtratoDTO extratoDTO) {

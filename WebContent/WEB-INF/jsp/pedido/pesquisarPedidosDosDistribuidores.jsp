@@ -8,7 +8,6 @@
 		<h6>Status do pedido</h6>
 		<select name='status' id='status'>
 			<option value="PENDENTE">PENDENTE</option>
-			<option value="PAGO">PAGO</option>
 			<option value="FINALIZADO">FINALIZADO</option>
 			<option value="CANCELADO">CANCELADO</option>
 		</select>
