@@ -3,7 +3,6 @@ package br.com.alabastrum.escritoriovirtual.controller;
 import java.util.Calendar;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
-import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.service.ExtratoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
@@ -39,17 +38,7 @@ public class ExtratoController {
 
     @Funcionalidade
     public void gerarExtrato(Integer mes, Integer ano) throws Exception {
-
-	Integer idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
-
-	SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(idCodigo, mes, ano);
-
-	result.include("saldoLiberado", saldoDTO.getSaldoLiberado());
-	result.include("saldoPrevistoNoMes", saldoDTO.getSaldoPrevistoNoMes());
-	result.include("saldoPrevistoTotal", saldoDTO.getSaldoPrevistoTotal());
-	result.include("ganhosAteHoje", saldoDTO.getGanhosAteHoje());
-	result.include("extratoDoMes", saldoDTO.getExtratoDoMes());
-	result.include("inss", saldoDTO.getInss());
+	result.include("extrato", new ExtratoService(hibernateUtil).gerarSaldoEExtrato(this.sessaoUsuario.getUsuario().getId_Codigo(), mes, ano));
 	result.forwardTo(this).acessarTelaExtrato(mes, ano);
     }
 }

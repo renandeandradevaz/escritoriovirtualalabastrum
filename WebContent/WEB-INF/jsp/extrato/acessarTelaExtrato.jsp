@@ -43,7 +43,7 @@
 	</form>
 </div>
 <br>
-<c:if test="${not empty extratoDoMes}">
+<c:if test="${not empty extrato.extratoDoMes}">
 	<div class="fundo-branco">
 		<table class="table table-striped table-bordered" style="font-size: 10px">
 			<thead>
@@ -55,7 +55,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${extratoDoMes}" var="item">
+				<c:forEach items="${extrato.extratoDoMes}" var="item">
 					<tr>
 						<td class="centralizado">
 							<fmt:formatDate value="${item.data.time}" type="DATE" />
@@ -74,50 +74,48 @@
 		</table>
 	</div>
 </c:if>
-<c:if test="${not empty saldoLiberado}">
-	<div class="fundo-branco">
-		<span style="font-weight: bold; font-size: 18px;">
-			Saldo previsto no mês atual: R$
-			<fmt:formatNumber value="${saldoPrevistoNoMes}" pattern="#,##0.00" />
-		</span>
-		<span> (Este valor será liberado logo após sua ativação) </span>
-		<br>
-		<br>
-		<span style="font-weight: bold; font-size: 18px;">
-			Saldo do mês atual: R$
-			<fmt:formatNumber value="${saldoDoMesAtual}" pattern="#,##0.00" />
-		</span>
-		<br>
-		<br>
-		<span style="font-weight: bold; font-size: 18px;">
-			Saldo previsto total atual: R$
-			<fmt:formatNumber value="${saldoPrevistoTotal}" pattern="#,##0.00" />
-		</span>
-		<br>
-		<br>
-		<span style="font-weight: bold; font-size: 18px;">
-			INSS: R$
-			<fmt:formatNumber value="${inss}" pattern="#,##0.00" />
-		</span>
-		<br>
-		<br>
-		<span style="font-weight: bold; font-size: 18px;">
-			Saldo liberado atual: R$
-			<fmt:formatNumber value="${saldoComDescontos}" pattern="#,##0.00" />
-		</span>
-		<br>
-		<br>
-		<span style="font-weight: bold; font-size: 18px;">
-			Ganhos até hoje: R$
-			<fmt:formatNumber value="${ganhosAteHoje}" pattern="#,##0.00" />
-		</span>
-		<span> (Não considera transferências. Apenas bonificações) </span>
-		<br>
-		<br>
-		<br>
-		<br>
-	</div>
-</c:if>
+<div class="fundo-branco">
+	<span style="font-weight: bold; font-size: 18px;">
+		Saldo previsto no mês atual: R$
+		<fmt:formatNumber value="${extrato.saldoPrevistoNoMes}" pattern="#,##0.00" />
+	</span>
+	<span> (Este valor será liberado logo após sua ativação) </span>
+	<br>
+	<br>
+	<span style="font-weight: bold; font-size: 18px;">
+		Saldo do mês atual: R$
+		<fmt:formatNumber value="${extrato.saldoDoMesAtual}" pattern="#,##0.00" />
+	</span>
+	<br>
+	<br>
+	<span style="font-weight: bold; font-size: 18px;">
+		Saldo previsto total atual: R$
+		<fmt:formatNumber value="${extrato.saldoPrevistoTotal}" pattern="#,##0.00" />
+	</span>
+	<br>
+	<br>
+	<span style="font-weight: bold; font-size: 18px;">
+		INSS: R$
+		<fmt:formatNumber value="${extrato.inss}" pattern="#,##0.00" />
+	</span>
+	<br>
+	<br>
+	<span style="font-weight: bold; font-size: 18px;">
+		Saldo liberado atual: R$
+		<fmt:formatNumber value="${extrato.saldoComDescontos}" pattern="#,##0.00" />
+	</span>
+	<br>
+	<br>
+	<span style="font-weight: bold; font-size: 18px;">
+		Ganhos até hoje: R$
+		<fmt:formatNumber value="${extrato.ganhosAteHoje}" pattern="#,##0.00" />
+	</span>
+	<span> (Não considera transferências. Apenas bonificações) </span>
+	<br>
+	<br>
+	<br>
+	<br>
+</div>
 <script>
 	$('#mes').val('${mes}');
 	$('#ano').val('${ano}');
