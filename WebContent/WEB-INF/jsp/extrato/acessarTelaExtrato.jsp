@@ -74,48 +74,50 @@
 		</table>
 	</div>
 </c:if>
-<div class="fundo-branco">
-	<span style="font-weight: bold; font-size: 18px;">
-		Saldo previsto no mês atual: R$
-		<fmt:formatNumber value="${extrato.saldoPrevistoNoMes}" pattern="#,##0.00" />
-	</span>
-	<span> (Este valor será liberado logo após sua ativação) </span>
-	<br>
-	<br>
-	<span style="font-weight: bold; font-size: 18px;">
-		Saldo do mês atual: R$
-		<fmt:formatNumber value="${extrato.saldoDoMesAtual}" pattern="#,##0.00" />
-	</span>
-	<br>
-	<br>
-	<span style="font-weight: bold; font-size: 18px;">
-		Saldo previsto total atual: R$
-		<fmt:formatNumber value="${extrato.saldoPrevistoTotal}" pattern="#,##0.00" />
-	</span>
-	<br>
-	<br>
-	<span style="font-weight: bold; font-size: 18px;">
-		INSS: R$
-		<fmt:formatNumber value="${extrato.inss}" pattern="#,##0.00" />
-	</span>
-	<br>
-	<br>
-	<span style="font-weight: bold; font-size: 18px;">
-		Saldo liberado atual: R$
-		<fmt:formatNumber value="${extrato.saldoComDescontos}" pattern="#,##0.00" />
-	</span>
-	<br>
-	<br>
-	<span style="font-weight: bold; font-size: 18px;">
-		Ganhos até hoje: R$
-		<fmt:formatNumber value="${extrato.ganhosAteHoje}" pattern="#,##0.00" />
-	</span>
-	<span> (Não considera transferências. Apenas bonificações) </span>
-	<br>
-	<br>
-	<br>
-	<br>
-</div>
+<c:if test="${not empty extrato}">
+	<div class="fundo-branco">
+		<span style="font-weight: bold; font-size: 18px;">
+			Saldo previsto no mês atual: R$
+			<fmt:formatNumber value="${extrato.saldoPrevistoNoMes}" pattern="#,##0.00" />
+		</span>
+		<span> (Este valor será liberado logo após sua ativação) </span>
+		<br>
+		<br>
+		<span style="font-weight: bold; font-size: 18px;">
+			Saldo do mês atual: R$
+			<fmt:formatNumber value="${extrato.saldoDoMesAtual}" pattern="#,##0.00" />
+		</span>
+		<br>
+		<br>
+		<span style="font-weight: bold; font-size: 18px;">
+			Saldo previsto total atual: R$
+			<fmt:formatNumber value="${extrato.saldoPrevistoTotal}" pattern="#,##0.00" />
+		</span>
+		<br>
+		<br>
+		<span style="font-weight: bold; font-size: 18px;">
+			INSS: R$
+			<fmt:formatNumber value="${extrato.inss}" pattern="#,##0.00" />
+		</span>
+		<br>
+		<br>
+		<span style="font-weight: bold; font-size: 18px;">
+			Saldo liberado atual: R$
+			<fmt:formatNumber value="${extrato.saldoComDescontos}" pattern="#,##0.00" />
+		</span>
+		<br>
+		<br>
+		<span style="font-weight: bold; font-size: 18px;">
+			Ganhos até hoje: R$
+			<fmt:formatNumber value="${extrato.ganhosAteHoje}" pattern="#,##0.00" />
+		</span>
+		<span> (Não considera transferências. Apenas bonificações) </span>
+		<br>
+		<br>
+		<br>
+		<br>
+	</div>
+</c:if>
 <script>
 	$('#mes').val('${mes}');
 	$('#ano').val('${ano}');

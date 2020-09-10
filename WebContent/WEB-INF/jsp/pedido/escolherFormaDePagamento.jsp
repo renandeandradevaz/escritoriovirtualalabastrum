@@ -31,6 +31,9 @@
 			<h5>* Pagamento com boleto: Desconto de 47%</h5>
 			<h5>* Pagamento com cartão de débito: Desconto de 47%</h5>
 			<h5>* Pagamento com cartão de crédito: Desconto de 44%</h5>
+			<br>
+			<br>
+			<h6 style="font-weight: lighter;">Obs: Pedidos pagos com saldo de bonificações possuem um desconto adicional de INSS e Imposto de renda. Entre em contato com a empresa caso queira entender melhor esses descontos.</h6>
 		</div>
 	</c:if>
 </div>
