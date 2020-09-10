@@ -653,14 +653,13 @@ public class PedidoController {
 	if (formaDePagamento.equals("pagarComSaldo")) {
 
 	    BigDecimal saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado();
+	    BigDecimal valorASerDescontadoDoSaldo = totalPedido.add(totalPedido.multiply(new BigDecimal("0.11")));
 
-	    if (totalPedido.compareTo(saldoLiberado) > 0) {
-		validator.add(new ValidationMessage("você não possui saldo suficiente. Saldo atual: R$" + String.format("%.2f", saldoLiberado), "Erro"));
+	    if (valorASerDescontadoDoSaldo.compareTo(saldoLiberado) > 0) {
+		validator.add(new ValidationMessage("Você não possui saldo suficiente para pagar este pedido. Saldo atual: R$" + String.format("%.2f", saldoLiberado) + ". Valor do pedido(com descontos): R$" + String.format("%.2f", valorASerDescontadoDoSaldo), "Erro"));
 		validator.onErrorRedirectTo(this).escolherFormaDePagamento();
 		return;
 	    }
-
-	    BigDecimal valorASerDescontadoDoSaldo = totalPedido.add(totalPedido.multiply(new BigDecimal("0.11")));
 
 	    salvarTransferencia(valorASerDescontadoDoSaldo, pedido.getIdCodigo());
 	    pedido.setStatus("FINALIZADO");
@@ -902,14 +901,13 @@ public class PedidoController {
 	    Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 	    SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
 	    BigDecimal saldoLiberado = saldoDTO.getSaldoLiberado();
+	    BigDecimal valorASerDescontadoDoSaldo = valor.add(valor.multiply(new BigDecimal("0.11")));
 
-	    if (valor.compareTo(saldoLiberado) > 0) {
-		validator.add(new ValidationMessage("O valor a ser debitado não pode ser maior do que o saldo atual", "Erro"));
+	    if (valorASerDescontadoDoSaldo.compareTo(saldoLiberado) > 0) {
+		validator.add(new ValidationMessage(String.format("O valor a ser debitado não pode ser maior do que o saldo atual. Valor(com descontos): R$%s. Saldo atual: R$%s", String.format("%.2f", valorASerDescontadoDoSaldo), String.format("%.2f", saldoLiberado)), "Erro"));
 		validator.onErrorRedirectTo(this).realizarPagamento(idPedido);
 		return;
 	    }
-
-	    BigDecimal valorASerDescontadoDoSaldo = valor.add(valor.multiply(new BigDecimal("0.11")));
 
 	    salvarTransferencia(valorASerDescontadoDoSaldo, pedido.getIdCodigo());
 
