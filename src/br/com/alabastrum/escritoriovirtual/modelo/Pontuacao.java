@@ -14,81 +14,84 @@ import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
 @Entity
 public class Pontuacao implements Entidade {
 
-	@Id
-	@GeneratedValue
-	private Integer id;
+    @Id
+    @GeneratedValue
+    private Integer id;
 
-	private GregorianCalendar Dt_Pontos;
-	private BigDecimal ParametroAtividade;
-	private BigDecimal PntAtividade;
-	private BigDecimal PntIngresso;
-	private BigDecimal PntProduto;
-	private BigDecimal valorIngresso;
+    private GregorianCalendar Dt_Pontos;
+    private BigDecimal ParametroAtividade;
+    private BigDecimal PntAtividade;
+    private BigDecimal PntIngresso;
+    private BigDecimal PntProduto;
+    private BigDecimal valorIngresso;
 
-	@Index(name = "index_id_Codigo_pontuacao")
-	private Integer id_Codigo;
+    @Index(name = "index_id_Codigo_pontuacao")
+    private Integer id_Codigo;
 
-	public Integer getId() {
-		return id;
-	}
+    @Index(name = "index_id_pedido_pontuacao")
+    private Integer id_pedido;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+	return id;
+    }
 
-	public GregorianCalendar getDt_Pontos() {
-		return Dt_Pontos;
-	}
+    public void setId(Integer id) {
+	this.id = id;
+    }
 
-	public void setDt_Pontos(GregorianCalendar dt_Pontos) {
-		Dt_Pontos = dt_Pontos;
-	}
+    public GregorianCalendar getDt_Pontos() {
+	return Dt_Pontos;
+    }
 
-	public BigDecimal getParametroAtividade() {
-		return ParametroAtividade;
-	}
+    public void setDt_Pontos(GregorianCalendar dt_Pontos) {
+	Dt_Pontos = dt_Pontos;
+    }
 
-	public void setParametroAtividade(BigDecimal parametroAtividade) {
-		ParametroAtividade = parametroAtividade;
-	}
+    public BigDecimal getParametroAtividade() {
+	return ParametroAtividade;
+    }
 
-	public BigDecimal getPntAtividade() {
-		return PntAtividade;
-	}
+    public void setParametroAtividade(BigDecimal parametroAtividade) {
+	ParametroAtividade = parametroAtividade;
+    }
 
-	public void setPntAtividade(BigDecimal pntAtividade) {
-		PntAtividade = pntAtividade;
-	}
+    public BigDecimal getPntAtividade() {
+	return PntAtividade;
+    }
 
-	public Integer getId_Codigo() {
-		return id_Codigo;
-	}
+    public void setPntAtividade(BigDecimal pntAtividade) {
+	PntAtividade = pntAtividade;
+    }
 
-	public void setId_Codigo(Integer id_Codigo) {
-		this.id_Codigo = id_Codigo;
-	}
+    public Integer getId_Codigo() {
+	return id_Codigo;
+    }
 
-	public BigDecimal getPntIngresso() {
-		return PntIngresso;
-	}
+    public void setId_Codigo(Integer id_Codigo) {
+	this.id_Codigo = id_Codigo;
+    }
 
-	public void setPntIngresso(BigDecimal pntIngresso) {
-		PntIngresso = pntIngresso;
-	}
+    public BigDecimal getPntIngresso() {
+	return PntIngresso;
+    }
 
-	public BigDecimal getPntProduto() {
-		return PntProduto;
-	}
+    public void setPntIngresso(BigDecimal pntIngresso) {
+	PntIngresso = pntIngresso;
+    }
 
-	public void setPntProduto(BigDecimal pntProduto) {
-		PntProduto = pntProduto;
-	}
+    public BigDecimal getPntProduto() {
+	return PntProduto;
+    }
 
-	public BigDecimal getValorIngresso() {
-		return valorIngresso;
-	}
+    public void setPntProduto(BigDecimal pntProduto) {
+	PntProduto = pntProduto;
+    }
 
-	public void setValorIngresso(BigDecimal valorIngresso) {
-		this.valorIngresso = valorIngresso;
-	}
+    public BigDecimal getValorIngresso() {
+	return valorIngresso;
+    }
+
+    public void setValorIngresso(BigDecimal valorIngresso) {
+	this.valorIngresso = valorIngresso;
+    }
 }

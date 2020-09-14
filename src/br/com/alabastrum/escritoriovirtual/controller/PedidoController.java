@@ -858,6 +858,7 @@ public class PedidoController {
 		String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
 		textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
 		textoArquivo += "tipo_pedido=" + pedido.getTipo() + "\r\n";
+		textoArquivo += "pedido_id=" + pedido.getId() + "\r\n";
 
 		for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 		    textoArquivo += itemPedido.getIdProduto() + "=" + itemPedido.getQuantidade() + "\r\n";

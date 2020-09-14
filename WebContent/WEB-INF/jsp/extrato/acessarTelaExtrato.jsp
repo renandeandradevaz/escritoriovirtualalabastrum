@@ -102,12 +102,24 @@
 						R$
 						<fmt:formatNumber value="${extrato.bonusPrimeiraCompraNoMes}" pattern="#,##0.00" />
 					</td>
+					<td>
+						<form action="<c:url value="/extrato/detalharBonificacao"/>" method="post">
+							<input type="hidden" name="bonificacao" value="Bônus de primeira compra">
+							<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Detalhar</button>
+						</form>
+					</td>
 				</tr>
 				<tr>
 					<td class="centralizado">Adesão de Ponto de Apoio</td>
 					<td class="centralizado">
 						R$
 						<fmt:formatNumber value="${extrato.bonusDeAdesaoDePontoDeApoioNoMes}" pattern="#,##0.00" />
+					</td>
+					<td>
+						<form action="<c:url value="/extrato/detalharBonificacao"/>" method="post">
+							<input type="hidden" name="bonificacao" value="Bônus de adesão de ponto de apoio">
+							<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Detalhar</button>
+						</form>
 					</td>
 				</tr>
 			</tbody>
