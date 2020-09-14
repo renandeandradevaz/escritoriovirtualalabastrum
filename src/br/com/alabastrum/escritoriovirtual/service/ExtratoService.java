@@ -58,6 +58,8 @@ public class ExtratoService {
 	BigDecimal saldoDoMesAtual = BigDecimal.ZERO;
 	BigDecimal saldoLiberado = BigDecimal.ZERO;
 	BigDecimal ganhosAteHoje = BigDecimal.ZERO;
+	BigDecimal bonusPrimeiraCompraNoMes = BigDecimal.ZERO;
+	BigDecimal bonusDeAdesaoDePontoDeApoioNoMes = BigDecimal.ZERO;
 
 	List<ExtratoDTO> extratoDoMes = new ArrayList<ExtratoDTO>();
 	for (ExtratoDTO extratoDTO : extratoCompleto) {
@@ -94,6 +96,17 @@ public class ExtratoService {
 			    adicionarNoExtratoDoMes(mes, ano, saldoPrevistoNoMes, extratoDoMes, extratoDTO);
 			}
 		    }
+
+		    if (extratoDTO.getData().get(Calendar.MONTH) == mes && extratoDTO.getData().get(Calendar.YEAR) == ano) {
+
+			if (extratoDTO.getDiscriminador().equals(BonusDePrimeiraCompraService.BÔNUS_DE_PRIMEIRA_COMPRA)) {
+			    bonusPrimeiraCompraNoMes = bonusPrimeiraCompraNoMes.add(extratoDTO.getValor());
+			}
+
+			if (extratoDTO.getDiscriminador().equals(BonusDePrimeiraCompraService.BÔNUS_DE_ADESÃO_DE_PONTO_DE_APOIO)) {
+			    bonusDeAdesaoDePontoDeApoioNoMes = bonusDeAdesaoDePontoDeApoioNoMes.add(extratoDTO.getValor());
+			}
+		    }
 		}
 	    }
 	}
@@ -102,7 +115,19 @@ public class ExtratoService {
 	BigDecimal inss = saldoLiberado.multiply(Constants.TARIFA_INSS);
 	BigDecimal saldoComDescontos = saldoLiberado.subtract(inss);
 
-	return new SaldoDTO(saldoPrevistoNoMes, saldoPrevistoTotal, saldoLiberado, ganhosAteHoje, inss, saldoDoMesAtual, saldoComDescontos, extratoDoMes);
+	SaldoDTO saldoDTO = new SaldoDTO();
+	saldoDTO.setSaldoPrevistoNoMes(saldoPrevistoNoMes);
+	saldoDTO.setSaldoDoMesAtual(saldoDoMesAtual);
+	saldoDTO.setSaldoPrevistoTotal(saldoPrevistoTotal);
+	saldoDTO.setSaldoLiberado(saldoLiberado);
+	saldoDTO.setSaldoComDescontos(saldoComDescontos);
+	saldoDTO.setGanhosAteHoje(ganhosAteHoje);
+	saldoDTO.setInss(inss);
+	saldoDTO.setExtratoDoMes(extratoDoMes);
+	saldoDTO.setBonusPrimeiraCompraNoMes(bonusPrimeiraCompraNoMes);
+	saldoDTO.setBonusDeAdesaoDePontoDeApoioNoMes(bonusDeAdesaoDePontoDeApoioNoMes);
+
+	return saldoDTO;
     }
 
     private void adicionarNoExtratoDoMes(Integer mes, Integer ano, BigDecimal saldo, List<ExtratoDTO> extratoDoMes, ExtratoDTO extratoDTO) {

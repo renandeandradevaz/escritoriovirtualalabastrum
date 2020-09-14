@@ -24,6 +24,9 @@ import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class BonusDePrimeiraCompraService {
 
+    public static final String BÔNUS_DE_PRIMEIRA_COMPRA = "Bônus de primeira compra";
+    public static final String BÔNUS_DE_ADESÃO_DE_PONTO_DE_APOIO = "Bônus de adesão de ponto de apoio";
+
     private HibernateUtil hibernateUtil;
 
     public BonusDePrimeiraCompraService(HibernateUtil hibernateUtil) {
@@ -91,11 +94,11 @@ public class BonusDePrimeiraCompraService {
 
 		if (tipoDeAdesao.equals(PedidoService.ADESAO)) {
 		    if (valorTotal.compareTo(new BigDecimal("120")) != -1) {
-			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesao(), "Bônus de primeira compra"));
+			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesao(), BÔNUS_DE_PRIMEIRA_COMPRA));
 		    }
 		} else if (tipoDeAdesao.equals(PedidoService.ADESAO_PA)) {
 		    if (valorTotal.compareTo(new BigDecimal("1000")) != -1) {
-			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesaoPA(), "Bônus de adesão de ponto de apoio"));
+			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesaoPA(), BÔNUS_DE_ADESÃO_DE_PONTO_DE_APOIO));
 		    }
 		}
 	    }

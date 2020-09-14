@@ -43,39 +43,9 @@
 	</form>
 </div>
 <br>
-<c:if test="${not empty extrato.extratoDoMes}">
-	<div class="fundo-branco">
-		<table class="table table-striped table-bordered" style="font-size: 10px">
-			<thead>
-				<tr>
-					<th>Data</th>
-					<th>Histórico</th>
-					<th>Distribuidor</th>
-					<th>Valor</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${extrato.extratoDoMes}" var="item">
-					<tr>
-						<td class="centralizado">
-							<fmt:formatDate value="${item.data.time}" type="DATE" />
-						</td>
-						<td class="centralizado">${item.discriminador}</td>
-						<td class="centralizado">${item.usuario.apelido}
-							<br>
-							${item.usuario.vNome}
-						</td>
-						<td class="centralizado">
-							R$
-							<fmt:formatNumber value="${item.valor}" pattern="#,##0.00" />
-						</td>
-				</c:forEach>
-			</tbody>
-		</table>
-	</div>
-</c:if>
 <c:if test="${not empty extrato}">
 	<div class="fundo-branco">
+		<h6 style="text-align: center;">Saldos</h6>
 		<span style="font-weight: bold; font-size: 18px;">
 			Saldo previsto no mês atual: R$
 			<fmt:formatNumber value="${extrato.saldoPrevistoNoMes}" pattern="#,##0.00" />
@@ -116,6 +86,65 @@
 		<br>
 		<br>
 		<br>
+	</div>
+	<br>
+	<div class="fundo-branco">
+		<h6 style="text-align: center;">
+			Bônus Totais (Mês:
+			<fmt:formatNumber value="${mes + 1}" pattern="##00" />
+			/ ${ano})
+		</h6>
+		<table class="table table-striped table-bordered" style="font-size: 10px">
+			<tbody>
+				<tr>
+					<td class="centralizado">Primeira Compra</td>
+					<td class="centralizado">
+						R$
+						<fmt:formatNumber value="${extrato.bonusPrimeiraCompraNoMes}" pattern="#,##0.00" />
+					</td>
+				</tr>
+				<tr>
+					<td class="centralizado">Adesão de Ponto de Apoio</td>
+					<td class="centralizado">
+						R$
+						<fmt:formatNumber value="${extrato.bonusDeAdesaoDePontoDeApoioNoMes}" pattern="#,##0.00" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</c:if>
+<br>
+<c:if test="${not empty extrato.extratoDoMes}">
+	<div class="fundo-branco">
+		<h6 style="text-align: center;">Extrato</h6>
+		<table class="table table-striped table-bordered" style="font-size: 10px">
+			<thead>
+				<tr>
+					<th>Data</th>
+					<th>Histórico</th>
+					<th>Distribuidor</th>
+					<th>Valor</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${extrato.extratoDoMes}" var="item">
+					<tr>
+						<td class="centralizado">
+							<fmt:formatDate value="${item.data.time}" type="DATE" />
+						</td>
+						<td class="centralizado">${item.discriminador}</td>
+						<td class="centralizado">${item.usuario.apelido}
+							<br>
+							${item.usuario.vNome}
+						</td>
+						<td class="centralizado">
+							R$
+							<fmt:formatNumber value="${item.valor}" pattern="#,##0.00" />
+						</td>
+				</c:forEach>
+			</tbody>
+		</table>
 	</div>
 </c:if>
 <script>
