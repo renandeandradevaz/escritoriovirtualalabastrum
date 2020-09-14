@@ -46,6 +46,7 @@ public class Usuario implements Entidade {
     private String apelido;
     private String pisMis;
     private String pasep;
+    private String pasepAtivo;
     private String cnpj;
     private String razaoSocial;
     private String nomeFantasia;
@@ -60,6 +61,20 @@ public class Usuario implements Entidade {
     private Integer cadPreCadastro;
     private Integer documentacaoEnviada;
     private Integer Fila_unica;
+    private String numeroEndereco;
+    private String corRaca;
+    private String grauInstrucao;
+    private String complementoEndereco;
+    private String nomeMae;
+    private String nomePai;
+    private String municipioNascimento;
+    private String estadoNascimento;
+    private String paisNascimento;
+    private String estadoEmissor;
+    private String dataExpedicao;
+    private String numeroCarteiraTrabalho;
+    private String serieCarteiraTrabalho;
+    private String ufCarteiraTrabalho;
 
     @Index(name = "index_id_Codigo")
     private Integer id_Codigo;
@@ -492,5 +507,125 @@ public class Usuario implements Entidade {
 
     public void setDocumentacaoEnviada(Integer documentacaoEnviada) {
 	this.documentacaoEnviada = documentacaoEnviada;
+    }
+
+    public String getNumeroEndereco() {
+	return numeroEndereco;
+    }
+
+    public void setNumeroEndereco(String numeroEndereco) {
+	this.numeroEndereco = numeroEndereco;
+    }
+
+    public String getCorRaca() {
+	return corRaca;
+    }
+
+    public void setCorRaca(String corRaca) {
+	this.corRaca = corRaca;
+    }
+
+    public String getGrauInstrucao() {
+	return grauInstrucao;
+    }
+
+    public void setGrauInstrucao(String grauInstrucao) {
+	this.grauInstrucao = grauInstrucao;
+    }
+
+    public String getComplementoEndereco() {
+	return complementoEndereco;
+    }
+
+    public void setComplementoEndereco(String complementoEndereco) {
+	this.complementoEndereco = complementoEndereco;
+    }
+
+    public String getNomeMae() {
+	return nomeMae;
+    }
+
+    public void setNomeMae(String nomeMae) {
+	this.nomeMae = nomeMae;
+    }
+
+    public String getNomePai() {
+	return nomePai;
+    }
+
+    public void setNomePai(String nomePai) {
+	this.nomePai = nomePai;
+    }
+
+    public String getMunicipioNascimento() {
+	return municipioNascimento;
+    }
+
+    public void setMunicipioNascimento(String municipioNascimento) {
+	this.municipioNascimento = municipioNascimento;
+    }
+
+    public String getEstadoNascimento() {
+	return estadoNascimento;
+    }
+
+    public void setEstadoNascimento(String estadoNascimento) {
+	this.estadoNascimento = estadoNascimento;
+    }
+
+    public String getPaisNascimento() {
+	return paisNascimento;
+    }
+
+    public void setPaisNascimento(String paisNascimento) {
+	this.paisNascimento = paisNascimento;
+    }
+
+    public String getEstadoEmissor() {
+	return estadoEmissor;
+    }
+
+    public void setEstadoEmissor(String estadoEmissor) {
+	this.estadoEmissor = estadoEmissor;
+    }
+
+    public String getDataExpedicao() {
+	return dataExpedicao;
+    }
+
+    public void setDataExpedicao(String dataExpedicao) {
+	this.dataExpedicao = dataExpedicao;
+    }
+
+    public String getNumeroCarteiraTrabalho() {
+	return numeroCarteiraTrabalho;
+    }
+
+    public void setNumeroCarteiraTrabalho(String numeroCarteiraTrabalho) {
+	this.numeroCarteiraTrabalho = numeroCarteiraTrabalho;
+    }
+
+    public String getSerieCarteiraTrabalho() {
+	return serieCarteiraTrabalho;
+    }
+
+    public void setSerieCarteiraTrabalho(String serieCarteiraTrabalho) {
+	this.serieCarteiraTrabalho = serieCarteiraTrabalho;
+    }
+
+    public String getUfCarteiraTrabalho() {
+	return ufCarteiraTrabalho;
+    }
+
+    public void setUfCarteiraTrabalho(String ufCarteiraTrabalho) {
+	this.ufCarteiraTrabalho = ufCarteiraTrabalho;
+    }
+
+    public String getPasepAtivo() {
+	return pasepAtivo;
+    }
+
+    public void setPasepAtivo(String pasepAtivo) {
+	this.pasepAtivo = pasepAtivo;
     }
 }

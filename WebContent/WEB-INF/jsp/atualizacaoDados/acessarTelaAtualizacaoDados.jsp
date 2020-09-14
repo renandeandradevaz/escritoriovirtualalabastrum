@@ -84,8 +84,18 @@ hr {
 			<input type="hidden" name="usuario.apelido" value="${usuario.apelido}" required="required" disabled="disabled">
 		</div>
 		<div class="corClara divFormulario">
-			<label class="labelFormulario">Data nasc.: </label>
+			<label class="labelFormulario">Data de nascimento: </label>
 			<input type="text" class="data" name="usuario.dt_Nasc" value="${usuario.dt_Nasc}" required="required">
+			<br>
+			<label class="labelFormulario">Município de nascimento: </label>
+			<input type="text" class="data" name="usuario.municipioNascimento" value="${usuario.municipioNascimento}" required="required">
+			<br>
+			<label class="labelFormulario">Estado de nascimento: </label>
+			<input type="text" class="data" name="usuario.estadoNascimento" value="${usuario.estadoNascimento}" required="required">
+			<br>
+			<label class="labelFormulario">País de nascimento: </label>
+			<input type="text" class="data" name="usuario.paisNascimento" value="${usuario.paisNascimento}" required="required">
+			<br>
 			<label class="labelFormulario">Sexo: </label>
 			<select name="usuario.cadSexo">
 				<option value="Masculino" <c:if test="${usuario.cadSexo == 'Masc'}"> selected="selected" </c:if>>Masc</option>
@@ -100,11 +110,35 @@ hr {
 			</select>
 		</div>
 		<div class="corMedia divFormulario">
+			<label class="labelFormulario"> Cor/Raça: </label>
+			<input type="text" name="usuario.corRaca" value="${usuario.corRaca}" required="required">
+		</div>
+		<div class="corClara divFormulario">
+			<label class="labelFormulario"> Grau de instrução: </label>
+			<input type="text" name="usuario.grauInstrucao" value="${usuario.grauInstrucao}" required="required">
+		</div>
+		<div class="corMedia divFormulario">
 			<label class="labelFormulario"> RG: </label>
 			<input type="text" name="usuario.cadRG" value="${usuario.cadRG}" required="required">
 			<br>
 			<label class="labelFormulario"> Emissor: </label>
 			<input type="text" name="usuario.cadOrgaoExpedidor" value="${usuario.cadOrgaoExpedidor}" required="required">
+			<br>
+			<label class="labelFormulario"> Estado Emissor: </label>
+			<input type="text" name="usuario.estadoEmissor" value="${usuario.estadoEmissor}" required="required">
+			<br>
+			<label class="labelFormulario"> Data de expedição (dd/mm/yyyy): </label>
+			<input type="text" name="usuario.dataExpedicao" value="${usuario.dataExpedicao}" required="required">
+		</div>
+		<div class="corMedia divFormulario">
+			<label class="labelFormulario"> Número da carteira de trabalho: </label>
+			<input type="text" name="usuario.numeroCarteiraTrabalho" value="${usuario.numeroCarteiraTrabalho}" required="required">
+			<br>
+			<label class="labelFormulario"> Série da carteira de trabalho: </label>
+			<input type="text" name="usuario.serieCarteiraTrabalho" value="${usuario.serieCarteiraTrabalho}" required="required">
+			<br>
+			<label class="labelFormulario"> UF da carteira de trabalho: </label>
+			<input type="text" name="usuario.ufCarteiraTrabalho" value="${usuario.ufCarteiraTrabalho}" required="required">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">CEP: </label>
@@ -113,6 +147,14 @@ hr {
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">End. Resid.: </label>
 			<input type="text" name="usuario.cadEndereco" value="${usuario.cadEndereco}" required="required">
+		</div>
+		<div class="corMedia divFormulario">
+			<label class="labelFormulario">Número do endereço: </label>
+			<input type="text" name="usuario.numeroEndereco" value="${usuario.numeroEndereco}" required="required">
+		</div>
+		<div class="corMedia divFormulario">
+			<label class="labelFormulario">Complemento do endereço: </label>
+			<input type="text" name="usuario.complementoEndereco" value="${usuario.complementoEndereco}" required="required">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Bairro: </label>
@@ -169,6 +211,12 @@ hr {
 			<label class="labelFormulario">PASEP: </label>
 			<input type="text" name="usuario.pasep" value="${usuario.pasep}">
 			<br>
+			<label class="labelFormulario">Seu PASEP está ativo? </label>
+			<select name="usuario.pasepAtivo">
+				<option value="Sim" <c:if test="${usuario.pasepAtivo == 'Sim'}"> selected="selected" </c:if>>Sim</option>
+				<option value="Nao" <c:if test="${usuario.pasepAtivo == 'Nao'}"> selected="selected" </c:if>>Nao</option>
+			</select>
+			<br>
 			<label class="labelFormulario">CNPJ: </label>
 			<input type="text" name="usuario.cnpj" value="${usuario.cnpj}">
 			<label class="labelFormulario">Razão social: </label>
@@ -179,6 +227,13 @@ hr {
 			<br>
 			<label class="labelFormulario">Inscrição estadual: </label>
 			<input type="text" name="usuario.inscricaoEstadual" value="${usuario.inscricaoEstadual}">
+		</div>
+		<div class="corMedia divFormulario">
+			<label class="labelFormulario">Nome da mãe </label>
+			<input type="text" name="usuario.nomeMae" value="${usuario.nomeMae}">
+			<br>
+			<label class="labelFormulario">Nome do pai: </label>
+			<input type="text" name="usuario.nomePai" value="${usuario.nomePai}">
 		</div>
 		<div class="divFormulario">
 			<label class="labelFormulario">

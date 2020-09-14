@@ -87,6 +87,21 @@ public class AtualizacaoDadosController {
 	textoArquivo += "contaPessoaJuridica: \'" + usuario.getContaPessoaJuridica() + "\'\r\n";
 	textoArquivo += "agenciaPessoaJuridicaBancoEspecifico: \'" + usuario.getAgenciaPessoaJuridicaBancoEspecifico() + "\'\r\n";
 	textoArquivo += "contaPessoaJuridicaBancoEspecifico: \'" + usuario.getContaPessoaJuridicaBancoEspecifico() + "\'\r\n";
+	textoArquivo += "pasepAtivo: \'" + usuario.getPasepAtivo() + "\'\r\n";
+	textoArquivo += "numeroEndereco: \'" + usuario.getNumeroEndereco() + "\'\r\n";
+	textoArquivo += "corRaca: \'" + usuario.getCorRaca() + "\'\r\n";
+	textoArquivo += "grauInstrucao: \'" + usuario.getGrauInstrucao() + "\'\r\n";
+	textoArquivo += "complementoEndereco: \'" + usuario.getComplementoEndereco() + "\'\r\n";
+	textoArquivo += "nomeMae: \'" + usuario.getNomeMae() + "\'\r\n";
+	textoArquivo += "nomePai: \'" + usuario.getNomePai() + "\'\r\n";
+	textoArquivo += "municipioNascimento: \'" + usuario.getMunicipioNascimento() + "\'\r\n";
+	textoArquivo += "estadoNascimento: \'" + usuario.getEstadoNascimento() + "\'\r\n";
+	textoArquivo += "paisNascimento: \'" + usuario.getPaisNascimento() + "\'\r\n";
+	textoArquivo += "estadoEmissor: \'" + usuario.getEstadoEmissor() + "\'\r\n";
+	textoArquivo += "dataExpedicao: \'" + usuario.getDataExpedicao() + "\'\r\n";
+	textoArquivo += "numeroCarteiraTrabalho: \'" + usuario.getNumeroCarteiraTrabalho() + "\'\r\n";
+	textoArquivo += "serieCarteiraTrabalho: \'" + usuario.getSerieCarteiraTrabalho() + "\'\r\n";
+	textoArquivo += "ufCarteiraTrabalho: \'" + usuario.getUfCarteiraTrabalho() + "\'\r\n";
 
 	Usuario usuarioBanco = this.hibernateUtil.selecionar(new Usuario(this.sessaoUsuario.getUsuario().getId_Codigo()));
 	usuarioBanco.setCPF(this.sessaoUsuario.getUsuario().getCPF());
@@ -121,6 +136,22 @@ public class AtualizacaoDadosController {
 	usuarioBanco.setContaPessoaJuridica(usuario.getContaPessoaJuridica());
 	usuarioBanco.setAgenciaPessoaJuridicaBancoEspecifico(usuario.getAgenciaPessoaJuridicaBancoEspecifico());
 	usuarioBanco.setContaPessoaJuridicaBancoEspecifico(usuario.getContaPessoaJuridicaBancoEspecifico());
+	usuarioBanco.setPasepAtivo(usuario.getPasepAtivo());
+	usuarioBanco.setNumeroEndereco(usuario.getNumeroEndereco());
+	usuarioBanco.setCorRaca(usuario.getCorRaca());
+	usuarioBanco.setGrauInstrucao(usuario.getGrauInstrucao());
+	usuarioBanco.setComplementoEndereco(usuario.getComplementoEndereco());
+	usuarioBanco.setNomeMae(usuario.getNomeMae());
+	usuarioBanco.setNomePai(usuario.getNomePai());
+	usuarioBanco.setMunicipioNascimento(usuario.getMunicipioNascimento());
+	usuarioBanco.setEstadoNascimento(usuario.getEstadoNascimento());
+	usuarioBanco.setPaisNascimento(usuario.getPaisNascimento());
+	usuarioBanco.setEstadoEmissor(usuario.getEstadoEmissor());
+	usuarioBanco.setDataExpedicao(usuario.getDataExpedicao());
+	usuarioBanco.setNumeroCarteiraTrabalho(usuario.getNumeroCarteiraTrabalho());
+	usuarioBanco.setSerieCarteiraTrabalho(usuario.getSerieCarteiraTrabalho());
+	usuarioBanco.setUfCarteiraTrabalho(usuario.getUfCarteiraTrabalho());
+
 	this.hibernateUtil.salvarOuAtualizar(usuarioBanco);
 
 	ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_ATUALIZACAO_DADOS);
