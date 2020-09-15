@@ -33,6 +33,7 @@ public class ExtratoService {
 	List<ExtratoDTO> extratoCompleto = new ArrayList<ExtratoDTO>();
 	extratoCompleto.addAll(new BonusDePrimeiraCompraService(hibernateUtil).obterBonificacoesDePrimeiraCompra(idCodigo));
 	extratoCompleto.addAll(new BonusLinearService(hibernateUtil).obterBonificacoesLineares(idCodigo));
+	extratoCompleto.addAll(new BonusTrinarioService(hibernateUtil).obterBonificacoesTrinarias(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeOutroDistribuidor(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaOutroDistribuidor(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaAlabastrumCard(idCodigo));
@@ -57,6 +58,7 @@ public class ExtratoService {
 	BigDecimal bonusPrimeiraCompraNoMes = BigDecimal.ZERO;
 	BigDecimal bonusDeAdesaoDePontoDeApoioNoMes = BigDecimal.ZERO;
 	BigDecimal bonusLinearNoMes = BigDecimal.ZERO;
+	BigDecimal bonusTrinarioNoMes = BigDecimal.ZERO;
 
 	List<ExtratoDTO> extratoDoMes = new ArrayList<ExtratoDTO>();
 	for (ExtratoDTO extratoDTO : extratoCompleto) {
@@ -107,6 +109,10 @@ public class ExtratoService {
 			if (extratoDTO.getDiscriminador().equals(BonusLinearService.BÔNUS_LINEAR)) {
 			    bonusLinearNoMes = bonusLinearNoMes.add(extratoDTO.getValor());
 			}
+
+			if (extratoDTO.getDiscriminador().equals(BonusTrinarioService.BÔNUS_TRINARIO)) {
+			    bonusTrinarioNoMes = bonusTrinarioNoMes.add(extratoDTO.getValor());
+			}
 		    }
 		}
 	    }
@@ -128,6 +134,7 @@ public class ExtratoService {
 	saldoDTO.setBonusPrimeiraCompraNoMes(bonusPrimeiraCompraNoMes);
 	saldoDTO.setBonusDeAdesaoDePontoDeApoioNoMes(bonusDeAdesaoDePontoDeApoioNoMes);
 	saldoDTO.setBonusLinearNoMes(bonusLinearNoMes);
+	saldoDTO.setBonusTrinarioNoMes(bonusTrinarioNoMes);
 
 	return saldoDTO;
     }

@@ -1,15 +1,9 @@
 <%@ include file="/base.jsp"%>
 <style>
-@media
-only
-screen
-and
-(min-width:
-1200px)
-{
-.detalhar {
-	margin-left: 40%;
-}
+@media only screen and (min-width: 1200px) {
+	.detalhar {
+		margin-left: 40%;
+	}
 }
 </style>
 <div class="fundo-branco">
@@ -148,8 +142,22 @@ and
 						</form>
 					</td>
 				</tr>
+				<tr>
+					<td class="centralizado">Bônus Trinário</td>
+					<td class="centralizado">
+						R$
+						<fmt:formatNumber value="${extrato.bonusTrinarioNoMes}" pattern="#,##0.00" />
+					</td>
+					<td>
+						<form action="<c:url value="/extrato/detalharBonificacao"/>" method="post">
+							<input type="hidden" name="bonificacao" value="Bônus Trinário">
+							<button type="submit" class="btn btn-primary detalhar" onclick="this.disabled=true;this.form.submit();">Detalhar</button>
+						</form>
+					</td>
+				</tr>
 			</tbody>
 		</table>
+		<h6>Obs: Para receber o Bônus Trinário, além de estar ativo, é necessário ter 3 indicados diretos ativos no mês.</h6>
 	</div>
 </c:if>
 <br>
