@@ -79,7 +79,7 @@ public class ExtratoService {
 		    }
 		} else {
 
-		    if (new AtividadeService(hibernateUtil).isAtivo(idCodigo, extratoDTO.getData())) {
+		    if (isHabilitadoParaBonus(idCodigo, extratoDTO)) {
 
 			saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
 			adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
@@ -137,6 +137,17 @@ public class ExtratoService {
 	saldoDTO.setBonusTrinarioNoMes(bonusTrinarioNoMes);
 
 	return saldoDTO;
+    }
+
+    private boolean isHabilitadoParaBonus(Integer idCodigo, ExtratoDTO extratoDTO) {
+
+	boolean ativo = new AtividadeService(hibernateUtil).isAtivo(idCodigo, extratoDTO.getData());
+
+	if (extratoDTO.getDiscriminador().equals(BonusTrinarioService.BÔNUS_TRINARIO)) {
+	    return ativo && new AtividadeService(hibernateUtil).possuiIndicadosDiretosAtivos(idCodigo, extratoDTO.getData(), 3);
+	}
+
+	return ativo;
     }
 
     private void adicionarNoExtratoDoMes(Integer mes, Integer ano, BigDecimal saldo, List<ExtratoDTO> extratoDoMes, ExtratoDTO extratoDTO) {

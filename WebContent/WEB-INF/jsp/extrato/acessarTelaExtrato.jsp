@@ -157,7 +157,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<h6>Obs: Para receber o Bônus Trinário, além de estar ativo, é necessário ter 3 indicados diretos ativos no mês.</h6>
+		<h6>Obs: Para receber o Bônus Trinário, além de estar ativo, é necessário ter, no mínimo, 3 indicados diretos ativos no mês.</h6>
 	</div>
 </c:if>
 <br>
