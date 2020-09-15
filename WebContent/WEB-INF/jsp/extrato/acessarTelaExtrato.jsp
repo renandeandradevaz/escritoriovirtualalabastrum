@@ -1,4 +1,17 @@
 <%@ include file="/base.jsp"%>
+<style>
+@media
+only
+screen
+and
+(min-width:
+1200px)
+{
+.detalhar {
+	margin-left: 40%;
+}
+}
+</style>
 <div class="fundo-branco">
 	<h4>Extrato detalhado</h4>
 </div>
@@ -97,7 +110,7 @@
 		<table class="table table-striped table-bordered" style="font-size: 10px">
 			<tbody>
 				<tr>
-					<td class="centralizado">Primeira Compra</td>
+					<td class="centralizado">Bônus de Primeira Compra</td>
 					<td class="centralizado">
 						R$
 						<fmt:formatNumber value="${extrato.bonusPrimeiraCompraNoMes}" pattern="#,##0.00" />
@@ -105,12 +118,12 @@
 					<td>
 						<form action="<c:url value="/extrato/detalharBonificacao"/>" method="post">
 							<input type="hidden" name="bonificacao" value="Bônus de primeira compra">
-							<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Detalhar</button>
+							<button type="submit" class="btn btn-primary detalhar" onclick="this.disabled=true;this.form.submit();">Detalhar</button>
 						</form>
 					</td>
 				</tr>
 				<tr>
-					<td class="centralizado">Adesão de Ponto de Apoio</td>
+					<td class="centralizado">Bônus de Adesão de Ponto de Apoio</td>
 					<td class="centralizado">
 						R$
 						<fmt:formatNumber value="${extrato.bonusDeAdesaoDePontoDeApoioNoMes}" pattern="#,##0.00" />
@@ -118,7 +131,20 @@
 					<td>
 						<form action="<c:url value="/extrato/detalharBonificacao"/>" method="post">
 							<input type="hidden" name="bonificacao" value="Bônus de adesão de ponto de apoio">
-							<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Detalhar</button>
+							<button type="submit" class="btn btn-primary detalhar" onclick="this.disabled=true;this.form.submit();">Detalhar</button>
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td class="centralizado">Bônus Linear</td>
+					<td class="centralizado">
+						R$
+						<fmt:formatNumber value="${extrato.bonusLinearNoMes}" pattern="#,##0.00" />
+					</td>
+					<td>
+						<form action="<c:url value="/extrato/detalharBonificacao"/>" method="post">
+							<input type="hidden" name="bonificacao" value="Bônus linear">
+							<button type="submit" class="btn btn-primary detalhar" onclick="this.disabled=true;this.form.submit();">Detalhar</button>
 						</form>
 					</td>
 				</tr>

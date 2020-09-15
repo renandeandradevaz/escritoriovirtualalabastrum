@@ -31,12 +31,8 @@ public class ExtratoService {
     public SaldoDTO gerarSaldoEExtrato(Integer idCodigo, Integer mes, Integer ano, boolean compressaoDeBonus) throws Exception {
 
 	List<ExtratoDTO> extratoCompleto = new ArrayList<ExtratoDTO>();
-//		extratoCompleto.addAll(new IndicacaoDiretaService(hibernateUtil).obterIndicacoesDiretas(idCodigo));
-//		extratoCompleto.addAll(new IndicacaoIndiretaService(hibernateUtil).obterIndicacoesIndiretas(idCodigo));
-//		extratoCompleto.addAll(new BonusAtivacaoService(hibernateUtil).obterBonificacoesPorAtivacao(idCodigo));
-//		extratoCompleto.addAll(new BonusUnilevelService(hibernateUtil).obterBonificacoesUnilevel(idCodigo));
-//		extratoCompleto.addAll(new BonusDivisaoLucroService(hibernateUtil).obterBonificacoesDivisaoLucro(idCodigo));
 	extratoCompleto.addAll(new BonusDePrimeiraCompraService(hibernateUtil).obterBonificacoesDePrimeiraCompra(idCodigo));
+	extratoCompleto.addAll(new BonusLinearService(hibernateUtil).obterBonificacoesLineares(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeOutroDistribuidor(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaOutroDistribuidor(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaAlabastrumCard(idCodigo));
@@ -60,6 +56,7 @@ public class ExtratoService {
 	BigDecimal ganhosAteHoje = BigDecimal.ZERO;
 	BigDecimal bonusPrimeiraCompraNoMes = BigDecimal.ZERO;
 	BigDecimal bonusDeAdesaoDePontoDeApoioNoMes = BigDecimal.ZERO;
+	BigDecimal bonusLinearNoMes = BigDecimal.ZERO;
 
 	List<ExtratoDTO> extratoDoMes = new ArrayList<ExtratoDTO>();
 	for (ExtratoDTO extratoDTO : extratoCompleto) {
@@ -106,6 +103,10 @@ public class ExtratoService {
 			if (extratoDTO.getDiscriminador().equals(BonusDePrimeiraCompraService.BÔNUS_DE_ADESÃO_DE_PONTO_DE_APOIO)) {
 			    bonusDeAdesaoDePontoDeApoioNoMes = bonusDeAdesaoDePontoDeApoioNoMes.add(extratoDTO.getValor());
 			}
+
+			if (extratoDTO.getDiscriminador().equals(BonusLinearService.BÔNUS_LINEAR)) {
+			    bonusLinearNoMes = bonusLinearNoMes.add(extratoDTO.getValor());
+			}
 		    }
 		}
 	    }
@@ -126,6 +127,7 @@ public class ExtratoService {
 	saldoDTO.setExtratoDoMes(extratoDoMes);
 	saldoDTO.setBonusPrimeiraCompraNoMes(bonusPrimeiraCompraNoMes);
 	saldoDTO.setBonusDeAdesaoDePontoDeApoioNoMes(bonusDeAdesaoDePontoDeApoioNoMes);
+	saldoDTO.setBonusLinearNoMes(bonusLinearNoMes);
 
 	return saldoDTO;
     }

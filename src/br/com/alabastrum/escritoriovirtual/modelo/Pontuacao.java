@@ -28,7 +28,7 @@ public class Pontuacao implements Entidade {
     @Index(name = "index_id_Codigo_pontuacao")
     private Integer id_Codigo;
 
-    @Index(name = "index_id_pedido_pontuacao")
+    // @Index(name = "index_id_pedido_pontuacao") Será que precisa?
     private Integer id_pedido;
 
     public Integer getId() {
@@ -93,5 +93,13 @@ public class Pontuacao implements Entidade {
 
     public void setValorIngresso(BigDecimal valorIngresso) {
 	this.valorIngresso = valorIngresso;
+    }
+
+    public Integer getId_pedido() {
+	return id_pedido;
+    }
+
+    public void setId_pedido(Integer id_pedido) {
+	this.id_pedido = id_pedido;
     }
 }

@@ -278,4 +278,10 @@ public class PontuacaoService {
 	filtro.setId_Codigo(codigo);
 	return hibernateUtil.buscar(filtro, restricoes);
     }
+
+    public List<Pontuacao> buscarPontuacoes(Integer codigo) {
+	Pontuacao filtro = new Pontuacao();
+	filtro.setId_Codigo(codigo);
+	return hibernateUtil.buscar(filtro);
+    }
 }
