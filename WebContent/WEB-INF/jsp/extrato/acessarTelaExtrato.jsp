@@ -53,45 +53,52 @@
 <c:if test="${not empty extrato}">
 	<div class="fundo-branco">
 		<h6 style="text-align: center;">Saldos</h6>
+		<span style="font-size: 16px;"> Saldo previsto no mês atual: </span>
 		<span style="font-weight: bold; font-size: 18px;">
-			Saldo previsto no mês atual: R$
+			R$
 			<fmt:formatNumber value="${extrato.saldoPrevistoNoMes}" pattern="#,##0.00" />
 		</span>
-		<span> (Este valor será liberado logo após sua ativação) </span>
 		<br>
 		<br>
+		<span style="font-size: 16px;"> Saldo do mês atual: </span>
 		<span style="font-weight: bold; font-size: 18px;">
-			Saldo do mês atual: R$
+			R$
 			<fmt:formatNumber value="${extrato.saldoDoMesAtual}" pattern="#,##0.00" />
 		</span>
 		<br>
 		<br>
+		<span style="font-size: 16px;"> Saldo previsto total atual: </span>
 		<span style="font-weight: bold; font-size: 18px;">
-			Saldo previsto total atual: R$
+			R$
 			<fmt:formatNumber value="${extrato.saldoPrevistoTotal}" pattern="#,##0.00" />
 		</span>
 		<br>
 		<br>
+		<span style="font-size: 16px;"> INSS: </span>
 		<span style="font-weight: bold; font-size: 18px;">
-			INSS: R$
+			R$
 			<fmt:formatNumber value="${extrato.inss}" pattern="#,##0.00" />
 		</span>
 		<br>
 		<br>
+		<span style="font-size: 16px;"> Saldo liberado atual: </span>
 		<span style="font-weight: bold; font-size: 18px;">
-			Saldo liberado atual: R$
+			R$
 			<fmt:formatNumber value="${extrato.saldoComDescontos}" pattern="#,##0.00" />
 		</span>
 		<br>
 		<br>
+		<span style="font-size: 16px;"> Ganhos até hoje: </span>
 		<span style="font-weight: bold; font-size: 18px;">
-			Ganhos até hoje: R$
+			R$
 			<fmt:formatNumber value="${extrato.ganhosAteHoje}" pattern="#,##0.00" />
 		</span>
-		<span> (Não considera transferências. Apenas bonificações) </span>
 		<br>
 		<br>
 		<br>
+		<h6>Observações:</h6>
+		<h6>* Para receber qualquer tipo de bônus, é necessário ficar ativo.</h6>
+		<h6>* Para receber o Bônus Trinário, além de estar ativo, é necessário ter, no mínimo, 3 indicados diretos ativos no mês.</h6>
 		<br>
 	</div>
 	<br>
@@ -157,7 +164,6 @@
 				</tr>
 			</tbody>
 		</table>
-		<h6>Obs: Para receber o Bônus Trinário, além de estar ativo, é necessário ter, no mínimo, 3 indicados diretos ativos no mês.</h6>
 	</div>
 </c:if>
 <br>
