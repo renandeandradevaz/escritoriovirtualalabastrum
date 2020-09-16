@@ -30,9 +30,7 @@
 				<th>Forma de pagamento</th>
 				<th>Forma de entrega</th>
 				<th>Empresa para entrega</th>
-				<th></th>
-				<th></th>
-				<th></th>
+				<th>Ações</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -55,20 +53,18 @@
 					<td class="centralizado">${item.pedido.empresaParaEntrega}</td>
 					<td style="text-align: center;">
 						<a class="btn btn-default" href="<c:url value="/pedido/verItens/${item.pedido.id}"/>"> Detalhar </a>
-					</td>
-					<c:if test="${item.pedido.status == 'PENDENTE'}">
-						<td style="text-align: center;">
-							<a class="btn btn-danger" href="<c:url value="/pedido/alterarStatus/${item.pedido.id}/CANCELADO"/>"> Cancelar </a>
-						</td>
-						<td style="text-align: center;">
+						<br>
+						<br>
+						<c:if test="${item.pedido.status == 'PENDENTE'}">
 							<a class="btn btn-success" href="<c:url value="/pedido/realizarPagamento/${item.pedido.id}"/>"> Realizar pagamento </a>
-						</td>
-					</c:if>
-					<c:if test="${item.pedido.status == 'PAGO'}">
-						<td style="text-align: center;">
-							<a class="btn btn-success" href="<c:url value="/pedido/alterarStatus/${item.pedido.id}/FINALIZADO"/>"> Finalizar </a>
-						</td>
-					</c:if>
+							<br>
+							<br>
+							<a class="btn btn-danger" href="<c:url value="/pedido/alterarStatus/${item.pedido.id}/CANCELADO"/>"> Cancelar </a>
+							<br>
+							<br>
+						</c:if>
+						<a class="btn btn-info" href="<c:url value="/pedido/imprimirPedido/${item.pedido.id}"/>"> Imprimir </a>
+					</td>
 				</tr>
 			</c:forEach>
 		</tbody>
