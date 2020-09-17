@@ -3,13 +3,13 @@ package br.com.alabastrum.escritoriovirtual.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.HierarquiaService;
+import br.com.alabastrum.escritoriovirtual.service.MatrizService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
@@ -44,16 +44,7 @@ public class MatrizController {
 	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompleta = gerarMatriz(codigo, "id_lider");
 
 	if (codigo == null) {
-	    TreeMap<Integer, Integer> quantidadesExistentes = new TreeMap<Integer, Integer>();
-	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaCompleta.values()) {
-		Integer quantidadeExistente = quantidadesExistentes.get(arvoreHierarquicaDTO.getNivel());
-		if (quantidadeExistente == null) {
-		    quantidadesExistentes.put(arvoreHierarquicaDTO.getNivel(), 1);
-		} else {
-		    quantidadesExistentes.put(arvoreHierarquicaDTO.getNivel(), quantidadeExistente + 1);
-		}
-	    }
-	    result.include("quantidadesExistentes", quantidadesExistentes);
+	    result.include("quantidadesExistentes", new MatrizService().calcularQuantidadesExistentes(arvoreHierarquicaCompleta));
 	}
 
 	result.include("nomeMatriz", "Matriz Trinária");

@@ -1,10 +1,14 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
+import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
+import br.com.alabastrum.escritoriovirtual.service.HierarquiaService;
+import br.com.alabastrum.escritoriovirtual.service.MatrizService;
 import br.com.alabastrum.escritoriovirtual.service.PontuacaoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.caelum.vraptor.Path;
@@ -43,7 +47,10 @@ public class HomeController {
 	    }
 	}
 
+	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompletaPorIdLider = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuarioLogado.getId_Codigo(), "id_lider");
+
 	result.include("totalAbaixoFilaUnica", totalAbaixoFilaUnica);
 	result.include("graduacaoMensal", new PontuacaoService(this.hibernateUtil).calcularGraduacaoMensalPorPontuacaoDeProduto(usuarioLogado.getId_Codigo()));
+	result.include("quantidadesExistentes", new MatrizService().calcularQuantidadesExistentes(arvoreHierarquicaCompletaPorIdLider));
     }
 }

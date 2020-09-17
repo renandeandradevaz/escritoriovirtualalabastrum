@@ -195,19 +195,19 @@ public class PontuacaoService {
 	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(hoje);
 	GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(hoje);
 
-	BigDecimal somaPontuacaoAproveitadaTotal = calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
+	BigDecimal somaPontuacaoAproveitadaTotal = calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
 	BigDecimal somaPontuacaoTotal = new BigDecimal(somaPontuacaoAproveitadaTotal.intValue());
 
 	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaNivel1 = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(usuario.getId_Codigo(), 1);
 
 	for (ArvoreHierarquicaDTO distribuidorNivel1 : arvoreHierarquicaNivel1.values()) {
 
-	    BigDecimal somaPontuacaoAproveitadaPorLinha = calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, distribuidorNivel1.getUsuario().getId_Codigo());
+	    BigDecimal somaPontuacaoAproveitadaPorLinha = calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, distribuidorNivel1.getUsuario().getId_Codigo());
 
 	    Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaTodosOsNiveis = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(distribuidorNivel1.getUsuario().getId_Codigo());
 
 	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaTodosOsNiveis.values()) {
-		somaPontuacaoAproveitadaPorLinha = somaPontuacaoAproveitadaPorLinha.add(calcularPontuacaoDeProdutos(primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDTO.getUsuario().getId_Codigo()));
+		somaPontuacaoAproveitadaPorLinha = somaPontuacaoAproveitadaPorLinha.add(calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDTO.getUsuario().getId_Codigo()));
 	    }
 
 	    BigDecimal somaPontuacaoTotalPorLinha = new BigDecimal(somaPontuacaoAproveitadaPorLinha.intValue());
@@ -237,7 +237,7 @@ public class PontuacaoService {
 	return graduacaoMensalDTO;
     }
 
-    private BigDecimal calcularPontuacaoDeProdutos(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo) {
+    private BigDecimal calcularPontuacaoParaQualificacao(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo) {
 
 	BigDecimal somaPontuacao = BigDecimal.ZERO;
 
@@ -248,7 +248,7 @@ public class PontuacaoService {
 	List<Pontuacao> pontuacoes = hibernateUtil.buscar(pontuacaoFiltro, restricoes);
 
 	for (Pontuacao pontuacao : pontuacoes) {
-	    somaPontuacao = somaPontuacao.add(pontuacao.getPntProduto());
+	    somaPontuacao = somaPontuacao.add(pontuacao.getPntQualificacao());
 	}
 
 	return somaPontuacao;

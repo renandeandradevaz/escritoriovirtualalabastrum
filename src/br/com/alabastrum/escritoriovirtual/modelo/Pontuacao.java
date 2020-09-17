@@ -23,6 +23,7 @@ public class Pontuacao implements Entidade {
     private BigDecimal PntAtividade;
     private BigDecimal PntIngresso;
     private BigDecimal PntProduto;
+    private BigDecimal PntQualificacao;
     private BigDecimal valorIngresso;
 
     @Index(name = "index_id_Codigo_pontuacao")
@@ -101,5 +102,13 @@ public class Pontuacao implements Entidade {
 
     public void setId_pedido(Integer id_pedido) {
 	this.id_pedido = id_pedido;
+    }
+
+    public BigDecimal getPntQualificacao() {
+	return PntQualificacao;
+    }
+
+    public void setPntQualificacao(BigDecimal pntQualificacao) {
+	PntQualificacao = pntQualificacao;
     }
 }

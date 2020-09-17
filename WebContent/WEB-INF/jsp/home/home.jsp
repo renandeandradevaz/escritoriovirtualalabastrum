@@ -42,14 +42,31 @@
 #graduacao-mensal {
 	text-align: center;
 }
+
+h3 {
+	text-align: center;
+}
+
+.caixinha-home {
+	margin: 3%;
+	border: 1px solid black;
+	border-radius: 5px;
+	padding: 10px;
+	max-width: 500px;
+}
+
+.table td {
+	padding: 2px;
+	font-size: 9px;
+}
 </style>
 <div class="fundo-branco">
-	<div style="margin: 5%; border: 1px solid black; border-radius: 5px; padding: 10px; max-width: 300px;">
+	<div class='caixinha-home'>
 		<h3>Fila Única</h3>
 		<br>
 		<h5>Total abaixo: ${totalAbaixoFilaUnica}</h5>
 	</div>
-	<div style="margin: 5%; border: 1px solid black; border-radius: 5px; padding: 10px; max-width: 300px;" id='graduacao-mensal'>
+	<div class='caixinha-home' id='graduacao-mensal'>
 		<h3>Graduação Mensal</h3>
 		<br>
 		<div id="cont" data-pct="100">
@@ -87,17 +104,67 @@
 		</p>
 		<p></p>
 	</div>
-	<div style="margin: 5%; border: 1px solid black; max-width: 300px; padding: 10px">
+	<c:if test="${not empty quantidadesExistentes}">
+		<div class='caixinha-home'>
+			<h3>Trinário</h3>
+			<br>
+			<div>
+				<table class="table table-striped table-bordered">
+					<tr>
+						<td class="centralizado">
+							<b>Nível </b>
+						</td>
+						<td class="centralizado">1</td>
+						<td class="centralizado">2</td>
+						<td class="centralizado">3</td>
+						<td class="centralizado">4</td>
+						<td class="centralizado">5</td>
+						<td class="centralizado">6</td>
+						<td class="centralizado">7</td>
+						<td class="centralizado">8</td>
+						<td class="centralizado">9</td>
+						<td class="centralizado">10</td>
+					</tr>
+					<tr>
+						<td class="centralizado">
+							<b>Previsto </b>
+						</td>
+						<td class="centralizado">3</td>
+						<td class="centralizado">9</td>
+						<td class="centralizado">27</td>
+						<td class="centralizado">81</td>
+						<td class="centralizado">243</td>
+						<td class="centralizado">729</td>
+						<td class="centralizado">2187</td>
+						<td class="centralizado">6561</td>
+						<td class="centralizado">19683</td>
+						<td class="centralizado">59049</td>
+					</tr>
+					<tr>
+						<td class="centralizado">
+							<b>Existente </b>
+						</td>
+						<c:forEach items="${quantidadesExistentes}" var="entry">
+							<td class="centralizado">${entry.value}</td>
+						</c:forEach>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</c:if>
+	<div class='caixinha-home'>
 		<br>
 		<a href="http://miguelprado.com.br">CLIQUE AQUI PARA ENVIAR SUA DOCUMENTAÇÃO</a>
 		<br>
 		<br>
 	</div>
-	<h6>Quer indicar alguém?</h6>
-	<h6>Passe o link abaixo para a pessoa que você quer indicar. Para ela poder realizar o cadastro:</h6>
-	<input type="text" value="https://ev.dunastes.com.br/cadastro?nickname=${sessaoUsuario.usuario.apelido}" id="copylink">
-	<br>
-	<button class="btn" onclick="copiarLink()">Copiar link</button>
+	<div class='caixinha-home'>
+		<h6>Quer indicar alguém?</h6>
+		<h6>Passe o link abaixo para a pessoa que você quer indicar. Para ela poder realizar o cadastro:</h6>
+		<input type="text" value="https://ev.dunastes.com.br/cadastro?nickname=${sessaoUsuario.usuario.apelido}" id="copylink">
+		<br>
+		<button class="btn" onclick="copiarLink()">Copiar link</button>
+	</div>
 	<script>
 		$(document).ready(function() {
 			var val = parseInt($('#percent').val());
