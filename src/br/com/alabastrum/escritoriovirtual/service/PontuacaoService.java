@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
@@ -178,50 +179,68 @@ public class PontuacaoService {
 	return somaPontuacao.intValue();
     }
 
-    public GraduacaoMensalDTO calcularGraduacaoMensalPorPontuacaoDeProduto(Integer idCodigo) {
+    public GraduacaoMensalDTO calcularGraduacaoMensal(Integer idCodigo) {
 
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idCodigo));
-
-	Posicao posicaoAtual = new PosicoesService(hibernateUtil).obterPosicaoPorNome(usuario.getPosAtual());
-	Posicao proximaPosicao = new PosicoesService(hibernateUtil).obterProximaPosicao(usuario.getPosAtual());
-
-	GraduacaoMensalDTO graduacaoMensalDTO = new GraduacaoMensalDTO();
-	graduacaoMensalDTO.setPosicaoAtual(usuario.getPosAtual());
-	graduacaoMensalDTO.setPontuacaoDaPosicaoAtual(posicaoAtual.getPontuacao());
-	graduacaoMensalDTO.setProximaPosicao(proximaPosicao.getNome());
-	graduacaoMensalDTO.setPontuacaoDaProximaPosicao(proximaPosicao.getPontuacao());
 
 	GregorianCalendar hoje = Util.getTempoCorrenteAMeiaNoite();
 	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(hoje);
 	GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(hoje);
 
-	BigDecimal somaPontuacaoAproveitadaTotal = calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
-	BigDecimal somaPontuacaoTotal = new BigDecimal(somaPontuacaoAproveitadaTotal.intValue());
+	Integer somaPontuacaoAproveitadaTotal = calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
+	Integer somaPontuacaoTotal = new Integer(somaPontuacaoAproveitadaTotal);
 
 	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaNivel1 = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(usuario.getId_Codigo(), 1);
 
+	List<Integer> pontuacoesPorLinha = new ArrayList<Integer>();
+
 	for (ArvoreHierarquicaDTO distribuidorNivel1 : arvoreHierarquicaNivel1.values()) {
 
-	    BigDecimal somaPontuacaoAproveitadaPorLinha = calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, distribuidorNivel1.getUsuario().getId_Codigo());
+	    Integer somaPontuacaoPorLinha = calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, distribuidorNivel1.getUsuario().getId_Codigo());
 
 	    Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaTodosOsNiveis = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(distribuidorNivel1.getUsuario().getId_Codigo());
 
 	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaTodosOsNiveis.values()) {
-		somaPontuacaoAproveitadaPorLinha = somaPontuacaoAproveitadaPorLinha.add(calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDTO.getUsuario().getId_Codigo()));
+		somaPontuacaoPorLinha += calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDTO.getUsuario().getId_Codigo());
 	    }
 
-	    BigDecimal somaPontuacaoTotalPorLinha = new BigDecimal(somaPontuacaoAproveitadaPorLinha.intValue());
-
-	    if (somaPontuacaoAproveitadaPorLinha.intValue() > graduacaoMensalDTO.getPontuacaoDaProximaPosicao() * 0.5) {
-		somaPontuacaoAproveitadaPorLinha = new BigDecimal(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() * 0.5);
-	    }
-
-	    somaPontuacaoAproveitadaTotal = somaPontuacaoAproveitadaTotal.add(somaPontuacaoAproveitadaPorLinha);
-	    somaPontuacaoTotal = somaPontuacaoTotal.add(somaPontuacaoTotalPorLinha);
+	    pontuacoesPorLinha.add(somaPontuacaoPorLinha);
+	    somaPontuacaoTotal += somaPontuacaoPorLinha;
 	}
 
-	graduacaoMensalDTO.setPontosAproveitados(somaPontuacaoAproveitadaTotal.intValue());
-	graduacaoMensalDTO.setPontuacaoTotal(somaPontuacaoTotal.intValue());
+	Posicao posicaoAtual = null;
+
+	List<Posicao> posicoes = this.hibernateUtil.buscar(new Posicao(), Order.desc("pontuacao"));
+
+	for (Posicao posicao : posicoes) {
+
+	    Integer pontuacaoAproveitadaDaPosicao = posicao.getPontuacao() / 2;
+	    Integer pontuacaoTotalNestaPosicao = 0;
+	    for (Integer pontuacaoPorLinha : pontuacoesPorLinha) {
+		Integer pontuacaoAproveitadaPorLinha = pontuacaoPorLinha;
+		if (pontuacaoPorLinha > pontuacaoAproveitadaDaPosicao) {
+		    pontuacaoAproveitadaPorLinha = pontuacaoAproveitadaDaPosicao;
+		}
+		pontuacaoTotalNestaPosicao += pontuacaoAproveitadaPorLinha;
+	    }
+
+	    if (pontuacaoTotalNestaPosicao >= posicao.getPontuacao()) {
+		posicaoAtual = posicao;
+		somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
+		break;
+	    }
+	}
+
+	Posicao proximaPosicao = new PosicoesService(hibernateUtil).obterProximaPosicao(posicaoAtual.getNome());
+
+	GraduacaoMensalDTO graduacaoMensalDTO = new GraduacaoMensalDTO();
+	graduacaoMensalDTO.setPosicaoAtual(posicaoAtual.getNome());
+	graduacaoMensalDTO.setPontuacaoDaPosicaoAtual(posicaoAtual.getPontuacao());
+	graduacaoMensalDTO.setProximaPosicao(proximaPosicao.getNome());
+	graduacaoMensalDTO.setPontuacaoDaProximaPosicao(proximaPosicao.getPontuacao());
+
+	graduacaoMensalDTO.setPontosAproveitados(somaPontuacaoAproveitadaTotal);
+	graduacaoMensalDTO.setPontuacaoTotal(somaPontuacaoTotal);
 	graduacaoMensalDTO.setPontosRestantesParaProximaPosicao(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() - graduacaoMensalDTO.getPontosAproveitados());
 
 	if (graduacaoMensalDTO.getPontosRestantesParaProximaPosicao() < 0) {
@@ -237,7 +256,7 @@ public class PontuacaoService {
 	return graduacaoMensalDTO;
     }
 
-    private BigDecimal calcularPontuacaoParaQualificacao(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo) {
+    private int calcularPontuacaoParaQualificacao(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo) {
 
 	BigDecimal somaPontuacao = BigDecimal.ZERO;
 
@@ -251,7 +270,7 @@ public class PontuacaoService {
 	    somaPontuacao = somaPontuacao.add(pontuacao.getPntQualificacao());
 	}
 
-	return somaPontuacao;
+	return somaPontuacao.intValue();
     }
 
     public BigDecimal getValorIngresso(Integer codigo, GregorianCalendar data) {
