@@ -61,10 +61,20 @@ h3 {
 }
 </style>
 <div class="fundo-branco">
-	<div class='caixinha-home'>
-		<h3>Fila Única</h3>
+	<div class='caixinha-home' style="text-align: center;">
+		<h3>Reconhecimento</h3>
 		<br>
-		<h5>Total abaixo: ${totalAbaixoFilaUnica}</h5>
+		<img style="width: 250px; display: block; margin: 0 auto;" src="<c:url value="/css/images/${sessaoUsuario.usuario.posAtual}.png"/> ">
+		<div style="display: inline-block; text-align: center;">
+			<div style="display: inline-block; width: 70%; margin-left: -50px">
+				<h5>Diretos</h5>
+				<h4>${diretos}</h4>
+			</div>
+			<div style="display: inline-block; width: 30%; float: right; margin-left: 50px">
+				<h5>Equipe</h5>
+				<h4>${equipe}</h4>
+			</div>
+		</div>
 	</div>
 	<div class='caixinha-home' id='graduacao-mensal'>
 		<h3>Graduação Mensal</h3>
@@ -103,6 +113,28 @@ h3 {
 			<span style="font-weight: bold; color: red">${graduacaoMensal.pontosRestantesParaProximaPosicao} </span>
 		</p>
 		<p></p>
+	</div>
+	<div class='caixinha-home'>
+		<h3>Equipe</h3>
+		<br>
+		<table>
+			<tr>
+				<td style="width: 100px">
+					<h4>ATIVOS:</h4>
+				</td>
+				<td style="width: 100px">
+					<h4>${ativos}</h4>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 100px">
+					<h4>INATIVOS:</h4>
+				</td>
+				<td style="width: 100px">
+					<h4>${inativos}</h4>
+				</td>
+			</tr>
+		</table>
 	</div>
 	<c:if test="${not empty quantidadesExistentes}">
 		<div class='caixinha-home'>
@@ -152,6 +184,11 @@ h3 {
 			</div>
 		</div>
 	</c:if>
+	<div class='caixinha-home'>
+		<h3>Fila Única</h3>
+		<br>
+		<h5>Total abaixo: ${totalAbaixoFilaUnica}</h5>
+	</div>
 	<div class='caixinha-home'>
 		<br>
 		<a href="http://miguelprado.com.br">CLIQUE AQUI PARA ENVIAR SUA DOCUMENTAÇÃO</a>

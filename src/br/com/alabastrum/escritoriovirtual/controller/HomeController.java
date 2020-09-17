@@ -2,11 +2,13 @@ package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
+import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
 import br.com.alabastrum.escritoriovirtual.service.HierarquiaService;
 import br.com.alabastrum.escritoriovirtual.service.MatrizService;
 import br.com.alabastrum.escritoriovirtual.service.PontuacaoService;
@@ -48,9 +50,28 @@ public class HomeController {
 	}
 
 	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompletaPorIdLider = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuarioLogado.getId_Codigo(), "id_lider");
+	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompletaPorIdIndicante = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuarioLogado.getId_Codigo());
+	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaPorIdIndicanteNivel1 = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(usuarioLogado.getId_Codigo(), 1);
+
+	int ativos = 0;
+	int inativos = 0;
+
+	for (Entry<Integer, ArvoreHierarquicaDTO> distribuidorEntry : arvoreHierarquicaCompletaPorIdIndicante.entrySet()) {
+
+	    if (new AtividadeService(hibernateUtil).isAtivo(distribuidorEntry.getKey()))
+		ativos++;
+	    else
+		inativos++;
+
+	}
 
 	result.include("totalAbaixoFilaUnica", totalAbaixoFilaUnica);
 	result.include("graduacaoMensal", new PontuacaoService(this.hibernateUtil).calcularGraduacaoMensalPorPontuacaoDeProduto(usuarioLogado.getId_Codigo()));
 	result.include("quantidadesExistentes", new MatrizService().calcularQuantidadesExistentes(arvoreHierarquicaCompletaPorIdLider));
+	result.include("diretos", arvoreHierarquicaPorIdIndicanteNivel1.size());
+	result.include("equipe", arvoreHierarquicaCompletaPorIdIndicante.size());
+	result.include("ativos", ativos);
+	result.include("inativos", inativos);
+
     }
 }
