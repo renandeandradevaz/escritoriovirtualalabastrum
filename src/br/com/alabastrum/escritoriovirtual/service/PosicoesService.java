@@ -8,45 +8,52 @@ import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class PosicoesService {
 
-	private HibernateUtil hibernateUtil;
+    private HibernateUtil hibernateUtil;
 
-	public PosicoesService(HibernateUtil hibernateUtil) {
+    public PosicoesService(HibernateUtil hibernateUtil) {
 
-		this.hibernateUtil = hibernateUtil;
+	this.hibernateUtil = hibernateUtil;
+    }
+
+    public String obterNomeProximaPosicao(String posicaoAtual) {
+
+	Posicao proximaPosicao = obterProximaPosicao(posicaoAtual);
+
+	if (Util.preenchido(proximaPosicao)) {
+	    return proximaPosicao.getNome();
 	}
 
-	public String obterNomeProximaPosicao(String posicaoAtual) {
+	return "";
+    }
 
-		Posicao proximaPosicao = obterProximaPosicao(posicaoAtual);
+    public Posicao obterProximaPosicao(String posicaoAtual) {
 
-		if (Util.preenchido(proximaPosicao)) {
-			return proximaPosicao.getNome();
-		}
+	Posicao filtro = new Posicao();
+	filtro.setNome(posicaoAtual);
+	Posicao posicao = this.hibernateUtil.selecionar(filtro, MatchMode.EXACT);
+	filtro = new Posicao();
+	filtro.setPosicao(posicao.getPosicao() + 1);
+	return this.hibernateUtil.selecionar(filtro);
+    }
 
-		return "";
-	}
+    public String obterNomeDaPosicao(Integer posicao) {
 
-	public Posicao obterProximaPosicao(String posicaoAtual) {
+	Posicao filtro = new Posicao();
+	filtro.setPosicao(posicao);
+	return ((Posicao) this.hibernateUtil.selecionar(filtro)).getNome();
+    }
 
-		Posicao filtro = new Posicao();
-		filtro.setNome(posicaoAtual);
-		Posicao posicao = this.hibernateUtil.selecionar(filtro, MatchMode.EXACT);
-		filtro = new Posicao();
-		filtro.setPosicao(posicao.getPosicao() + 1);
-		return this.hibernateUtil.selecionar(filtro);
-	}
+    public Posicao obterPosicaoPorOrdemNumerica(Integer posicao) {
 
-	public String obterNomeDaPosicao(Integer posicao) {
+	Posicao filtro = new Posicao();
+	filtro.setPosicao(posicao);
+	return this.hibernateUtil.selecionar(filtro);
+    }
 
-		Posicao filtro = new Posicao();
-		filtro.setPosicao(posicao);
-		return ((Posicao) this.hibernateUtil.selecionar(filtro)).getNome();
-	}
+    public Posicao obterPosicaoPorNome(String nome) {
 
-	public Posicao obterPosicaoPorNome(String nome) {
-
-		Posicao filtro = new Posicao();
-		filtro.setNome(nome);
-		return this.hibernateUtil.selecionar(filtro);
-	}
+	Posicao filtro = new Posicao();
+	filtro.setNome(nome);
+	return this.hibernateUtil.selecionar(filtro);
+    }
 }

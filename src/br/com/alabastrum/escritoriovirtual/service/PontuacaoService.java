@@ -208,26 +208,29 @@ public class PontuacaoService {
 	    somaPontuacaoTotal += somaPontuacaoPorLinha;
 	}
 
-	Posicao posicaoAtual = null;
+	Posicao posicaoAtual = new PosicoesService(hibernateUtil).obterPosicaoPorOrdemNumerica(1);
 
-	List<Posicao> posicoes = this.hibernateUtil.buscar(new Posicao(), Order.desc("pontuacao"));
+	if (new AtividadeService(hibernateUtil).possuiIndicadosDiretosAtivos(idCodigo, new GregorianCalendar(), 3)) {
 
-	for (Posicao posicao : posicoes) {
+	    List<Posicao> posicoes = this.hibernateUtil.buscar(new Posicao(), Order.desc("pontuacao"));
 
-	    Integer pontuacaoAproveitadaDaPosicao = posicao.getPontuacao() / 2;
-	    Integer pontuacaoTotalNestaPosicao = 0;
-	    for (Integer pontuacaoPorLinha : pontuacoesPorLinha) {
-		Integer pontuacaoAproveitadaPorLinha = pontuacaoPorLinha;
-		if (pontuacaoPorLinha > pontuacaoAproveitadaDaPosicao) {
-		    pontuacaoAproveitadaPorLinha = pontuacaoAproveitadaDaPosicao;
+	    for (Posicao posicao : posicoes) {
+
+		Integer pontuacaoAproveitadaDaPosicao = posicao.getPontuacao() / 2;
+		Integer pontuacaoTotalNestaPosicao = 0;
+		for (Integer pontuacaoPorLinha : pontuacoesPorLinha) {
+		    Integer pontuacaoAproveitadaPorLinha = pontuacaoPorLinha;
+		    if (pontuacaoPorLinha > pontuacaoAproveitadaDaPosicao && pontuacaoAproveitadaDaPosicao > 0) {
+			pontuacaoAproveitadaPorLinha = pontuacaoAproveitadaDaPosicao;
+		    }
+		    pontuacaoTotalNestaPosicao += pontuacaoAproveitadaPorLinha;
 		}
-		pontuacaoTotalNestaPosicao += pontuacaoAproveitadaPorLinha;
-	    }
 
-	    if (pontuacaoTotalNestaPosicao >= posicao.getPontuacao()) {
-		posicaoAtual = posicao;
-		somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
-		break;
+		if (pontuacaoTotalNestaPosicao >= posicao.getPontuacao()) {
+		    posicaoAtual = posicao;
+		    somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
+		    break;
+		}
 	    }
 	}
 
