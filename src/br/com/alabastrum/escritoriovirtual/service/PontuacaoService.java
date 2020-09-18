@@ -190,10 +190,13 @@ public class PontuacaoService {
 	Integer somaPontuacaoAproveitadaTotal = calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
 	Integer somaPontuacaoTotal = new Integer(somaPontuacaoAproveitadaTotal);
 
-	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaNivel1 = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(usuario.getId_Codigo(), 1);
-
 	List<Integer> pontuacoesPorLinha = new ArrayList<Integer>();
 
+	if (somaPontuacaoAproveitadaTotal > 0) {
+	    pontuacoesPorLinha.add(somaPontuacaoAproveitadaTotal);
+	}
+
+	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaNivel1 = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(usuario.getId_Codigo(), 1);
 	for (ArvoreHierarquicaDTO distribuidorNivel1 : arvoreHierarquicaNivel1.values()) {
 
 	    Integer somaPontuacaoPorLinha = calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, distribuidorNivel1.getUsuario().getId_Codigo());
