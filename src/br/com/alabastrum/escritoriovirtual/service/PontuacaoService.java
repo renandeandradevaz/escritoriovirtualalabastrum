@@ -207,7 +207,10 @@ public class PontuacaoService {
 		somaPontuacaoPorLinha += calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDTO.getUsuario().getId_Codigo());
 	    }
 
-	    pontuacoesPorLinha.add(somaPontuacaoPorLinha);
+	    if (somaPontuacaoPorLinha > 0) {
+		pontuacoesPorLinha.add(somaPontuacaoPorLinha);
+	    }
+
 	    somaPontuacaoTotal += somaPontuacaoPorLinha;
 	}
 
@@ -215,7 +218,7 @@ public class PontuacaoService {
 
 	if (new AtividadeService(hibernateUtil).possuiIndicadosDiretosAtivos(idCodigo, new GregorianCalendar(), 3)) {
 
-	    List<Posicao> posicoes = this.hibernateUtil.buscar(new Posicao(), Order.desc("pontuacao"));
+	    List<Posicao> posicoes = this.hibernateUtil.buscar(new Posicao(), Order.desc("posicao"));
 
 	    for (Posicao posicao : posicoes) {
 
@@ -223,7 +226,7 @@ public class PontuacaoService {
 		Integer pontuacaoTotalNestaPosicao = 0;
 		for (Integer pontuacaoPorLinha : pontuacoesPorLinha) {
 		    Integer pontuacaoAproveitadaPorLinha = pontuacaoPorLinha;
-		    if (pontuacaoPorLinha > pontuacaoAproveitadaDaPosicao && pontuacaoAproveitadaDaPosicao > 0) {
+		    if (pontuacaoPorLinha > pontuacaoAproveitadaDaPosicao) {
 			pontuacaoAproveitadaPorLinha = pontuacaoAproveitadaDaPosicao;
 		    }
 		    pontuacaoTotalNestaPosicao += pontuacaoAproveitadaPorLinha;
