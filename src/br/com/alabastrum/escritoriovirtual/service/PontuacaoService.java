@@ -234,9 +234,10 @@ public class PontuacaoService {
 
 		if (pontuacaoTotalNestaPosicao >= posicao.getPontuacao()) {
 		    posicaoAtual = posicao;
-		    somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
+		    //somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
 		    break;
 		}
+somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
 	    }
 	}
 
