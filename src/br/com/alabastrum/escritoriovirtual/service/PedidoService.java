@@ -74,7 +74,8 @@ public class PedidoService {
     public PedidoDTO calcularTotais(Pedido pedido) {
 
 	BigDecimal valorTotal = BigDecimal.ZERO;
-	BigDecimal totalPontos = BigDecimal.ZERO;
+	BigDecimal totalPontosPagaveis = BigDecimal.ZERO;
+	BigDecimal totalPontosQualificacao = BigDecimal.ZERO;
 	Integer totalItens = 0;
 
 	List<ItemPedido> itens = new PedidoService(hibernateUtil).listarItensPedido(pedido);
@@ -86,10 +87,11 @@ public class PedidoService {
 
 	    totalItens += quantidade;
 	    valorTotal = valorTotal.add(itemPedido.getPrecoUnitario().multiply(BigDecimal.valueOf(quantidade)));
-	    totalPontos = totalPontos.add(produto.getPrdPontos().multiply(new BigDecimal(quantidade)));
+	    totalPontosPagaveis = totalPontosPagaveis.add(produto.getPntProduto().multiply(new BigDecimal(quantidade)));
+	    totalPontosQualificacao = totalPontosQualificacao.add(produto.getPntQualificacao().multiply(new BigDecimal(quantidade)));
 	}
 
-	return new PedidoDTO(pedido, null, valorTotal, totalItens, totalPontos, null);
+	return new PedidoDTO(pedido, null, valorTotal, totalItens, totalPontosPagaveis, totalPontosQualificacao, null);
     }
 
     public BigDecimal calcularTotalSemFrete(Pedido pedido) {

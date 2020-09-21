@@ -37,7 +37,8 @@
 		<br>
 		<br>
 		<c:if test="${mostrarPontuacao}">
-			<h4 style="float: right;">Pontos: ${totais.totalPontos}</h4>
+			<h4 style="float: right;">Pontos pagáveis: ${totais.totalPontosPagaveis}</h4>
+			<h4 style="float: right;">Pontos Qualificáveis: ${totais.totalPontosQualificacao}</h4>
 		</c:if>
 		<br>
 		<br>

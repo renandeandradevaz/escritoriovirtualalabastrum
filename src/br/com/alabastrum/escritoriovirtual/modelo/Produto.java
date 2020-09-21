@@ -20,12 +20,13 @@ public class Produto implements Entidade {
     private Integer id_Categoria;
     private String prdNome;
     private BigDecimal prdPreco_Unit;
-    private BigDecimal prdPontos;
     private BigDecimal prdTamanho;
     private BigDecimal prdPeso;
     private String prdComissionado;
     private String prdPromocao;
     private String prdMatApoio;
+    private BigDecimal PntProduto;
+    private BigDecimal PntQualificacao;
 
     public Produto() {
     }
@@ -54,14 +55,6 @@ public class Produto implements Entidade {
 
     public String getId_Produtos() {
 	return id_Produtos;
-    }
-
-    public BigDecimal getPrdPontos() {
-	return prdPontos;
-    }
-
-    public void setPrdPontos(BigDecimal prdPontos) {
-	this.prdPontos = prdPontos;
     }
 
     public void setId_Produtos(String id_Produtos) {
@@ -130,5 +123,21 @@ public class Produto implements Entidade {
 
     public void setPrdPeso(BigDecimal prdPeso) {
 	this.prdPeso = prdPeso;
+    }
+
+    public BigDecimal getPntProduto() {
+	return PntProduto;
+    }
+
+    public void setPntProduto(BigDecimal pntProduto) {
+	PntProduto = pntProduto;
+    }
+
+    public BigDecimal getPntQualificacao() {
+	return PntQualificacao;
+    }
+
+    public void setPntQualificacao(BigDecimal pntQualificacao) {
+	PntQualificacao = pntQualificacao;
     }
 }

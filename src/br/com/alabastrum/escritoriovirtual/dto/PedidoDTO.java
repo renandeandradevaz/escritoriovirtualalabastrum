@@ -12,16 +12,19 @@ public class PedidoDTO {
     private Franquia franquia;
     private BigDecimal valorTotal;
     private Integer totalItens;
-    private BigDecimal totalPontos;
+    private BigDecimal totalPontosPagaveis;
+    private BigDecimal totalPontosQualificacao;
+
     private Usuario distribuidor;
 
-    public PedidoDTO(Pedido pedido, Franquia franquia, BigDecimal valorTotal, Integer totalItens, BigDecimal totalPontos, Usuario distribuidor) {
+    public PedidoDTO(Pedido pedido, Franquia franquia, BigDecimal valorTotal, Integer totalItens, BigDecimal totalPontosPagaveis, BigDecimal totalPontosQualificacao, Usuario distribuidor) {
 
 	this.pedido = pedido;
 	this.franquia = franquia;
 	this.valorTotal = valorTotal;
 	this.totalItens = totalItens;
-	this.totalPontos = totalPontos;
+	this.totalPontosPagaveis = totalPontosPagaveis;
+	this.totalPontosQualificacao = totalPontosQualificacao;
 	this.setDistribuidor(distribuidor);
     }
 
@@ -57,19 +60,27 @@ public class PedidoDTO {
 	this.totalItens = totalItens;
     }
 
-    public BigDecimal getTotalPontos() {
-	return totalPontos;
-    }
-
-    public void setTotalPontos(BigDecimal totalPontos) {
-	this.totalPontos = totalPontos;
-    }
-
     public Usuario getDistribuidor() {
 	return distribuidor;
     }
 
     public void setDistribuidor(Usuario distribuidor) {
 	this.distribuidor = distribuidor;
+    }
+
+    public BigDecimal getTotalPontosPagaveis() {
+	return totalPontosPagaveis;
+    }
+
+    public void setTotalPontosPagaveis(BigDecimal totalPontosPagaveis) {
+	this.totalPontosPagaveis = totalPontosPagaveis;
+    }
+
+    public BigDecimal getTotalPontosQualificacao() {
+	return totalPontosQualificacao;
+    }
+
+    public void setTotalPontosQualificacao(BigDecimal totalPontosQualificacao) {
+	this.totalPontosQualificacao = totalPontosQualificacao;
     }
 }

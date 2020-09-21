@@ -26,7 +26,7 @@
 			Valor: R$
 			<fmt:formatNumber value="${totais.valorTotal}" pattern="#,##0.00" />
 			- Total de itens: ${totais.totalItens}
-			<c:if test="${mostrarPontuacao}"> - Pontos: ${totais.totalPontos}  </c:if>
+			<c:if test="${mostrarPontuacao}"> - Pontos Pagáveis: ${totais.totalPontosPagaveis} - Pontos Qualificáveis: ${totais.totalPontosQualificacao}  </c:if>
 		</h4>
 		<br>
 		<a href="<c:url value="/pedido/acessarCarrinho"/>" style="float: right;">
@@ -46,7 +46,8 @@
 					<fmt:formatNumber value="${item.precoUnitario}" pattern="#,##0.00" />
 				</p>
 				<c:if test="${mostrarPontuacao}">
-					<p>Pontos: ${item.produto.prdPontos}</p>
+					<p>Pontos Pagáveis: ${item.produto.pntProduto}</p>
+					<p>Pontos Qualificáveis: ${item.produto.pntQualificacao}</p>
 				</c:if>
 				<form action="<c:url value="/pedido/adicionarProduto/${item.produto.id_Produtos}"/>" method="post">
 					<input type="number" min="0" max="${item.quantidadeEmEstoque}" name="quantidade" style="width: 90px; margin-top: 10px" placeholder="Quantidade" value="${item.quantidade}">

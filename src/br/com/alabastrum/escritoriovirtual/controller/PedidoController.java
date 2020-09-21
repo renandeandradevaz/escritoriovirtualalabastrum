@@ -1000,7 +1000,7 @@ public class PedidoController {
 
 	for (Pedido pedido : pedidos) {
 	    Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
-	    pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal(), null, null, usuario));
+	    pedidosDTO.add(new PedidoDTO(pedido, (Franquia) hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia())), new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal(), null, null, null, usuario));
 	}
 
 	result.include("pedidosDTO", pedidosDTO);
