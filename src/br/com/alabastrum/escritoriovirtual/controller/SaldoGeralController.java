@@ -28,10 +28,13 @@ public class SaldoGeralController {
 
     @Funcionalidade(administrativa = "true")
     public void acessarTelaSaldoGeral() {
+
+	result.include("mes", Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH));
+	result.include("ano", Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
     }
 
     @Funcionalidade(administrativa = "true")
-    public void gerarSaldoGeral() throws Exception {
+    public void gerarSaldoGeral(Integer mes, Integer ano) throws Exception {
 
 	List<Usuario> usuarios = hibernateUtil.buscar(new Usuario());
 
@@ -42,7 +45,7 @@ public class SaldoGeralController {
 
 	for (Usuario usuario : usuarios) {
 
-	    SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(usuario.getId_Codigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
+	    SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(usuario.getId_Codigo(), mes, ano);
 	    saldoDTO.setUsuario(usuario);
 
 	    if (saldoDTO.getSaldoPrevistoTotal().compareTo(BigDecimal.ZERO) > 0) {
@@ -59,5 +62,7 @@ public class SaldoGeralController {
 	result.include("saldoPrevistoNoMesSomatorio", saldoPrevistoNoMesSomatorio);
 	result.include("saldoPrevistoTotalSomatorio", saldoPrevistoTotalSomatorio);
 	result.include("saldoLiberadoSomatorio", saldoLiberadoSomatorio);
+	result.include("mes", mes);
+	result.include("ano", ano);
     }
 }
