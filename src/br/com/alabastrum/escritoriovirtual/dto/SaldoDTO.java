@@ -19,6 +19,8 @@ public class SaldoDTO {
     private BigDecimal bonusDeAdesaoDePontoDeApoioNoMes;
     private BigDecimal bonusLinearNoMes;
     private BigDecimal bonusTrinarioNoMes;
+    private BigDecimal bonificacoesNoMes;
+    private BigDecimal inssNoMes;
     private List<ExtratoDTO> extratoDoMes;
 
     public Usuario getUsuario() {
@@ -123,5 +125,21 @@ public class SaldoDTO {
 
     public void setBonusTrinarioNoMes(BigDecimal bonusTrinarioNoMes) {
 	this.bonusTrinarioNoMes = bonusTrinarioNoMes;
+    }
+
+    public BigDecimal getBonificacoesNoMes() {
+	return bonificacoesNoMes;
+    }
+
+    public void setBonificacoesNoMes(BigDecimal bonificacoesNoMes) {
+	this.bonificacoesNoMes = bonificacoesNoMes;
+    }
+
+    public BigDecimal getInssNoMes() {
+	return inssNoMes;
+    }
+
+    public void setInssNoMes(BigDecimal inssNoMes) {
+	this.inssNoMes = inssNoMes;
     }
 }

@@ -135,6 +135,8 @@ public class ExtratoService {
 	saldoDTO.setBonusDeAdesaoDePontoDeApoioNoMes(bonusDeAdesaoDePontoDeApoioNoMes);
 	saldoDTO.setBonusLinearNoMes(bonusLinearNoMes);
 	saldoDTO.setBonusTrinarioNoMes(bonusTrinarioNoMes);
+	saldoDTO.setBonificacoesNoMes(bonusPrimeiraCompraNoMes.add(bonusDeAdesaoDePontoDeApoioNoMes.add(bonusLinearNoMes.add(bonusTrinarioNoMes))));
+	saldoDTO.setInssNoMes(saldoDTO.getBonificacoesNoMes().multiply(Constants.TARIFA_INSS));
 
 	return saldoDTO;
     }

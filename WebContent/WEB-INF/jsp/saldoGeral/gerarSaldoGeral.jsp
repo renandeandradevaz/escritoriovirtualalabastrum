@@ -8,12 +8,13 @@
 		<thead>
 			<tr>
 				<th>Distribuidor</th>
-				<th>Saldo previsto no mês atual</th>
-				<th>Saldo do mês atual</th>
+				<th>Saldo previsto atual</th>
+				<th>Saldo atual</th>
 				<th>Saldo previsto total atual</th>
-				<th>INSS</th>
 				<th>Saldo liberado atual</th>
 				<th>Ganhos até hoje</th>
+				<th>Bonificações no mês ${mes + 1}/${ano}</th>
+				<th>INSS no mês ${mes + 1}/${ano}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -34,15 +35,19 @@
 					</td>
 					<td class="centralizado">
 						R$
-						<fmt:formatNumber value="${item.inss}" pattern="#,##0.00" />
-					</td>
-					<td class="centralizado">
-						R$
 						<fmt:formatNumber value="${item.saldoComDescontos}" pattern="#,##0.00" />
 					</td>
 					<td class="centralizado">
 						R$
 						<fmt:formatNumber value="${item.ganhosAteHoje}" pattern="#,##0.00" />
+					</td>
+					<td class="centralizado">
+						R$
+						<fmt:formatNumber value="${item.bonificacoesNoMes}" pattern="#,##0.00" />
+					</td>
+					<td class="centralizado">
+						R$
+						<fmt:formatNumber value="${item.inssNoMes}" pattern="#,##0.00" />
 					</td>
 			</c:forEach>
 		</tbody>
