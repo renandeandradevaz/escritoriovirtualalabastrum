@@ -27,6 +27,7 @@ public class Produto implements Entidade {
     private String prdMatApoio;
     private BigDecimal PntProduto;
     private BigDecimal PntQualificacao;
+    private String periodoParaCompraDeInativos;
 
     public Produto() {
     }
@@ -139,5 +140,13 @@ public class Produto implements Entidade {
 
     public void setPntQualificacao(BigDecimal pntQualificacao) {
 	PntQualificacao = pntQualificacao;
+    }
+
+    public String getPeriodoParaCompraDeInativos() {
+	return periodoParaCompraDeInativos;
+    }
+
+    public void setPeriodoParaCompraDeInativos(String periodoParaCompraDeInativos) {
+	this.periodoParaCompraDeInativos = periodoParaCompraDeInativos;
     }
 }

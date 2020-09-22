@@ -266,15 +266,29 @@ public class PedidoController {
 		    quantidade = itemPedido.getQuantidade();
 		}
 
-		itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()), quantidadeEmEstoque, null));
+		String periodoParaCompraDeInativos = produto.getPeriodoParaCompraDeInativos();
+		if (Util.vazio(periodoParaCompraDeInativos)) {
+		    adicionarItemPedido(itensPedidoDTO, produto, quantidadeEmEstoque, quantidade);
+		} else {
+		    Integer diaInicialParaCompraDeInativos = Integer.valueOf(periodoParaCompraDeInativos.split("-")[0]);
+		    Integer diaFinalParaCompraDeInativos = Integer.valueOf(periodoParaCompraDeInativos.split("-")[1]);
+		    Integer diaDoMes = Util.getTempoCorrenteAMeiaNoite().get(Calendar.DAY_OF_MONTH);
+
+		    if (diaDoMes >= diaInicialParaCompraDeInativos && diaDoMes <= diaFinalParaCompraDeInativos && !new AtividadeService(hibernateUtil).isAtivo(pedido.getIdCodigo())) {
+			adicionarItemPedido(itensPedidoDTO, produto, quantidadeEmEstoque, quantidade);
+		    }
+		}
 	    }
 	}
 
 	result.include("itensPedidoDTO", itensPedidoDTO);
-
 	result.include("totais", new PedidoService(hibernateUtil).calcularTotais(pedido));
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
 	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), usuario.getApelido(), pedido.getFormaDeEntrega(), (Boolean) this.sessaoGeral.getValor("adesaoPontoDeApoio"));
+    }
+
+    private void adicionarItemPedido(List<ItemPedidoDTO> itensPedidoDTO, Produto produto, int quantidadeEmEstoque, Integer quantidade) {
+	itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()), quantidadeEmEstoque, null));
     }
 
     private BigDecimal calcularPrecoUnitarioProduto(BigDecimal precoUnitario) {
