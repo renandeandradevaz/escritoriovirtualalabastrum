@@ -3,6 +3,8 @@ package br.com.alabastrum.escritoriovirtual.controller;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
@@ -57,6 +59,13 @@ public class SaldoGeralController {
 		saldoLiberadoSomatorio = saldoLiberadoSomatorio.add(saldoDTO.getSaldoLiberado());
 	    }
 	}
+
+	Collections.sort(saldos, new Comparator<SaldoDTO>() {
+
+	    public int compare(SaldoDTO saldo1, SaldoDTO saldo2) {
+		return saldo1.getUsuario().getvNome().compareTo(saldo2.getUsuario().getvNome());
+	    }
+	});
 
 	result.include("saldos", saldos);
 	result.include("saldoPrevistoNoMesSomatorio", saldoPrevistoNoMesSomatorio);
