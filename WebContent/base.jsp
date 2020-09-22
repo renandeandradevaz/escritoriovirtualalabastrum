@@ -78,6 +78,7 @@
 				<a href="<c:url value="/equipe/acessarTelaEquipe"/>" class="submenu-accordion"> Equipe </a>
 				<a href="<c:url value="/matriz/acessarTelaMatrizMultilevel"/>" class="submenu-accordion"> Matriz Multilevel</a>
 				<a href="<c:url value="/matriz/acessarTelaMatrizTrinaria"/>" class="submenu-accordion"> Matriz Trinária</a>
+				<a href="<c:url value="/pontosDeEquipe/acessarTelaPontosDeEquipe"/>" class="submenu-accordion"> Pontos de Equipe</a>
 			</div>
 			<h3 class="menu-accordion has-child">Pedidos</h3>
 			<div>

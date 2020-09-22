@@ -234,10 +234,9 @@ public class PontuacaoService {
 
 		if (pontuacaoTotalNestaPosicao >= posicao.getPontuacao()) {
 		    posicaoAtual = posicao;
-		    //somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
 		    break;
 		}
-somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
+		somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
 	    }
 	}
 
@@ -266,7 +265,7 @@ somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
 	return graduacaoMensalDTO;
     }
 
-    private int calcularPontuacaoParaQualificacao(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo) {
+    public int calcularPontuacaoParaQualificacao(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo) {
 
 	BigDecimal somaPontuacao = BigDecimal.ZERO;
 
@@ -278,6 +277,23 @@ somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
 
 	for (Pontuacao pontuacao : pontuacoes) {
 	    somaPontuacao = somaPontuacao.add(pontuacao.getPntQualificacao());
+	}
+
+	return somaPontuacao.intValue();
+    }
+
+    public int calcularPontuacaoDeProduto(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo) {
+
+	BigDecimal somaPontuacao = BigDecimal.ZERO;
+
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+	restricoes.add(Restrictions.between("Dt_Pontos", primeiroDiaDoMes, ultimoDiaDoMes));
+	Pontuacao pontuacaoFiltro = new Pontuacao();
+	pontuacaoFiltro.setId_Codigo(idCodigo);
+	List<Pontuacao> pontuacoes = hibernateUtil.buscar(pontuacaoFiltro, restricoes);
+
+	for (Pontuacao pontuacao : pontuacoes) {
+	    somaPontuacao = somaPontuacao.add(pontuacao.getPntProduto());
 	}
 
 	return somaPontuacao.intValue();
