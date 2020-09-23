@@ -20,7 +20,10 @@
 		<tbody>
 			<c:forEach items="${saldos}" var="item">
 				<tr>
-					<td class="centralizado">${item.usuario.vNome}</td>
+					<td class="centralizado">${item.usuario.apelido}
+						<br>
+						${item.usuario.vNome}
+					</td>
 					<td class="centralizado">
 						R$
 						<fmt:formatNumber value="${item.saldoPrevistoNoMes}" pattern="#,##0.00" />

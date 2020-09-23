@@ -11,6 +11,7 @@ import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
 import br.com.alabastrum.escritoriovirtual.dto.PontosEquipeDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.HierarquiaService;
 import br.com.alabastrum.escritoriovirtual.service.PontuacaoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
@@ -68,6 +69,12 @@ public class PontosDeEquipeController {
 	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(data);
 	GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(data);
 
+	calcularPontosDaEquipe(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes);
+	calcularPontosUsuarioSelecionado(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes);
+    }
+
+    private void calcularPontosDaEquipe(Integer idCodigo, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
+
 	List<PontosEquipeDTO> pontosEquipeDTOLista = new ArrayList<PontosEquipeDTO>();
 
 	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaPrimeiroNivel = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(idCodigo, 1);
@@ -98,7 +105,34 @@ public class PontosDeEquipeController {
 
 	    pontosEquipeDTOLista.add(pontosEquipeDTO);
 	}
-
 	result.include("pontosEquipeDTOLista", pontosEquipeDTOLista);
+    }
+
+    private void calcularPontosUsuarioSelecionado(Integer idCodigo, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
+
+	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquica = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(idCodigo);
+
+	Integer volumeIndividualPagavel = new PontuacaoService(hibernateUtil).calcularPontuacaoDeProduto(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
+	Integer volumeIndividualQualificavel = new PontuacaoService(hibernateUtil).calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
+
+	Integer volumePagavelTodosOsNiveis = 0;
+	Integer volumeQualificavelTodosOsNiveis = 0;
+
+	for (Entry<Integer, ArvoreHierarquicaDTO> usuarioAbaixoEntry : arvoreHierarquica.entrySet()) {
+	    volumePagavelTodosOsNiveis += new PontuacaoService(hibernateUtil).calcularPontuacaoDeProduto(primeiroDiaDoMes, ultimoDiaDoMes, usuarioAbaixoEntry.getValue().getUsuario().getId_Codigo());
+	    volumeQualificavelTodosOsNiveis += new PontuacaoService(hibernateUtil).calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, usuarioAbaixoEntry.getValue().getUsuario().getId_Codigo());
+	}
+
+	volumePagavelTodosOsNiveis += volumeIndividualPagavel;
+	volumeQualificavelTodosOsNiveis += volumeIndividualQualificavel;
+
+	PontosEquipeDTO pontosUsuarioSelecionado = new PontosEquipeDTO();
+	pontosUsuarioSelecionado.setUsuario((Usuario) this.hibernateUtil.selecionar(new Usuario(idCodigo)));
+	pontosUsuarioSelecionado.setVolumeIndividualPagavel(volumeIndividualPagavel);
+	pontosUsuarioSelecionado.setVolumeIndividualQualificavel(volumeIndividualQualificavel);
+	pontosUsuarioSelecionado.setVolumePagavelTodosOsNiveis(volumePagavelTodosOsNiveis);
+	pontosUsuarioSelecionado.setVolumeQualificavelTodosOsNiveis(volumeQualificavelTodosOsNiveis);
+
+	result.include("pontosUsuarioSelecionado", pontosUsuarioSelecionado);
     }
 }

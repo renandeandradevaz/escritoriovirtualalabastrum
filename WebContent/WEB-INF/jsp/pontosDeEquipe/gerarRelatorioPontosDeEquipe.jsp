@@ -3,6 +3,35 @@
 	<h4>Relatório de Pontos de Equipe</h4>
 </div>
 <br>
+<h6>Pontos do Distribuidor</h6>
+<div class="fundo-branco">
+	<table class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>Distribuidor</th>
+				<th>UF</th>
+				<th>Telefone</th>
+				<th>VI (VP)</th>
+				<th>VI (VQ)</th>
+				<th>VP</th>
+				<th>VQ</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="centralizado">${pontosUsuarioSelecionado.usuario.vNome}</td>
+				<td class="centralizado">${pontosUsuarioSelecionado.usuario.cadUF}</td>
+				<td class="centralizado">${pontosUsuarioSelecionado.usuario.cadCelular}</td>
+				<td class="centralizado">${pontosUsuarioSelecionado.volumeIndividualPagavel}</td>
+				<td class="centralizado">${pontosUsuarioSelecionado.volumeIndividualQualificavel}</td>
+				<td class="centralizado">${pontosUsuarioSelecionado.volumePagavelTodosOsNiveis}</td>
+				<td class="centralizado">${pontosUsuarioSelecionado.volumeQualificavelTodosOsNiveis}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<br>
+<h6>Pontos da Equipe</h6>
 <div class="fundo-branco">
 	<table class="table table-striped table-bordered">
 		<thead>
