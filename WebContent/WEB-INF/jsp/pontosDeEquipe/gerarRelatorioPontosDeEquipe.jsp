@@ -11,8 +11,8 @@
 				<th>Distribuidor</th>
 				<th>UF</th>
 				<th>Telefone</th>
-				<th>VI (VP)</th>
-				<th>VI (VQ)</th>
+				<th>VIP</th>
+				<th>VIQ</th>
 				<th>VP</th>
 				<th>VQ</th>
 			</tr>
@@ -39,8 +39,8 @@
 				<th>Distribuidor</th>
 				<th>UF</th>
 				<th>Telefone</th>
-				<th>VI (VP)</th>
-				<th>VI (VQ)</th>
+				<th>VIP</th>
+				<th>VIQ</th>
 				<th>VP</th>
 				<th>VQ</th>
 				<th>Ações</th>
