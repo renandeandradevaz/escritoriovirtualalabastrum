@@ -68,7 +68,7 @@ h3 {
 </style>
 <div class="fundo-branco">
 	<br>
-	<img class="banner-home" style="max-width: 500px; margin: 3%;" src="<c:url value="/download/banner-home.jpg"/>">
+	<img class="banner-home" style="max-width: 500px; margin: 3%;" src="<c:url value="/downloadArquivo/banner-home.jpg"/>">
 	<br>
 	<div class='caixinha-home' style="text-align: center;">
 		<h3>Reconhecimento</h3>
