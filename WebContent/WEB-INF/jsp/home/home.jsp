@@ -59,8 +59,17 @@ h3 {
 	padding: 2px;
 	font-size: 9px;
 }
+
+@media only screen and (max-width: 1200px) {
+	.banner-home {
+		width: 95%;
+	}
+}
 </style>
 <div class="fundo-branco">
+	<br>
+	<img class="banner-home" style="max-width: 500px; margin: 3%;" src="<c:url value="/download/banner-home.jpg"/>">
+	<br>
 	<div class='caixinha-home' style="text-align: center;">
 		<h3>Reconhecimento</h3>
 		<br>
