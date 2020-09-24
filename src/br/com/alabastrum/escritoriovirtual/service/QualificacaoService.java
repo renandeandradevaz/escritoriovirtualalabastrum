@@ -144,7 +144,7 @@ public class QualificacaoService {
 	}
 
 	if (qualificacoesAntesDaData.size() > 0) {
-	    return new PosicoesService(hibernateUtil).obterNomeDaPosicao(qualificacoesAntesDaData.size());
+	   // return new PosicoesService(hibernateUtil).obterNomeDaPosicao(qualificacoesAntesDaData.size());
 	}
 
 	return "Desconhecido";

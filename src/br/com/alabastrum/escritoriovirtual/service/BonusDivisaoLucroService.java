@@ -39,24 +39,24 @@ public class BonusDivisaoLucroService {
 
 			if (isHabilitado(idCodigo, primeiroDiaDoMes, ultimoDiaDoMes, parametroVip)) {
 
-				Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(new QualificacaoService(hibernateUtil).obterPosicaoNaData(idCodigo, parametroVip.getData()));
-
-				if (posicao != null) {
-
-					BigDecimal bonificacao = BigDecimal.ZERO;
-
-					Map<Integer, BigDecimal> valoresPorPosicao = obterValoresPorPosicao(parametroVip, primeiroDiaDoMes, ultimoDiaDoMes);
-
-					for (Entry<Integer, BigDecimal> valoresPorPosicaoEntry : valoresPorPosicao.entrySet()) {
-
-						if (valoresPorPosicaoEntry.getKey() <= posicao.getPosicao()) {
-
-							bonificacao = bonificacao.add(valoresPorPosicaoEntry.getValue());
-						}
-					}
-
-					extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(idCodigo)), parametroVip.getData(), bonificacao, "Divisão de lucro"));
-				}
+//				Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(new QualificacaoService(hibernateUtil).obterPosicaoNaData(idCodigo, parametroVip.getData()));
+//
+//				if (posicao != null) {
+//
+//					BigDecimal bonificacao = BigDecimal.ZERO;
+//
+//					Map<Integer, BigDecimal> valoresPorPosicao = obterValoresPorPosicao(parametroVip, primeiroDiaDoMes, ultimoDiaDoMes);
+//
+//					for (Entry<Integer, BigDecimal> valoresPorPosicaoEntry : valoresPorPosicao.entrySet()) {
+//
+//						if (valoresPorPosicaoEntry.getKey() <= posicao.getPosicao()) {
+//
+//							bonificacao = bonificacao.add(valoresPorPosicaoEntry.getValue());
+//						}
+//					}
+//
+//					extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(idCodigo)), parametroVip.getData(), bonificacao, "Divisão de lucro"));
+//				}
 			}
 		}
 
