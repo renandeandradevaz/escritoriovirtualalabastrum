@@ -97,7 +97,11 @@ public class PontuacaoService {
 	graduacaoMensalDTO.setProximaPosicao(proximaPosicao.getNome());
 	graduacaoMensalDTO.setPontuacaoDaProximaPosicao(proximaPosicao.getPontuacao());
 
-	graduacaoMensalDTO.setPontosAproveitados(somaPontuacaoAproveitadaTotal);
+	if (graduacaoMensalDTO.getPontuacaoDaProximaPosicao() == 0)
+	    graduacaoMensalDTO.setPontosAproveitados(0);
+	else
+	    graduacaoMensalDTO.setPontosAproveitados(somaPontuacaoAproveitadaTotal);
+
 	graduacaoMensalDTO.setPontuacaoTotal(somaPontuacaoTotal);
 	graduacaoMensalDTO.setPontosRestantesParaProximaPosicao(graduacaoMensalDTO.getPontuacaoDaProximaPosicao() - graduacaoMensalDTO.getPontosAproveitados());
 
