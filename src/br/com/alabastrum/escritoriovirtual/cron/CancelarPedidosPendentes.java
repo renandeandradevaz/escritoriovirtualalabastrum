@@ -43,7 +43,7 @@ public class CancelarPedidosPendentes implements Runnable {
 
 	Scheduler scheduler = new Scheduler();
 
-	scheduler.schedule("30 3 * * *", task);
+	scheduler.schedule("30 1 * * *", task);
 
 	scheduler.start();
     }

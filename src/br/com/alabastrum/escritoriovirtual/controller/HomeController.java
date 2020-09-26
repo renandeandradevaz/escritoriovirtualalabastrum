@@ -66,7 +66,7 @@ public class HomeController {
 	}
 
 	result.include("totalAbaixoFilaUnica", totalAbaixoFilaUnica);
-	result.include("graduacaoMensal", new PontuacaoService(this.hibernateUtil).calcularGraduacaoMensal(usuarioLogado.getId_Codigo()));
+	result.include("graduacaoMensal", new PontuacaoService(this.hibernateUtil).calcularGraduacaoMensal(usuarioLogado.getId_Codigo(), null));
 	result.include("quantidadesExistentes", new MatrizService().calcularQuantidadesExistentes(arvoreHierarquicaCompletaPorIdLider));
 	result.include("diretos", arvoreHierarquicaPorIdIndicanteNivel1.size());
 	result.include("equipe", arvoreHierarquicaCompletaPorIdIndicante.size());

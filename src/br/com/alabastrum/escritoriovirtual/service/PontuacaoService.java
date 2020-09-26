@@ -28,13 +28,16 @@ public class PontuacaoService {
 	this.hibernateUtil = hibernateUtil;
     }
 
-    public GraduacaoMensalDTO calcularGraduacaoMensal(Integer idCodigo) {
+    public GraduacaoMensalDTO calcularGraduacaoMensal(Integer idCodigo, GregorianCalendar data) {
 
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idCodigo));
 
-	GregorianCalendar hoje = Util.getTempoCorrenteAMeiaNoite();
-	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(hoje);
-	GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(hoje);
+	if (data == null) {
+	    data = Util.getTempoCorrenteAMeiaNoite();
+	}
+
+	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(data);
+	GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(data);
 
 	Integer somaPontuacaoAproveitadaTotal = calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, idCodigo);
 	Integer somaPontuacaoTotal = new Integer(somaPontuacaoAproveitadaTotal);
@@ -63,7 +66,7 @@ public class PontuacaoService {
 	    somaPontuacaoTotal += somaPontuacaoPorLinha;
 	}
 
-	Posicao posicaoAtual = new PosicoesService(hibernateUtil).obterPosicaoPorOrdemNumerica(1, hoje);
+	Posicao posicaoAtual = new PosicoesService(hibernateUtil).obterPosicaoPorOrdemNumerica(1, data);
 
 	if (new AtividadeService(hibernateUtil).possuiIndicadosDiretosAtivos(idCodigo, new GregorianCalendar(), 3)) {
 
@@ -89,7 +92,7 @@ public class PontuacaoService {
 	    }
 	}
 
-	Posicao proximaPosicao = new PosicoesService(hibernateUtil).obterProximaPosicao(posicaoAtual.getNome(), hoje);
+	Posicao proximaPosicao = new PosicoesService(hibernateUtil).obterProximaPosicao(posicaoAtual.getNome(), data);
 
 	GraduacaoMensalDTO graduacaoMensalDTO = new GraduacaoMensalDTO();
 	graduacaoMensalDTO.setPosicaoAtual(posicaoAtual.getNome());
@@ -147,6 +150,36 @@ public class PontuacaoService {
 
 	for (Pontuacao pontuacao : pontuacoes) {
 	    somaPontuacao = somaPontuacao.add(pontuacao.getPntProduto());
+	}
+
+	return somaPontuacao.intValue();
+    }
+
+    public int calcularPontuacaoDeProdutoTodaEmpresa(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
+
+	BigDecimal somaPontuacao = BigDecimal.ZERO;
+
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+	restricoes.add(Restrictions.between("Dt_Pontos", primeiroDiaDoMes, ultimoDiaDoMes));
+	List<Pontuacao> pontuacoes = hibernateUtil.buscar(new Pontuacao(), restricoes);
+
+	for (Pontuacao pontuacao : pontuacoes) {
+	    somaPontuacao = somaPontuacao.add(pontuacao.getPntProduto());
+	}
+
+	return somaPontuacao.intValue();
+    }
+
+    public int calcularPontuacaoFilaUnicaTodaEmpresa(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
+
+	BigDecimal somaPontuacao = BigDecimal.ZERO;
+
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+	restricoes.add(Restrictions.between("Dt_Pontos", primeiroDiaDoMes, ultimoDiaDoMes));
+	List<Pontuacao> pontuacoes = hibernateUtil.buscar(new Pontuacao(), restricoes);
+
+	for (Pontuacao pontuacao : pontuacoes) {
+	    somaPontuacao = somaPontuacao.add(pontuacao.getPntfilaunica());
 	}
 
 	return somaPontuacao.intValue();

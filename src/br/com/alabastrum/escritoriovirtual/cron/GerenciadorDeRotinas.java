@@ -19,6 +19,7 @@ public class GerenciadorDeRotinas {
 	    new CancelarPedidosPendentes().iniciarRotina();
 	    new CompressaoDeBonus().iniciarRotina();
 	    new NotificarPedidosPagosNaoFinalizados().iniciarRotina();
+	    new BonusFilaUnicaRotina().iniciarRotina();
 	}
     }
 }

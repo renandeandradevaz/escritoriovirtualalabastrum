@@ -19,18 +19,17 @@ public class Pontuacao implements Entidade {
     private Integer id;
 
     private GregorianCalendar Dt_Pontos;
+    private Integer id_pedido;
     private BigDecimal ParametroAtividade;
     private BigDecimal PntAtividade;
     private BigDecimal PntIngresso;
     private BigDecimal PntProduto;
     private BigDecimal PntQualificacao;
+    private BigDecimal pntfilaunica;
     private BigDecimal valorIngresso;
 
     @Index(name = "index_id_Codigo_pontuacao")
     private Integer id_Codigo;
-
-    // @Index(name = "index_id_pedido_pontuacao") Será que precisa?
-    private Integer id_pedido;
 
     public Integer getId() {
 	return id;
@@ -110,5 +109,13 @@ public class Pontuacao implements Entidade {
 
     public void setPntQualificacao(BigDecimal pntQualificacao) {
 	PntQualificacao = pntQualificacao;
+    }
+
+    public BigDecimal getPntfilaunica() {
+	return pntfilaunica;
+    }
+
+    public void setPntfilaunica(BigDecimal pntfilaunica) {
+	this.pntfilaunica = pntfilaunica;
     }
 }
