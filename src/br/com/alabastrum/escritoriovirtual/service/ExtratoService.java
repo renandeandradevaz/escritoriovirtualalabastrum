@@ -11,6 +11,7 @@ import java.util.List;
 import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.modelo.Bonificacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Transferencia;
 import br.com.alabastrum.escritoriovirtual.util.Constants;
 import br.com.alabastrum.escritoriovirtual.util.Util;
@@ -34,6 +35,7 @@ public class ExtratoService {
 	extratoCompleto.addAll(new BonusDePrimeiraCompraService(hibernateUtil).obterBonificacoesDePrimeiraCompra(idCodigo));
 	extratoCompleto.addAll(new BonusLinearService(hibernateUtil).obterBonificacoesLineares(idCodigo));
 	extratoCompleto.addAll(new BonusTrinarioService(hibernateUtil).obterBonificacoesTrinarias(idCodigo));
+	extratoCompleto.addAll(new BonificacoesPreProcessadasService(hibernateUtil).obterBonificacoesPreProcessadas(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeOutroDistribuidor(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaOutroDistribuidor(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaAlabastrumCard(idCodigo));
@@ -59,6 +61,7 @@ public class ExtratoService {
 	BigDecimal bonusDeAdesaoDePontoDeApoioNoMes = BigDecimal.ZERO;
 	BigDecimal bonusLinearNoMes = BigDecimal.ZERO;
 	BigDecimal bonusTrinarioNoMes = BigDecimal.ZERO;
+	BigDecimal bonusFilaUnicaNoMes = BigDecimal.ZERO;
 
 	List<ExtratoDTO> extratoDoMes = new ArrayList<ExtratoDTO>();
 	for (ExtratoDTO extratoDTO : extratoCompleto) {
@@ -113,6 +116,10 @@ public class ExtratoService {
 			if (extratoDTO.getDiscriminador().equals(BonusTrinarioService.BÔNUS_TRINARIO)) {
 			    bonusTrinarioNoMes = bonusTrinarioNoMes.add(extratoDTO.getValor());
 			}
+
+			if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_DE_FILA_UNICA)) {
+			    bonusFilaUnicaNoMes = bonusFilaUnicaNoMes.add(extratoDTO.getValor());
+			}
 		    }
 		}
 	    }
@@ -135,7 +142,8 @@ public class ExtratoService {
 	saldoDTO.setBonusDeAdesaoDePontoDeApoioNoMes(bonusDeAdesaoDePontoDeApoioNoMes);
 	saldoDTO.setBonusLinearNoMes(bonusLinearNoMes);
 	saldoDTO.setBonusTrinarioNoMes(bonusTrinarioNoMes);
-	saldoDTO.setBonificacoesNoMes(bonusPrimeiraCompraNoMes.add(bonusDeAdesaoDePontoDeApoioNoMes.add(bonusLinearNoMes.add(bonusTrinarioNoMes))));
+	saldoDTO.setBonusFilaUnicaNoMes(bonusFilaUnicaNoMes);
+	saldoDTO.setBonificacoesNoMes(bonusPrimeiraCompraNoMes.add(bonusDeAdesaoDePontoDeApoioNoMes.add(bonusLinearNoMes.add(bonusTrinarioNoMes.add(bonusFilaUnicaNoMes)))));
 	saldoDTO.setInssNoMes(saldoDTO.getBonificacoesNoMes().multiply(Constants.TARIFA_INSS));
 
 	return saldoDTO;

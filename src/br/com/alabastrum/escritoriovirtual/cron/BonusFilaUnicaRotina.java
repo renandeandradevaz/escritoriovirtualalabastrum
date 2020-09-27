@@ -8,8 +8,12 @@ import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
+
 import br.com.alabastrum.escritoriovirtual.dto.GraduacaoMensalDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.modelo.Bonificacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
 import br.com.alabastrum.escritoriovirtual.service.PontuacaoService;
@@ -45,17 +49,39 @@ public class BonusFilaUnicaRotina implements Runnable {
 
 		    Usuario usuarioHabilitado = usuariosHabilitados.get(i);
 		    int quantidadeDeCotasDoUsuario = quantidadeUsuariosHabilitados - i;
-
 		    BigDecimal valorParaPagamento = valorCota.multiply(new BigDecimal(quantidadeDeCotasDoUsuario));
 
+		    List<Bonificacao> bonificacoes = buscarBonificacoesNoMes(hibernateUtil, usuarioHabilitado.getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes);
+
+		    if (Util.preenchido(bonificacoes)) {
+			hibernateUtil.deletar(bonificacoes);
+		    }
+
+		    Bonificacao bonificacao = new Bonificacao();
+		    bonificacao.setIdCodigo(usuarioHabilitado.getId_Codigo());
+		    bonificacao.setData(ontem);
+		    bonificacao.setTipo(Bonificacao.BONUS_DE_FILA_UNICA);
+		    bonificacao.setValor(valorParaPagamento);
+		    hibernateUtil.salvarOuAtualizar(bonificacao);
 		}
 	    }
 
 	} catch (Exception e) {
+	    e.printStackTrace();
 	    String errorString = Util.getExceptionMessage(e);
 	    Mail.enviarEmail("Exception ao rodar rotina de bonus de fila unica", errorString);
 	}
 	hibernateUtil.fecharSessao();
+    }
+
+    private List<Bonificacao> buscarBonificacoesNoMes(HibernateUtil hibernateUtil, Integer codigo, GregorianCalendar dataInicial, GregorianCalendar dataFinal) {
+
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+	restricoes.add(Restrictions.between("data", dataInicial, dataFinal));
+	Bonificacao filtro = new Bonificacao();
+	filtro.setIdCodigo(codigo);
+	filtro.setTipo(Bonificacao.BONUS_DE_FILA_UNICA);
+	return hibernateUtil.buscar(filtro, restricoes);
     }
 
     private List<Usuario> buscarUsuariosHabilitados(HibernateUtil hibernateUtil, GregorianCalendar ontem) {

@@ -639,6 +639,12 @@ public class PedidoController {
 
 	Pedido pedido = selecionarPedidoAberto();
 
+	if (pedido == null) {
+	    validator.add(new ValidationMessage("Você não tem nenhum pedido aberto neste momento", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarCarrinho();
+	    return;
+	}
+
 	BigDecimal totalPedido = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal();
 
 	for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
