@@ -76,7 +76,7 @@ public class BonusFilaUnicaRotina implements Runnable {
     }
 
     private BigDecimal calcularCota(int quantidadeUsuariosHabilitados, BigDecimal valorASerDivididoNoMesBigDecimal) {
-	return new BigDecimal(((valorASerDivididoNoMesBigDecimal.doubleValue() / quantidadeUsuariosHabilitados) / ((double) (quantidadeUsuariosHabilitados / 2) + 0.5)));
+	return new BigDecimal(((valorASerDivididoNoMesBigDecimal.doubleValue() / quantidadeUsuariosHabilitados) / (((double) quantidadeUsuariosHabilitados / 2) + 0.5)));
     }
 
     private List<Bonificacao> buscarBonificacoesNoMes(HibernateUtil hibernateUtil, Integer codigo, GregorianCalendar dataInicial, GregorianCalendar dataFinal) {
@@ -119,7 +119,8 @@ public class BonusFilaUnicaRotina implements Runnable {
 
 	Scheduler scheduler = new Scheduler();
 
-	scheduler.schedule("30 2 * * *", task);
+	// scheduler.schedule("30 2 * * *", task);
+	scheduler.schedule("17 14 * * *", task);
 
 	scheduler.start();
     }
