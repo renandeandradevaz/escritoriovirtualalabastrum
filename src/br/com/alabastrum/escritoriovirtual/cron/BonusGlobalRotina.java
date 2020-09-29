@@ -3,10 +3,10 @@ package br.com.alabastrum.escritoriovirtual.cron;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
@@ -22,7 +22,12 @@ import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import it.sauronsoftware.cron4j.Scheduler;
 
-public class BonusFilaUnicaRotina implements Runnable {
+public class BonusGlobalRotina implements Runnable {
+
+    private static final Integer QUANTIDADE_COTAS_PRATA = 1;
+    private static final Integer QUANTIDADE_COTAS_OURO = 3;
+    private static final Integer QUANTIDADE_COTAS_RUBI = 5;
+    private static final Integer QUANTIDADE_COTAS_DIAMANTE = 10;
 
     public void run() {
 
@@ -40,37 +45,77 @@ public class BonusFilaUnicaRotina implements Runnable {
 
 	    if (quantidadeUsuariosHabilitados > 0) {
 
-		Integer pontuacaoProdutoCompletaDoMes = new PontuacaoService(hibernateUtil).calcularPontuacaoDeProdutoTodaEmpresa(primeiroDiaDoMes, ultimoDiaDoMes);
-		Integer pontuacaoFilaUnicaDoMes = new PontuacaoService(hibernateUtil).calcularPontuacaoFilaUnicaTodaEmpresa(primeiroDiaDoMes, ultimoDiaDoMes);
-		Integer pontuacaoTotalNoMes = pontuacaoProdutoCompletaDoMes + pontuacaoFilaUnicaDoMes;
-		BigDecimal valorASerDivididoNoMes = new BigDecimal(pontuacaoTotalNoMes).multiply(new BigDecimal(0.12));
-		BigDecimal valorCota = valorASerDivididoNoMes.divide(new BigDecimal(quantidadeUsuariosHabilitados), 2, BigDecimal.ROUND_HALF_UP).divide(new BigDecimal(quantidadeUsuariosHabilitados / 2 + 0.5), 2, BigDecimal.ROUND_HALF_UP);
+		int quantidadeCotas = 0;
+
+		HashMap<Integer, String> posicoesAtuais = new HashMap<Integer, String>();
 
 		for (int i = 0; i < usuariosHabilitados.size(); i++) {
 
 		    Usuario usuarioHabilitado = usuariosHabilitados.get(i);
-		    int quantidadeDeCotasDoUsuario = quantidadeUsuariosHabilitados - i;
+		    GraduacaoMensalDTO graduacaoMensal = new PontuacaoService(hibernateUtil).calcularGraduacaoMensal(usuarioHabilitado.getId_Codigo(), ontem);
+		    posicoesAtuais.put(usuarioHabilitado.getId_Codigo(), graduacaoMensal.getPosicaoAtual());
+
+		    if (graduacaoMensal.getPosicaoAtual().equalsIgnoreCase("prata")) {
+			quantidadeCotas += QUANTIDADE_COTAS_PRATA;
+		    }
+		    if (graduacaoMensal.getPosicaoAtual().equalsIgnoreCase("ouro")) {
+			quantidadeCotas += QUANTIDADE_COTAS_OURO;
+		    }
+		    if (graduacaoMensal.getPosicaoAtual().equalsIgnoreCase("rubi")) {
+			quantidadeCotas += QUANTIDADE_COTAS_RUBI;
+		    }
+		    if (graduacaoMensal.getPosicaoAtual().equalsIgnoreCase("diamante")) {
+			quantidadeCotas += QUANTIDADE_COTAS_DIAMANTE;
+		    }
+		}
+
+		Integer pontuacaoProdutoCompletaDoMes = new PontuacaoService(hibernateUtil).calcularPontuacaoDeProdutoTodaEmpresa(primeiroDiaDoMes, ultimoDiaDoMes);
+		BigDecimal valorASerDivididoNoMes = new BigDecimal(pontuacaoProdutoCompletaDoMes).multiply(new BigDecimal(0.18));
+
+		BigDecimal valorCota = valorASerDivididoNoMes.divide(new BigDecimal(quantidadeCotas), 2, BigDecimal.ROUND_HALF_UP);
+
+		for (Entry<Integer, String> posicaoAtualEntry : posicoesAtuais.entrySet()) {
+
+		    Integer idCodigo = posicaoAtualEntry.getKey();
+		    String posicaoAtual = posicaoAtualEntry.getValue();
+		    int quantidadeDeCotasDoUsuario = 0;
+
+		    if (posicaoAtual.equalsIgnoreCase("prata")) {
+			quantidadeDeCotasDoUsuario = QUANTIDADE_COTAS_PRATA;
+		    }
+		    if (posicaoAtual.equalsIgnoreCase("ouro")) {
+			quantidadeDeCotasDoUsuario = QUANTIDADE_COTAS_OURO;
+		    }
+		    if (posicaoAtual.equalsIgnoreCase("rubi")) {
+			quantidadeDeCotasDoUsuario = QUANTIDADE_COTAS_RUBI;
+		    }
+		    if (posicaoAtual.equalsIgnoreCase("diamante")) {
+			quantidadeDeCotasDoUsuario = QUANTIDADE_COTAS_DIAMANTE;
+		    }
+
 		    BigDecimal valorParaPagamento = valorCota.multiply(new BigDecimal(quantidadeDeCotasDoUsuario));
 
-		    List<Bonificacao> bonificacoes = buscarBonificacoesNoMes(hibernateUtil, usuarioHabilitado.getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes);
+		    List<Bonificacao> bonificacoes = buscarBonificacoesNoMes(hibernateUtil, idCodigo, primeiroDiaDoMes, ultimoDiaDoMes);
 
 		    if (Util.preenchido(bonificacoes)) {
 			hibernateUtil.deletar(bonificacoes);
 		    }
 
 		    Bonificacao bonificacao = new Bonificacao();
-		    bonificacao.setIdCodigo(usuarioHabilitado.getId_Codigo());
+		    bonificacao.setIdCodigo(idCodigo);
 		    bonificacao.setData(ontem);
-		    bonificacao.setTipo(Bonificacao.BONUS_DE_FILA_UNICA);
+		    bonificacao.setTipo(Bonificacao.BONUS_GLOBAL);
 		    bonificacao.setValor(valorParaPagamento);
 		    hibernateUtil.salvarOuAtualizar(bonificacao);
 		}
 	    }
 
-	} catch (Exception e) {
+	} catch (
+
+	Exception e) {
 	    e.printStackTrace();
 	    String errorString = Util.getExceptionMessage(e);
-	    Mail.enviarEmail("Exception ao rodar rotina de bonus de fila unica", errorString);
+	    Mail.enviarEmail("Exception ao rodar rotina de bonus global", errorString);
 	}
 	hibernateUtil.fecharSessao();
     }
@@ -81,13 +126,13 @@ public class BonusFilaUnicaRotina implements Runnable {
 	restricoes.add(Restrictions.between("data", dataInicial, dataFinal));
 	Bonificacao filtro = new Bonificacao();
 	filtro.setIdCodigo(codigo);
-	filtro.setTipo(Bonificacao.BONUS_DE_FILA_UNICA);
+	filtro.setTipo(Bonificacao.BONUS_GLOBAL);
 	return hibernateUtil.buscar(filtro, restricoes);
     }
 
     private List<Usuario> buscarUsuariosHabilitados(HibernateUtil hibernateUtil, GregorianCalendar ontem) {
 
-	Integer pontuacaoMinima = new PosicoesService(hibernateUtil).obterPosicaoPorNome("BRONZE", ontem).getPontuacao();
+	Integer pontuacaoMinima = new PosicoesService(hibernateUtil).obterPosicaoPorNome("PRATA", ontem).getPontuacao();
 
 	List<Usuario> usuariosHabilitados = new ArrayList<Usuario>();
 
@@ -100,22 +145,19 @@ public class BonusFilaUnicaRotina implements Runnable {
 		}
 	    }
 	}
-	Collections.sort(usuariosHabilitados, new Comparator<Usuario>() {
-	    public int compare(Usuario usuario1, Usuario usuario2) {
-		return usuario1.getFila_unica().compareTo(usuario2.getFila_unica());
-	    }
-	});
 
 	return usuariosHabilitados;
     }
 
     public void iniciarRotina() {
 
-	BonusFilaUnicaRotina task = new BonusFilaUnicaRotina();
+	BonusGlobalRotina task = new BonusGlobalRotina();
 
 	Scheduler scheduler = new Scheduler();
 
-	scheduler.schedule("30 2 * * *", task);
+	// scheduler.schedule("30 3 * * *", task);
+
+	scheduler.schedule("30 9 * * *", task);
 
 	scheduler.start();
     }

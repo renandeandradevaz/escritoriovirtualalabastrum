@@ -62,6 +62,7 @@ public class ExtratoService {
 	BigDecimal bonusLinearNoMes = BigDecimal.ZERO;
 	BigDecimal bonusTrinarioNoMes = BigDecimal.ZERO;
 	BigDecimal bonusFilaUnicaNoMes = BigDecimal.ZERO;
+	BigDecimal bonusGlobalNoMes = BigDecimal.ZERO;
 
 	List<ExtratoDTO> extratoDoMes = new ArrayList<ExtratoDTO>();
 	for (ExtratoDTO extratoDTO : extratoCompleto) {
@@ -120,6 +121,10 @@ public class ExtratoService {
 			if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_DE_FILA_UNICA)) {
 			    bonusFilaUnicaNoMes = bonusFilaUnicaNoMes.add(extratoDTO.getValor());
 			}
+
+			if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_GLOBAL)) {
+			    bonusGlobalNoMes = bonusGlobalNoMes.add(extratoDTO.getValor());
+			}
 		    }
 		}
 	    }
@@ -143,6 +148,7 @@ public class ExtratoService {
 	saldoDTO.setBonusLinearNoMes(bonusLinearNoMes);
 	saldoDTO.setBonusTrinarioNoMes(bonusTrinarioNoMes);
 	saldoDTO.setBonusFilaUnicaNoMes(bonusFilaUnicaNoMes);
+	saldoDTO.setBonusGlobalNoMes(bonusGlobalNoMes);
 	saldoDTO.setBonificacoesNoMes(bonusPrimeiraCompraNoMes.add(bonusDeAdesaoDePontoDeApoioNoMes.add(bonusLinearNoMes.add(bonusTrinarioNoMes.add(bonusFilaUnicaNoMes)))));
 	saldoDTO.setInssNoMes(saldoDTO.getBonificacoesNoMes().multiply(Constants.TARIFA_INSS));
 

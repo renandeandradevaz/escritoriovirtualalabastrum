@@ -15,6 +15,7 @@ import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
 public class Bonificacao implements Entidade {
 
     public static final String BONUS_DE_FILA_UNICA = "Bônus de Fila Única";
+    public static final String BONUS_GLOBAL = "Bônus Global";
 
     @Id
     @GeneratedValue

@@ -20,6 +20,7 @@ public class GerenciadorDeRotinas {
 	    new CompressaoDeBonus().iniciarRotina();
 	    new NotificarPedidosPagosNaoFinalizados().iniciarRotina();
 	    new BonusFilaUnicaRotina().iniciarRotina();
+	    new BonusGlobalRotina().iniciarRotina();
 	}
     }
 }

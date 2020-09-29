@@ -20,6 +20,7 @@ public class SaldoDTO {
     private BigDecimal bonusLinearNoMes;
     private BigDecimal bonusTrinarioNoMes;
     private BigDecimal bonusFilaUnicaNoMes;
+    private BigDecimal bonusGlobalNoMes;
     private BigDecimal bonificacoesNoMes;
     private BigDecimal inssNoMes;
     private List<ExtratoDTO> extratoDoMes;
@@ -150,5 +151,13 @@ public class SaldoDTO {
 
     public void setBonusFilaUnicaNoMes(BigDecimal bonusFilaUnicaNoMes) {
 	this.bonusFilaUnicaNoMes = bonusFilaUnicaNoMes;
+    }
+
+    public BigDecimal getBonusGlobalNoMes() {
+	return bonusGlobalNoMes;
+    }
+
+    public void setBonusGlobalNoMes(BigDecimal bonusGlobalNoMes) {
+	this.bonusGlobalNoMes = bonusGlobalNoMes;
     }
 }

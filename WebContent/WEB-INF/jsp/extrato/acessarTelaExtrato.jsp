@@ -99,7 +99,8 @@
 		<h6>Observações:</h6>
 		<h6>* Para receber qualquer tipo de bônus, é necessário ficar ativo.</h6>
 		<h6>* Para receber o Bônus Trinário, além de estar ativo, é necessário ter, no mínimo, 3 indicados diretos ativos no mês.</h6>
-		<h6>* Para receber o Bônus De Fila Única, além de estar ativo, e ter 3 indicados ativos diretos, é necessário ter pontuação de qualificação suficiente (Consulte os valores exatos com seu líder).</h6>
+		<h6>* Para receber o Bônus De Fila Única, além de estar ativo, e ter 3 indicados ativos diretos, é necessário ter pontuação de qualificação como BRONZE.</h6>
+		<h6>* Para receber o Bônus Global, além de estar ativo, e ter 3 indicados ativos diretos, é necessário ter pontuação de qualificação como PRATA.</h6>
 		<br>
 	</div>
 	<br>
@@ -172,6 +173,19 @@
 					<td>
 						<form action="<c:url value="/extrato/detalharBonificacao"/>" method="post">
 							<input type="hidden" name="bonificacao" value="Bônus de Fila Única">
+							<button type="submit" class="btn btn-primary detalhar" onclick="this.disabled=true;this.form.submit();">Detalhar</button>
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td class="centralizado">Bônus Global</td>
+					<td class="centralizado">
+						R$
+						<fmt:formatNumber value="${extrato.bonusGlobalNoMes}" pattern="#,##0.00" />
+					</td>
+					<td>
+						<form action="<c:url value="/extrato/detalharBonificacao"/>" method="post">
+							<input type="hidden" name="bonificacao" value="Bônus Global">
 							<button type="submit" class="btn btn-primary detalhar" onclick="this.disabled=true;this.form.submit();">Detalhar</button>
 						</form>
 					</td>
