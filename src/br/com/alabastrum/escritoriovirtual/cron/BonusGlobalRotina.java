@@ -155,9 +155,7 @@ public class BonusGlobalRotina implements Runnable {
 
 	Scheduler scheduler = new Scheduler();
 
-	// scheduler.schedule("30 3 * * *", task);
-
-	scheduler.schedule("30 9 * * *", task);
+	scheduler.schedule("30 3 * * *", task);
 
 	scheduler.start();
     }
