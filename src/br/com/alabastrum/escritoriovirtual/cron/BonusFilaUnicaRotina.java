@@ -44,7 +44,7 @@ public class BonusFilaUnicaRotina implements Runnable {
 		Integer pontuacaoFilaUnicaDoMes = new PontuacaoService(hibernateUtil).calcularPontuacaoFilaUnicaTodaEmpresa(primeiroDiaDoMes, ultimoDiaDoMes);
 		Integer pontuacaoTotalNoMes = pontuacaoProdutoCompletaDoMes + pontuacaoFilaUnicaDoMes;
 		BigDecimal valorASerDivididoNoMes = new BigDecimal(pontuacaoTotalNoMes).multiply(new BigDecimal(0.12));
-		BigDecimal valorCota = valorASerDivididoNoMes.divide(new BigDecimal(quantidadeUsuariosHabilitados), 2, BigDecimal.ROUND_HALF_UP).divide(new BigDecimal(quantidadeUsuariosHabilitados / 2 + 0.5), 2, BigDecimal.ROUND_HALF_UP);
+		BigDecimal valorCota = calcularCota(quantidadeUsuariosHabilitados, valorASerDivididoNoMes);
 
 		for (int i = 0; i < usuariosHabilitados.size(); i++) {
 
@@ -73,6 +73,10 @@ public class BonusFilaUnicaRotina implements Runnable {
 	    Mail.enviarEmail("Exception ao rodar rotina de bonus de fila unica", errorString);
 	}
 	hibernateUtil.fecharSessao();
+    }
+
+    private BigDecimal calcularCota(int quantidadeUsuariosHabilitados, BigDecimal valorASerDivididoNoMesBigDecimal) {
+	return new BigDecimal(((valorASerDivididoNoMesBigDecimal.doubleValue() / quantidadeUsuariosHabilitados) / ((quantidadeUsuariosHabilitados / 2) + 0.5)));
     }
 
     private List<Bonificacao> buscarBonificacoesNoMes(HibernateUtil hibernateUtil, Integer codigo, GregorianCalendar dataInicial, GregorianCalendar dataFinal) {
@@ -115,7 +119,9 @@ public class BonusFilaUnicaRotina implements Runnable {
 
 	Scheduler scheduler = new Scheduler();
 
-	scheduler.schedule("30 2 * * *", task);
+	//scheduler.schedule("30 2 * * *", task);
+	
+	scheduler.schedule("50 11 * * *", task);
 
 	scheduler.start();
     }
