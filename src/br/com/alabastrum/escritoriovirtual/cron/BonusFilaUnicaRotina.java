@@ -119,8 +119,7 @@ public class BonusFilaUnicaRotina implements Runnable {
 
 	Scheduler scheduler = new Scheduler();
 
-	// scheduler.schedule("30 2 * * *", task);
-	scheduler.schedule("17 14 * * *", task);
+	scheduler.schedule("30 2 * * *", task);
 
 	scheduler.start();
     }
