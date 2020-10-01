@@ -68,7 +68,7 @@ public class PontuacaoService {
 
 	Posicao posicaoAtual = new PosicoesService(hibernateUtil).obterPosicaoPorOrdemNumerica(1, data);
 
-	if (new AtividadeService(hibernateUtil).possuiIndicadosDiretosAtivos(idCodigo, new GregorianCalendar(), 3)) {
+	if (new AtividadeService(hibernateUtil).possuiIndicadosDiretosAtivos(idCodigo, data, 3)) {
 
 	    List<Posicao> posicoes = this.hibernateUtil.buscar(new Posicao(), Order.desc("posicao"));
 

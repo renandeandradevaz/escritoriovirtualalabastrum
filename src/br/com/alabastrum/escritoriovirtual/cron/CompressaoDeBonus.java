@@ -1,7 +1,6 @@
 package br.com.alabastrum.escritoriovirtual.cron;
 
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
-import it.sauronsoftware.cron4j.Scheduler;
 
 public class CompressaoDeBonus implements Runnable {
 
@@ -17,9 +16,9 @@ public class CompressaoDeBonus implements Runnable {
 
     public void iniciarRotina() {
 
-	CompressaoDeBonus task = new CompressaoDeBonus();
-	Scheduler scheduler = new Scheduler();
-	scheduler.schedule("30 4 1 * *", task);
-	scheduler.start();
+	// CompressaoDeBonus task = new CompressaoDeBonus();
+	// Scheduler scheduler = new Scheduler();
+	// scheduler.schedule("30 5 1 * *", task);
+	// scheduler.start();
     }
 }

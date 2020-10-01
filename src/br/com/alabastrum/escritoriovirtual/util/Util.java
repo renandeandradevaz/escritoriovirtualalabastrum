@@ -55,31 +55,16 @@ public class Util {
     }
 
     public static GregorianCalendar getTempoCorrenteAMeiaNoite() {
-
-	GregorianCalendar tempoCorrenteAMeiaNoite = new GregorianCalendar();
-	tempoCorrenteAMeiaNoite.set(Calendar.HOUR_OF_DAY, 0);
-	tempoCorrenteAMeiaNoite.set(Calendar.MINUTE, 0);
-	tempoCorrenteAMeiaNoite.set(Calendar.SECOND, 0);
-	tempoCorrenteAMeiaNoite.set(Calendar.MILLISECOND, 0);
-	return tempoCorrenteAMeiaNoite;
+	GregorianCalendar agora = new GregorianCalendar();
+	return new GregorianCalendar(agora.get(Calendar.YEAR), agora.get(Calendar.MONTH), agora.get(Calendar.DAY_OF_MONTH));
     }
 
     public static GregorianCalendar getPrimeiroDiaDoMes(GregorianCalendar data) {
-
-	GregorianCalendar primeiroDiaDoMes = getTempoCorrenteAMeiaNoite();
-	primeiroDiaDoMes.set(Calendar.YEAR, data.get(Calendar.YEAR));
-	primeiroDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
-	primeiroDiaDoMes.set(Calendar.DAY_OF_MONTH, 1);
-	return primeiroDiaDoMes;
+	return new GregorianCalendar(data.get(Calendar.YEAR), data.get(Calendar.MONTH), 1);
     }
 
     public static GregorianCalendar getUltimoDiaDoMes(GregorianCalendar data) {
-
-	GregorianCalendar ultimoDiaDoMes = Util.getTempoCorrenteAMeiaNoite();
-	ultimoDiaDoMes.set(Calendar.YEAR, data.get(Calendar.YEAR));
-	ultimoDiaDoMes.set(Calendar.MONTH, data.get(Calendar.MONTH));
-	ultimoDiaDoMes.set(Calendar.DAY_OF_MONTH, ultimoDiaDoMes.getActualMaximum(Calendar.DAY_OF_MONTH));
-	return ultimoDiaDoMes;
+	return new GregorianCalendar(data.get(Calendar.YEAR), data.get(Calendar.MONTH), data.getActualMaximum(Calendar.DAY_OF_MONTH));
     }
 
     public static String getMesString(Integer mes) {
