@@ -52,6 +52,7 @@ public class ExtratoService {
 
 	int mesAtual = tempoCorrente.get(Calendar.MONTH);
 	int anoAtual = tempoCorrente.get(Calendar.YEAR);
+	GregorianCalendar dataPesquisada = new GregorianCalendar(ano, mes, 1);
 
 	BigDecimal saldoPrevistoNoMes = BigDecimal.ZERO;
 	BigDecimal saldoDoMesAtual = BigDecimal.ZERO;
@@ -63,6 +64,9 @@ public class ExtratoService {
 	BigDecimal bonusTrinarioNoMes = BigDecimal.ZERO;
 	BigDecimal bonusFilaUnicaNoMes = BigDecimal.ZERO;
 	BigDecimal bonusGlobalNoMes = BigDecimal.ZERO;
+	BigDecimal saldoAnteriorAoMesPesquisado = BigDecimal.ZERO;
+	BigDecimal ganhosNoMesPesquisado = BigDecimal.ZERO;
+	BigDecimal gastosNoMesPesquisado = BigDecimal.ZERO;
 
 	List<ExtratoDTO> extratoDoMes = new ArrayList<ExtratoDTO>();
 	for (ExtratoDTO extratoDTO : extratoCompleto) {
@@ -76,22 +80,38 @@ public class ExtratoService {
 			|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS)) {
 
 		    saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
+		    if (extratoDTO.getData().before(dataPesquisada)) {
+			saldoAnteriorAoMesPesquisado = saldoAnteriorAoMesPesquisado.add(extratoDTO.getValor());
+		    }
 		    adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
 
 		    if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS)) {
 			ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
 		    }
+
+		    if (extratoDTO.getData().get(Calendar.MONTH) == mes && extratoDTO.getData().get(Calendar.YEAR) == ano) {
+			gastosNoMesPesquisado = gastosNoMesPesquisado.add(extratoDTO.getValor());
+		    }
+
 		} else {
 
 		    if (isHabilitadoParaBonus(idCodigo, extratoDTO)) {
 
 			saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
+			if (extratoDTO.getData().before(dataPesquisada)) {
+			    saldoAnteriorAoMesPesquisado = saldoAnteriorAoMesPesquisado.add(extratoDTO.getValor().subtract(extratoDTO.getValor().multiply(Constants.TARIFA_INSS)));
+			}
 			adicionarNoExtratoDoMes(mes, ano, saldoLiberado, extratoDoMes, extratoDTO);
 			ganhosAteHoje = ganhosAteHoje.add(extratoDTO.getValor());
 
 			if (extratoDTO.getData().get(Calendar.MONTH) == mesAtual && extratoDTO.getData().get(Calendar.YEAR) == anoAtual) {
 			    saldoDoMesAtual = saldoDoMesAtual.add(extratoDTO.getValor());
 			}
+
+			if (extratoDTO.getData().get(Calendar.MONTH) == mes && extratoDTO.getData().get(Calendar.YEAR) == ano) {
+			    ganhosNoMesPesquisado = ganhosNoMesPesquisado.add(extratoDTO.getValor());
+			}
+
 		    } else {
 
 			if (extratoDTO.getData().get(Calendar.MONTH) == mesAtual && extratoDTO.getData().get(Calendar.YEAR) == anoAtual) {
@@ -151,6 +171,10 @@ public class ExtratoService {
 	saldoDTO.setBonusGlobalNoMes(bonusGlobalNoMes);
 	saldoDTO.setBonificacoesNoMes(bonusPrimeiraCompraNoMes.add(bonusDeAdesaoDePontoDeApoioNoMes.add(bonusLinearNoMes.add(bonusTrinarioNoMes.add(bonusFilaUnicaNoMes)))));
 	saldoDTO.setInssNoMes(saldoDTO.getBonificacoesNoMes().multiply(Constants.TARIFA_INSS));
+	saldoDTO.setSaldoAnteriorAoMesPesquisado(saldoAnteriorAoMesPesquisado);
+	saldoDTO.setGanhosNoMesPesquisado(ganhosNoMesPesquisado);
+	saldoDTO.setInssNoMesPesquisado(ganhosNoMesPesquisado.multiply(Constants.TARIFA_INSS));
+	saldoDTO.setGastosNoMesPesquisado(gastosNoMesPesquisado);
 
 	return saldoDTO;
     }

@@ -52,35 +52,57 @@
 <br>
 <c:if test="${not empty extrato}">
 	<div class="fundo-branco">
-		<h6 style="text-align: center;">Saldos</h6>
-		<span style="font-size: 16px;"> Saldo previsto no mês atual: </span>
+		<h6 style="text-align: center;">
+			Saldos em
+			<fmt:formatNumber value="${mes + 1}" pattern="##00" />
+			/ ${ano}
+		</h6>
+		<span style="font-size: 16px;">
+			Saldo anterior a
+			<fmt:formatNumber value="${mes + 1}" pattern="##00" />
+			/ ${ano}:
+		</span>
 		<span style="font-weight: bold; font-size: 18px;">
 			R$
-			<fmt:formatNumber value="${extrato.saldoPrevistoNoMes}" pattern="#,##0.00" />
+			<fmt:formatNumber value="${extrato.saldoAnteriorAoMesPesquisado}" pattern="#,##0.00" />
 		</span>
 		<br>
 		<br>
-		<span style="font-size: 16px;"> Saldo do mês atual: </span>
+		<span style="font-size: 16px;">
+			Ganhos em
+			<fmt:formatNumber value="${mes + 1}" pattern="##00" />
+			/ ${ano}:
+		</span>
 		<span style="font-weight: bold; font-size: 18px;">
 			R$
-			<fmt:formatNumber value="${extrato.saldoDoMesAtual}" pattern="#,##0.00" />
+			<fmt:formatNumber value="${extrato.ganhosNoMesPesquisado}" pattern="#,##0.00" />
 		</span>
 		<br>
 		<br>
-		<span style="font-size: 16px;"> Saldo previsto total atual: </span>
+		<span style="font-size: 16px;">
+			INSS em
+			<fmt:formatNumber value="${mes + 1}" pattern="##00" />
+			/ ${ano}:
+		</span>
 		<span style="font-weight: bold; font-size: 18px;">
 			R$
-			<fmt:formatNumber value="${extrato.saldoPrevistoTotal}" pattern="#,##0.00" />
+			<fmt:formatNumber value="${extrato.inssNoMesPesquisado}" pattern="#,##0.00" />
 		</span>
 		<br>
 		<br>
-		<span style="font-size: 16px;"> INSS: </span>
+		<span style="font-size: 16px;">
+			Gastos em
+			<fmt:formatNumber value="${mes + 1}" pattern="##00" />
+			/ ${ano}:
+		</span>
 		<span style="font-weight: bold; font-size: 18px;">
 			R$
-			<fmt:formatNumber value="${extrato.inss}" pattern="#,##0.00" />
+			<fmt:formatNumber value="${extrato.gastosNoMesPesquisado}" pattern="#,##0.00" />
 		</span>
-		<br>
-		<br>
+	</div>
+	<br>
+	<div class="fundo-branco">
+		<h6 style="text-align: center;">Saldos na data atual (Ignora o mês pesquisado)</h6>
 		<span style="font-size: 16px;"> Saldo liberado atual: </span>
 		<span style="font-weight: bold; font-size: 18px;">
 			R$
@@ -88,15 +110,17 @@
 		</span>
 		<br>
 		<br>
-		<span style="font-size: 16px;"> Ganhos até hoje: </span>
+		<span style="font-size: 16px;"> Ganhos totais até hoje: </span>
 		<span style="font-weight: bold; font-size: 18px;">
 			R$
 			<fmt:formatNumber value="${extrato.ganhosAteHoje}" pattern="#,##0.00" />
 		</span>
+	</div>
+	<br>
+	<div class="fundo-branco">
+		<h6 style="text-align: center;">Observações</h6>
 		<br>
 		<br>
-		<br>
-		<h6>Observações:</h6>
 		<h6>* Para receber qualquer tipo de bônus, é necessário ficar ativo.</h6>
 		<h6>* Para receber o Bônus Trinário, além de estar ativo, é necessário ter, no mínimo, 3 indicados diretos ativos no mês.</h6>
 		<h6>* Para receber o Bônus De Fila Única, além de estar ativo, e ter 3 indicados ativos diretos, é necessário ter pontuação de qualificação como BRONZE.</h6>

@@ -23,6 +23,11 @@ public class SaldoDTO {
     private BigDecimal bonusGlobalNoMes;
     private BigDecimal bonificacoesNoMes;
     private BigDecimal inssNoMes;
+    private BigDecimal saldoAnteriorAoMesPesquisado;
+    private BigDecimal ganhosNoMesPesquisado;
+    private BigDecimal inssNoMesPesquisado;
+    private BigDecimal gastosNoMesPesquisado;
+
     private List<ExtratoDTO> extratoDoMes;
 
     public Usuario getUsuario() {
@@ -159,5 +164,37 @@ public class SaldoDTO {
 
     public void setBonusGlobalNoMes(BigDecimal bonusGlobalNoMes) {
 	this.bonusGlobalNoMes = bonusGlobalNoMes;
+    }
+
+    public BigDecimal getSaldoAnteriorAoMesPesquisado() {
+	return saldoAnteriorAoMesPesquisado;
+    }
+
+    public void setSaldoAnteriorAoMesPesquisado(BigDecimal saldoAnteriorAoMesPesquisado) {
+	this.saldoAnteriorAoMesPesquisado = saldoAnteriorAoMesPesquisado;
+    }
+
+    public BigDecimal getGanhosNoMesPesquisado() {
+	return ganhosNoMesPesquisado;
+    }
+
+    public void setGanhosNoMesPesquisado(BigDecimal ganhosNoMesPesquisado) {
+	this.ganhosNoMesPesquisado = ganhosNoMesPesquisado;
+    }
+
+    public BigDecimal getInssNoMesPesquisado() {
+	return inssNoMesPesquisado;
+    }
+
+    public void setInssNoMesPesquisado(BigDecimal inssNoMesPesquisado) {
+	this.inssNoMesPesquisado = inssNoMesPesquisado;
+    }
+
+    public BigDecimal getGastosNoMesPesquisado() {
+	return gastosNoMesPesquisado;
+    }
+
+    public void setGastosNoMesPesquisado(BigDecimal gastosNoMesPesquisado) {
+	this.gastosNoMesPesquisado = gastosNoMesPesquisado;
     }
 }
