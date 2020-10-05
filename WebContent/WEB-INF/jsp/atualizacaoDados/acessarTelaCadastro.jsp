@@ -113,8 +113,8 @@ hr {
 			<br>
 			<label class="labelFormulario">Sexo: </label>
 			<select name="preCadastro.cadSexo">
-				<option value="Masculino">Masc</option>
-				<option value="Feminino">Fem</option>
+				<option value="Masculino">Masculino</option>
+				<option value="Feminino">Feminino</option>
 			</select>
 			<label class="labelFormulario">Estado civil: </label>
 			<select name="preCadastro.cadEstCivil" style="width: 100px">

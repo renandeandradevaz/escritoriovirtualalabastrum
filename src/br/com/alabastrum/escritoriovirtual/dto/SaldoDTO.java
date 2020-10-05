@@ -12,7 +12,6 @@ public class SaldoDTO {
     private BigDecimal saldoDoMesAtual;
     private BigDecimal saldoPrevistoTotal;
     private BigDecimal saldoLiberado;
-    private BigDecimal saldoComDescontos;
     private BigDecimal ganhosAteHoje;
     private BigDecimal inss;
     private BigDecimal bonusPrimeiraCompraNoMes;
@@ -68,14 +67,6 @@ public class SaldoDTO {
 
     public void setSaldoLiberado(BigDecimal saldoLiberado) {
 	this.saldoLiberado = saldoLiberado;
-    }
-
-    public BigDecimal getSaldoComDescontos() {
-	return saldoComDescontos;
-    }
-
-    public void setSaldoComDescontos(BigDecimal saldoComDescontos) {
-	this.saldoComDescontos = saldoComDescontos;
     }
 
     public BigDecimal getGanhosAteHoje() {

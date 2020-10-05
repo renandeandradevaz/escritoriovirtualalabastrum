@@ -106,7 +106,7 @@
 		<span style="font-size: 16px;"> Saldo liberado atual: </span>
 		<span style="font-weight: bold; font-size: 18px;">
 			R$
-			<fmt:formatNumber value="${extrato.saldoComDescontos}" pattern="#,##0.00" />
+			<fmt:formatNumber value="${extrato.saldoLiberado}" pattern="#,##0.00" />
 		</span>
 		<br>
 		<br>

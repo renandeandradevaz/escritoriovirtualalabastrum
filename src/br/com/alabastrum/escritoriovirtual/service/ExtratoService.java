@@ -96,8 +96,8 @@ public class ExtratoService {
 		} else {
 
 		    if (isHabilitadoParaBonus(idCodigo, extratoDTO)) {
+			saldoLiberado = saldoLiberado.add(extratoDTO.getValor().subtract(extratoDTO.getValor().multiply(Constants.TARIFA_INSS)));
 
-			saldoLiberado = saldoLiberado.add(extratoDTO.getValor());
 			if (extratoDTO.getData().before(dataPesquisada)) {
 			    saldoAnteriorAoMesPesquisado = saldoAnteriorAoMesPesquisado.add(extratoDTO.getValor().subtract(extratoDTO.getValor().multiply(Constants.TARIFA_INSS)));
 			}
@@ -150,18 +150,11 @@ public class ExtratoService {
 	    }
 	}
 
-	BigDecimal saldoPrevistoTotal = saldoPrevistoNoMes.add(saldoLiberado);
-	BigDecimal inss = saldoLiberado.multiply(Constants.TARIFA_INSS);
-	BigDecimal saldoComDescontos = saldoLiberado.subtract(inss);
-
 	SaldoDTO saldoDTO = new SaldoDTO();
 	saldoDTO.setSaldoPrevistoNoMes(saldoPrevistoNoMes);
 	saldoDTO.setSaldoDoMesAtual(saldoDoMesAtual);
-	saldoDTO.setSaldoPrevistoTotal(saldoPrevistoTotal);
 	saldoDTO.setSaldoLiberado(saldoLiberado);
-	saldoDTO.setSaldoComDescontos(saldoComDescontos);
 	saldoDTO.setGanhosAteHoje(ganhosAteHoje);
-	saldoDTO.setInss(inss);
 	saldoDTO.setExtratoDoMes(extratoDoMes);
 	saldoDTO.setBonusPrimeiraCompraNoMes(bonusPrimeiraCompraNoMes);
 	saldoDTO.setBonusDeAdesaoDePontoDeApoioNoMes(bonusDeAdesaoDePontoDeApoioNoMes);

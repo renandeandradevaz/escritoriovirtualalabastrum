@@ -98,8 +98,8 @@ hr {
 			<br>
 			<label class="labelFormulario">Sexo: </label>
 			<select name="usuario.cadSexo">
-				<option value="Masculino" <c:if test="${usuario.cadSexo == 'Masc'}"> selected="selected" </c:if>>Masc</option>
-				<option value="Feminino" <c:if test="${usuario.cadSexo == 'Fem'}"> selected="selected" </c:if>>Fem</option>
+				<option value="Masculino" <c:if test="${usuario.cadSexo == 'Masculino'}"> selected="selected" </c:if>>Masculino</option>
+				<option value="Feminino" <c:if test="${usuario.cadSexo == 'Feminino'}"> selected="selected" </c:if>>Feminino</option>
 			</select>
 			<label class="labelFormulario">Estado civil: </label>
 			<select name="usuario.cadEstCivil">
