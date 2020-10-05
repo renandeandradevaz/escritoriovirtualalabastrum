@@ -681,7 +681,7 @@ public class PedidoController {
 	    BigDecimal valorASerDescontadoDoSaldo = totalPedido.add(totalPedido.multiply(Constants.TARIFA_INSS));
 
 	    if (valorASerDescontadoDoSaldo.compareTo(saldoLiberado) > 0) {
-		validator.add(new ValidationMessage("Você não possui saldo suficiente para pagar este pedido. Saldo atual: R$" + String.format("%.2f", saldoLiberado) + ". Valor do pedido(com descontos): R$" + String.format("%.2f", valorASerDescontadoDoSaldo), "Erro"));
+		validator.add(new ValidationMessage("Você não possui saldo suficiente para pagar este pedido. Saldo atual: R$" + String.format("%.2f", saldoLiberado) + ". Valor do pedido(com tarifas): R$" + String.format("%.2f", valorASerDescontadoDoSaldo), "Erro"));
 		validator.onErrorRedirectTo(this).escolherFormaDePagamento();
 		return;
 	    }
@@ -936,7 +936,7 @@ public class PedidoController {
 	    BigDecimal valorASerDescontadoDoSaldo = valor.add(valor.multiply(Constants.TARIFA_INSS));
 
 	    if (valorASerDescontadoDoSaldo.compareTo(saldoLiberado) > 0) {
-		validator.add(new ValidationMessage(String.format("O valor a ser debitado não pode ser maior do que o saldo atual. Valor(com descontos): R$%s. Saldo atual: R$%s", String.format("%.2f", valorASerDescontadoDoSaldo), String.format("%.2f", saldoLiberado)), "Erro"));
+		validator.add(new ValidationMessage(String.format("O valor a ser debitado não pode ser maior do que o saldo atual. Valor(com tarifas): R$%s. Saldo atual: R$%s", String.format("%.2f", valorASerDescontadoDoSaldo), String.format("%.2f", saldoLiberado)), "Erro"));
 		validator.onErrorRedirectTo(this).realizarPagamento(idPedido);
 		return;
 	    }
