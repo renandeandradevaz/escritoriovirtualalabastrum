@@ -47,7 +47,7 @@ public class PedidoService {
 	restricoes.add(Restrictions.between("data", primeiroDiaDoMes, ultimoDiaDoMes));
 	Pedido pedidoFiltro = new Pedido();
 	pedidoFiltro.setIdCodigo(idCodigo);
-	pedidoFiltro.setStatus("FINALIZADO");
+	pedidoFiltro.setStatus(FINALIZADO);
 	return hibernateUtil.buscar(pedidoFiltro, restricoes);
     }
 

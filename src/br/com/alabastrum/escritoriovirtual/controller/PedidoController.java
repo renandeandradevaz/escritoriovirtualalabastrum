@@ -687,7 +687,7 @@ public class PedidoController {
 	    }
 
 	    salvarTransferencia(valorASerDescontadoDoSaldo, pedido.getIdCodigo());
-	    pedido.setStatus("FINALIZADO");
+	    pedido.setStatus(PedidoService.FINALIZADO);
 	    gerarArquivoCsv(pedido);
 	}
 
@@ -795,6 +795,7 @@ public class PedidoController {
 		    if (pedido != null) {
 
 			pedido.setStatus(PedidoService.FINALIZADO);
+			gerarArquivoCsv(pedido);
 			hibernateUtil.salvarOuAtualizar(pedido);
 
 			Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
