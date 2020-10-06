@@ -18,59 +18,61 @@ import br.com.caelum.vraptor.resource.ResourceMethod;
 @Intercepts(after = InterceptadorDeAutorizacao.class)
 public class HibernateInterceptor implements Interceptor {
 
-	private Result result;
-	private HibernateUtil hibernateUtil;
-	private SessaoUsuario sessaoUsuario;
-	private HttpServletRequest request;
+    private Result result;
+    private HibernateUtil hibernateUtil;
+    private SessaoUsuario sessaoUsuario;
+    private HttpServletRequest request;
 
-	public HibernateInterceptor(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario, HttpServletRequest request) {
+    public HibernateInterceptor(Result result, HibernateUtil hibernateUtil, SessaoUsuario sessaoUsuario, HttpServletRequest request) {
 
-		this.result = result;
-		this.hibernateUtil = hibernateUtil;
-		this.sessaoUsuario = sessaoUsuario;
-		this.request = request;
+	this.result = result;
+	this.hibernateUtil = hibernateUtil;
+	this.sessaoUsuario = sessaoUsuario;
+	this.request = request;
+    }
+
+    public void intercept(InterceptorStack stack, ResourceMethod method, Object instance) throws InterceptionException {
+
+	try {
+
+	    stack.next(method, instance);
+
+	    hibernateUtil.fecharSessao();
 	}
 
-	public void intercept(InterceptorStack stack, ResourceMethod method, Object instance) throws InterceptionException {
+	catch (RuntimeException e1) {
 
-		try {
+	    hibernateUtil.fecharSessao();
 
-			stack.next(method, instance);
+	    String errorString = Util.getExceptionMessage(e1);
+	    result.include("exception", errorString);
 
-			hibernateUtil.fecharSessao();
+	    try {
+		if (!errorString.contains("Broken pipe")) {
+
+		    String userAgent = "User-Agent: " + request.getHeader("User-Agent") + "<br> <br> <br>";
+
+		    String titulo;
+
+		    if (sessaoUsuario != null && sessaoUsuario.getUsuario() != null) {
+			titulo = "Exception no EV para o usuario com codigo = " + sessaoUsuario.getUsuario().getId_Codigo();
+		    } else {
+			titulo = "Exception no EV";
+		    }
+
+		    if (!request.getRequestURL().toString().contains("http://localhost:8080")) {
+			Mail.enviarEmail(titulo, userAgent + errorString);
+		    }
 		}
+	    } catch (Exception e2) {
+	    }
 
-		catch (RuntimeException e1) {
-
-			hibernateUtil.fecharSessao();
-
-			String errorString = Util.getExceptionMessage(e1);
-			result.include("exception", errorString);
-
-			try {
-				if (!errorString.contains("Broken pipe")) {
-
-					String userAgent = "User-Agent: " + request.getHeader("User-Agent") + "<br> <br> <br>";
-
-					String titulo;
-
-					if (sessaoUsuario != null && sessaoUsuario.getUsuario() != null) {
-						titulo = "Exception no EV para o usuario com codigo = " + sessaoUsuario.getUsuario().getId_Codigo();
-					} else {
-						titulo = "Exception no EV";
-					}
-
-					Mail.enviarEmail(titulo, userAgent + errorString);
-				}
-			} catch (Exception e2) {
-			}
-
-			throw e1;
-		}
+	    throw e1;
 	}
+    }
 
-	public boolean accepts(ResourceMethod method) {
-		return true;
-	}
+    public boolean accepts(ResourceMethod method) {
+	return true;
+    }
 
 }

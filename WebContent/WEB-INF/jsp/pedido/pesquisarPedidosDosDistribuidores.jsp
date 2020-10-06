@@ -56,7 +56,7 @@
 						<br>
 						<br>
 						<c:if test="${item.pedido.status == 'PENDENTE'}">
-							<a class="btn btn-success" href="<c:url value="/pedido/realizarPagamento/${item.pedido.id}"/>"> Realizar pagamento </a>
+							<a class="btn btn-success" href="<c:url value="/pedido/alterarStatus/${item.pedido.id}/FINALIZADO"/>"> Marcar como pago e finalizar pedido </a>
 							<br>
 							<br>
 							<a class="btn btn-danger" href="<c:url value="/pedido/alterarStatus/${item.pedido.id}/CANCELADO"/>"> Cancelar </a>
