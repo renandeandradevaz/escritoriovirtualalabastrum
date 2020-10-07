@@ -1,15 +1,22 @@
 package br.com.alabastrum.escritoriovirtual.cron;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import org.hibernate.criterion.Order;
+
+import br.com.alabastrum.escritoriovirtual.dto.GraduacaoMensalDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Bonificacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
 import br.com.alabastrum.escritoriovirtual.modelo.Qualificacao;
+import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
+import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
 import br.com.alabastrum.escritoriovirtual.service.BonificacoesPreProcessadasService;
 import br.com.alabastrum.escritoriovirtual.service.PontuacaoService;
 import br.com.alabastrum.escritoriovirtual.service.PosicoesService;
@@ -31,32 +38,8 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 	    GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(ontem);
 	    GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(ontem);
 
-	    List<Qualificacao> qualificacoes = new QualificacaoService(hibernateUtil).obterQualificacoes(primeiroDiaDoMes, ultimoDiaDoMes);
-	    HashMap<Integer, Integer> qualificadosNaoRepetidos = new HashMap<Integer, Integer>();
-
-	    for (Qualificacao qualificacao : qualificacoes) {
-		qualificadosNaoRepetidos.put(qualificacao.getId_Codigo(), 1);
-	    }
-
-	    for (Entry<Integer, Integer> qualificado : qualificadosNaoRepetidos.entrySet()) {
-		Integer idCodigo = qualificado.getKey();
-		Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(new PontuacaoService(hibernateUtil).calcularGraduacaoMensal(idCodigo, ontem).getPosicaoAtual(), ontem);
-		if (posicao.getBonusReconhecimento().intValue() > 0) {
-
-		    List<Bonificacao> bonificacoes = new BonificacoesPreProcessadasService(hibernateUtil).buscarBonificacoesNoMes(idCodigo, Bonificacao.BONUS_DE_RECONHECIMENTO, primeiroDiaDoMes, ultimoDiaDoMes);
-
-		    if (Util.preenchido(bonificacoes)) {
-			hibernateUtil.deletar(bonificacoes);
-		    }
-
-		    Bonificacao bonificacao = new Bonificacao();
-		    bonificacao.setIdCodigo(idCodigo);
-		    bonificacao.setData(ontem);
-		    bonificacao.setTipo(Bonificacao.BONUS_DE_RECONHECIMENTO);
-		    bonificacao.setValor(posicao.getBonusReconhecimento());
-		    hibernateUtil.salvarOuAtualizar(bonificacao);
-		}
-	    }
+	    Map<Integer, Integer> usuariosQueReceberamBonusDeReconhecimento = processarBonusReconhecimento(hibernateUtil, ontem, primeiroDiaDoMes, ultimoDiaDoMes);
+	    processarBonusDesempenho(hibernateUtil, ontem, primeiroDiaDoMes, ultimoDiaDoMes, usuariosQueReceberamBonusDeReconhecimento);
 	} catch (
 
 	Exception e) {
@@ -65,6 +48,107 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 	    Mail.enviarEmail("Exception ao rodar rotina de bonus de reconhecimento e desempenho", errorString);
 	}
 	hibernateUtil.fecharSessao();
+    }
+
+    private Map<Integer, Integer> processarBonusReconhecimento(HibernateUtil hibernateUtil, GregorianCalendar ontem, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
+
+	Map<Integer, Integer> usuariosQueReceberamBonusDeReconhecimento = new HashMap<Integer, Integer>();
+
+	List<Qualificacao> qualificacoes = new QualificacaoService(hibernateUtil).obterQualificacoes(primeiroDiaDoMes, ultimoDiaDoMes);
+	HashMap<Integer, Integer> qualificadosNaoRepetidos = new HashMap<Integer, Integer>();
+
+	for (Qualificacao qualificacao : qualificacoes) {
+	    qualificadosNaoRepetidos.put(qualificacao.getId_Codigo(), 1);
+	}
+
+	for (Entry<Integer, Integer> qualificado : qualificadosNaoRepetidos.entrySet()) {
+	    Integer idCodigo = qualificado.getKey();
+	    Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(new PontuacaoService(hibernateUtil).calcularGraduacaoMensal(idCodigo, ontem).getPosicaoAtual(), ontem);
+	    if (posicao.getBonusReconhecimento().intValue() > 0) {
+
+		List<Bonificacao> bonificacoes = new BonificacoesPreProcessadasService(hibernateUtil).buscarBonificacoesNoMes(idCodigo, Bonificacao.BONUS_DE_RECONHECIMENTO, primeiroDiaDoMes, ultimoDiaDoMes);
+
+		if (Util.preenchido(bonificacoes)) {
+		    hibernateUtil.deletar(bonificacoes);
+		}
+
+		Bonificacao bonificacao = new Bonificacao();
+		bonificacao.setIdCodigo(idCodigo);
+		bonificacao.setData(ontem);
+		bonificacao.setTipo(Bonificacao.BONUS_DE_RECONHECIMENTO);
+		bonificacao.setValor(posicao.getBonusReconhecimento());
+		hibernateUtil.salvarOuAtualizar(bonificacao);
+
+		usuariosQueReceberamBonusDeReconhecimento.put(idCodigo, 1);
+	    }
+	}
+
+	return usuariosQueReceberamBonusDeReconhecimento;
+    }
+
+    private void processarBonusDesempenho(HibernateUtil hibernateUtil, GregorianCalendar ontem, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Map<Integer, Integer> usuariosQueReceberamBonusDeReconhecimento) {
+
+	List<Usuario> usuariosHabilitados = buscarUsuariosHabilitadosBonusDesempenho(hibernateUtil, ontem);
+	int quantidadeUsuariosHabilitados = usuariosHabilitados.size();
+
+	for (Usuario usuario : usuariosHabilitados) {
+
+	    Integer idCodigo = usuario.getId_Codigo();
+
+	    if (!usuariosQueReceberamBonusDeReconhecimento.containsKey(idCodigo)) {
+
+		GraduacaoMensalDTO graduacaoMensal = new PontuacaoService(hibernateUtil).calcularGraduacaoMensal(idCodigo, ontem);
+		Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(graduacaoMensal.getPosicaoAtual(), ontem);
+
+		if (posicao.getBonusDesempenho().intValue() > 0) {
+
+		    int x = buscarPosicaoAtualParaDesempenho(hibernateUtil, ontem, graduacaoMensal.getPontosAproveitados());
+		}
+	    }
+
+	}
+    }
+
+    private void buscarPosicaoAtualParaDesempenho(HibernateUtil hibernateUtil, GregorianCalendar data, Integer pontuacaoFeita) {
+
+	Posicao posicaoAtual = new PosicoesService(hibernateUtil).obterPosicaoPorOrdemNumerica(1, data);
+
+	List<Posicao> posicoes = hibernateUtil.buscar(new Posicao(), Order.desc("posicao"));
+
+	for (Posicao posicao : posicoes) {
+
+	    Integer pontuacaoAproveitadaDaPosicao = posicao.getPontuacao() / 2;
+	    Integer pontuacaoTotalNestaPosicao = 0;
+	    for (Integer pontuacaoPorLinha : pontuacoesPorLinha) {
+		Integer pontuacaoAproveitadaPorLinha = pontuacaoPorLinha;
+		if (pontuacaoPorLinha > pontuacaoAproveitadaDaPosicao) {
+		    pontuacaoAproveitadaPorLinha = pontuacaoAproveitadaDaPosicao;
+		}
+		pontuacaoTotalNestaPosicao += pontuacaoAproveitadaPorLinha;
+	    }
+
+	    if (pontuacaoTotalNestaPosicao >= posicao.getPontuacao()) {
+		posicaoAtual = posicao;
+		break;
+	    }
+	    somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
+	}
+    }
+
+    }
+
+    private List<Usuario> buscarUsuariosHabilitadosBonusDesempenho(HibernateUtil hibernateUtil, GregorianCalendar ontem) {
+
+	List<Usuario> usuariosHabilitados = new ArrayList<Usuario>();
+
+	List<Usuario> usuarios = hibernateUtil.buscar(new Usuario());
+	for (Usuario usuario : usuarios) {
+	    if (new AtividadeService(hibernateUtil).isAtivo(usuario.getId_Codigo(), ontem)) {
+		usuariosHabilitados.add(usuario);
+	    }
+	}
+
+	return usuariosHabilitados;
     }
 
     public static void main(String[] args) {

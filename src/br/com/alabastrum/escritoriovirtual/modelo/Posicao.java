@@ -20,6 +20,8 @@ public class Posicao implements Entidade {
     private String nome;
     private Integer pontuacao;
     private BigDecimal bonusReconhecimento;
+    private BigDecimal pontosDesempenho;
+    private BigDecimal bonusDesempenho;
     private GregorianCalendar data_referencia;
 
     public Integer getId() {
@@ -68,5 +70,21 @@ public class Posicao implements Entidade {
 
     public void setBonusReconhecimento(BigDecimal bonusReconhecimento) {
 	this.bonusReconhecimento = bonusReconhecimento;
+    }
+
+    public BigDecimal getPontosDesempenho() {
+	return pontosDesempenho;
+    }
+
+    public void setPontosDesempenho(BigDecimal pontosDesempenho) {
+	this.pontosDesempenho = pontosDesempenho;
+    }
+
+    public BigDecimal getBonusDesempenho() {
+	return bonusDesempenho;
+    }
+
+    public void setBonusDesempenho(BigDecimal bonusDesempenho) {
+	this.bonusDesempenho = bonusDesempenho;
     }
 }
