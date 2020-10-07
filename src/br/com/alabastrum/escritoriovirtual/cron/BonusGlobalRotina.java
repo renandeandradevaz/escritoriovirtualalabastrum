@@ -8,14 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
-
 import br.com.alabastrum.escritoriovirtual.dto.GraduacaoMensalDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Bonificacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
+import br.com.alabastrum.escritoriovirtual.service.BonificacoesPreProcessadasService;
 import br.com.alabastrum.escritoriovirtual.service.PontuacaoService;
 import br.com.alabastrum.escritoriovirtual.service.PosicoesService;
 import br.com.alabastrum.escritoriovirtual.util.Mail;
@@ -95,7 +93,7 @@ public class BonusGlobalRotina implements Runnable {
 
 		    BigDecimal valorParaPagamento = valorCota.multiply(new BigDecimal(quantidadeDeCotasDoUsuario));
 
-		    List<Bonificacao> bonificacoes = buscarBonificacoesNoMes(hibernateUtil, idCodigo, primeiroDiaDoMes, ultimoDiaDoMes);
+		    List<Bonificacao> bonificacoes = new BonificacoesPreProcessadasService(hibernateUtil).buscarBonificacoesNoMes(idCodigo, Bonificacao.BONUS_GLOBAL, primeiroDiaDoMes, ultimoDiaDoMes);
 
 		    if (Util.preenchido(bonificacoes)) {
 			hibernateUtil.deletar(bonificacoes);
@@ -118,16 +116,6 @@ public class BonusGlobalRotina implements Runnable {
 	    Mail.enviarEmail("Exception ao rodar rotina de bonus global", errorString);
 	}
 	hibernateUtil.fecharSessao();
-    }
-
-    private List<Bonificacao> buscarBonificacoesNoMes(HibernateUtil hibernateUtil, Integer codigo, GregorianCalendar dataInicial, GregorianCalendar dataFinal) {
-
-	List<Criterion> restricoes = new ArrayList<Criterion>();
-	restricoes.add(Restrictions.between("data", dataInicial, dataFinal));
-	Bonificacao filtro = new Bonificacao();
-	filtro.setIdCodigo(codigo);
-	filtro.setTipo(Bonificacao.BONUS_GLOBAL);
-	return hibernateUtil.buscar(filtro, restricoes);
     }
 
     private List<Usuario> buscarUsuariosHabilitados(HibernateUtil hibernateUtil, GregorianCalendar ontem) {

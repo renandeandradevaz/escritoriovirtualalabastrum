@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
+
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
 import br.com.alabastrum.escritoriovirtual.dto.QualificacaoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
@@ -120,6 +123,13 @@ public class QualificacaoService {
 	return hibernateUtil.buscar(qualificacaoFiltro);
     }
 
+    public List<Qualificacao> obterQualificacoes(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
+
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+	restricoes.add(Restrictions.between("data", primeiroDiaDoMes, ultimoDiaDoMes));
+	return hibernateUtil.buscar(new Qualificacao(), restricoes);
+    }
+
     public Qualificacao obterUltimaQualificacao(Integer idCodigo) {
 
 	Qualificacao qualificacaoFiltro = new Qualificacao();
@@ -144,7 +154,8 @@ public class QualificacaoService {
 	}
 
 	if (qualificacoesAntesDaData.size() > 0) {
-	   // return new PosicoesService(hibernateUtil).obterNomeDaPosicao(qualificacoesAntesDaData.size());
+	    // return new
+	    // PosicoesService(hibernateUtil).obterNomeDaPosicao(qualificacoesAntesDaData.size());
 	}
 
 	return "Desconhecido";

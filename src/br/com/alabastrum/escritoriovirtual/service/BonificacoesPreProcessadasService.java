@@ -1,7 +1,11 @@
 package br.com.alabastrum.escritoriovirtual.service;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
+
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 
 import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
@@ -15,6 +19,16 @@ public class BonificacoesPreProcessadasService {
     public BonificacoesPreProcessadasService(HibernateUtil hibernateUtil) {
 
 	this.hibernateUtil = hibernateUtil;
+    }
+
+    public List<Bonificacao> buscarBonificacoesNoMes(Integer codigo, String tipo, GregorianCalendar dataInicial, GregorianCalendar dataFinal) {
+
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+	restricoes.add(Restrictions.between("data", dataInicial, dataFinal));
+	Bonificacao filtro = new Bonificacao();
+	filtro.setIdCodigo(codigo);
+	filtro.setTipo(tipo);
+	return hibernateUtil.buscar(filtro, restricoes);
     }
 
     public List<ExtratoDTO> obterBonificacoesPreProcessadas(Integer idCodigo) throws Exception {

@@ -39,24 +39,12 @@ public class SaldoGeralController {
     public void gerarSaldoGeral(Integer mes, Integer ano) throws Exception {
 
 	List<Usuario> usuarios = hibernateUtil.buscar(new Usuario());
-
 	List<SaldoDTO> saldos = new ArrayList<SaldoDTO>();
-	BigDecimal saldoPrevistoNoMesSomatorio = BigDecimal.ZERO;
-	BigDecimal saldoPrevistoTotalSomatorio = BigDecimal.ZERO;
-	BigDecimal saldoLiberadoSomatorio = BigDecimal.ZERO;
-
 	for (Usuario usuario : usuarios) {
-
 	    SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(usuario.getId_Codigo(), mes, ano);
 	    saldoDTO.setUsuario(usuario);
-
-	    if (saldoDTO.getSaldoPrevistoTotal().compareTo(BigDecimal.ZERO) > 0) {
-
+	    if (saldoDTO.getSaldoLiberado().compareTo(BigDecimal.ZERO) > 0) {
 		saldos.add(saldoDTO);
-
-		saldoPrevistoNoMesSomatorio = saldoPrevistoNoMesSomatorio.add(saldoDTO.getSaldoPrevistoNoMes());
-		saldoPrevistoTotalSomatorio = saldoPrevistoTotalSomatorio.add(saldoDTO.getSaldoPrevistoTotal());
-		saldoLiberadoSomatorio = saldoLiberadoSomatorio.add(saldoDTO.getSaldoLiberado());
 	    }
 	}
 
@@ -68,9 +56,6 @@ public class SaldoGeralController {
 	});
 
 	result.include("saldos", saldos);
-	result.include("saldoPrevistoNoMesSomatorio", saldoPrevistoNoMesSomatorio);
-	result.include("saldoPrevistoTotalSomatorio", saldoPrevistoTotalSomatorio);
-	result.include("saldoLiberadoSomatorio", saldoLiberadoSomatorio);
 	result.include("mes", mes);
 	result.include("ano", ano);
     }

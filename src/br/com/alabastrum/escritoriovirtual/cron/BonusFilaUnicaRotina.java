@@ -8,14 +8,12 @@ import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
-
 import br.com.alabastrum.escritoriovirtual.dto.GraduacaoMensalDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Bonificacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
+import br.com.alabastrum.escritoriovirtual.service.BonificacoesPreProcessadasService;
 import br.com.alabastrum.escritoriovirtual.service.PontuacaoService;
 import br.com.alabastrum.escritoriovirtual.service.PosicoesService;
 import br.com.alabastrum.escritoriovirtual.util.Mail;
@@ -52,7 +50,7 @@ public class BonusFilaUnicaRotina implements Runnable {
 		    int quantidadeDeCotasDoUsuario = quantidadeUsuariosHabilitados - i;
 		    BigDecimal valorParaPagamento = valorCota.multiply(new BigDecimal(quantidadeDeCotasDoUsuario));
 
-		    List<Bonificacao> bonificacoes = buscarBonificacoesNoMes(hibernateUtil, usuarioHabilitado.getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes);
+		    List<Bonificacao> bonificacoes = new BonificacoesPreProcessadasService(hibernateUtil).buscarBonificacoesNoMes(usuarioHabilitado.getId_Codigo(), Bonificacao.BONUS_DE_FILA_UNICA, primeiroDiaDoMes, ultimoDiaDoMes);
 
 		    if (Util.preenchido(bonificacoes)) {
 			hibernateUtil.deletar(bonificacoes);
@@ -77,16 +75,6 @@ public class BonusFilaUnicaRotina implements Runnable {
 
     private BigDecimal calcularCota(int quantidadeUsuariosHabilitados, BigDecimal valorASerDivididoNoMesBigDecimal) {
 	return new BigDecimal(((valorASerDivididoNoMesBigDecimal.doubleValue() / quantidadeUsuariosHabilitados) / (((double) quantidadeUsuariosHabilitados / 2) + 0.5)));
-    }
-
-    private List<Bonificacao> buscarBonificacoesNoMes(HibernateUtil hibernateUtil, Integer codigo, GregorianCalendar dataInicial, GregorianCalendar dataFinal) {
-
-	List<Criterion> restricoes = new ArrayList<Criterion>();
-	restricoes.add(Restrictions.between("data", dataInicial, dataFinal));
-	Bonificacao filtro = new Bonificacao();
-	filtro.setIdCodigo(codigo);
-	filtro.setTipo(Bonificacao.BONUS_DE_FILA_UNICA);
-	return hibernateUtil.buscar(filtro, restricoes);
     }
 
     private List<Usuario> buscarUsuariosHabilitados(HibernateUtil hibernateUtil, GregorianCalendar ontem) {

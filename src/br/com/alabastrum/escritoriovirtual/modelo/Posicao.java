@@ -1,5 +1,6 @@
 package br.com.alabastrum.escritoriovirtual.modelo;
 
+import java.math.BigDecimal;
 import java.util.GregorianCalendar;
 
 import javax.persistence.Entity;
@@ -18,6 +19,7 @@ public class Posicao implements Entidade {
     private Integer posicao;
     private String nome;
     private Integer pontuacao;
+    private BigDecimal bonusReconhecimento;
     private GregorianCalendar data_referencia;
 
     public Integer getId() {
@@ -58,5 +60,13 @@ public class Posicao implements Entidade {
 
     public void setData_referencia(GregorianCalendar data_referencia) {
 	this.data_referencia = data_referencia;
+    }
+
+    public BigDecimal getBonusReconhecimento() {
+	return bonusReconhecimento;
+    }
+
+    public void setBonusReconhecimento(BigDecimal bonusReconhecimento) {
+	this.bonusReconhecimento = bonusReconhecimento;
     }
 }
