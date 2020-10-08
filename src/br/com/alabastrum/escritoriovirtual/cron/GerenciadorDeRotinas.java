@@ -21,6 +21,7 @@ public class GerenciadorDeRotinas {
 	    new NotificarPedidosPagosNaoFinalizados().iniciarRotina();
 	    new BonusFilaUnicaRotina().iniciarRotina();
 	    new BonusGlobalRotina().iniciarRotina();
+	    new BonusReconhecimentoEDesempenhoRotina().iniciarRotina();
 	}
     }
 }

@@ -1,5 +1,6 @@
 package br.com.alabastrum.escritoriovirtual.cron;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -62,26 +63,30 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 	for (Entry<Integer, Integer> qualificado : qualificadosNaoRepetidos.entrySet()) {
 	    Integer idCodigo = qualificado.getKey();
 	    Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(new PontuacaoService(hibernateUtil).calcularGraduacaoMensal(idCodigo, ontem).getPosicaoAtual(), ontem);
-	    if (posicao.getBonusReconhecimento().intValue() > 0) {
-
-		List<Bonificacao> bonificacoes = new BonificacoesPreProcessadasService(hibernateUtil).buscarBonificacoesNoMes(idCodigo, Bonificacao.BONUS_DE_RECONHECIMENTO, primeiroDiaDoMes, ultimoDiaDoMes);
-
-		if (Util.preenchido(bonificacoes)) {
-		    hibernateUtil.deletar(bonificacoes);
-		}
-
-		Bonificacao bonificacao = new Bonificacao();
-		bonificacao.setIdCodigo(idCodigo);
-		bonificacao.setData(ontem);
-		bonificacao.setTipo(Bonificacao.BONUS_DE_RECONHECIMENTO);
-		bonificacao.setValor(posicao.getBonusReconhecimento());
-		hibernateUtil.salvarOuAtualizar(bonificacao);
-
+	    BigDecimal bonus = posicao.getBonusReconhecimento();
+	    if (bonus.intValue() > 0) {
+		salvarBonificacao(hibernateUtil, ontem, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, bonus, Bonificacao.BONUS_DE_RECONHECIMENTO);
 		usuariosQueReceberamBonusDeReconhecimento.put(idCodigo, 1);
 	    }
 	}
 
 	return usuariosQueReceberamBonusDeReconhecimento;
+    }
+
+    private void salvarBonificacao(HibernateUtil hibernateUtil, GregorianCalendar ontem, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo, BigDecimal bonus, String tipoDeBonus) {
+
+	List<Bonificacao> bonificacoes = new BonificacoesPreProcessadasService(hibernateUtil).buscarBonificacoesNoMes(idCodigo, tipoDeBonus, primeiroDiaDoMes, ultimoDiaDoMes);
+
+	if (Util.preenchido(bonificacoes)) {
+	    hibernateUtil.deletar(bonificacoes);
+	}
+
+	Bonificacao bonificacao = new Bonificacao();
+	bonificacao.setIdCodigo(idCodigo);
+	bonificacao.setData(ontem);
+	bonificacao.setTipo(tipoDeBonus);
+	bonificacao.setValor(bonus);
+	hibernateUtil.salvarOuAtualizar(bonificacao);
     }
 
     private void processarBonusDesempenho(HibernateUtil hibernateUtil, GregorianCalendar ontem, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Map<Integer, Integer> usuariosQueReceberamBonusDeReconhecimento) {
@@ -101,20 +106,9 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 
 		    Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(posicaoAtual, ontem);
 
-		    if (posicao.getBonusDesempenho().intValue() > 0) {
-
-			List<Bonificacao> bonificacoes = new BonificacoesPreProcessadasService(hibernateUtil).buscarBonificacoesNoMes(idCodigo, Bonificacao.BONUS_DE_DESEMPENHO, primeiroDiaDoMes, ultimoDiaDoMes);
-
-			if (Util.preenchido(bonificacoes)) {
-			    hibernateUtil.deletar(bonificacoes);
-			}
-
-			Bonificacao bonificacao = new Bonificacao();
-			bonificacao.setIdCodigo(idCodigo);
-			bonificacao.setData(ontem);
-			bonificacao.setTipo(Bonificacao.BONUS_DE_DESEMPENHO);
-			bonificacao.setValor(posicao.getBonusDesempenho());
-			hibernateUtil.salvarOuAtualizar(bonificacao);
+		    BigDecimal bonus = posicao.getBonusDesempenho();
+		    if (bonus.intValue() > 0) {
+			salvarBonificacao(hibernateUtil, ontem, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, bonus, Bonificacao.BONUS_DE_DESEMPENHO);
 		    }
 		}
 	    }
