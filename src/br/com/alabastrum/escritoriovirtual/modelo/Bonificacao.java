@@ -17,6 +17,7 @@ public class Bonificacao implements Entidade {
     public static final String BONUS_DE_FILA_UNICA = "Bônus de Fila Única";
     public static final String BONUS_GLOBAL = "Bônus Global";
     public static final String BONUS_DE_RECONHECIMENTO = "Bônus de Reconhecimento";
+    public static final String BONUS_DE_DESEMPENHO = "Bônus de Desempenho";
 
     @Id
     @GeneratedValue

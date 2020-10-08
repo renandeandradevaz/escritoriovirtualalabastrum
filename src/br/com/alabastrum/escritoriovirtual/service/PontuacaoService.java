@@ -29,6 +29,10 @@ public class PontuacaoService {
     }
 
     public GraduacaoMensalDTO calcularGraduacaoMensal(Integer idCodigo, GregorianCalendar data) {
+	return calcularGraduacaoMensal(idCodigo, data, false);
+    }
+
+    public GraduacaoMensalDTO calcularGraduacaoMensal(Integer idCodigo, GregorianCalendar data, boolean calcularPorPontuacaoDesempenho) {
 
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idCodigo));
 
@@ -74,7 +78,12 @@ public class PontuacaoService {
 
 	    for (Posicao posicao : posicoes) {
 
-		Integer pontuacaoAproveitadaDaPosicao = posicao.getPontuacao() / 2;
+		Integer pontuacaoDaPosicao = posicao.getPontuacao();
+		if (calcularPorPontuacaoDesempenho) {
+		    pontuacaoDaPosicao = posicao.getPontosDesempenho().intValue();
+		}
+
+		Integer pontuacaoAproveitadaDaPosicao = pontuacaoDaPosicao / 2;
 		Integer pontuacaoTotalNestaPosicao = 0;
 		for (Integer pontuacaoPorLinha : pontuacoesPorLinha) {
 		    Integer pontuacaoAproveitadaPorLinha = pontuacaoPorLinha;
@@ -84,7 +93,7 @@ public class PontuacaoService {
 		    pontuacaoTotalNestaPosicao += pontuacaoAproveitadaPorLinha;
 		}
 
-		if (pontuacaoTotalNestaPosicao >= posicao.getPontuacao()) {
+		if (pontuacaoTotalNestaPosicao >= pontuacaoDaPosicao) {
 		    posicaoAtual = posicao;
 		    break;
 		}

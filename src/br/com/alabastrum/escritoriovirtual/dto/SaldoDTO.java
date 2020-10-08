@@ -21,6 +21,8 @@ public class SaldoDTO {
     private BigDecimal bonusTrinarioNoMes;
     private BigDecimal bonusFilaUnicaNoMes;
     private BigDecimal bonusGlobalNoMes;
+    private BigDecimal bonusReconhecimentoNoMes;
+    private BigDecimal bonusDesempenhoNoMes;
 
     public Usuario getUsuario() {
 	return usuario;
@@ -132,5 +134,21 @@ public class SaldoDTO {
 
     public void setBonusGlobalNoMes(BigDecimal bonusGlobalNoMes) {
 	this.bonusGlobalNoMes = bonusGlobalNoMes;
+    }
+
+    public BigDecimal getBonusReconhecimentoNoMes() {
+	return bonusReconhecimentoNoMes;
+    }
+
+    public void setBonusReconhecimentoNoMes(BigDecimal bonusReconhecimentoNoMes) {
+	this.bonusReconhecimentoNoMes = bonusReconhecimentoNoMes;
+    }
+
+    public BigDecimal getBonusDesempenhoNoMes() {
+	return bonusDesempenhoNoMes;
+    }
+
+    public void setBonusDesempenhoNoMes(BigDecimal bonusDesempenhoNoMes) {
+	this.bonusDesempenhoNoMes = bonusDesempenhoNoMes;
     }
 }

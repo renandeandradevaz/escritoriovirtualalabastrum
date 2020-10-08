@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.hibernate.criterion.Order;
-
 import br.com.alabastrum.escritoriovirtual.dto.GraduacaoMensalDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Bonificacao;
@@ -34,7 +32,7 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 	try {
 
 	    GregorianCalendar ontem = new GregorianCalendar();
-	    ontem.add(Calendar.DATE, -10);
+	    ontem.add(Calendar.DATE, -1);
 	    GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(ontem);
 	    GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(ontem);
 
@@ -89,7 +87,6 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
     private void processarBonusDesempenho(HibernateUtil hibernateUtil, GregorianCalendar ontem, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Map<Integer, Integer> usuariosQueReceberamBonusDeReconhecimento) {
 
 	List<Usuario> usuariosHabilitados = buscarUsuariosHabilitadosBonusDesempenho(hibernateUtil, ontem);
-	int quantidadeUsuariosHabilitados = usuariosHabilitados.size();
 
 	for (Usuario usuario : usuariosHabilitados) {
 
@@ -97,44 +94,31 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 
 	    if (!usuariosQueReceberamBonusDeReconhecimento.containsKey(idCodigo)) {
 
-		GraduacaoMensalDTO graduacaoMensal = new PontuacaoService(hibernateUtil).calcularGraduacaoMensal(idCodigo, ontem);
-		Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(graduacaoMensal.getPosicaoAtual(), ontem);
+		GraduacaoMensalDTO graduacaoMensal = new PontuacaoService(hibernateUtil).calcularGraduacaoMensal(idCodigo, ontem, true);
+		String posicaoAtual = graduacaoMensal.getPosicaoAtual();
 
-		if (posicao.getBonusDesempenho().intValue() > 0) {
+		if (usuario.getPosAtual().equalsIgnoreCase(posicaoAtual)) {
 
-		    int x = buscarPosicaoAtualParaDesempenho(hibernateUtil, ontem, graduacaoMensal.getPontosAproveitados());
+		    Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(posicaoAtual, ontem);
+
+		    if (posicao.getBonusDesempenho().intValue() > 0) {
+
+			List<Bonificacao> bonificacoes = new BonificacoesPreProcessadasService(hibernateUtil).buscarBonificacoesNoMes(idCodigo, Bonificacao.BONUS_DE_DESEMPENHO, primeiroDiaDoMes, ultimoDiaDoMes);
+
+			if (Util.preenchido(bonificacoes)) {
+			    hibernateUtil.deletar(bonificacoes);
+			}
+
+			Bonificacao bonificacao = new Bonificacao();
+			bonificacao.setIdCodigo(idCodigo);
+			bonificacao.setData(ontem);
+			bonificacao.setTipo(Bonificacao.BONUS_DE_DESEMPENHO);
+			bonificacao.setValor(posicao.getBonusDesempenho());
+			hibernateUtil.salvarOuAtualizar(bonificacao);
+		    }
 		}
 	    }
-
 	}
-    }
-
-    private void buscarPosicaoAtualParaDesempenho(HibernateUtil hibernateUtil, GregorianCalendar data, Integer pontuacaoFeita) {
-
-	Posicao posicaoAtual = new PosicoesService(hibernateUtil).obterPosicaoPorOrdemNumerica(1, data);
-
-	List<Posicao> posicoes = hibernateUtil.buscar(new Posicao(), Order.desc("posicao"));
-
-	for (Posicao posicao : posicoes) {
-
-	    Integer pontuacaoAproveitadaDaPosicao = posicao.getPontuacao() / 2;
-	    Integer pontuacaoTotalNestaPosicao = 0;
-	    for (Integer pontuacaoPorLinha : pontuacoesPorLinha) {
-		Integer pontuacaoAproveitadaPorLinha = pontuacaoPorLinha;
-		if (pontuacaoPorLinha > pontuacaoAproveitadaDaPosicao) {
-		    pontuacaoAproveitadaPorLinha = pontuacaoAproveitadaDaPosicao;
-		}
-		pontuacaoTotalNestaPosicao += pontuacaoAproveitadaPorLinha;
-	    }
-
-	    if (pontuacaoTotalNestaPosicao >= posicao.getPontuacao()) {
-		posicaoAtual = posicao;
-		break;
-	    }
-	    somaPontuacaoAproveitadaTotal = pontuacaoTotalNestaPosicao;
-	}
-    }
-
     }
 
     private List<Usuario> buscarUsuariosHabilitadosBonusDesempenho(HibernateUtil hibernateUtil, GregorianCalendar ontem) {
@@ -149,12 +133,6 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 	}
 
 	return usuariosHabilitados;
-    }
-
-    public static void main(String[] args) {
-
-	new BonusReconhecimentoEDesempenhoRotina().run();
-
     }
 
     public void iniciarRotina() {
