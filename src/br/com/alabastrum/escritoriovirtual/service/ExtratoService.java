@@ -36,12 +36,8 @@ public class ExtratoService {
 	extratoCompleto.addAll(new BonusLinearService(hibernateUtil).obterBonificacoesLineares(idCodigo));
 	extratoCompleto.addAll(new BonusTrinarioService(hibernateUtil).obterBonificacoesTrinarias(idCodigo));
 	extratoCompleto.addAll(new BonificacoesPreProcessadasService(hibernateUtil).obterBonificacoesPreProcessadas(idCodigo));
-	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeOutroDistribuidor(idCodigo));
-	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaOutroDistribuidor(idCodigo));
-	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaAlabastrumCard(idCodigo));
-	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaPagamentoDePedido(idCodigo));
-	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasParaSaque(idCodigo));
-	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasPorCompressaoDeBonus(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeCredito(idCodigo));
+	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeDebito(idCodigo));
 	extratoCompleto = ordenarExtratoPorDataCrescente(extratoCompleto);
 
 	GregorianCalendar tempoCorrente = Util.getTempoCorrenteAMeiaNoite();
@@ -71,11 +67,7 @@ public class ExtratoService {
 
 	    if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) != 0) {
 
-		if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_OUTRO_DISTRIBUIDOR) //
-			|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_ALABASTRUM_CARD) //
-			|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO) //
-			|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_PARA_SAQUE) //
-			|| extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS)) {
+		if (extratoDTO.getDiscriminador().startsWith("Transferência")) {
 
 		    adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
 

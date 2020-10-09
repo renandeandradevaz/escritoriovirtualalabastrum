@@ -26,47 +26,6 @@
 	</div>
 	<c:if test="${sessaoUsuario.usuario.apelido != null}">
 		<a id="sair" style="float: right; padding-right: 15px; font-weight: bold; font-size: 12px; cursor: pointer;" href="https://dunastes.com.br"> Sair </a>
-		<!-- 		<div class="menu" data-collapse="persist"> -->
-		<%-- 			<h3 class="menu-accordion" onclick="goTo('<c:url value="/home"/>')">Início</h3> --%>
-		<!-- 			<div></div> -->
-		<%-- 			<h3 class="menu-accordion" onclick="goTo('<c:url value="/atualizacaoDados/acessarTelaAtualizacaoDados"/>')">Dados cadastrais</h3> --%>
-		<!-- 			<div></div> -->
-		<%-- 			<h3 class="menu-accordion" onclick="goTo('<c:url value="/configuracao/acessarTelaConfiguracao"/>')">Configurações</h3> --%>
-		<!-- 			<div></div> -->
-		<!-- 			<h3 class="menu-accordion has-child">Redes</h3> -->
-		<!-- 			<div> -->
-		<%-- 				<a href="<c:url value="/equipe/acessarTelaEquipe"/>" class="submenu-accordion"> Equipe </a> --%>
-		<%-- 				<a href="<c:url value="/matriz/acessarTelaMatriz"/>" class="submenu-accordion"> Matriz </a> --%>
-		<!-- 			</div> -->
-		<%-- 			<h3 class="menu-accordion" onclick="goTo('<c:url value="/pontuacao/acessarTelaPontuacao"/>')">Pontuação</h3> --%>
-		<!-- 			<div></div> -->
-		<!-- 			<h3 class="menu-accordion has-child">Pedidos</h3> -->
-		<!-- 			<div> -->
-		<%-- 				<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="submenu-accordion"> Produtos </a> --%>
-		<%-- 				<a href="<c:url value="/pedido/acessarCarrinho"/>" class="submenu-accordion"> Meu carrinho </a> --%>
-		<%-- 				<a href="<c:url value="/pedido/meusPedidos"/>" class="submenu-accordion"> Meus pedidos </a> --%>
-		<%-- 				<c:if test="${sessaoUsuario.usuario.donoDeFranquia}"> --%>
-		<%-- 					<a href="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" class="submenu-accordion"> Pedidos da franquia </a> --%>
-		<%-- 					<a href="<c:url value="/pedidoFranquia/pedidosFranquia"/>" class="submenu-accordion"> Pedidos para estoque </a> --%>
-		<%-- 				</c:if> --%>
-		<!-- 			</div> -->
-		<!-- 			<h3 class="menu-accordion has-child">Financeiro</h3> -->
-		<!-- 			<div> -->
-		<%-- 				<a href="<c:url value="/extrato/acessarTelaExtrato"/>" class="submenu-accordion"> Extrato </a> --%>
-		<%-- 				<a href="<c:url value="/transferencia/acessarTelaTransferencia"/>" class="submenu-accordion"> Transferência </a> --%>
-		<!-- 			</div> -->
-		<%-- 			<c:if test="${sessaoUsuario.usuario.informacoesFixasUsuario.administrador}"> --%>
-		<!-- 				<h3 class="menu-accordion has-child">Administrativo</h3> -->
-		<!-- 				<div> -->
-		<%-- 					<a href="<c:url value="/assumirIdentidade/acessarTelaAssumirIdentidade"/>" class="submenu-accordion"> Assumir identidade </a> --%>
-		<%-- 					<a href="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" class="submenu-accordion"> Gerenciar pedidos </a> --%>
-		<%-- 					<a href="<c:url value="/pedidoFranquia/todosPedidosFranquia"/>" class="submenu-accordion"> Gerenciar pedidos para estoque </a> --%>
-		<%-- 					<a href="<c:url value="/transferencia/acessarTelaTransferenciasParaAlabastrumCardAdministrativa"/>" class="submenu-accordion"> Transferências para Alabastrum Card </a> --%>
-		<%-- 					<a href="<c:url value="/saldoGeral/acessarTelaSaldoGeral"/>" class="submenu-accordion"> Saldo geral </a> --%>
-		<%-- 					<a href="<c:url value="/configuracao/acessarTelaConfiguracaoAdministrativa"/>" class="submenu-accordion"> Configurações administrativas </a> --%>
-		<!-- 				</div> -->
-		<%-- 			</c:if> --%>
-		<!-- 		</div> -->
 		<div class="menu-hamburguer"></div>
 		<div class="menu" data-collapse="persist">
 			<h3 class="menu-accordion" onclick="goTo('<c:url value="/home"/>')">Início</h3>
@@ -106,6 +65,7 @@
 					<a href="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" class="submenu-accordion"> Gerenciar Pedidos </a>
 					<a href="<c:url value="/pedidoFranquia/todosPedidosFranquia"/>" class="submenu-accordion"> Gerenciar Pedidos para Estoque </a>
 					<a href="<c:url value="/solicitacaoSaque/solicitacoesSaqueAdministrativa"/>" class="submenu-accordion"> Solicitações de Saque </a>
+					<a href="<c:url value="/creditoEDebito/listarTransferenciasCreditoEDebito"/>" class="submenu-accordion"> Crédito e débito </a>
 					<a href="<c:url value="/saldoGeral/acessarTelaSaldoGeral"/>" class="submenu-accordion"> Saldo Geral </a>
 					<a href="<c:url value="/configuracao/acessarTelaConfiguracaoAdministrativa"/>" class="submenu-accordion"> Configurações Administrativas </a>
 				</div>

@@ -19,6 +19,8 @@ public class Transferencia implements Entidade {
     public static final String TRANSFERENCIA_PARA_SAQUE = "Transferência para Saque";
     public static final String TRANSFERENCIA_PARA_PAGAMENTO_DE_PEDIDO = "Transferência para pagamento de pedido (+ Tarifas)";
     public static final String TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS = "Transferência por compressão de bônus";
+    public static final String TRANSFERENCIA_POR_CREDITO = "Transferência por crédito";
+    public static final String TRANSFERENCIA_POR_DEBITO = "Transferência por débito";
 
     @Id
     @GeneratedValue
@@ -27,6 +29,8 @@ public class Transferencia implements Entidade {
     private GregorianCalendar data;
     private BigDecimal valor;
     private String tipo;
+    private String descricao;
+    private Integer codigoDoResponsavelPelaTransferencia;
 
     @Index(name = "index_transferencia_de")
     private Integer de;
@@ -80,5 +84,21 @@ public class Transferencia implements Entidade {
 
     public void setPara(Integer para) {
 	this.para = para;
+    }
+
+    public Integer getCodigoDoResponsavelPelaTransferencia() {
+	return codigoDoResponsavelPelaTransferencia;
+    }
+
+    public void setCodigoDoResponsavelPelaTransferencia(Integer codigoDoResponsavelPelaTransferencia) {
+	this.codigoDoResponsavelPelaTransferencia = codigoDoResponsavelPelaTransferencia;
+    }
+
+    public String getDescricao() {
+	return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+	this.descricao = descricao;
     }
 }
