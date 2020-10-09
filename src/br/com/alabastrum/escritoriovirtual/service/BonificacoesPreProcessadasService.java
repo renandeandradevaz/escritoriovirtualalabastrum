@@ -1,5 +1,6 @@
 package br.com.alabastrum.escritoriovirtual.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -11,6 +12,7 @@ import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Bonificacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
+import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class BonificacoesPreProcessadasService {
 
@@ -50,4 +52,21 @@ public class BonificacoesPreProcessadasService {
 	filtro.setIdCodigo(codigo);
 	return hibernateUtil.buscar(filtro);
     }
+
+    public void salvarBonificacao(GregorianCalendar data, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo, BigDecimal bonus, String tipoDeBonus) {
+
+	List<Bonificacao> bonificacoes = buscarBonificacoesNoMes(idCodigo, tipoDeBonus, primeiroDiaDoMes, ultimoDiaDoMes);
+
+	if (Util.preenchido(bonificacoes)) {
+	    hibernateUtil.deletar(bonificacoes);
+	}
+
+	Bonificacao bonificacao = new Bonificacao();
+	bonificacao.setIdCodigo(idCodigo);
+	bonificacao.setData(data);
+	bonificacao.setTipo(tipoDeBonus);
+	bonificacao.setValor(bonus);
+	hibernateUtil.salvarOuAtualizar(bonificacao);
+    }
+
 }

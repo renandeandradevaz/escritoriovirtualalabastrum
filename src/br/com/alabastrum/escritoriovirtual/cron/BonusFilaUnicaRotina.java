@@ -49,19 +49,7 @@ public class BonusFilaUnicaRotina implements Runnable {
 		    Usuario usuarioHabilitado = usuariosHabilitados.get(i);
 		    int quantidadeDeCotasDoUsuario = quantidadeUsuariosHabilitados - i;
 		    BigDecimal valorParaPagamento = valorCota.multiply(new BigDecimal(quantidadeDeCotasDoUsuario));
-
-		    List<Bonificacao> bonificacoes = new BonificacoesPreProcessadasService(hibernateUtil).buscarBonificacoesNoMes(usuarioHabilitado.getId_Codigo(), Bonificacao.BONUS_DE_FILA_UNICA, primeiroDiaDoMes, ultimoDiaDoMes);
-
-		    if (Util.preenchido(bonificacoes)) {
-			hibernateUtil.deletar(bonificacoes);
-		    }
-
-		    Bonificacao bonificacao = new Bonificacao();
-		    bonificacao.setIdCodigo(usuarioHabilitado.getId_Codigo());
-		    bonificacao.setData(ontem);
-		    bonificacao.setTipo(Bonificacao.BONUS_DE_FILA_UNICA);
-		    bonificacao.setValor(valorParaPagamento);
-		    hibernateUtil.salvarOuAtualizar(bonificacao);
+		    new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, usuarioHabilitado.getId_Codigo(), valorParaPagamento, Bonificacao.BONUS_DE_FILA_UNICA);
 		}
 	    }
 

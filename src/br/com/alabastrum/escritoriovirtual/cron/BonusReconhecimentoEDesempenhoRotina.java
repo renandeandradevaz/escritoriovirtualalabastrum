@@ -65,28 +65,12 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 	    Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(new PontuacaoService(hibernateUtil).calcularGraduacaoMensal(idCodigo, ontem).getPosicaoAtual(), ontem);
 	    BigDecimal bonus = posicao.getBonusReconhecimento();
 	    if (bonus.intValue() > 0) {
-		salvarBonificacao(hibernateUtil, ontem, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, bonus, Bonificacao.BONUS_DE_RECONHECIMENTO);
+		new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, bonus, Bonificacao.BONUS_DE_RECONHECIMENTO);
 		usuariosQueReceberamBonusDeReconhecimento.put(idCodigo, 1);
 	    }
 	}
 
 	return usuariosQueReceberamBonusDeReconhecimento;
-    }
-
-    private void salvarBonificacao(HibernateUtil hibernateUtil, GregorianCalendar ontem, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo, BigDecimal bonus, String tipoDeBonus) {
-
-	List<Bonificacao> bonificacoes = new BonificacoesPreProcessadasService(hibernateUtil).buscarBonificacoesNoMes(idCodigo, tipoDeBonus, primeiroDiaDoMes, ultimoDiaDoMes);
-
-	if (Util.preenchido(bonificacoes)) {
-	    hibernateUtil.deletar(bonificacoes);
-	}
-
-	Bonificacao bonificacao = new Bonificacao();
-	bonificacao.setIdCodigo(idCodigo);
-	bonificacao.setData(ontem);
-	bonificacao.setTipo(tipoDeBonus);
-	bonificacao.setValor(bonus);
-	hibernateUtil.salvarOuAtualizar(bonificacao);
     }
 
     private void processarBonusDesempenho(HibernateUtil hibernateUtil, GregorianCalendar ontem, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Map<Integer, Integer> usuariosQueReceberamBonusDeReconhecimento) {
@@ -108,7 +92,7 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 
 		    BigDecimal bonus = posicao.getBonusDesempenho();
 		    if (bonus.intValue() > 0) {
-			salvarBonificacao(hibernateUtil, ontem, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, bonus, Bonificacao.BONUS_DE_DESEMPENHO);
+			new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, bonus, Bonificacao.BONUS_DE_DESEMPENHO);
 		    }
 		}
 	    }
