@@ -119,13 +119,10 @@ public class ExtratoService {
 		}
 	    }
 
-	    if (valor.compareTo(BigDecimal.ZERO) != 0) {
+	    saldoLiberado = saldoLiberado.add(valor);
 
-		saldoLiberado = saldoLiberado.add(valor);
-
-		if (extratoDTO.getData().before(dataPesquisada)) {
-		    saldoAnteriorAoMesPesquisado = saldoAnteriorAoMesPesquisado.add(valor);
-		}
+	    if (extratoDTO.getData().before(dataPesquisada)) {
+		saldoAnteriorAoMesPesquisado = saldoAnteriorAoMesPesquisado.add(valor);
 	    }
 	}
 
