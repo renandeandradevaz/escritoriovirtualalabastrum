@@ -11,8 +11,19 @@ public class ExtratoDTO {
     private GregorianCalendar data;
     private BigDecimal valor;
     private String discriminador;
+    private String descricao;
+
+    public ExtratoDTO(Usuario usuario, GregorianCalendar data, BigDecimal valor, String discriminador, String descricao) {
+
+	this.usuario = usuario;
+	this.data = data;
+	this.valor = valor;
+	this.discriminador = discriminador;
+	this.descricao = descricao;
+    }
 
     public ExtratoDTO(Usuario usuario, GregorianCalendar data, BigDecimal valor, String discriminador) {
+
 	this.usuario = usuario;
 	this.data = data;
 	this.valor = valor;
@@ -49,5 +60,13 @@ public class ExtratoDTO {
 
     public void setValor(BigDecimal valor) {
 	this.valor = valor;
+    }
+
+    public String getDescricao() {
+	return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+	this.descricao = descricao;
     }
 }

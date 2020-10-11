@@ -253,6 +253,7 @@
 				<tr>
 					<th>Data</th>
 					<th>Histórico</th>
+					<th>Descrição</th>
 					<th>Distribuidor</th>
 					<th>Valor</th>
 				</tr>
@@ -264,6 +265,7 @@
 							<fmt:formatDate value="${item.data.time}" type="DATE" />
 						</td>
 						<td class="centralizado">${item.discriminador}</td>
+						<td class="centralizado">${item.descricao}</td>
 						<td class="centralizado">${item.usuario.apelido}
 							<br>
 							${item.usuario.vNome}

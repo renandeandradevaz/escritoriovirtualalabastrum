@@ -15,7 +15,6 @@ import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.ExtratoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
-import br.com.alabastrum.escritoriovirtual.util.Constants;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Resource;
@@ -144,7 +143,8 @@ public class SolicitacaoSaqueController {
 
 	BigDecimal valorBigDecimal = new BigDecimal(valor);
 	BigDecimal descontoTarifaBancaria = new BigDecimal("10");
-	BigDecimal descontoINSS = valorBigDecimal.multiply(Constants.TARIFA_INSS);
+	// BigDecimal descontoINSS = valorBigDecimal.multiply(Constants.TARIFA_INSS);
+	BigDecimal descontoINSS = valorBigDecimal.multiply(BigDecimal.ZERO);
 	// BigDecimal descontoImpostoDeRenda = valorBigDecimal.multiply(new
 	// BigDecimal("0.10"));
 	BigDecimal descontoImpostoDeRenda = BigDecimal.ZERO;
