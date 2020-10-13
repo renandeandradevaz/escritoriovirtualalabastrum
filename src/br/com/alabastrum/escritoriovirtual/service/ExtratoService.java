@@ -66,11 +66,13 @@ public class ExtratoService {
 
 	    boolean isMesPesquisado = extratoDTO.getData().get(Calendar.MONTH) == mes && extratoDTO.getData().get(Calendar.YEAR) == ano;
 
-	    adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
+	   // adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
 
 	    BigDecimal valor = BigDecimal.ZERO;
 
 	    if (extratoDTO.getValor().intValue() > 0 && isHabilitadoParaBonus(idCodigo, extratoDTO)) {
+
+                adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
 
 		valor = extratoDTO.getValor().subtract(extratoDTO.getValor().multiply(Constants.TARIFA_INSS));
 		ganhosAteHoje = ganhosAteHoje.add(valor);
@@ -111,6 +113,8 @@ public class ExtratoService {
 		    }
 		}
 	    } else if (extratoDTO.getValor().intValue() < 0) {
+
+                adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
 
 		valor = extratoDTO.getValor();
 
