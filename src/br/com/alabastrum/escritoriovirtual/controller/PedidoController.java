@@ -377,14 +377,14 @@ public class PedidoController {
 
 	if (pedido != null) {
 
-            Integer idCodigo = pedido.getIdCodigo();
+	    Integer idCodigo = pedido.getIdCodigo();
 
 	    result.include(PedidoService.FORMA_DE_ENTREGA, pedido.getFormaDeEntrega());
-            this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_PEDIDO, idCodigo);
+	    this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_PEDIDO, idCodigo);
 	    this.sessaoGeral.adicionar("isPrimeiroPedido", isPrimeiroPedido(idCodigo));
 	    this.sessaoGeral.adicionar("isInativo", isInativo(idCodigo));
 
-            pedido.setTipo(definirTipoDoPedido());
+	    pedido.setTipo(definirTipoDoPedido());
 	    hibernateUtil.salvarOuAtualizar(pedido);
 
 	    for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {

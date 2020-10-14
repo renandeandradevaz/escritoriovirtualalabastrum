@@ -105,6 +105,7 @@ public class AtualizacaoDadosController {
 
 	Usuario usuarioBanco = this.hibernateUtil.selecionar(new Usuario(this.sessaoUsuario.getUsuario().getId_Codigo()));
 	usuarioBanco.setCPF(this.sessaoUsuario.getUsuario().getCPF());
+	usuarioBanco.setDescontaInss(this.sessaoUsuario.getUsuario().getDescontaInss());
 	usuarioBanco.setvNome(usuario.getvNome());
 	usuarioBanco.setDt_Nasc(usuario.getDt_Nasc());
 	usuarioBanco.setCadRG(usuario.getCadRG());

@@ -60,6 +60,7 @@ public class Usuario implements Entidade {
     private String contaPessoaJuridicaBancoEspecifico;
     private Integer cadPreCadastro;
     private Integer documentacaoEnviada;
+    private Integer descontaInss;
     private Integer Fila_unica;
     private String numeroEndereco;
     private String corRaca;
@@ -627,5 +628,13 @@ public class Usuario implements Entidade {
 
     public void setPasepAtivo(String pasepAtivo) {
 	this.pasepAtivo = pasepAtivo;
+    }
+
+    public Integer getDescontaInss() {
+	return descontaInss;
+    }
+
+    public void setDescontaInss(Integer descontaInss) {
+	this.descontaInss = descontaInss;
     }
 }
