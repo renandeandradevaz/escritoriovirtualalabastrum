@@ -2,6 +2,8 @@ package br.com.alabastrum.escritoriovirtual.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -36,12 +38,17 @@ public class BonusTrinarioService {
 
 	    for (Pontuacao pontuacao : pontuacoes) {
 
-		if (pontuacao.getPntAtividade().compareTo(BigDecimal.ONE) > 0) {
+		GregorianCalendar primeiroOutubro2020 = new GregorianCalendar(2020, Calendar.OCTOBER, 1);
 
-		    ParametroAtividade parametroAtividade = new ParametroAtividadeService(hibernateUtil).buscarParametroAtividade(pontuacao.getDt_Pontos(), arvoreHierarquicaEntry.getValue().getNivel());
+		if (pontuacao.getDt_Pontos().before(primeiroOutubro2020)) {
 
-		    if (parametroAtividade != null) {
-			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(arvoreHierarquicaEntry.getKey())), pontuacao.getDt_Pontos(), parametroAtividade.getBonusAtividade(), BÔNUS_TRINARIO));
+		    if (pontuacao.getPntAtividade().compareTo(BigDecimal.ONE) > 0) {
+
+			ParametroAtividade parametroAtividade = new ParametroAtividadeService(hibernateUtil).buscarParametroAtividade(pontuacao.getDt_Pontos(), arvoreHierarquicaEntry.getValue().getNivel());
+
+			if (parametroAtividade != null) {
+			    extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(arvoreHierarquicaEntry.getKey())), pontuacao.getDt_Pontos(), parametroAtividade.getBonusAtividade(), BÔNUS_TRINARIO));
+			}
 		    }
 		}
 	    }

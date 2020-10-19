@@ -33,20 +33,20 @@ public class IndicacaoIndiretaService {
 
 			if (qualificacao != null && !arvoreHierarquicaDTOEntry.getValue().getUsuario().getId_Indicante().equals(idCodigo)) {
 
-				List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(qualificacao.getId_Codigo(), qualificacao.getData());
-
-				if (arvoreHierarquicaAscendente.contains(idCodigo)) {
-
-					ParametroIngresso parametroIngresso = new ParametroIngressoService(hibernateUtil).buscarParametroIngresso(qualificacao.getData(), arvoreHierarquicaAscendente.indexOf(idCodigo));
-
-					if (parametroIngresso == null) {
-						continue;
-					}
-
-					BigDecimal valorIngresso = new PontuacaoService(hibernateUtil).getValorIngresso(qualificacao.getId_Codigo(), qualificacao.getData());
-					BigDecimal valor = valorIngresso.multiply(parametroIngresso.getPorcentagem()).divide(new BigDecimal(100));
-					extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(qualificacao.getId_Codigo())), qualificacao.getData(), valor, "Indicação indireta"));
-				}
+//				List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(qualificacao.getId_Codigo(), qualificacao.getData());
+//
+//				if (arvoreHierarquicaAscendente.contains(idCodigo)) {
+//
+//					ParametroIngresso parametroIngresso = new ParametroIngressoService(hibernateUtil).buscarParametroIngresso(qualificacao.getData(), arvoreHierarquicaAscendente.indexOf(idCodigo));
+//
+//					if (parametroIngresso == null) {
+//						continue;
+//					}
+//
+//					BigDecimal valorIngresso = new PontuacaoService(hibernateUtil).getValorIngresso(qualificacao.getId_Codigo(), qualificacao.getData());
+//					BigDecimal valor = valorIngresso.multiply(parametroIngresso.getPorcentagem()).divide(new BigDecimal(100));
+//					extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(qualificacao.getId_Codigo())), qualificacao.getData(), valor, "Indicação indireta"));
+//				}
 			}
 		}
 

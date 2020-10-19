@@ -46,22 +46,22 @@ public class CompressaoDeBonusService {
 
 		    if (saldoPrevistoNoMes.compareTo(BigDecimal.ZERO) > 0) {
 
-			List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(usuario.getId_Codigo(), null);
-
-			for (Integer idCodigoAscendente : arvoreHierarquicaAscendente) {
-
-			    if (arvoreHierarquicaAscendente.indexOf(idCodigoAscendente) > 0 && new AtividadeService(hibernateUtil).isAtivo(idCodigoAscendente, mesPassado)) {
-
-				Transferencia transferencia = new Transferencia();
-				transferencia.setData(Util.getUltimoDiaDoMes(mesPassado));
-				transferencia.setDe(usuario.getId_Codigo());
-				transferencia.setPara(idCodigoAscendente);
-				transferencia.setValor(saldoPrevistoNoMes);
-				transferencia.setTipo(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS);
-				transferencias.add(transferencia);
-				break;
-			    }
-			}
+//			List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(usuario.getId_Codigo(), null);
+//
+//			for (Integer idCodigoAscendente : arvoreHierarquicaAscendente) {
+//
+//			    if (arvoreHierarquicaAscendente.indexOf(idCodigoAscendente) > 0 && new AtividadeService(hibernateUtil).isAtivo(idCodigoAscendente, mesPassado)) {
+//
+//				Transferencia transferencia = new Transferencia();
+//				transferencia.setData(Util.getUltimoDiaDoMes(mesPassado));
+//				transferencia.setDe(usuario.getId_Codigo());
+//				transferencia.setPara(idCodigoAscendente);
+//				transferencia.setValor(saldoPrevistoNoMes);
+//				transferencia.setTipo(Transferencia.TRANSFERENCIA_POR_COMPRESSAO_DE_BONUS);
+//				transferencias.add(transferencia);
+//				break;
+//			    }
+//			}
 		    }
 		}
 	    }

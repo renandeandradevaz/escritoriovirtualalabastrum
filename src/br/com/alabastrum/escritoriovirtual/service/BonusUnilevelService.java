@@ -34,23 +34,23 @@ public class BonusUnilevelService {
 
 			for (Pedido pedido : pedidos) {
 
-				List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(arvoreHierarquicaDTOEntry.getKey(), pedido.getData());
-
-				if (arvoreHierarquicaAscendente.contains(idCodigo)) {
-
-					String posicao = new QualificacaoService(hibernateUtil).obterPosicaoNaData(idCodigo, pedido.getData());
-
-					ParametroUnilevel parametroUnilevel = new ParametroUnilevelService(hibernateUtil).buscarParametroUnilevel(pedido.getData(), posicao, arvoreHierarquicaAscendente.indexOf(idCodigo));
-
-					if (parametroUnilevel == null) {
-						continue;
-					}
-
-					BigDecimal totalPedido = new PedidoService(hibernateUtil).calcularTotalPedidoParaBonificacao(pedido);
-
-					BigDecimal bonus = totalPedido.multiply(parametroUnilevel.getValor()).divide(new BigDecimal(100));
-					extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), bonus, "Unilevel"));
-				}
+//				List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(arvoreHierarquicaDTOEntry.getKey(), pedido.getData());
+//
+//				if (arvoreHierarquicaAscendente.contains(idCodigo)) {
+//
+//					String posicao = new QualificacaoService(hibernateUtil).obterPosicaoNaData(idCodigo, pedido.getData());
+//
+//					ParametroUnilevel parametroUnilevel = new ParametroUnilevelService(hibernateUtil).buscarParametroUnilevel(pedido.getData(), posicao, arvoreHierarquicaAscendente.indexOf(idCodigo));
+//
+//					if (parametroUnilevel == null) {
+//						continue;
+//					}
+//
+//					BigDecimal totalPedido = new PedidoService(hibernateUtil).calcularTotalPedidoParaBonificacao(pedido);
+//
+//					BigDecimal bonus = totalPedido.multiply(parametroUnilevel.getValor()).divide(new BigDecimal(100));
+//					extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), bonus, "Unilevel"));
+//				}
 			}
 		}
 

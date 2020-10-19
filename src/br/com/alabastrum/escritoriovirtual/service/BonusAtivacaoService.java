@@ -35,18 +35,18 @@ public class BonusAtivacaoService {
 
 				if (pontuacao.getParametroAtividade().compareTo(BigDecimal.ZERO) > 0 && pontuacao.getPntAtividade().compareTo(pontuacao.getParametroAtividade()) >= 0) {
 
-					List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(pontuacao.getId_Codigo(), pontuacao.getDt_Pontos());
-
-					if (arvoreHierarquicaAscendente.contains(idCodigo)) {
-
-						ParametroAtividade parametroAtividade = new ParametroAtividadeService(hibernateUtil).buscarParametroAtividade(pontuacao.getDt_Pontos(), arvoreHierarquicaAscendente.indexOf(idCodigo));
-
-						if (parametroAtividade == null) {
-							continue;
-						}
-
-						extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pontuacao.getId_Codigo())), pontuacao.getDt_Pontos(), parametroAtividade.getBonusAtividade(), "Ativação"));
-					}
+//					List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(pontuacao.getId_Codigo(), pontuacao.getDt_Pontos());
+//
+//					if (arvoreHierarquicaAscendente.contains(idCodigo)) {
+//
+//						ParametroAtividade parametroAtividade = new ParametroAtividadeService(hibernateUtil).buscarParametroAtividade(pontuacao.getDt_Pontos(), arvoreHierarquicaAscendente.indexOf(idCodigo));
+//
+//						if (parametroAtividade == null) {
+//							continue;
+//						}
+//
+//						extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pontuacao.getId_Codigo())), pontuacao.getDt_Pontos(), parametroAtividade.getBonusAtividade(), "Ativação"));
+//					}
 				}
 			}
 		}
