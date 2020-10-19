@@ -115,7 +115,7 @@ public class PedidoController {
     }
 
     @Funcionalidade
-    public void escolherProdutos(Integer idFranquia, String nickname, String formaDeEntrega, Boolean adesaoPontoDeApoio) {
+    public void escolherProdutos(Integer idFranquia, String nickname, String formaDeEntrega, Boolean adesaoPontoDeApoio, Boolean escolherCategoriaPadrao) {
 
 	if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
 	    formaDeEntrega = PedidoService.RECEBER_NO_PA;
@@ -203,6 +203,20 @@ public class PedidoController {
 	    }
 	}
 	result.include("categorias", categoriasSemTaxas);
+
+	if (escolherCategoriaPadrao != null && escolherCategoriaPadrao) {
+	    Integer categoriaPadrao = null;
+	    for (Categoria categoria : todasCategorias) {
+		if (!categoria.getCatNome().equalsIgnoreCase(PedidoService.TAXAS)) {
+		    categoriasSemTaxas.add(categoria);
+		}
+		if (Integer.valueOf(1).equals(categoria.getPadrao())) {
+		    categoriaPadrao = categoria.getId_Categoria();
+		}
+	    }
+
+	    result.redirectTo(this).selecionarCategoria(categoriaPadrao);
+	}
     }
 
     @Funcionalidade
@@ -283,7 +297,7 @@ public class PedidoController {
 	result.include("itensPedidoDTO", itensPedidoDTO);
 	result.include("totais", new PedidoService(hibernateUtil).calcularTotais(pedido));
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
-	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), usuario.getApelido(), pedido.getFormaDeEntrega(), (Boolean) this.sessaoGeral.getValor("adesaoPontoDeApoio"));
+	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), usuario.getApelido(), pedido.getFormaDeEntrega(), (Boolean) this.sessaoGeral.getValor("adesaoPontoDeApoio"), null);
     }
 
     private void adicionarItemPedido(List<ItemPedidoDTO> itensPedidoDTO, Produto produto, int quantidadeEmEstoque, Integer quantidade) {
@@ -1006,7 +1020,7 @@ public class PedidoController {
 	franquia.setEstqNome("VENDA ONLINE");
 	franquia = this.hibernateUtil.selecionar(franquia);
 
-	this.escolherProdutos(franquia.getId_Estoque(), usuario.getApelido(), PedidoService.RECEBER_EM_CASA, null);
+	this.escolherProdutos(franquia.getId_Estoque(), usuario.getApelido(), PedidoService.RECEBER_EM_CASA, null, null);
 	result.forwardTo("/WEB-INF/jsp//pedido/escolherProdutos.jsp");
     }
 

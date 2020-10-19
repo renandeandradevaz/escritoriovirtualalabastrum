@@ -9,34 +9,43 @@ import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
 @Entity
 public class Categoria implements Entidade {
 
-	@Id
-	@GeneratedValue
-	private Integer id;
+    @Id
+    @GeneratedValue
+    private Integer id;
 
-	private Integer id_Categoria;
-	private String catNome;
+    private Integer id_Categoria;
+    private String catNome;
+    private Integer padrao;
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+	return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+	this.id = id;
+    }
 
-	public Integer getId_Categoria() {
-		return id_Categoria;
-	}
+    public Integer getId_Categoria() {
+	return id_Categoria;
+    }
 
-	public void setId_Categoria(Integer id_Categoria) {
-		this.id_Categoria = id_Categoria;
-	}
+    public void setId_Categoria(Integer id_Categoria) {
+	this.id_Categoria = id_Categoria;
+    }
 
-	public String getCatNome() {
-		return catNome;
-	}
+    public String getCatNome() {
+	return catNome;
+    }
 
-	public void setCatNome(String catNome) {
-		this.catNome = catNome;
-	}
+    public void setCatNome(String catNome) {
+	this.catNome = catNome;
+    }
+
+    public Integer getPadrao() {
+	return padrao;
+    }
+
+    public void setPadrao(Integer padrao) {
+	this.padrao = padrao;
+    }
 }

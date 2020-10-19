@@ -4,7 +4,7 @@
 </div>
 <br>
 <div class="fundo-branco">
-	<form action="<c:url value="/pedido/escolherProdutos"/>" method="post">
+	<form action="<c:url value="/pedido/escolherProdutos?escolherCategoriaPadrao=1"/>" method="post">
 		<c:choose>
 			<c:when test="${sessaoUsuario.usuario.donoDeFranquia}">
 				<br>
