@@ -2,6 +2,8 @@ package br.com.alabastrum.escritoriovirtual.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -35,9 +37,14 @@ public class BonusLinearService {
 
 	    for (Pontuacao pontuacao : pontuacoes) {
 
-		if (pontuacao.getPntProduto().compareTo(BigDecimal.ZERO) > 0) {
+		GregorianCalendar primeiroOutubro2020 = new GregorianCalendar(2020, Calendar.OCTOBER, 1);
 
-		    extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(arvoreHierarquicaEntry.getKey())), pontuacao.getDt_Pontos(), pontuacao.getPntProduto().multiply(new BigDecimal("0.1")), BÔNUS_LINEAR));
+		if (pontuacao.getDt_Pontos().before(primeiroOutubro2020)) {
+
+		    if (pontuacao.getPntProduto().compareTo(BigDecimal.ZERO) > 0) {
+
+			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(arvoreHierarquicaEntry.getKey())), pontuacao.getDt_Pontos(), pontuacao.getPntProduto().multiply(new BigDecimal("0.1")), BÔNUS_LINEAR));
+		    }
 		}
 	    }
 	}

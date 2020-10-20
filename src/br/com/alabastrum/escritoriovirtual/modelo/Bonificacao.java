@@ -19,6 +19,7 @@ public class Bonificacao implements Entidade {
     public static final String BONUS_DE_RECONHECIMENTO = "Bônus de Reconhecimento";
     public static final String BONUS_DE_DESEMPENHO = "Bônus de Desempenho";
     public static final String BÔNUS_TRINARIO = "Bônus Trinário";
+    public static final String BÔNUS_LINEAR = "Bônus linear";
 
     @Id
     @GeneratedValue

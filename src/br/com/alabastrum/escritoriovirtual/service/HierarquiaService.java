@@ -55,6 +55,16 @@ public class HierarquiaService {
 	return arvoreHierarquicaAscendente;
     }
 
+    public List<Integer> obterArvoreHierarquicaAscendentePorIndicante(Integer idCodigo) {
+
+	List<Integer> arvoreHierarquicaAscendente = new ArrayList<Integer>();
+	arvoreHierarquicaAscendente.add(idCodigo);
+
+	montarArvoreHierarquicaAscendentePorIndicanteComRecursividade(arvoreHierarquicaAscendente, idCodigo);
+
+	return arvoreHierarquicaAscendente;
+    }
+
     private void montarArvoreHierarquicaAscendenteComRecursividade(List<Integer> arvoreHierarquicaAscendente, Integer idCodigo) {
 
 	Usuario usuario = hibernateUtil.selecionar(new Usuario(idCodigo));
@@ -67,6 +77,20 @@ public class HierarquiaService {
 	arvoreHierarquicaAscendente.add(lider.getId_Codigo());
 
 	montarArvoreHierarquicaAscendenteComRecursividade(arvoreHierarquicaAscendente, lider.getId_Codigo());
+    }
+
+    private void montarArvoreHierarquicaAscendentePorIndicanteComRecursividade(List<Integer> arvoreHierarquicaAscendente, Integer idCodigo) {
+
+	Usuario usuario = hibernateUtil.selecionar(new Usuario(idCodigo));
+	Usuario indicante = hibernateUtil.selecionar(new Usuario(usuario.getId_Indicante()));
+
+	if (usuario.getId_Codigo().equals(indicante.getId_Codigo())) {
+	    return;
+	}
+
+	arvoreHierarquicaAscendente.add(indicante.getId_Codigo());
+
+	montarArvoreHierarquicaAscendentePorIndicanteComRecursividade(arvoreHierarquicaAscendente, indicante.getId_Codigo());
     }
 
     private void pesquisarComRecursividade(Integer codigo, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquica, Integer nivel, String tipoDeFiltro) {
