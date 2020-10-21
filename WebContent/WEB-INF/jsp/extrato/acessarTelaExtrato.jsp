@@ -254,7 +254,7 @@
 					<th>Data</th>
 					<th>Histórico</th>
 					<th>Descrição</th>
-					<th>Distribuidor</th>
+					<!-- 					<th>Distribuidor</th> -->
 					<th>Valor</th>
 				</tr>
 			</thead>
@@ -266,10 +266,10 @@
 						</td>
 						<td class="centralizado">${item.discriminador}</td>
 						<td class="centralizado">${item.descricao}</td>
-						<td class="centralizado">${item.usuario.apelido}
-							<br>
-							${item.usuario.vNome}
-						</td>
+						<%-- 						<td class="centralizado">${item.usuario.apelido} --%>
+						<!-- 							<br> -->
+						<%-- 							${item.usuario.vNome} --%>
+						<!-- 						</td> -->
 						<td class="centralizado">
 							R$
 							<fmt:formatNumber value="${item.valor}" pattern="#,##0.00" />

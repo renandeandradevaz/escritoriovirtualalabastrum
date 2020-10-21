@@ -33,7 +33,7 @@ public class BonusLinearComCompressaoDinamicaRotina implements Runnable {
 	    List<Usuario> usuarios = hibernateUtil.buscar(new Usuario());
 
 	    for (Usuario usuario : usuarios) {
-	
+
 		List<Pontuacao> pontuacoes = new PontuacaoService(hibernateUtil).buscarPontuacoes(usuario.getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes);
 
 		if (Util.preenchido(pontuacoes)) {

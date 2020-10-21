@@ -40,7 +40,7 @@ public class BonusTrinarioService {
 
 		GregorianCalendar primeiroOutubro2020 = new GregorianCalendar(2020, Calendar.OCTOBER, 1);
 
-		//if (pontuacao.getDt_Pontos().before(primeiroOutubro2020)) {
+		if (pontuacao.getDt_Pontos().before(primeiroOutubro2020)) {
 
 		    if (pontuacao.getPntAtividade().compareTo(BigDecimal.ONE) > 0) {
 
@@ -50,7 +50,7 @@ public class BonusTrinarioService {
 			    extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(arvoreHierarquicaEntry.getKey())), pontuacao.getDt_Pontos(), parametroAtividade.getBonusAtividade(), BÔNUS_TRINARIO));
 			}
 		    }
-		//}
+		}
 	    }
 	}
 
