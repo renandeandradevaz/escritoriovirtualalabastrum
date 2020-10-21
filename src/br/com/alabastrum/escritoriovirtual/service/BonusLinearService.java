@@ -39,13 +39,13 @@ public class BonusLinearService {
 
 		GregorianCalendar primeiroOutubro2020 = new GregorianCalendar(2020, Calendar.OCTOBER, 1);
 
-		if (pontuacao.getDt_Pontos().before(primeiroOutubro2020)) {
+		//if (pontuacao.getDt_Pontos().before(primeiroOutubro2020)) {
 
 		    if (pontuacao.getPntProduto().compareTo(BigDecimal.ZERO) > 0) {
 
 			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(arvoreHierarquicaEntry.getKey())), pontuacao.getDt_Pontos(), pontuacao.getPntProduto().multiply(new BigDecimal("0.1")), BÔNUS_LINEAR));
 		    }
-		}
+		//}
 	    }
 	}
 

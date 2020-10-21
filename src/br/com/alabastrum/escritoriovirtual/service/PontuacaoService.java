@@ -74,7 +74,9 @@ public class PontuacaoService {
 
 	if (new AtividadeService(hibernateUtil).possuiIndicadosDiretosAtivos(idCodigo, data, 3)) {
 
-	    List<Posicao> posicoes = this.hibernateUtil.buscar(new Posicao(), Order.desc("posicao"));
+	    List<Criterion> restricoes = new ArrayList<Criterion>();
+	    restricoes.add(Restrictions.between("data_referencia", primeiroDiaDoMes, ultimoDiaDoMes));
+	    List<Posicao> posicoes = this.hibernateUtil.buscar(new Posicao(), restricoes, Order.desc("posicao"));
 
 	    for (Posicao posicao : posicoes) {
 

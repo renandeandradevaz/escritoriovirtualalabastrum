@@ -23,6 +23,7 @@ public class GerenciadorDeRotinas {
 	    new BonusGlobalRotina().iniciarRotina();
 	    new BonusReconhecimentoEDesempenhoRotina().iniciarRotina();
 	    new BonusTrinarioComCompressaoDinamicaRotina().iniciarRotina();
+	    new BonusLinearComCompressaoDinamicaRotina().iniciarRotina();
 	}
     }
 }
