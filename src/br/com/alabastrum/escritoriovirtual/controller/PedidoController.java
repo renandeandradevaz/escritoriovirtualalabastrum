@@ -623,16 +623,16 @@ public class PedidoController {
 			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
 
 		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebitoNoPA")) {
-			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
+			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.472")));
 
 		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebitoOnline")) {
-			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
+			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.472")));
 
 		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoNoPA")) {
-			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.44")));
+			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.467")));
 
 		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoOnline")) {
-			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.44")));
+			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.467")));
 
 		    }
 
@@ -923,7 +923,13 @@ public class PedidoController {
 	textoArquivo += "tipo_pedido=" + pedido.getTipo() + "\r\n";
 	textoArquivo += "pedido_id=" + pedido.getId() + "\r\n";
 
-	for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
+	List<ItemPedido> itensPedido = new PedidoService(hibernateUtil).listarItensPedido(pedido);
+
+	if (itensPedido.size() <= 0) {
+	    Mail.enviarEmail("Pedido " + pedido.getId() + " sem itens de pedido no momento de gerar o arquivo no disco.", "Quantidade de itens de pedido: " + itensPedido.size());
+	}
+
+	for (ItemPedido itemPedido : itensPedido) {
 	    textoArquivo += itemPedido.getIdProduto() + "=" + itemPedido.getQuantidade() + "\r\n";
 	}
 

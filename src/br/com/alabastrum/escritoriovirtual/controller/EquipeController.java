@@ -2,6 +2,8 @@ package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
@@ -72,6 +74,14 @@ public class EquipeController {
 
 	    equipe.add(equipeDTO);
 	}
+
+	Collections.sort(equipe, new Comparator<EquipeDTO>() {
+
+	    public int compare(EquipeDTO item1, EquipeDTO item2) {
+		return item1.getUsuario().getvNome().compareTo(item2.getUsuario().getvNome());
+	    }
+	});
+
 	return equipe;
     }
 
