@@ -33,6 +33,15 @@ public class BonificacoesPreProcessadasService {
 	return hibernateUtil.buscar(filtro, restricoes);
     }
 
+    public List<Bonificacao> buscarBonificacoesNoMes(String tipo, GregorianCalendar dataInicial, GregorianCalendar dataFinal) {
+
+	List<Criterion> restricoes = new ArrayList<Criterion>();
+	restricoes.add(Restrictions.between("data", dataInicial, dataFinal));
+	Bonificacao filtro = new Bonificacao();
+	filtro.setTipo(tipo);
+	return hibernateUtil.buscar(filtro, restricoes);
+    }
+
     public List<ExtratoDTO> obterBonificacoesPreProcessadas(Integer idCodigo) throws Exception {
 
 	List<ExtratoDTO> extratos = new ArrayList<ExtratoDTO>();
@@ -54,11 +63,18 @@ public class BonificacoesPreProcessadasService {
     }
 
     public void salvarBonificacao(GregorianCalendar data, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo, BigDecimal bonus, String tipoDeBonus) {
+	salvarBonificacao(data, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, bonus, tipoDeBonus, true);
+    }
 
-	List<Bonificacao> bonificacoes = buscarBonificacoesNoMes(idCodigo, tipoDeBonus, primeiroDiaDoMes, ultimoDiaDoMes);
+    public void salvarBonificacao(GregorianCalendar data, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo, BigDecimal bonus, String tipoDeBonus, boolean deletarAnteriores) {
 
-	if (Util.preenchido(bonificacoes)) {
-	    hibernateUtil.deletar(bonificacoes);
+	if (deletarAnteriores) {
+
+	    List<Bonificacao> bonificacoes = buscarBonificacoesNoMes(idCodigo, tipoDeBonus, primeiroDiaDoMes, ultimoDiaDoMes);
+
+	    if (Util.preenchido(bonificacoes)) {
+		hibernateUtil.deletar(bonificacoes);
+	    }
 	}
 
 	Bonificacao bonificacao = new Bonificacao();

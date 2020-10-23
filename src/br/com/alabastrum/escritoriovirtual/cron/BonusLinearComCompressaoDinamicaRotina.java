@@ -30,6 +30,11 @@ public class BonusLinearComCompressaoDinamicaRotina implements Runnable {
 	    GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(ontem);
 	    GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(ontem);
 
+	    List<Bonificacao> bonificacoes = new BonificacoesPreProcessadasService(hibernateUtil).buscarBonificacoesNoMes(Bonificacao.BÔNUS_LINEAR, primeiroDiaDoMes, ultimoDiaDoMes);
+	    if (Util.preenchido(bonificacoes)) {
+		hibernateUtil.deletar(bonificacoes);
+	    }
+
 	    List<Usuario> usuarios = hibernateUtil.buscar(new Usuario());
 
 	    for (Usuario usuario : usuarios) {
@@ -48,7 +53,7 @@ public class BonusLinearComCompressaoDinamicaRotina implements Runnable {
 
 				if (pontuacao.getPntProduto().compareTo(BigDecimal.ZERO) > 0) {
 
-				    new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, idIndicante, pontuacao.getPntProduto().multiply(new BigDecimal("0.1")), Bonificacao.BÔNUS_LINEAR);
+				    new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, idIndicante, pontuacao.getPntProduto().multiply(new BigDecimal("0.1")), Bonificacao.BÔNUS_LINEAR, false);
 				}
 			    }
 
@@ -58,9 +63,7 @@ public class BonusLinearComCompressaoDinamicaRotina implements Runnable {
 		}
 	    }
 
-	} catch (
-
-	Exception e) {
+	} catch (Exception e) {
 	    e.printStackTrace();
 	    String errorString = Util.getExceptionMessage(e);
 	    Mail.enviarEmail("Exception ao rodar rotina de bonus linear com compressão dinamica", errorString);

@@ -36,6 +36,11 @@ public class BonusTrinarioComCompressaoDinamicaRotina implements Runnable {
 	    GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(ontem);
 	    GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(ontem);
 
+	    List<Bonificacao> bonificacoes = new BonificacoesPreProcessadasService(hibernateUtil).buscarBonificacoesNoMes(Bonificacao.BÔNUS_TRINARIO, primeiroDiaDoMes, ultimoDiaDoMes);
+	    if (Util.preenchido(bonificacoes)) {
+		hibernateUtil.deletar(bonificacoes);
+	    }
+
 	    List<Usuario> usuariosHabilitados = buscarUsuariosHabilitados(hibernateUtil, ontem);
 
 	    for (Usuario usuario : usuariosHabilitados) {
@@ -46,31 +51,32 @@ public class BonusTrinarioComCompressaoDinamicaRotina implements Runnable {
 
 		    List<Pontuacao> pontuacoes = new PontuacaoService(hibernateUtil).buscarPontuacoes(arvoreHierarquicaEntry.getKey(), primeiroDiaDoMes, ultimoDiaDoMes);
 
-		    for (Pontuacao pontuacao : pontuacoes) {
+		    if (Util.preenchido(pontuacoes)) {
 
-			if (pontuacao.getPntAtividade().compareTo(BigDecimal.ONE) > 0) {
+			List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(arvoreHierarquicaEntry.getKey());
 
-			    List<Integer> arvoreHierarquicaAscendente = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAscendente(arvoreHierarquicaEntry.getKey());
+			int nivelAscendente = 1;
+			for (Integer idLider : arvoreHierarquicaAscendente) {
 
-			    int nivelAscendente = 1;
-			    for (Integer idLider : arvoreHierarquicaAscendente) {
+			    if (idLider.equals(usuario.getId_Codigo())) {
+				for (Pontuacao pontuacao : pontuacoes) {
 
-				if (idLider.equals(usuario.getId_Codigo())) {
+				    if (pontuacao.getPntAtividade().compareTo(BigDecimal.ONE) > 0) {
 
-				    ParametroAtividade parametroAtividade = new ParametroAtividadeService(hibernateUtil).buscarParametroAtividade(pontuacao.getDt_Pontos(), nivelAscendente);
+					ParametroAtividade parametroAtividade = new ParametroAtividadeService(hibernateUtil).buscarParametroAtividade(pontuacao.getDt_Pontos(), nivelAscendente);
 
-				    if (parametroAtividade != null) {
-					new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, usuario.getId_Codigo(), parametroAtividade.getBonusAtividade(), Bonificacao.BÔNUS_TRINARIO);
-				    }
-				} else {
-				    if (new AtividadeService(hibernateUtil).isAtivo(idLider, ontem)) {
-					nivelAscendente++;
+					if (parametroAtividade != null) {
+					    new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, usuario.getId_Codigo(), parametroAtividade.getBonusAtividade(), Bonificacao.BÔNUS_TRINARIO, false);
+					}
 				    }
 				}
+
+			    } else {
+				if (new AtividadeService(hibernateUtil).isAtivo(idLider, ontem)) {
+				    nivelAscendente++;
+				}
 			    }
-
 			}
-
 		    }
 		}
 	    }
