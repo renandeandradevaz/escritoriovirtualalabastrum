@@ -710,9 +710,9 @@ public class PedidoController {
 		return;
 	    }
 
+            gerarArquivoCsv(pedido);
 	    salvarTransferencia(valorASerDescontadoDoSaldo, pedido.getIdCodigo());
 	    pedido.setStatus(PedidoService.FINALIZADO);
-	    gerarArquivoCsv(pedido);
 	}
 
 	pedido.setCompleted(true);
