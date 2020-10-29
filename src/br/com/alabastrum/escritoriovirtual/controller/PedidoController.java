@@ -818,8 +818,10 @@ public class PedidoController {
 
 		    if (pedido != null) {
 
+                        gerarArquivoCsv(pedido);
+
 			pedido.setStatus(PedidoService.FINALIZADO);
-			gerarArquivoCsv(pedido);
+			
 			hibernateUtil.salvarOuAtualizar(pedido);
 
 			Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
