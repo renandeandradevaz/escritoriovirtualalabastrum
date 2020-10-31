@@ -47,7 +47,7 @@ public class BonusLinearComCompressaoDinamicaRotina implements Runnable {
 
 		    for (Integer idIndicante : arvoreHierarquicaAscendente) {
 
-			if (new AtividadeService(hibernateUtil).isAtivo(idIndicante, ontem)) {
+			if (!idIndicante.equals(usuario.getId_Codigo()) && new AtividadeService(hibernateUtil).isAtivo(idIndicante, ontem)) {
 
 			    for (Pontuacao pontuacao : pontuacoes) {
 

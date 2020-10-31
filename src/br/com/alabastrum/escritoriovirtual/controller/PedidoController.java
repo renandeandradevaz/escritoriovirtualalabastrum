@@ -710,7 +710,7 @@ public class PedidoController {
 		return;
 	    }
 
-            gerarArquivoCsv(pedido);
+	    gerarArquivoCsv(pedido.getId());
 	    salvarTransferencia(valorASerDescontadoDoSaldo, pedido.getIdCodigo());
 	    pedido.setStatus(PedidoService.FINALIZADO);
 	}
@@ -818,10 +818,10 @@ public class PedidoController {
 
 		    if (pedido != null) {
 
-                        gerarArquivoCsv(pedido);
+			gerarArquivoCsv(pedido.getId());
 
 			pedido.setStatus(PedidoService.FINALIZADO);
-			
+
 			hibernateUtil.salvarOuAtualizar(pedido);
 
 			Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
@@ -903,7 +903,7 @@ public class PedidoController {
 
 	    if (status.equals(PedidoService.FINALIZADO) && !pedido.getStatus().equals(PedidoService.FINALIZADO)) {
 
-		gerarArquivoCsv(pedido);
+		gerarArquivoCsv(pedido.getId());
 	    }
 
 	    if (status.equals(PedidoService.CANCELADO)) {
@@ -918,7 +918,9 @@ public class PedidoController {
 	}
     }
 
-    private void gerarArquivoCsv(Pedido pedido) throws Exception {
+    private void gerarArquivoCsv(Integer idPedido) throws Exception {
+
+	Pedido pedido = this.hibernateUtil.selecionar(new Pedido(idPedido));
 
 	String textoArquivo = "id_Codigo=" + pedido.getIdCodigo() + "\r\n";
 	textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";

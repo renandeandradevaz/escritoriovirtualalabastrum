@@ -69,7 +69,7 @@ public class ExtratoService {
 
 	    BigDecimal valor = BigDecimal.ZERO;
 
-	    if (extratoDTO.getValor().intValue() > 0 && isHabilitadoParaBonus(idCodigo, extratoDTO)) {
+	    if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) > 0 && isHabilitadoParaBonus(idCodigo, extratoDTO)) {
 
 		adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
 
@@ -111,7 +111,7 @@ public class ExtratoService {
 			bonusDesempenhoNoMes = bonusDesempenhoNoMes.add(extratoDTO.getValor());
 		    }
 		}
-	    } else if (extratoDTO.getValor().intValue() < 0) {
+	    } else if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) < 0) {
 
 		adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
 

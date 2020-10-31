@@ -6,7 +6,7 @@
 				<tr>
 					<th>Data</th>
 					<th>Histórico</th>
-					<th>Distribuidor</th>
+<!-- 					<th>Distribuidor</th> -->
 					<th>Valor</th>
 				</tr>
 			</thead>
@@ -17,10 +17,10 @@
 							<fmt:formatDate value="${item.data.time}" type="DATE" />
 						</td>
 						<td class="centralizado">${item.discriminador}</td>
-						<td class="centralizado">${item.usuario.apelido}
-							<br>
-							${item.usuario.vNome}
-						</td>
+<%-- 						<td class="centralizado">${item.usuario.apelido} --%>
+<!-- 							<br> -->
+<%-- 							${item.usuario.vNome} --%>
+<!-- 						</td> -->
 						<td class="centralizado">
 							R$
 							<fmt:formatNumber value="${item.valor}" pattern="#,##0.00" />
