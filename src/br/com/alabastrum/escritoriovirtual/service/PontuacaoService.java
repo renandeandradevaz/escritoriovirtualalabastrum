@@ -166,7 +166,7 @@ public class PontuacaoService {
 	return somaPontuacao.intValue();
     }
 
-    public int calcularPontuacaoDeProdutoTodaEmpresa(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
+    public int calcularPontuacaoGlobalDeTodaEmpresa(GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes) {
 
 	BigDecimal somaPontuacao = BigDecimal.ZERO;
 
@@ -175,7 +175,7 @@ public class PontuacaoService {
 	List<Pontuacao> pontuacoes = hibernateUtil.buscar(new Pontuacao(), restricoes);
 
 	for (Pontuacao pontuacao : pontuacoes) {
-	    somaPontuacao = somaPontuacao.add(pontuacao.getPntProduto());
+	    somaPontuacao = somaPontuacao.add(pontuacao.getPntGlobal());
 	}
 
 	return somaPontuacao.intValue();

@@ -6,12 +6,16 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Bonificacao;
+import br.com.alabastrum.escritoriovirtual.modelo.Transferencia;
+import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class ExtratoService {
@@ -28,6 +32,11 @@ public class ExtratoService {
     }
 
     public SaldoDTO gerarSaldoEExtrato(Integer idCodigo, Integer mes, Integer ano, boolean compressaoDeBonus) throws Exception {
+
+	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idCodigo));
+
+	Map<String, Boolean> atividadePorMesCache = new HashMap<String, Boolean>();
+	Map<String, Boolean> indicadosDiretosAtivosPorMesCache = new HashMap<String, Boolean>();
 
 	List<ExtratoDTO> extratoCompleto = new ArrayList<ExtratoDTO>();
 	extratoCompleto.addAll(new BonusDePrimeiraCompraService(hibernateUtil).obterBonificacoesDePrimeiraCompra(idCodigo));
@@ -65,15 +74,13 @@ public class ExtratoService {
 
 	    boolean isMesPesquisado = extratoDTO.getData().get(Calendar.MONTH) == mes && extratoDTO.getData().get(Calendar.YEAR) == ano;
 
-	    // adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
-
 	    BigDecimal valor = BigDecimal.ZERO;
 
-	    if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) > 0 && isHabilitadoParaBonus(idCodigo, extratoDTO)) {
+	    if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) > 0 && isHabilitadoParaBonus(idCodigo, extratoDTO, atividadePorMesCache, indicadosDiretosAtivosPorMesCache)) {
 
 		adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
 
-		valor = extratoDTO.getValor().subtract(new TarifasService(hibernateUtil).calcularInss(idCodigo, extratoDTO.getValor()));
+		valor = extratoDTO.getValor().subtract(new TarifasService().calcularInss(usuario.getDescontaInss(), extratoDTO.getValor()));
 		ganhosAteHoje = ganhosAteHoje.add(valor);
 
 		if (isMesPesquisado) {
@@ -143,18 +150,43 @@ public class ExtratoService {
 	saldoDTO.setBonusDesempenhoNoMes(bonusDesempenhoNoMes);
 	saldoDTO.setSaldoAnteriorAoMesPesquisado(saldoAnteriorAoMesPesquisado);
 	saldoDTO.setGanhosNoMesPesquisado(ganhosNoMesPesquisado);
-	saldoDTO.setInssNoMesPesquisado(new TarifasService(hibernateUtil).calcularInss(idCodigo, ganhosNoMesPesquisado));
+	saldoDTO.setInssNoMesPesquisado(new TarifasService().calcularInss(usuario.getDescontaInss(), ganhosNoMesPesquisado));
 	saldoDTO.setGastosNoMesPesquisado(gastosNoMesPesquisado);
 
 	return saldoDTO;
     }
 
-    private boolean isHabilitadoParaBonus(Integer idCodigo, ExtratoDTO extratoDTO) {
+    private boolean isHabilitadoParaBonus(Integer idCodigo, ExtratoDTO extratoDTO, Map<String, Boolean> atividadePorMesCacheMap, Map<String, Boolean> indicadosDiretosAtivosPorMesCacheMap) {
 
-	boolean ativo = new AtividadeService(hibernateUtil).isAtivo(idCodigo, extratoDTO.getData());
+	if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_CREDITO)) {
+	    return true;
+	}
+
+	GregorianCalendar data = extratoDTO.getData();
+	String mesEAno = data.get(Calendar.MONTH) + "/" + data.get(Calendar.YEAR);
+
+	Boolean ativo = null;
+	Boolean atividadePorMesCache = atividadePorMesCacheMap.get(mesEAno);
+	if (atividadePorMesCache == null) {
+	    ativo = new AtividadeService(hibernateUtil).isAtivo(idCodigo, data);
+	    atividadePorMesCacheMap.put(mesEAno, ativo);
+	} else {
+	    ativo = atividadePorMesCache;
+	    System.out.println("pegou do cache atividadePorMesCacheMap");
+	}
+
+	Boolean possuiIndicadosAtivosDiretos = null;
+	Boolean indicadosDiretosAtivosPorMesCache = indicadosDiretosAtivosPorMesCacheMap.get(mesEAno);
+	if (indicadosDiretosAtivosPorMesCache == null) {
+	    possuiIndicadosAtivosDiretos = new AtividadeService(hibernateUtil).possuiIndicadosDiretosAtivos(idCodigo, data, 3);
+	    indicadosDiretosAtivosPorMesCacheMap.put(mesEAno, possuiIndicadosAtivosDiretos);
+	} else {
+	    possuiIndicadosAtivosDiretos = indicadosDiretosAtivosPorMesCache;
+	    System.out.println("pegou do cache indicadosDiretosAtivosPorMesCacheMap");
+	}
 
 	if (extratoDTO.getDiscriminador().equals(BonusTrinarioService.BÔNUS_TRINARIO)) {
-	    return ativo && new AtividadeService(hibernateUtil).possuiIndicadosDiretosAtivos(idCodigo, extratoDTO.getData(), 3);
+	    return ativo && possuiIndicadosAtivosDiretos;
 	}
 
 	return ativo;

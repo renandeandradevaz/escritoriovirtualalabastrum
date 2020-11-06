@@ -51,9 +51,9 @@ public class BonusLinearComCompressaoDinamicaRotina implements Runnable {
 
 			    for (Pontuacao pontuacao : pontuacoes) {
 
-				if (pontuacao.getPntProduto().compareTo(BigDecimal.ZERO) > 0) {
+				if (pontuacao.getPntLinear().compareTo(BigDecimal.ZERO) > 0) {
 
-				    new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, idIndicante, pontuacao.getPntProduto().multiply(new BigDecimal("0.1")), Bonificacao.BÔNUS_LINEAR, false);
+				    new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, idIndicante, pontuacao.getPntLinear().multiply(new BigDecimal("0.1")), Bonificacao.BÔNUS_LINEAR, false);
 				}
 			    }
 

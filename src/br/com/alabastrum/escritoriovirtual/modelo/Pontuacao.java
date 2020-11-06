@@ -26,6 +26,8 @@ public class Pontuacao implements Entidade {
     private BigDecimal PntProduto;
     private BigDecimal PntQualificacao;
     private BigDecimal pntfilaunica;
+    private BigDecimal PntLinear;
+    private BigDecimal pntGlobal;
     private BigDecimal valorIngresso;
 
     @Index(name = "index_id_Codigo_pontuacao")
@@ -117,5 +119,21 @@ public class Pontuacao implements Entidade {
 
     public void setPntfilaunica(BigDecimal pntfilaunica) {
 	this.pntfilaunica = pntfilaunica;
+    }
+
+    public BigDecimal getPntLinear() {
+	return PntLinear;
+    }
+
+    public void setPntLinear(BigDecimal pntLinear) {
+	PntLinear = pntLinear;
+    }
+
+    public BigDecimal getPntGlobal() {
+	return pntGlobal;
+    }
+
+    public void setPntGlobal(BigDecimal pntGlobal) {
+	this.pntGlobal = pntGlobal;
     }
 }

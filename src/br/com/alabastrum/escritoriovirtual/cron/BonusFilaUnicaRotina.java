@@ -38,9 +38,13 @@ public class BonusFilaUnicaRotina implements Runnable {
 
 	    if (quantidadeUsuariosHabilitados > 0) {
 
-		Integer pontuacaoProdutoCompletaDoMes = new PontuacaoService(hibernateUtil).calcularPontuacaoDeProdutoTodaEmpresa(primeiroDiaDoMes, ultimoDiaDoMes);
+		// Integer pontuacaoProdutoCompletaDoMes = new
+		// PontuacaoService(hibernateUtil).calcularPontuacaoDeProdutoTodaEmpresa(primeiroDiaDoMes,
+		// ultimoDiaDoMes);
 		Integer pontuacaoFilaUnicaDoMes = new PontuacaoService(hibernateUtil).calcularPontuacaoFilaUnicaTodaEmpresa(primeiroDiaDoMes, ultimoDiaDoMes);
-		Integer pontuacaoTotalNoMes = pontuacaoProdutoCompletaDoMes + pontuacaoFilaUnicaDoMes;
+		// Integer pontuacaoTotalNoMes = pontuacaoProdutoCompletaDoMes +
+		// pontuacaoFilaUnicaDoMes;
+		Integer pontuacaoTotalNoMes = pontuacaoFilaUnicaDoMes;
 		BigDecimal valorASerDivididoNoMes = new BigDecimal(pontuacaoTotalNoMes).multiply(new BigDecimal(0.12));
 		BigDecimal valorCota = calcularCota(quantidadeUsuariosHabilitados, valorASerDivididoNoMes);
 

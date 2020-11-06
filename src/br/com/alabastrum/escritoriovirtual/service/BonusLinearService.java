@@ -41,9 +41,18 @@ public class BonusLinearService {
 
 		if (pontuacao.getDt_Pontos().before(primeiroOutubro2020)) {
 
-		    if (pontuacao.getPntProduto().compareTo(BigDecimal.ZERO) > 0) {
+		    BigDecimal pontuacaoParaCalculo = null;
 
-			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(arvoreHierarquicaEntry.getKey())), pontuacao.getDt_Pontos(), pontuacao.getPntProduto().multiply(new BigDecimal("0.1")), BÔNUS_LINEAR));
+		    BigDecimal pntLinear = pontuacao.getPntLinear();
+		    if (pntLinear != null && pntLinear.compareTo(BigDecimal.ZERO) > 0) {
+			pontuacaoParaCalculo = pntLinear;
+		    } else {
+			pontuacaoParaCalculo = pontuacao.getPntProduto();
+		    }
+
+		    if (pontuacaoParaCalculo != null && pontuacaoParaCalculo.compareTo(BigDecimal.ZERO) > 0) {
+
+			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(arvoreHierarquicaEntry.getKey())), pontuacao.getDt_Pontos(), pontuacaoParaCalculo.multiply(new BigDecimal("0.1")), BÔNUS_LINEAR));
 		    }
 		}
 	    }
