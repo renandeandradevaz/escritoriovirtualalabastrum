@@ -65,7 +65,7 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 	    Posicao posicao = new PosicoesService(hibernateUtil).obterPosicaoPorNome(new PontuacaoService(hibernateUtil).calcularGraduacaoMensal(idCodigo, ontem).getPosicaoAtual(), ontem);
 	    BigDecimal bonus = posicao.getBonusReconhecimento();
 	    if (bonus.intValue() > 0) {
-		new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, bonus, Bonificacao.BONUS_DE_RECONHECIMENTO);
+		new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, null, bonus, Bonificacao.BONUS_DE_RECONHECIMENTO);
 		usuariosQueReceberamBonusDeReconhecimento.put(idCodigo, 1);
 	    }
 	}
@@ -92,7 +92,7 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 
 		    BigDecimal bonus = posicao.getBonusDesempenho();
 		    if (bonus.intValue() > 0) {
-			new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, bonus, Bonificacao.BONUS_DE_DESEMPENHO);
+			new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, null, bonus, Bonificacao.BONUS_DE_DESEMPENHO);
 		    }
 		}
 	    }

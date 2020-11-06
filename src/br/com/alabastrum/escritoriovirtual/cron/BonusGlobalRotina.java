@@ -92,7 +92,7 @@ public class BonusGlobalRotina implements Runnable {
 		    }
 
 		    BigDecimal valorParaPagamento = valorCota.multiply(new BigDecimal(quantidadeDeCotasDoUsuario));
-		    new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, valorParaPagamento, Bonificacao.BONUS_GLOBAL);
+		    new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, null, valorParaPagamento, Bonificacao.BONUS_GLOBAL);
 		}
 	    }
 

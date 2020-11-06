@@ -66,7 +66,7 @@ public class BonusTrinarioComCompressaoDinamicaRotina implements Runnable {
 					ParametroAtividade parametroAtividade = new ParametroAtividadeService(hibernateUtil).buscarParametroAtividade(pontuacao.getDt_Pontos(), nivelAscendente);
 
 					if (parametroAtividade != null) {
-					    new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, usuario.getId_Codigo(), parametroAtividade.getBonusAtividade(), Bonificacao.BÔNUS_TRINARIO, false);
+					    new BonificacoesPreProcessadasService(hibernateUtil).salvarBonificacao(ontem, primeiroDiaDoMes, ultimoDiaDoMes, usuario.getId_Codigo(), pontuacao.getId_Codigo(), parametroAtividade.getBonusAtividade(), Bonificacao.BÔNUS_TRINARIO, false);
 					}
 				    }
 				}

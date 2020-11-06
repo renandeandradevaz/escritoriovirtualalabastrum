@@ -7,7 +7,6 @@ import java.util.List;
 import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Transferencia;
-import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 
 public class TransferenciaService {
 
@@ -27,7 +26,7 @@ public class TransferenciaService {
 	List<Transferencia> transferencias = hibernateUtil.buscar(transferenciaFiltro);
 
 	for (Transferencia transferencia : transferencias) {
-	    extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(transferencia.getPara())), transferencia.getData(), transferencia.getValor(), transferencia.getTipo(), transferencia.getDescricao()));
+	    extratos.add(new ExtratoDTO(null, transferencia.getData(), transferencia.getValor(), transferencia.getTipo(), transferencia.getDescricao()));
 	}
 
 	return extratos;
@@ -42,7 +41,7 @@ public class TransferenciaService {
 	List<Transferencia> transferencias = hibernateUtil.buscar(transferenciaFiltro);
 
 	for (Transferencia transferencia : transferencias) {
-	    extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(transferencia.getDe())), transferencia.getData(), transferencia.getValor().multiply(new BigDecimal(-1)), transferencia.getTipo(), transferencia.getDescricao()));
+	    extratos.add(new ExtratoDTO(null, transferencia.getData(), transferencia.getValor().multiply(new BigDecimal(-1)), transferencia.getTipo(), transferencia.getDescricao()));
 	}
 
 	return extratos;

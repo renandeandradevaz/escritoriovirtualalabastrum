@@ -49,7 +49,14 @@ public class BonificacoesPreProcessadasService {
 	List<Bonificacao> bonificacoes = buscarBonificacoes(idCodigo);
 
 	for (Bonificacao bonificacao : bonificacoes) {
-	    extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(idCodigo)), bonificacao.getData(), bonificacao.getValor(), bonificacao.getTipo()));
+
+	    Usuario usuarioOrigemBonus = null;
+
+	    if (Util.preenchido(bonificacao.getIdCodigoOrigemBonus())) {
+		usuarioOrigemBonus = (Usuario) hibernateUtil.selecionar(new Usuario(bonificacao.getIdCodigoOrigemBonus()));
+	    }
+
+	    extratos.add(new ExtratoDTO(usuarioOrigemBonus, bonificacao.getData(), bonificacao.getValor(), bonificacao.getTipo()));
 	}
 
 	return extratos;
@@ -62,11 +69,11 @@ public class BonificacoesPreProcessadasService {
 	return hibernateUtil.buscar(filtro);
     }
 
-    public void salvarBonificacao(GregorianCalendar data, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo, BigDecimal bonus, String tipoDeBonus) {
-	salvarBonificacao(data, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, bonus, tipoDeBonus, true);
+    public void salvarBonificacao(GregorianCalendar data, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo, Integer idCodigoOrigemBonus, BigDecimal bonus, String tipoDeBonus) {
+	salvarBonificacao(data, primeiroDiaDoMes, ultimoDiaDoMes, idCodigo, idCodigoOrigemBonus, bonus, tipoDeBonus, true);
     }
 
-    public void salvarBonificacao(GregorianCalendar data, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo, BigDecimal bonus, String tipoDeBonus, boolean deletarAnteriores) {
+    public void salvarBonificacao(GregorianCalendar data, GregorianCalendar primeiroDiaDoMes, GregorianCalendar ultimoDiaDoMes, Integer idCodigo, Integer idCodigoOrigemBonus, BigDecimal bonus, String tipoDeBonus, boolean deletarAnteriores) {
 
 	if (deletarAnteriores) {
 
@@ -79,6 +86,7 @@ public class BonificacoesPreProcessadasService {
 
 	Bonificacao bonificacao = new Bonificacao();
 	bonificacao.setIdCodigo(idCodigo);
+	bonificacao.setIdCodigoOrigemBonus(idCodigoOrigemBonus);
 	bonificacao.setData(data);
 	bonificacao.setTipo(tipoDeBonus);
 	bonificacao.setValor(bonus);

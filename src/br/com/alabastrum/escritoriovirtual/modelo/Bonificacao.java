@@ -29,6 +29,8 @@ public class Bonificacao implements Entidade {
     private BigDecimal valor;
     private String tipo;
 
+    private Integer idCodigoOrigemBonus;
+
     @Index(name = "index_bonus_usuario_id")
     private Integer idCodigo;
 
@@ -70,5 +72,13 @@ public class Bonificacao implements Entidade {
 
     public void setIdCodigo(Integer idCodigo) {
 	this.idCodigo = idCodigo;
+    }
+
+    public Integer getIdCodigoOrigemBonus() {
+	return idCodigoOrigemBonus;
+    }
+
+    public void setIdCodigoOrigemBonus(Integer idCodigoOrigemBonus) {
+	this.idCodigoOrigemBonus = idCodigoOrigemBonus;
     }
 }
