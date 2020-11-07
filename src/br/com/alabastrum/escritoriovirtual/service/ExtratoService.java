@@ -9,7 +9,9 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
 import br.com.alabastrum.escritoriovirtual.dto.ExtratoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
@@ -34,13 +36,14 @@ public class ExtratoService {
     public SaldoDTO gerarSaldoEExtrato(Integer idCodigo, Integer mes, Integer ano, boolean compressaoDeBonus) throws Exception {
 
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idCodigo));
+	TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMap = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(idCodigo);
 
 	Map<String, Boolean> atividadePorMesCache = new HashMap<String, Boolean>();
 	Map<String, Boolean> indicadosDiretosAtivosPorMesCache = new HashMap<String, Boolean>();
 
 	List<ExtratoDTO> extratoCompleto = new ArrayList<ExtratoDTO>();
-	extratoCompleto.addAll(new BonusDePrimeiraCompraService(hibernateUtil).obterBonificacoesDePrimeiraCompra(idCodigo));
-	extratoCompleto.addAll(new BonusLinearService(hibernateUtil).obterBonificacoesLineares(idCodigo));
+	extratoCompleto.addAll(new BonusDePrimeiraCompraService(hibernateUtil).obterBonificacoesDePrimeiraCompra(idCodigo, arvoreHierarquicaMap));
+	extratoCompleto.addAll(new BonusLinearService(hibernateUtil).obterBonificacoesLineares(idCodigo, arvoreHierarquicaMap));
 	extratoCompleto.addAll(new BonusTrinarioService(hibernateUtil).obterBonificacoesTrinarias(idCodigo));
 	extratoCompleto.addAll(new BonificacoesPreProcessadasService(hibernateUtil).obterBonificacoesPreProcessadas(idCodigo));
 	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeCredito(idCodigo));
@@ -76,7 +79,7 @@ public class ExtratoService {
 
 	    BigDecimal valor = BigDecimal.ZERO;
 
-	    if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) > 0 && isHabilitadoParaBonus(idCodigo, extratoDTO, atividadePorMesCache, indicadosDiretosAtivosPorMesCache)) {
+	    if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) > 0 && isHabilitadoParaBonus(idCodigo, extratoDTO, atividadePorMesCache, indicadosDiretosAtivosPorMesCache, arvoreHierarquicaMap)) {
 
 		adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
 
@@ -156,7 +159,7 @@ public class ExtratoService {
 	return saldoDTO;
     }
 
-    private boolean isHabilitadoParaBonus(Integer idCodigo, ExtratoDTO extratoDTO, Map<String, Boolean> atividadePorMesCacheMap, Map<String, Boolean> indicadosDiretosAtivosPorMesCacheMap) {
+    private boolean isHabilitadoParaBonus(Integer idCodigo, ExtratoDTO extratoDTO, Map<String, Boolean> atividadePorMesCacheMap, Map<String, Boolean> indicadosDiretosAtivosPorMesCacheMap, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMap) {
 
 	if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_CREDITO)) {
 	    return true;
@@ -172,17 +175,15 @@ public class ExtratoService {
 	    atividadePorMesCacheMap.put(mesEAno, ativo);
 	} else {
 	    ativo = atividadePorMesCache;
-	    System.out.println("pegou do cache atividadePorMesCacheMap");
 	}
 
 	Boolean possuiIndicadosAtivosDiretos = null;
 	Boolean indicadosDiretosAtivosPorMesCache = indicadosDiretosAtivosPorMesCacheMap.get(mesEAno);
 	if (indicadosDiretosAtivosPorMesCache == null) {
-	    possuiIndicadosAtivosDiretos = new AtividadeService(hibernateUtil).possuiIndicadosDiretosAtivos(idCodigo, data, 3);
+	    possuiIndicadosAtivosDiretos = new AtividadeService(hibernateUtil).possuiIndicadosDiretosAtivos(idCodigo, data, 3, arvoreHierarquicaMap);
 	    indicadosDiretosAtivosPorMesCacheMap.put(mesEAno, possuiIndicadosAtivosDiretos);
 	} else {
 	    possuiIndicadosAtivosDiretos = indicadosDiretosAtivosPorMesCache;
-	    System.out.println("pegou do cache indicadosDiretosAtivosPorMesCacheMap");
 	}
 
 	if (extratoDTO.getDiscriminador().equals(BonusTrinarioService.BÔNUS_TRINARIO)) {

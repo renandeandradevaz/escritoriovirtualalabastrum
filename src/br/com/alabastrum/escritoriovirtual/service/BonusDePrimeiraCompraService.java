@@ -34,11 +34,9 @@ public class BonusDePrimeiraCompraService {
 	this.hibernateUtil = hibernateUtil;
     }
 
-    public List<ExtratoDTO> obterBonificacoesDePrimeiraCompra(Integer idCodigo) throws Exception {
+    public List<ExtratoDTO> obterBonificacoesDePrimeiraCompra(Integer idCodigo, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMap) throws Exception {
 
 	List<ExtratoDTO> extratos = new ArrayList<ExtratoDTO>();
-
-	TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMap = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(idCodigo);
 
 	Map<String, Adesao> adesoesMap = new HashMap<String, Adesao>();
 

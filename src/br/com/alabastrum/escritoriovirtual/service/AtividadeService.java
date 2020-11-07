@@ -41,18 +41,24 @@ public class AtividadeService {
 
     public boolean possuiIndicadosDiretosAtivos(Integer codigo, GregorianCalendar data, Integer quantidadeDeIndicadosDiretosMinimo) {
 
-	int quantidadeIndicadosAtual = 0;
+	return possuiIndicadosDiretosAtivos(codigo, data, quantidadeDeIndicadosDiretosMinimo, new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(codigo, 1));
+    }
 
-	TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMap = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(codigo, 1);
+    public boolean possuiIndicadosDiretosAtivos(Integer codigo, GregorianCalendar data, Integer quantidadeDeIndicadosDiretosMinimo, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMap) {
+
+	int quantidadeIndicadosAtual = 0;
 
 	for (Entry<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEntry : arvoreHierarquicaMap.entrySet()) {
 
-	    if (isAtivo(arvoreHierarquicaEntry.getKey(), data)) {
-		quantidadeIndicadosAtual++;
-	    }
+	    if (arvoreHierarquicaEntry.getValue().getNivel() <= 1) {
 
-	    if (quantidadeIndicadosAtual >= quantidadeDeIndicadosDiretosMinimo) {
-		return true;
+		if (isAtivo(arvoreHierarquicaEntry.getKey(), data)) {
+		    quantidadeIndicadosAtual++;
+		}
+
+		if (quantidadeIndicadosAtual >= quantidadeDeIndicadosDiretosMinimo) {
+		    return true;
+		}
 	    }
 	}
 

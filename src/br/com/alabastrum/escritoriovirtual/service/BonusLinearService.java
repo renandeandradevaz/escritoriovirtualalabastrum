@@ -25,34 +25,35 @@ public class BonusLinearService {
 	this.hibernateUtil = hibernateUtil;
     }
 
-    public List<ExtratoDTO> obterBonificacoesLineares(Integer idCodigo) throws Exception {
+    public List<ExtratoDTO> obterBonificacoesLineares(Integer idCodigo, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMap) throws Exception {
 
 	List<ExtratoDTO> extratos = new ArrayList<ExtratoDTO>();
 
-	TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMap = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(idCodigo, 1);
-
 	for (Entry<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEntry : arvoreHierarquicaMap.entrySet()) {
 
-	    List<Pontuacao> pontuacoes = new PontuacaoService(hibernateUtil).buscarPontuacoes(arvoreHierarquicaEntry.getKey());
+	    if (arvoreHierarquicaEntry.getValue().getNivel() <= 1) {
 
-	    for (Pontuacao pontuacao : pontuacoes) {
+		List<Pontuacao> pontuacoes = new PontuacaoService(hibernateUtil).buscarPontuacoes(arvoreHierarquicaEntry.getKey());
 
-		GregorianCalendar primeiroOutubro2020 = new GregorianCalendar(2020, Calendar.OCTOBER, 1);
+		for (Pontuacao pontuacao : pontuacoes) {
 
-		if (pontuacao.getDt_Pontos().before(primeiroOutubro2020)) {
+		    GregorianCalendar primeiroOutubro2020 = new GregorianCalendar(2020, Calendar.OCTOBER, 1);
 
-		    BigDecimal pontuacaoParaCalculo = null;
+		    if (pontuacao.getDt_Pontos().before(primeiroOutubro2020)) {
 
-		    BigDecimal pntLinear = pontuacao.getPntLinear();
-		    if (pntLinear != null && pntLinear.compareTo(BigDecimal.ZERO) > 0) {
-			pontuacaoParaCalculo = pntLinear;
-		    } else {
-			pontuacaoParaCalculo = pontuacao.getPntProduto();
-		    }
+			BigDecimal pontuacaoParaCalculo = null;
 
-		    if (pontuacaoParaCalculo != null && pontuacaoParaCalculo.compareTo(BigDecimal.ZERO) > 0) {
+			BigDecimal pntLinear = pontuacao.getPntLinear();
+			if (pntLinear != null && pntLinear.compareTo(BigDecimal.ZERO) > 0) {
+			    pontuacaoParaCalculo = pntLinear;
+			} else {
+			    pontuacaoParaCalculo = pontuacao.getPntProduto();
+			}
 
-			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(arvoreHierarquicaEntry.getKey())), pontuacao.getDt_Pontos(), pontuacaoParaCalculo.multiply(new BigDecimal("0.1")), BÔNUS_LINEAR));
+			if (pontuacaoParaCalculo != null && pontuacaoParaCalculo.compareTo(BigDecimal.ZERO) > 0) {
+
+			    extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(arvoreHierarquicaEntry.getKey())), pontuacao.getDt_Pontos(), pontuacaoParaCalculo.multiply(new BigDecimal("0.1")), BÔNUS_LINEAR));
+			}
 		    }
 		}
 	    }
