@@ -51,12 +51,17 @@ public class HomeController {
 
 	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompletaPorIdLider = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuarioLogado.getId_Codigo(), "id_lider");
 	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompletaPorIdIndicante = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(usuarioLogado.getId_Codigo());
-	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaPorIdIndicanteNivel1 = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(usuarioLogado.getId_Codigo(), 1);
+
+	int diretos = 0;
 
 	int ativos = 0;
 	int inativos = 0;
 
 	for (Entry<Integer, ArvoreHierarquicaDTO> distribuidorEntry : arvoreHierarquicaCompletaPorIdIndicante.entrySet()) {
+
+	    if (distribuidorEntry.getValue().getNivel() <= 1) {
+		diretos++;
+	    }
 
 	    if (new AtividadeService(hibernateUtil).isAtivo(distribuidorEntry.getKey()))
 		ativos++;
@@ -66,9 +71,9 @@ public class HomeController {
 	}
 
 	result.include("totalAbaixoFilaUnica", totalAbaixoFilaUnica);
-	result.include("graduacaoMensal", new PontuacaoService(this.hibernateUtil).calcularGraduacaoMensal(usuarioLogado.getId_Codigo(), null));
+	result.include("graduacaoMensal", new PontuacaoService(this.hibernateUtil).calcularGraduacaoMensal(usuarioLogado.getId_Codigo(), null, arvoreHierarquicaCompletaPorIdIndicante));
 	result.include("quantidadesExistentes", new MatrizService().calcularQuantidadesExistentes(arvoreHierarquicaCompletaPorIdLider));
-	result.include("diretos", arvoreHierarquicaPorIdIndicanteNivel1.size());
+	result.include("diretos", diretos);
 	result.include("equipe", arvoreHierarquicaCompletaPorIdIndicante.size());
 	result.include("ativos", ativos);
 	result.include("inativos", inativos);

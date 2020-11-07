@@ -16,7 +16,6 @@ import br.com.alabastrum.escritoriovirtual.dto.GraduacaoMensalDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Pontuacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
-import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class PontuacaoService {
@@ -28,16 +27,27 @@ public class PontuacaoService {
 	this.hibernateUtil = hibernateUtil;
     }
 
+    public GraduacaoMensalDTO calcularGraduacaoMensal(Integer idCodigo, GregorianCalendar data, Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompletaPorIdIndicante) {
+	return calcularGraduacaoMensal(idCodigo, data, false, arvoreHierarquicaCompletaPorIdIndicante);
+    }
+
     public GraduacaoMensalDTO calcularGraduacaoMensal(Integer idCodigo, GregorianCalendar data) {
-	return calcularGraduacaoMensal(idCodigo, data, false);
+	return calcularGraduacaoMensal(idCodigo, data, false, null);
     }
 
     public GraduacaoMensalDTO calcularGraduacaoMensal(Integer idCodigo, GregorianCalendar data, boolean calcularPorPontuacaoDesempenho) {
+	return calcularGraduacaoMensal(idCodigo, data, calcularPorPontuacaoDesempenho, null);
+    }
 
-	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idCodigo));
+    public GraduacaoMensalDTO calcularGraduacaoMensal(Integer idCodigo, GregorianCalendar data, boolean calcularPorPontuacaoDesempenho, Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompletaPorIdIndicante) {
 
 	if (data == null) {
 	    data = Util.getTempoCorrenteAMeiaNoite();
+	}
+
+	if (arvoreHierarquicaCompletaPorIdIndicante == null) {
+	    arvoreHierarquicaCompletaPorIdIndicante = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(idCodigo);
+
 	}
 
 	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(data);
@@ -52,22 +62,25 @@ public class PontuacaoService {
 	    pontuacoesPorLinha.add(somaPontuacaoAproveitadaTotal);
 	}
 
-	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaNivel1 = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(usuario.getId_Codigo(), 1);
-	for (ArvoreHierarquicaDTO distribuidorNivel1 : arvoreHierarquicaNivel1.values()) {
+	for (ArvoreHierarquicaDTO distribuidorNivel1 : arvoreHierarquicaCompletaPorIdIndicante.values()) {
 
-	    Integer somaPontuacaoPorLinha = calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, distribuidorNivel1.getUsuario().getId_Codigo());
+	    if (distribuidorNivel1.getNivel() <= 1) {
 
-	    Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaTodosOsNiveis = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(distribuidorNivel1.getUsuario().getId_Codigo());
+		Integer somaPontuacaoPorLinha = calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, distribuidorNivel1.getUsuario().getId_Codigo());
 
-	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaTodosOsNiveis.values()) {
-		somaPontuacaoPorLinha += calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDTO.getUsuario().getId_Codigo());
+		Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaTodosOsNiveis = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(distribuidorNivel1.getUsuario().getId_Codigo());
+
+		for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquicaTodosOsNiveis.values()) {
+		    somaPontuacaoPorLinha += calcularPontuacaoParaQualificacao(primeiroDiaDoMes, ultimoDiaDoMes, arvoreHierarquicaDTO.getUsuario().getId_Codigo());
+		}
+
+		if (somaPontuacaoPorLinha > 0) {
+		    pontuacoesPorLinha.add(somaPontuacaoPorLinha);
+		}
+
+		somaPontuacaoTotal += somaPontuacaoPorLinha;
 	    }
 
-	    if (somaPontuacaoPorLinha > 0) {
-		pontuacoesPorLinha.add(somaPontuacaoPorLinha);
-	    }
-
-	    somaPontuacaoTotal += somaPontuacaoPorLinha;
 	}
 
 	Posicao posicaoAtual = new PosicoesService(hibernateUtil).obterPosicaoPorOrdemNumerica(1, data);
