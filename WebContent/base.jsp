@@ -68,6 +68,7 @@
 					<a href="<c:url value="/creditoEDebito/listarTransferenciasCreditoEDebito"/>" class="submenu-accordion"> Crédito e débito </a>
 					<a href="<c:url value="/saldoGeral/acessarTelaSaldoGeral"/>" class="submenu-accordion"> Saldo Geral </a>
 					<a href="<c:url value="/configuracao/acessarTelaConfiguracaoAdministrativa"/>" class="submenu-accordion"> Configurações Administrativas </a>
+					<a href="<c:url value="/relatorios/acessarTelaRelatorios"/>" class="submenu-accordion"> Relatórios </a>
 				</div>
 			</c:if>
 		</div>
