@@ -62,6 +62,7 @@ public class RelatorioHistoricoDeBonusController {
 	result.include("bonificacoes", bonificacoes);
 	result.include("total", total);
 	result.include("pesquisaRelatorioHistoricoDeBonusDTO", pesquisaRelatorioHistoricoDeBonusDTO);
+	result.include("pesquisa", true);
 
 	result.forwardTo(this).acessarRelatorioHistoricoDeBonus();
     }
