@@ -19,6 +19,7 @@
 <script type="text/javascript" src="<c:url value="/js/jquery.collapse.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/js/jquery.collapse_storage.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/js/jquery.collapse_cookie_storage.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/js/my-scripts.js"/>"></script>
 </head>
 <body>
 	<div class="topo">
