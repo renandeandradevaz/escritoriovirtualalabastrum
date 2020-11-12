@@ -1,6 +1,8 @@
 <%@ include file="/base.jsp"%>
 <div class="fundo-branco">
 	<h4>Histórico de bônus</h4>
+	<br>
+	<span>(Observação: Este relatório trabalha com uma quantidade imensa de informações, e pode ser que demore pra exibir os resultados da busca. Tenha paciência enquanto o mesmo é carregado) </span>
 </div>
 <br>
 <div class="fundo-branco">
@@ -58,59 +60,50 @@
 	<table class="table table-striped table-bordered" id='tabela-historico-bonus'>
 		<thead>
 			<tr>
-				<th>Código do pedido</th>
-				<th>Tipo do pedido</th>
-				<th>Distribuidor</th>
-				<th>Franquia</th>
+				<th>Distribuidor beneficiado</th>
 				<th>Data</th>
+				<th>Histórico</th>
+				<th>Distribuidor de origem</th>
 				<th>Valor (R$)</th>
-				<th>Status</th>
-				<th>Forma de pagamento</th>
-				<th>Forma de entrega</th>
-				<th>Empresa para entrega</th>
-				<th>Ações</th>
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach items="${pedidosDTO}" var="item">
+			<c:forEach items="${bonificacoes}" var="item">
 				<tr>
-					<td class="centralizado">${item.pedido.id}</td>
-					<td class="centralizado">${item.pedido.tipo}</td>
-					<td class="centralizado">${item.distribuidor.apelido}
+					<td class="centralizado">
+						${item.usuarioRecebedorDoBonus.apelido}
 						<br>
 						-
 						<br>
-						${item.distribuidor.vNome}
-					</td>
-					<td class="centralizado">${item.franquia.estqUF}-${item.franquia.estqCidade}-${item.franquia.estqBairro}</td>
-					<td class="centralizado">
-						<fmt:formatDate value="${item.pedido.data.time}" type="DATE" />
+						${item.usuarioRecebedorDoBonus.vNome}
 					</td>
 					<td class="centralizado">
-						<fmt:formatNumber value="${item.valorTotal}" pattern="#,##0.00" />
+						<fmt:formatDate value="${item.extratoDTO.data.time}" type="DATE" />
 					</td>
-					<td class="centralizado">${item.pedido.status}</td>
-					<td class="centralizado">${item.pedido.formaDePagamento}</td>
-					<td class="centralizado">${item.pedido.formaDeEntrega}</td>
-					<td class="centralizado">${item.pedido.empresaParaEntrega}</td>
-					<td style="text-align: center;">
-						<a class="btn btn-default" href="<c:url value="/pedido/verItens/${item.pedido.id}"/>"> Detalhar </a>
-						<br>
-						<br>
-						<c:if test="${item.pedido.status == 'PENDENTE'}">
-							<a class="btn btn-success" href="<c:url value="/pedido/alterarStatus/${item.pedido.id}/FINALIZADO"/>"> Marcar como pago e finalizar pedido </a>
+					<td class="centralizado">${item.extratoDTO.discriminador}</td>
+					<td class="centralizado">
+						<c:if test="${not empty item.extratoDTO.usuario}">
+							${item.extratoDTO.usuario.apelido}
 							<br>
-							<br>
-							<a class="btn btn-danger" href="<c:url value="/pedido/alterarStatus/${item.pedido.id}/CANCELADO"/>"> Cancelar </a>
-							<br>
-							<br>
+                             -
+                            <br>
+							${item.extratoDTO.usuario.vNome}
 						</c:if>
-						<a class="btn btn-info" href="<c:url value="/pedido/imprimirPedido/${item.pedido.id}"/>"> Imprimir pedido</a>
 					</td>
-				</tr>
+					<td class="centralizado">
+						<fmt:formatNumber value="${item.extratoDTO.valor}" pattern="#,##0.00" />
+					</td>
 			</c:forEach>
 		</tbody>
 	</table>
+	<br>
+	<div class="fundo-branco">
+		<h5>
+			Valor total: R$
+			<fmt:formatNumber value="${total}" pattern="#,##0.00" />
+		</h5>
+	</div>
+	<br>
 	<br>
 	<br>
 </div>

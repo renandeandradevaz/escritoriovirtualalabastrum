@@ -1,5 +1,6 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,7 +39,7 @@ public class RelatorioHistoricoDeBonusController {
     }
 
     @Funcionalidade(administrativa = "true")
-    public void pesquisarPedidos(PesquisaRelatorioHistoricoDeBonusDTO pesquisaRelatorioHistoricoDeBonusDTO) throws Exception {
+    public void pesquisarHistoricoDeBonus(PesquisaRelatorioHistoricoDeBonusDTO pesquisaRelatorioHistoricoDeBonusDTO) throws Exception {
 
 	List<ResultadoRelatorioHistoricoDeBonusDTO> bonificacoes = new ArrayList<ResultadoRelatorioHistoricoDeBonusDTO>();
 
@@ -55,6 +56,23 @@ public class RelatorioHistoricoDeBonusController {
 	}
 
 	bonificacoes = ordenarExtratoPorDataCrescente(bonificacoes);
+
+	BigDecimal total = calcularTotal(bonificacoes);
+
+	result.include("bonificacoes", bonificacoes);
+	result.include("total", total);
+	result.include("pesquisaRelatorioHistoricoDeBonusDTO", pesquisaRelatorioHistoricoDeBonusDTO);
+
+	result.forwardTo(this).acessarRelatorioHistoricoDeBonus();
+    }
+
+    private BigDecimal calcularTotal(List<ResultadoRelatorioHistoricoDeBonusDTO> bonificacoes) {
+
+	BigDecimal total = BigDecimal.ZERO;
+	for (ResultadoRelatorioHistoricoDeBonusDTO bonificacao : bonificacoes) {
+	    total = total.add(bonificacao.getExtratoDTO().getValor());
+	}
+	return total;
     }
 
     private void gerarBonificacoes(List<ResultadoRelatorioHistoricoDeBonusDTO> bonificacoes, Usuario usuario, PesquisaRelatorioHistoricoDeBonusDTO pesquisaRelatorioHistoricoDeBonusDTO) throws Exception {
@@ -65,24 +83,35 @@ public class RelatorioHistoricoDeBonusController {
 
 	    if (Util.vazio(pesquisaRelatorioHistoricoDeBonusDTO.getTipoDeBonus()) || extratoDTO.getDiscriminador().equals(pesquisaRelatorioHistoricoDeBonusDTO.getTipoDeBonus())) {
 
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		Date dataInicial = simpleDateFormat.parse(pesquisaRelatorioHistoricoDeBonusDTO.getDataInicial());
-		Calendar dataInicialGregorianCalendar = new GregorianCalendar();
-		dataInicialGregorianCalendar.setTime(dataInicial);
-		Date dataFinal = simpleDateFormat.parse(pesquisaRelatorioHistoricoDeBonusDTO.getDataFinal());
-		Calendar dataFinalGregorianCalendar = new GregorianCalendar();
-		dataFinalGregorianCalendar.setTime(dataFinal);
-		// dataFinalGregorianCalendar.add(Calendar.DAY_OF_MONTH, 1);
+		if (Util.vazio(pesquisaRelatorioHistoricoDeBonusDTO.getDataInicial()) || Util.vazio(pesquisaRelatorioHistoricoDeBonusDTO.getDataInicial())) {
 
-		if (Util.vazio(pesquisaRelatorioHistoricoDeBonusDTO.getDataInicial()) || Util.vazio(pesquisaRelatorioHistoricoDeBonusDTO.getDataInicial()) || (extratoDTO.getData().after(dataInicialGregorianCalendar) && extratoDTO.getData().before(dataFinalGregorianCalendar))) {
+		    adicionarALista(bonificacoes, usuario, extratoDTO);
+		} else {
 
-		    ResultadoRelatorioHistoricoDeBonusDTO resultadoRelatorioHistoricoDeBonusDTO = new ResultadoRelatorioHistoricoDeBonusDTO();
-		    resultadoRelatorioHistoricoDeBonusDTO.setExtratoDTO(extratoDTO);
-		    resultadoRelatorioHistoricoDeBonusDTO.setUsuarioRecebedorDoBonus(usuario);
-		    bonificacoes.add(resultadoRelatorioHistoricoDeBonusDTO);
+		    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		    Date dataInicial = simpleDateFormat.parse(pesquisaRelatorioHistoricoDeBonusDTO.getDataInicial());
+		    Calendar dataInicialGregorianCalendar = new GregorianCalendar();
+		    dataInicialGregorianCalendar.setTime(dataInicial);
+		    dataInicialGregorianCalendar.add(Calendar.DAY_OF_MONTH, -1);
+		    Date dataFinal = simpleDateFormat.parse(pesquisaRelatorioHistoricoDeBonusDTO.getDataFinal());
+		    Calendar dataFinalGregorianCalendar = new GregorianCalendar();
+		    dataFinalGregorianCalendar.setTime(dataFinal);
+		    dataFinalGregorianCalendar.add(Calendar.DAY_OF_MONTH, 1);
+
+		    if (extratoDTO.getData().after(dataInicialGregorianCalendar) && extratoDTO.getData().before(dataFinalGregorianCalendar)) {
+			adicionarALista(bonificacoes, usuario, extratoDTO);
+		    }
 		}
 	    }
 	}
+    }
+
+    private void adicionarALista(List<ResultadoRelatorioHistoricoDeBonusDTO> bonificacoes, Usuario usuario, ExtratoDTO extratoDTO) {
+
+	ResultadoRelatorioHistoricoDeBonusDTO resultadoRelatorioHistoricoDeBonusDTO = new ResultadoRelatorioHistoricoDeBonusDTO();
+	resultadoRelatorioHistoricoDeBonusDTO.setExtratoDTO(extratoDTO);
+	resultadoRelatorioHistoricoDeBonusDTO.setUsuarioRecebedorDoBonus(usuario);
+	bonificacoes.add(resultadoRelatorioHistoricoDeBonusDTO);
     }
 
     private List<ResultadoRelatorioHistoricoDeBonusDTO> ordenarExtratoPorDataCrescente(List<ResultadoRelatorioHistoricoDeBonusDTO> bonificacoes) {
