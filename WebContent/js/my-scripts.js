@@ -9,6 +9,8 @@ $(document).ready(function() {
 		$('a').show();
 		$('body').html(restorepage);
 	});
+	
+	$( ".calendario" ).datepicker({ dateFormat: 'dd/mm/yy' });
 });
 
 // Quick and simple export target #table_id into a csv

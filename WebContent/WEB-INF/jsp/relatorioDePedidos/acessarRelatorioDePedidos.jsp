@@ -36,13 +36,13 @@
 			<div class="control-group">
 				<label class="control-label">Data inicial</label>
 				<div class="controls">
-					<input type="text" name="pesquisaRelatorioPedidosDTO.dataInicial" value="${pesquisaRelatorioPedidosDTO.dataInicial}" placeholder="03/11/2020">
+					<input type="text" name="pesquisaRelatorioPedidosDTO.dataInicial" value="${pesquisaRelatorioPedidosDTO.dataInicial}" placeholder="03/11/2020" class="calendario" autocomplete="off">
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label">Data final</label>
 				<div class="controls">
-					<input type="text" name="pesquisaRelatorioPedidosDTO.dataFinal" value="${pesquisaRelatorioPedidosDTO.dataFinal}" placeholder="25/04/2021">
+					<input type="text" name="pesquisaRelatorioPedidosDTO.dataFinal" value="${pesquisaRelatorioPedidosDTO.dataFinal}" placeholder="25/04/2021" class="calendario" autocomplete="off">
 				</div>
 			</div>
 			<div class="control-group">
