@@ -142,6 +142,7 @@ public class ExtratoService {
 	SaldoDTO saldoDTO = new SaldoDTO();
 	saldoDTO.setSaldoLiberado(saldoLiberado);
 	saldoDTO.setGanhosAteHoje(ganhosAteHoje);
+	saldoDTO.setExtratoCompleto(extratoCompleto);
 	saldoDTO.setExtratoDoMes(extratoDoMes);
 	saldoDTO.setBonusPrimeiraCompraNoMes(bonusPrimeiraCompraNoMes);
 	saldoDTO.setBonusDeAdesaoDePontoDeApoioNoMes(bonusDeAdesaoDePontoDeApoioNoMes);

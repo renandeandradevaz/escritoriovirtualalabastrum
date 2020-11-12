@@ -6,5 +6,5 @@
 <div class="fundo-branco">
 	<a href="<c:url value="/relatorioDePedidos/acessarRelatorioDePedidos"/>"> Relatório de pedidos </a>
 	<br>
-	<a href="<c:url value="/relatorioDePedidos/acessarRelatorioDePedidos"/>"> Teste</a>
+	<a href="<c:url value="/relatorioHistoricoDeBonus/acessarRelatorioHistoricoDeBonus"/>"> Histórico de bônus</a>
 </div>

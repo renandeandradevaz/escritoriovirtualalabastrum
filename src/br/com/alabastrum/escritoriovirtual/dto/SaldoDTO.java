@@ -10,6 +10,7 @@ public class SaldoDTO {
     private Usuario usuario;
     private BigDecimal saldoLiberado;
     private List<ExtratoDTO> extratoDoMes;
+    private List<ExtratoDTO> extratoCompleto;
     private BigDecimal saldoAnteriorAoMesPesquisado;
     private BigDecimal ganhosNoMesPesquisado;
     private BigDecimal inssNoMesPesquisado;
@@ -150,5 +151,13 @@ public class SaldoDTO {
 
     public void setBonusDesempenhoNoMes(BigDecimal bonusDesempenhoNoMes) {
 	this.bonusDesempenhoNoMes = bonusDesempenhoNoMes;
+    }
+
+    public List<ExtratoDTO> getExtratoCompleto() {
+	return extratoCompleto;
+    }
+
+    public void setExtratoCompleto(List<ExtratoDTO> extratoCompleto) {
+	this.extratoCompleto = extratoCompleto;
     }
 }
