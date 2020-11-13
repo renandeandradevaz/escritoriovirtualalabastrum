@@ -9,4 +9,6 @@
 	<a href="<c:url value="/relatorioHistoricoDeBonus/acessarRelatorioHistoricoDeBonus"/>"> Histórico de bônus</a>
 	<br>
 	<a href="<c:url value="/solicitacaoSaque/solicitacoesSaqueAdministrativa"/>"> Solicitações de Saque</a>
+	<br>
+	<a href="<c:url value="/relatorioAtividadesRecentes/acessarRelatorioAtividadesRecentes"/>"> Atividades recentes </a>
 </div>
