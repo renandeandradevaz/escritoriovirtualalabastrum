@@ -11,4 +11,8 @@
 	<a href="<c:url value="/solicitacaoSaque/solicitacoesSaqueAdministrativa"/>"> Solicitações de Saque</a>
 	<br>
 	<a href="<c:url value="/relatorioAtividadesRecentes/acessarRelatorioAtividadesRecentes"/>"> Atividades recentes </a>
+	<br>
+	<a href="<c:url value="/creditoEDebito/listarTransferenciasCreditoEDebito"/>"> Crédito e débito </a>
+	<br>
+	<a href="<c:url value="/saldoGeral/acessarTelaSaldoGeral"/>"> Saldo geral </a>
 </div>

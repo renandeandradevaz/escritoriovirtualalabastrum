@@ -1,13 +1,10 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
@@ -55,7 +52,7 @@ public class RelatorioHistoricoDeBonusController {
 	    }
 	}
 
-	bonificacoes = ordenarExtratoPorDataCrescente(bonificacoes);
+	bonificacoes = ordenarPorDataCrescente(bonificacoes);
 
 	BigDecimal total = calcularTotal(bonificacoes);
 
@@ -89,14 +86,9 @@ public class RelatorioHistoricoDeBonusController {
 		    adicionarALista(bonificacoes, usuario, extratoDTO);
 		} else {
 
-		    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		    Date dataInicial = simpleDateFormat.parse(pesquisaRelatorioHistoricoDeBonusDTO.getDataInicial());
-		    Calendar dataInicialGregorianCalendar = new GregorianCalendar();
-		    dataInicialGregorianCalendar.setTime(dataInicial);
+		    Calendar dataInicialGregorianCalendar = Util.getDateByString(pesquisaRelatorioHistoricoDeBonusDTO.getDataInicial());
+		    Calendar dataFinalGregorianCalendar = Util.getDateByString(pesquisaRelatorioHistoricoDeBonusDTO.getDataFinal());
 		    dataInicialGregorianCalendar.add(Calendar.DAY_OF_MONTH, -1);
-		    Date dataFinal = simpleDateFormat.parse(pesquisaRelatorioHistoricoDeBonusDTO.getDataFinal());
-		    Calendar dataFinalGregorianCalendar = new GregorianCalendar();
-		    dataFinalGregorianCalendar.setTime(dataFinal);
 		    dataFinalGregorianCalendar.add(Calendar.DAY_OF_MONTH, 1);
 
 		    if (extratoDTO.getData().after(dataInicialGregorianCalendar) && extratoDTO.getData().before(dataFinalGregorianCalendar)) {
@@ -115,7 +107,7 @@ public class RelatorioHistoricoDeBonusController {
 	bonificacoes.add(resultadoRelatorioHistoricoDeBonusDTO);
     }
 
-    private List<ResultadoRelatorioHistoricoDeBonusDTO> ordenarExtratoPorDataCrescente(List<ResultadoRelatorioHistoricoDeBonusDTO> bonificacoes) {
+    private List<ResultadoRelatorioHistoricoDeBonusDTO> ordenarPorDataCrescente(List<ResultadoRelatorioHistoricoDeBonusDTO> bonificacoes) {
 
 	Collections.sort(bonificacoes, new Comparator<ResultadoRelatorioHistoricoDeBonusDTO>() {
 

@@ -28,17 +28,17 @@
 			<div class="control-group">
 				<label class="control-label">Data inicial</label>
 				<div class="controls">
-					<input type="text" name="pesquisaRelatorioAtividadesRecentesDTO.dataInicial" value="${pesquisaRelatorioAtividadesRecentesDTO.dataInicial}" placeholder="03/11/2020" class="calendario" autocomplete="off">
+					<input type="text" name="pesquisaRelatorioAtividadesRecentesDTO.dataInicial" value="${pesquisaRelatorioAtividadesRecentesDTO.dataInicial}" placeholder="03/11/2020" class="calendario" autocomplete="off" required="required">
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label">Data final</label>
 				<div class="controls">
-					<input type="text" name="pesquisaRelatorioAtividadesRecentesDTO.dataFinal" value="${pesquisaRelatorioAtividadesRecentesDTO.dataFinal}" placeholder="25/04/2021" class="calendario" autocomplete="off">
+					<input type="text" name="pesquisaRelatorioAtividadesRecentesDTO.dataFinal" value="${pesquisaRelatorioAtividadesRecentesDTO.dataFinal}" placeholder="25/04/2021" class="calendario" autocomplete="off" required="required">
 				</div>
 			</div>
 			<br>
-			<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Pesquisar</button>
+			<button type="submit" class="btn btn-primary">Pesquisar</button>
 		</fieldset>
 	</form>
 </div>

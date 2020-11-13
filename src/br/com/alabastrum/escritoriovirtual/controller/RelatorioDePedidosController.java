@@ -1,13 +1,10 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.hibernate.criterion.Criterion;
@@ -76,13 +73,8 @@ public class RelatorioDePedidosController {
 	}
 
 	if (Util.preenchido(pesquisaRelatorioPedidosDTO.getDataInicial()) && Util.preenchido(pesquisaRelatorioPedidosDTO.getDataFinal())) {
-	    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-	    Date dataInicial = simpleDateFormat.parse(pesquisaRelatorioPedidosDTO.getDataInicial());
-	    Calendar dataInicialGregorianCalendar = new GregorianCalendar();
-	    dataInicialGregorianCalendar.setTime(dataInicial);
-	    Date dataFinal = simpleDateFormat.parse(pesquisaRelatorioPedidosDTO.getDataFinal());
-	    Calendar dataFinalGregorianCalendar = new GregorianCalendar();
-	    dataFinalGregorianCalendar.setTime(dataFinal);
+	    Calendar dataInicialGregorianCalendar = Util.getDateByString(pesquisaRelatorioPedidosDTO.getDataInicial());
+	    Calendar dataFinalGregorianCalendar = Util.getDateByString(pesquisaRelatorioPedidosDTO.getDataFinal());
 	    dataFinalGregorianCalendar.add(Calendar.DAY_OF_MONTH, 1);
 
 	    restricoes.add(Restrictions.between("data", dataInicialGregorianCalendar, dataFinalGregorianCalendar));

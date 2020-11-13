@@ -3,8 +3,10 @@ package br.com.alabastrum.escritoriovirtual.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -142,5 +144,13 @@ public class Util {
 	} catch (Exception erro) {
 	    return (false);
 	}
+    }
+
+    public static GregorianCalendar getDateByString(String dateString) throws Exception {
+
+	Date data = new SimpleDateFormat("dd/MM/yyyy").parse(dateString);
+	GregorianCalendar dataGregorianCalendar = new GregorianCalendar();
+	dataGregorianCalendar.setTime(data);
+	return dataGregorianCalendar;
     }
 }

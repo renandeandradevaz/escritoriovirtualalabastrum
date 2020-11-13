@@ -63,11 +63,7 @@
 				<h3 class="menu-accordion has-child">Administrativo</h3>
 				<div>
 					<a href="<c:url value="/assumirIdentidade/acessarTelaAssumirIdentidade"/>" class="submenu-accordion"> Assumir Identidade </a>
-					<a href="<c:url value="/pedido/pesquisarPedidosDosDistribuidores"/>" class="submenu-accordion"> Gerenciar Pedidos </a>
 					<a href="<c:url value="/pedidoFranquia/todosPedidosFranquia"/>" class="submenu-accordion"> Gerenciar Pedidos para Estoque </a>
-					<a href="<c:url value="/solicitacaoSaque/solicitacoesSaqueAdministrativa"/>" class="submenu-accordion"> Solicitações de Saque </a>
-					<a href="<c:url value="/creditoEDebito/listarTransferenciasCreditoEDebito"/>" class="submenu-accordion"> Crédito e débito </a>
-					<a href="<c:url value="/saldoGeral/acessarTelaSaldoGeral"/>" class="submenu-accordion"> Saldo Geral </a>
 					<a href="<c:url value="/configuracao/acessarTelaConfiguracaoAdministrativa"/>" class="submenu-accordion"> Configurações Administrativas </a>
 					<a href="<c:url value="/relatorios/acessarTelaRelatorios"/>" class="submenu-accordion"> Relatórios </a>
 				</div>
