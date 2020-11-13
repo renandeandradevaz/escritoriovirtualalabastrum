@@ -1,6 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.modelo;
 
 import java.math.BigDecimal;
+import java.util.GregorianCalendar;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,9 +20,13 @@ public class SolicitacaoSaque implements Entidade {
 
     private BigDecimal valorBrutoSolicitado;
     private BigDecimal valorFinalComDescontos;
+    private GregorianCalendar data;
+    private String status;
 
     @Index(name = "index_solicitacao_saque_id_codigo")
     private Integer idCodigo;
+
+    private Integer idCodigoAdmAprovou;
 
     public Integer getId() {
 	return id;
@@ -53,6 +58,30 @@ public class SolicitacaoSaque implements Entidade {
 
     public void setIdCodigo(Integer idCodigo) {
 	this.idCodigo = idCodigo;
+    }
+
+    public String getStatus() {
+	return status;
+    }
+
+    public void setStatus(String status) {
+	this.status = status;
+    }
+
+    public GregorianCalendar getData() {
+	return data;
+    }
+
+    public void setData(GregorianCalendar data) {
+	this.data = data;
+    }
+
+    public Integer getIdCodigoAdmAprovou() {
+	return idCodigoAdmAprovou;
+    }
+
+    public void setIdCodigoAdmAprovou(Integer idCodigoAdmAprovou) {
+	this.idCodigoAdmAprovou = idCodigoAdmAprovou;
     }
 
 }

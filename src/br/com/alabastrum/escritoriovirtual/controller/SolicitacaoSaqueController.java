@@ -15,6 +15,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.ExtratoService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
+import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Resource;
@@ -53,21 +54,36 @@ public class SolicitacaoSaqueController {
     }
 
     @Funcionalidade(administrativa = "true")
-    public void solicitacoesSaqueAdministrativa() throws Exception {
+    public void solicitacoesSaqueAdministrativa(String status) throws Exception {
 
-	List<SolicitacaoSaque> solicitacoesBanco = this.hibernateUtil.buscar(new SolicitacaoSaque());
+	if (Util.vazio(status)) {
+	    status = "PENDENTE";
+	}
+
+	SolicitacaoSaque solicitacaoSaqueFiltro = new SolicitacaoSaque();
+	solicitacaoSaqueFiltro.setStatus(status);
+	List<SolicitacaoSaque> solicitacoesBanco = this.hibernateUtil.buscar(solicitacaoSaqueFiltro);
 
 	List<SolicitacaoSaqueDTO> solicitacoes = new ArrayList<SolicitacaoSaqueDTO>();
 	for (SolicitacaoSaque solicitacaoSaque : solicitacoesBanco) {
 	    SolicitacaoSaqueDTO solicitacaoSaqueDTO = new SolicitacaoSaqueDTO();
 	    solicitacaoSaqueDTO.setId(solicitacaoSaque.getId());
 	    solicitacaoSaqueDTO.setUsuario((Usuario) this.hibernateUtil.selecionar(new Usuario(solicitacaoSaque.getIdCodigo())));
+
+	    if (Util.preenchido(solicitacaoSaque.getIdCodigoAdmAprovou())) {
+		solicitacaoSaqueDTO.setUsuarioAdm((Usuario) this.hibernateUtil.selecionar(new Usuario(solicitacaoSaque.getIdCodigoAdmAprovou())));
+	    }
+
+	    solicitacaoSaqueDTO.setStatus(solicitacaoSaque.getStatus());
+	    solicitacaoSaqueDTO.setData(solicitacaoSaque.getData());
 	    solicitacaoSaqueDTO.setValorBrutoSolicitado(solicitacaoSaque.getValorBrutoSolicitado());
 	    solicitacaoSaqueDTO.setValorFinalComDescontos(solicitacaoSaque.getValorFinalComDescontos());
 	    solicitacoes.add(solicitacaoSaqueDTO);
 	}
 
 	result.include("solicitacoes", solicitacoes);
+	result.include("status", status);
+	result.include("pesquisa", true);
     }
 
     @Funcionalidade(administrativa = "true")
@@ -78,7 +94,7 @@ public class SolicitacaoSaqueController {
 	solicitacaoSaque.setId(idSolicitacao);
 	solicitacaoSaque = this.hibernateUtil.selecionar(solicitacaoSaque);
 	this.hibernateUtil.deletar(solicitacaoSaque);
-	result.forwardTo(this).solicitacoesSaqueAdministrativa();
+	result.forwardTo(this).solicitacoesSaqueAdministrativa("PENDENTE");
     }
 
     @Funcionalidade(administrativa = "true")
@@ -89,11 +105,11 @@ public class SolicitacaoSaqueController {
 	solicitacaoSaque.setId(idSolicitacao);
 	solicitacaoSaque = this.hibernateUtil.selecionar(solicitacaoSaque);
 
-	Integer saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(this.sessaoUsuario.getUsuario().getId_Codigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado().intValue();
+	Integer saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(solicitacaoSaque.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado().intValue();
 
 	if (saldoLiberado.intValue() < solicitacaoSaque.getValorBrutoSolicitado().intValue()) {
 	    validator.add(new ValidationMessage("O saldo da pessoa é menor do que o valor solicitado para saque", "Erro"));
-	    validator.onErrorRedirectTo(this).solicitacoesSaqueAdministrativa();
+	    validator.onErrorRedirectTo(this).solicitacoesSaqueAdministrativa("PENDENTE");
 	    return;
 	}
 
@@ -104,8 +120,10 @@ public class SolicitacaoSaqueController {
 	transferencia.setTipo(Transferencia.TRANSFERENCIA_PARA_SAQUE);
 	hibernateUtil.salvarOuAtualizar(transferencia);
 
-	this.hibernateUtil.deletar(solicitacaoSaque);
-	result.forwardTo(this).solicitacoesSaqueAdministrativa();
+	solicitacaoSaque.setStatus("FINALIZADO");
+	solicitacaoSaque.setIdCodigoAdmAprovou(this.sessaoUsuario.getUsuario().getId_Codigo());
+	this.hibernateUtil.salvarOuAtualizar(solicitacaoSaque);
+	result.forwardTo(this).solicitacoesSaqueAdministrativa("PENDENTE");
     }
 
     @Funcionalidade
@@ -160,9 +178,13 @@ public class SolicitacaoSaqueController {
 
 	SolicitacaoSaque solicitacaoSaque = new SolicitacaoSaque();
 	solicitacaoSaque.setIdCodigo(this.sessaoUsuario.getUsuario().getId_Codigo());
+	solicitacaoSaque.setData(new GregorianCalendar());
+	solicitacaoSaque.setStatus("PENDENTE");
 	solicitacaoSaque.setValorBrutoSolicitado(BigDecimal.valueOf(valorBrutoSolicitado));
 	solicitacaoSaque.setValorFinalComDescontos(valorFinalComDescontos);
 	this.hibernateUtil.salvarOuAtualizar(solicitacaoSaque);
+
+	Mail.enviarEmail("Nova solicitação de saque", "O distribuidor " + this.sessaoUsuario.getUsuario().getApelido() + " fez uma solicitação de saque. Acesse o EV para ver todos os detalhes", "financeiro@dunastes.com.br");
 
 	result.include("sucesso", "Solicitação de saque feita com sucesso. Aguarde nossa análise e transferência");
 
