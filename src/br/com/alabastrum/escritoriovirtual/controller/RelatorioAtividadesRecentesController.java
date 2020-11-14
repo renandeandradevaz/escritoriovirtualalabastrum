@@ -20,6 +20,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.PedidoFranquia;
 import br.com.alabastrum.escritoriovirtual.modelo.Qualificacao;
 import br.com.alabastrum.escritoriovirtual.modelo.SolicitacaoSaque;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
+import br.com.alabastrum.escritoriovirtual.service.PedidoService;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
@@ -72,26 +73,22 @@ public class RelatorioAtividadesRecentesController {
 
 	if (pesquisaRelatorioAtividadesRecentesDTO.getTipoDeAtividade().equals("Adesão finalizada")) {
 
-	    Usuario usuarioFiltro = new Usuario();
-	    usuarioFiltro.setCadPreCadastro(0);
-	    List<Usuario> usuarios = this.hibernateUtil.buscar(usuarioFiltro);
+	    Pedido pedidoFiltro = new Pedido();
+	    pedidoFiltro.setCompleted(true);
+	    pedidoFiltro.setStatus("FINALIZADO");
+	    pedidoFiltro.setTipo(PedidoService.ADESAO);
 
-	    for (Usuario usuario : usuarios) {
-		Qualificacao qualificacaoFiltro = new Qualificacao();
-		qualificacaoFiltro.setId_Codigo(usuario.getId_Codigo());
-		List<Qualificacao> qualificacoes = this.hibernateUtil.buscar(qualificacaoFiltro);
-		if (qualificacoes.size() > 1) {
+	    Calendar dataInicialGregorianCalendar = Util.getDateByString(pesquisaRelatorioAtividadesRecentesDTO.getDataInicial());
+	    Calendar dataFinalGregorianCalendar = Util.getDateByString(pesquisaRelatorioAtividadesRecentesDTO.getDataFinal());
+	    dataFinalGregorianCalendar.add(Calendar.DAY_OF_MONTH, 1);
 
-		    Calendar dataInicialGregorianCalendar = Util.getDateByString(pesquisaRelatorioAtividadesRecentesDTO.getDataInicial());
-		    Calendar dataFinalGregorianCalendar = Util.getDateByString(pesquisaRelatorioAtividadesRecentesDTO.getDataFinal());
-		    dataInicialGregorianCalendar.add(Calendar.DAY_OF_MONTH, -1);
-		    dataFinalGregorianCalendar.add(Calendar.DAY_OF_MONTH, 1);
+	    List<Criterion> restricoes = new ArrayList<Criterion>();
+	    restricoes.add(Restrictions.between("data", dataInicialGregorianCalendar, dataFinalGregorianCalendar));
 
-		    if (qualificacoes.get(1).getData().after(dataInicialGregorianCalendar) && qualificacoes.get(1).getData().before(dataFinalGregorianCalendar)) {
-
-			adicionarALista(atividadesRecentes, usuario.getApelido(), "Adesão finalizada", qualificacoes.get(1).getData());
-		    }
-		}
+	    List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes);
+	    for (Pedido pedido : pedidos) {
+		Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+		adicionarALista(atividadesRecentes, usuario.getApelido(), "Adesão finalizada", pedido.getData());
 	    }
 	}
 
