@@ -15,4 +15,6 @@
 	<a href="<c:url value="/creditoEDebito/listarTransferenciasCreditoEDebito"/>"> Crédito e débito </a>
 	<br>
 	<a href="<c:url value="/saldoGeral/acessarTelaSaldoGeral"/>"> Saldo geral </a>
+	<br>
+	<a href="<c:url value="/relatorioResultadoOperacional/acessarRelatorioResultadoOperacional"/>"> Resultado operacional</a>
 </div>
