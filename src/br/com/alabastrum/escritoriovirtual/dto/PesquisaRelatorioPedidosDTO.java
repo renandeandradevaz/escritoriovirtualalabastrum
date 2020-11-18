@@ -8,6 +8,7 @@ public class PesquisaRelatorioPedidosDTO {
     private String dataInicial;
     private String dataFinal;
     private String origem;
+    private String estado;
     private String ordenacao;
 
     public String getApelido() {
@@ -64,5 +65,13 @@ public class PesquisaRelatorioPedidosDTO {
 
     public void setOrdenacao(String ordenacao) {
 	this.ordenacao = ordenacao;
+    }
+
+    public String getEstado() {
+	return estado;
+    }
+
+    public void setEstado(String estado) {
+	this.estado = estado;
     }
 }

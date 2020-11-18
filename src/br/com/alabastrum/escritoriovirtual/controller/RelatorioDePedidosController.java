@@ -70,6 +70,17 @@ public class RelatorioDePedidosController {
 		idFranquias.add(Integer.valueOf(pesquisaRelatorioPedidosDTO.getOrigem()));
 		restricoes.add(Restrictions.in("idFranquia", idFranquias));
 	    }
+	} else if (Util.preenchido(pesquisaRelatorioPedidosDTO.getEstado())) {
+
+	    Franquia franquiaFiltro = new Franquia();
+	    franquiaFiltro.setEstqUF(pesquisaRelatorioPedidosDTO.getEstado());
+	    List<Franquia> franquias = this.hibernateUtil.buscar(franquiaFiltro);
+	    List<Integer> idsFranquias = new ArrayList<Integer>();
+	    for (Franquia franquia : franquias) {
+		idsFranquias.add(Integer.valueOf(franquia.getId_Estoque()));
+	    }
+	    restricoes.add(Restrictions.in("idFranquia", idsFranquias));
+
 	}
 
 	if (Util.preenchido(pesquisaRelatorioPedidosDTO.getDataInicial()) && Util.preenchido(pesquisaRelatorioPedidosDTO.getDataFinal())) {
