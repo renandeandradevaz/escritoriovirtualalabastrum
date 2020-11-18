@@ -17,4 +17,6 @@
 	<a href="<c:url value="/saldoGeral/acessarTelaSaldoGeral"/>"> Saldo geral </a>
 	<br>
 	<a href="<c:url value="/relatorioResultadoOperacional/acessarRelatorioResultadoOperacional"/>"> Resultado operacional</a>
+	<br>
+	<a href="<c:url value="/informacoesSobreDistribuidores/acessarInformacoesSobreDistribuidores"/>"> Informações sobre distribuidores</a>
 </div>
