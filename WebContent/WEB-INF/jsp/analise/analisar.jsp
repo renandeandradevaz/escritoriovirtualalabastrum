@@ -2,6 +2,11 @@
 <br>
 <br>
 <br>
+<a href="javascript:history.back()">Voltar</a>
+<br>
+<br>
+<br>
+<br>
 Ultima atualizacao do sistema: ${ultimaAtualizacaoSistema}
 <br>
 <br>
@@ -26,7 +31,7 @@ Sessoes fechadas hibernate: ${sessoesFechadasHibernate}
 	<tbody>
 		<c:forEach var="acesso" items="${acessosUsuariosOrdenadosPorMaisAtivos}">
 			<tr>
-				<td style="text-align: center">${acesso.usuario.id_Codigo}- ${acesso.usuario.vNome}</td>
+				<td style="text-align: center">${acesso.usuario.id_Codigo}-${acesso.usuario.vNome}</td>
 				<td style="text-align: center">${acesso.contagemAcessos}</td>
 			</tr>
 		</c:forEach>

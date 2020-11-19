@@ -21,4 +21,6 @@
 	<a href="<c:url value="/informacoesSobreDistribuidores/acessarInformacoesSobreDistribuidores"/>"> Informações sobre distribuidores</a>
 	<br>
 	<a href="<c:url value="/relatorioHistoricoDeAcessos/acessarRelatorioHistoricoDeAcessos"/>"> Histórico de acessos </a>
+	<br>
+	<a href="<c:url value="/analise"/>"> Usuários mais ativos </a>
 </div>
