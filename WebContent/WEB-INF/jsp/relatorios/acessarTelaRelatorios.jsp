@@ -18,6 +18,8 @@
 	<br>
 	<a href="<c:url value="/relatorioResultadoOperacional/acessarRelatorioResultadoOperacional"/>"> Resultado operacional</a>
 	<br>
+	<a href="<c:url value="/relatorioVendasPorPA/acessarRelatorioVendasPorPA"/>"> Vendas por Ponto de Apoio </a>
+	<br>
 	<a href="<c:url value="/informacoesSobreDistribuidores/acessarInformacoesSobreDistribuidores"/>"> Informações sobre distribuidores</a>
 	<br>
 	<a href="<c:url value="/relatorioHistoricoDeAcessos/acessarRelatorioHistoricoDeAcessos"/>"> Histórico de acessos </a>
