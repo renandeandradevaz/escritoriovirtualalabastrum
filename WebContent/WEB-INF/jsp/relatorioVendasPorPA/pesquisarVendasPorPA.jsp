@@ -8,30 +8,31 @@
 	window.onload = function() {
 
 		var options = {
-			animationEnabled : true,
-			theme : "light2",
-			title : {
-				text : "Vendas por PA (R$)"
-			},
-			axisX : {
-				valueFormatString : "DD MMM"
-			},
-			axisY : {
-				title : "Vendas por PA (R$)",
-				suffix : "",
-				minimum : 1
-			},
-			toolTip : {
-				shared : true
-			},
-			legend : {
-				cursor : "pointer",
-				verticalAlign : "bottom",
-				horizontalAlign : "left",
-				dockInsidePlotArea : true,
-				itemclick : toogleDataSeries
-			},
-			data : [ 
+				
+				animationEnabled: true,
+				theme: "light2",
+				title:{
+					text: "Vendas por PA (R$)"
+				},
+				axisX:{
+					valueFormatString: "DD MMM"
+				},
+				axisY: {
+					title: "Vendas por PA (R$)",
+					valueFormatString: "#0",
+					includeZero: false,
+					suffix: "",
+					prefix: "R$ ",
+					minimum: 10
+				},
+				legend: {
+					cursor: "pointer",
+					itemclick: toogleDataSeries
+				},
+				toolTip: {
+					shared: true
+			    },
+			    data : [ 
 
 				<c:forEach items="${vendasPorPa}" var="pai">
 				{
@@ -40,8 +41,6 @@
 					name: "${pai.franquia}",
 					markerType: "square",
 					xValueFormatString: "DD MMM, YYYY",
-					color: "#F08080",
-					yValueFormatString: "#,##0K",
 					dataPoints: [
 						<c:forEach items="${pai.filhos}" var="filho">
 						   { x: new Date(${filho.ano}, ${filho.mes}, ${filho.dia}), y: ${filho.valor} },
@@ -68,6 +67,13 @@
 </script>
 </head>
 <body>
+	<br>
+	<br>
+	<br>
+	<a href="javascript:history.back()">Voltar</a>
+	<br>
+	<br>
+	<br>
 	<div id="chartContainer" style="height: 370px; width: 100%;"></div>
 	<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 	<script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>

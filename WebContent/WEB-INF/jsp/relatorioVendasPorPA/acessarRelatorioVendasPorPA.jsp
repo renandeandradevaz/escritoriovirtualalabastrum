@@ -33,7 +33,7 @@
 				</div>
 			</div>
 			<br>
-			<button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Pesquisar</button>
+			<button type="submit" class="btn btn-primary">Pesquisar</button>
 		</fieldset>
 	</form>
 </div>
