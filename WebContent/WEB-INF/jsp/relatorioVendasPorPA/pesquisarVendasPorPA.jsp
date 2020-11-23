@@ -75,7 +75,7 @@
 	<br>
 	<br>
 	<div id="chartContainer" style="height: 370px; width: 100%;"></div>
-	<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-	<script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+	<script type="text/javascript" src="<c:url value="/js/jquery-1.8.3.js"/>"></script>
+	<script type="text/javascript" src="<c:url value="/js/jquery.canvasjs.min.js"/>"></script>
 </body>
 </html>
