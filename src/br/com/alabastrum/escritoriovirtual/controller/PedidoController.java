@@ -700,8 +700,6 @@ public class PedidoController {
 	if (formaDePagamento.equals("pagarComSaldo")) {
 
 	    BigDecimal saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado();
-	    // BigDecimal valorASerDescontadoDoSaldo =
-	    // totalPedido.add(totalPedido.multiply(Constants.TARIFA_INSS));
 	    BigDecimal valorASerDescontadoDoSaldo = totalPedido.add(totalPedido.multiply(BigDecimal.ZERO));
 
 	    if (valorASerDescontadoDoSaldo.compareTo(saldoLiberado) > 0) {
@@ -709,10 +707,6 @@ public class PedidoController {
 		validator.onErrorRedirectTo(this).escolherFormaDePagamento();
 		return;
 	    }
-
-	    gerarArquivoCsv(pedido.getId());
-	    salvarTransferencia(valorASerDescontadoDoSaldo, pedido.getIdCodigo());
-	    pedido.setStatus(PedidoService.FINALIZADO);
 	}
 
 	pedido.setCompleted(true);
@@ -903,11 +897,24 @@ public class PedidoController {
 
 	    if (status.equals(PedidoService.FINALIZADO) && !pedido.getStatus().equals(PedidoService.FINALIZADO)) {
 
+		if (pedido.getFormaDePagamento().equals("pagarComSaldo")) {
+
+		    BigDecimal totalPedido = new PedidoService(hibernateUtil).calcularTotais(pedido).getValorTotal();
+
+		    BigDecimal saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado();
+		    BigDecimal valorASerDescontadoDoSaldo = totalPedido.add(totalPedido.multiply(BigDecimal.ZERO));
+
+		    if (valorASerDescontadoDoSaldo.compareTo(saldoLiberado) > 0) {
+			validator.add(new ValidationMessage("O distribuidor não possui saldo suficiente para pagar este pedido. Saldo atual: R$" + String.format("%.2f", saldoLiberado) + ". Valor do pedido(com tarifas): R$" + String.format("%.2f", valorASerDescontadoDoSaldo), "Erro"));
+			validator.onErrorRedirectTo(this).escolherFormaDePagamento();
+			return;
+		    }
+		    salvarTransferencia(valorASerDescontadoDoSaldo, pedido.getIdCodigo());
+		}
 		gerarArquivoCsv(pedido.getId());
 	    }
 
 	    if (status.equals(PedidoService.CANCELADO)) {
-
 		new PedidoService(hibernateUtil).cancelarPedido(pedido);
 	    }
 
