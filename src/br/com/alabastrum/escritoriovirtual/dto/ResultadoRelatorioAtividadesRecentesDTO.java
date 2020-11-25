@@ -7,6 +7,7 @@ public class ResultadoRelatorioAtividadesRecentesDTO {
     private String tipoDeAtividade;
     private GregorianCalendar data;
     private String identificador;
+    private String patrocinador;
 
     public String getTipoDeAtividade() {
 	return tipoDeAtividade;
@@ -30,5 +31,13 @@ public class ResultadoRelatorioAtividadesRecentesDTO {
 
     public void setIdentificador(String identificador) {
 	this.identificador = identificador;
+    }
+
+    public String getPatrocinador() {
+	return patrocinador;
+    }
+
+    public void setPatrocinador(String patrocinador) {
+	this.patrocinador = patrocinador;
     }
 }

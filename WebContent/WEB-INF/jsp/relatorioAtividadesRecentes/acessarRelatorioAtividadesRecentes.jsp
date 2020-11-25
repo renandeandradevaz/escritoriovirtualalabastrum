@@ -54,6 +54,9 @@
 				<th>Tipo de atividade</th>
 				<th>Data</th>
 				<th>Identificador</th>
+				<c:if test="${pesquisaRelatorioAtividadesRecentesDTO.tipoDeAtividade == 'Novo cadastro'}">
+					<th>Patrocinador</th>
+				</c:if>
 			</tr>
 		</thead>
 		<tbody>
@@ -64,6 +67,9 @@
 						<fmt:formatDate value="${item.data.time}" type="DATE" />
 					</td>
 					<td class="centralizado">${item.identificador}</td>
+					<c:if test="${pesquisaRelatorioAtividadesRecentesDTO.tipoDeAtividade == 'Novo cadastro'}">
+						<td class="centralizado">${item.patrocinador}</td>
+					</c:if>
 				</tr>
 			</c:forEach>
 		</tbody>

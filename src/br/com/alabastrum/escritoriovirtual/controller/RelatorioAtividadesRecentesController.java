@@ -65,7 +65,7 @@ public class RelatorioAtividadesRecentesController {
 
 		    if (qualificacoes.get(0).getData().after(dataInicialGregorianCalendar) && qualificacoes.get(0).getData().before(dataFinalGregorianCalendar)) {
 
-			adicionarALista(atividadesRecentes, usuario.getApelido(), "Novo cadastro", qualificacoes.get(0).getData());
+			adicionarALista(atividadesRecentes, usuario.getApelido() + " - " + usuario.getvNome(), "Novo cadastro", qualificacoes.get(0).getData(), usuario.getId_Indicante());
 		    }
 		}
 	    }
@@ -88,7 +88,7 @@ public class RelatorioAtividadesRecentesController {
 	    List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes);
 	    for (Pedido pedido : pedidos) {
 		Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
-		adicionarALista(atividadesRecentes, usuario.getApelido(), "Adesão finalizada", pedido.getData());
+		adicionarALista(atividadesRecentes, usuario.getApelido() + " - " + usuario.getvNome(), "Adesão finalizada", pedido.getData());
 	    }
 	}
 
@@ -108,7 +108,7 @@ public class RelatorioAtividadesRecentesController {
 	    List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes);
 	    for (Pedido pedido : pedidos) {
 		Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
-		adicionarALista(atividadesRecentes, usuario.getApelido(), "Pedido finalizado", pedido.getData());
+		adicionarALista(atividadesRecentes, usuario.getApelido() + " - " + usuario.getvNome(), "Pedido finalizado", pedido.getData());
 	    }
 	}
 
@@ -128,7 +128,7 @@ public class RelatorioAtividadesRecentesController {
 	    List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes);
 	    for (Pedido pedido : pedidos) {
 		Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
-		adicionarALista(atividadesRecentes, usuario.getApelido(), "Pedido pendente", pedido.getData());
+		adicionarALista(atividadesRecentes, usuario.getApelido() + " - " + usuario.getvNome(), "Pedido pendente", pedido.getData());
 	    }
 	}
 
@@ -148,7 +148,7 @@ public class RelatorioAtividadesRecentesController {
 	    List<Pedido> pedidos = hibernateUtil.buscar(pedidoFiltro, restricoes);
 	    for (Pedido pedido : pedidos) {
 		Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
-		adicionarALista(atividadesRecentes, usuario.getApelido(), "Pedido cancelado", pedido.getData());
+		adicionarALista(atividadesRecentes, usuario.getApelido() + " - " + usuario.getvNome(), "Pedido cancelado", pedido.getData());
 	    }
 	}
 
@@ -205,7 +205,7 @@ public class RelatorioAtividadesRecentesController {
 	    List<SolicitacaoSaque> solicitacoes = hibernateUtil.buscar(solicitacaoSaqueFiltro, restricoes);
 	    for (SolicitacaoSaque solicitacaoSaque : solicitacoes) {
 		Usuario usuario = this.hibernateUtil.selecionar(new Usuario(solicitacaoSaque.getIdCodigo()));
-		adicionarALista(atividadesRecentes, usuario.getApelido(), "Solicitação de saque", solicitacaoSaque.getData());
+		adicionarALista(atividadesRecentes, usuario.getApelido() + " - " + usuario.getvNome(), "Solicitação de saque", solicitacaoSaque.getData());
 	    }
 	}
 
@@ -218,10 +218,21 @@ public class RelatorioAtividadesRecentesController {
 
     private void adicionarALista(List<ResultadoRelatorioAtividadesRecentesDTO> atividadesRecentes, String identificador, String tipoDeAtividade, GregorianCalendar data) {
 
+	adicionarALista(atividadesRecentes, identificador, tipoDeAtividade, data, null);
+    }
+
+    private void adicionarALista(List<ResultadoRelatorioAtividadesRecentesDTO> atividadesRecentes, String identificador, String tipoDeAtividade, GregorianCalendar data, Integer idIndicante) {
+
 	ResultadoRelatorioAtividadesRecentesDTO resultadoRelatorioAtividadesRecentesDTO = new ResultadoRelatorioAtividadesRecentesDTO();
 	resultadoRelatorioAtividadesRecentesDTO.setData(data);
 	resultadoRelatorioAtividadesRecentesDTO.setIdentificador(identificador);
 	resultadoRelatorioAtividadesRecentesDTO.setTipoDeAtividade(tipoDeAtividade);
+
+	if (idIndicante != null) {
+	    Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idIndicante));
+	    resultadoRelatorioAtividadesRecentesDTO.setPatrocinador(usuario.getvNome());
+	}
+
 	atividadesRecentes.add(resultadoRelatorioAtividadesRecentesDTO);
     }
 
