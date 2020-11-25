@@ -233,16 +233,6 @@ public class AtualizacaoDadosController {
 	textoArquivo += "apelido: \'" + apelido + "\'\r\n";
 	textoArquivo += "Data_de_nascimento: \'" + usuario.getDt_Nasc() + "\'\r\n";
 	textoArquivo += "CPF: \'" + usuario.getCPF() + "\'\r\n";
-	textoArquivo += "RG: \'" + usuario.getCadRG() + "\'\r\n";
-	textoArquivo += "Emissor: \'" + usuario.getCadOrgaoExpedidor() + "\'\r\n";
-	textoArquivo += "Sexo: \'" + usuario.getCadSexo() + "\'\r\n";
-	textoArquivo += "Estado_civil: \'" + usuario.getCadEstCivil() + "\'\r\n";
-	textoArquivo += "CEP: \'" + usuario.getCadCEP() + "\'\r\n";
-	textoArquivo += "Endereco: \'" + usuario.getCadEndereco() + "\'\r\n";
-	textoArquivo += "Bairro: \'" + usuario.getCadBairro() + "\'\r\n";
-	textoArquivo += "Cidade: \'" + usuario.getCadCidade() + "\'\r\n";
-	textoArquivo += "Estado: \'" + usuario.getCadUF() + "\'\r\n";
-	textoArquivo += "Telefone_residencial: \'" + usuario.getTel() + "\'\r\n";
 	textoArquivo += "Telefone_celular: \'" + usuario.getCadCelular() + "\'\r\n";
 	textoArquivo += "Email: \'" + usuario.geteMail() + "\'\r\n";
 	textoArquivo += "codigo_quem_indicou: \'" + usuarioQuemIndicou.getId_Codigo() + "\'\r\n";

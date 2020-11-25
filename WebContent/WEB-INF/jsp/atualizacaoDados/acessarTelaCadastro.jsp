@@ -110,83 +110,13 @@ hr {
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Data nasc.: </label>
 			<input required="required" type="text" class="data" style="width: 100px" name="preCadastro.dt_Nasc" value="${preCadastro.dt_Nasc}" onkeypress="mascaraData( this, event )">
-			<br>
-			<label class="labelFormulario">Sexo: </label>
-			<select name="preCadastro.cadSexo">
-				<option value="Masculino">Masculino</option>
-				<option value="Feminino">Feminino</option>
-			</select>
-			<label class="labelFormulario">Estado civil: </label>
-			<select name="preCadastro.cadEstCivil" style="width: 100px">
-				<option value="Solteiro(a)">Solteiro(a)</option>
-				<option value="Casado(a)">Casado(a)</option>
-				<option value="Divorciado(a)">Divorciado(a)</option>
-				<option value="ViÃºvo(a)">Viúvo(a)</option>
-			</select>
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario"> CPF: </label>
 			<input type="text" required="required" name="preCadastro.CPF" value="${preCadastro.CPF}" onBlur="Verifica_campo_CPF(this)">
-			<br>
-			<label class="labelFormulario"> RG: </label>
-			<input type="text" required="required" name="preCadastro.cadRG" value="${preCadastro.cadRG}">
-			<br>
-			<label class="labelFormulario"> Emissor: </label>
-			<input type="text" required="required" name="preCadastro.cadOrgaoExpedidor" value="${preCadastro.cadOrgaoExpedidor}">
 		</div>
 		<div class="corClara divFormulario">
-			<label class="labelFormulario">CEP: </label>
-			<input type="text" required="required" name="preCadastro.cadCEP" value="${preCadastro.cadCEP}" onkeypress="mascara(this, '#####-###')">
-			<a style="margin-left: 30px;" href="http://www.buscacep.correios.com.br" target="_blank"> Pesquisar CEP </a>
-		</div>
-		<div class="corMedia divFormulario">
-			<label class="labelFormulario">End. Resid.: </label>
-			<input required="required" type="text" style="width: 90%;" name="preCadastro.cadEndereco" value="${preCadastro.cadEndereco}">
-		</div>
-		<div class="corClara divFormulario">
-			<label class="labelFormulario">Bairro: </label>
-			<input type="text" required="required" name="preCadastro.cadBairro" value="${preCadastro.cadBairro}">
-		</div>
-		<div class="corMedia divFormulario">
-			<label class="labelFormulario">Cidade: </label>
-			<input type="text" required="required" name="preCadastro.cadCidade" value="${preCadastro.cadCidade}">
-			<br>
-			<label class="labelFormulario">Estado: </label>
-			<select name="preCadastro.cadUF">
-				<option value="AC">Acre</option>
-				<option value="AL">Alagoas</option>
-				<option value="AP">Amapá</option>
-				<option value="AM">Amazonas</option>
-				<option value="BA">Bahia</option>
-				<option value="CE">Ceará</option>
-				<option value="DF">Distrito Federal</option>
-				<option value="ES">Espirito Santo</option>
-				<option value="GO">Goiás</option>
-				<option value="MA">Maranhão</option>
-				<option value="MT">Mato Grosso</option>
-				<option value="MS">Mato Grosso do Sul</option>
-				<option value="MG">Minas Gerais</option>
-				<option value="PA">Pará</option>
-				<option value="PB">Paraiba</option>
-				<option value="PR">Paraná</option>
-				<option value="PE">Pernambuco</option>
-				<option value="PI">Piauí­</option>
-				<option value="RJ" selected="selected">Rio de Janeiro</option>
-				<option value="RN">Rio Grande do Norte</option>
-				<option value="RS">Rio Grande do Sul</option>
-				<option value="RO">Rondônia</option>
-				<option value="RR">Roraima</option>
-				<option value="SC">Santa Catarina</option>
-				<option value="SP">São Paulo</option>
-				<option value="SE">Sergipe</option>
-				<option value="TO">Tocantis</option>
-			</select>
-		</div>
-		<div class="corClara divFormulario">
-			<label class="labelFormulario">Tel. resid.: </label>
-			<input required="required" type="text" style="width: 100px" name="preCadastro.tel" value="${preCadastro.tel}">
-			<br>
-			<label class="labelFormulario">Tel. Cel.: </label>
+			<label class="labelFormulario">Telefone celular / Whatsapp: </label>
 			<input type="text" required="required" style="width: 100px" name="preCadastro.cadCelular" value="${preCadastro.cadCelular}">
 		</div>
 		<div class="corMedia divFormulario">
