@@ -2,6 +2,8 @@ package br.com.alabastrum.escritoriovirtual.controller;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +107,14 @@ public class PontosDeEquipeController {
 
 	    pontosEquipeDTOLista.add(pontosEquipeDTO);
 	}
+
+	Collections.sort(pontosEquipeDTOLista, new Comparator<PontosEquipeDTO>() {
+
+	    public int compare(PontosEquipeDTO item1, PontosEquipeDTO item2) {
+		return item1.getUsuario().getvNome().compareTo(item2.getUsuario().getvNome());
+	    }
+	});
+
 	result.include("pontosEquipeDTOLista", pontosEquipeDTOLista);
     }
 
