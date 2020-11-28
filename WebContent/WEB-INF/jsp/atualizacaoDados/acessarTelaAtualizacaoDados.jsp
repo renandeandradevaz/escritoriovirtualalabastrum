@@ -75,6 +75,15 @@ hr {
 		<label class="labelEsquerda"> CPF: </label>
 		<span class="spanDireita"> ${usuario.CPF} </span>
 		<br>
+		<br>
+		<label class="labelEsquerda"> INSS: </label>
+		<span class="spanDireita">
+			<c:choose>
+				<c:when test="${usuario.descontaInss == 1}"> HABILITADO </c:when>
+				<c:otherwise> DESABILITADO </c:otherwise>
+			</c:choose>
+		</span>
+		<br>
 	</div>
 	<h5 class="corForte atualizacaoDadosCadastrais">ATUALIZAÇÃO DE DADOS CADASTRAIS</h5>
 	<form action="<c:url value="/atualizacaoDados/salvarAtualizacaoDados"/>" method="post">
