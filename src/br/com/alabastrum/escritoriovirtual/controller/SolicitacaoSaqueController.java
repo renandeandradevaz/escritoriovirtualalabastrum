@@ -49,6 +49,13 @@ public class SolicitacaoSaqueController {
 	    return;
 	}
 
+	if (Util.vazio(this.sessaoUsuario.getUsuario().getCadBanco()) || Util.vazio(this.sessaoUsuario.getUsuario().getCadTipoConta()) || Util.vazio(this.sessaoUsuario.getUsuario().getCadAgencia()) || Util.vazio(this.sessaoUsuario.getUsuario().getCadCCorrente())) {
+
+	    validator.add(new ValidationMessage("Seus dados cadastrais estão incompletos. Para realizar esta ação, é necessário que todos seu cadastro esteja completo. Você deve atualizar os seus dados através do Menu: Dados Cadastrais", "Erro"));
+	    validator.onErrorRedirectTo(HomeController.class).home();
+	    return;
+	}
+
 	Integer saldoLiberado = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(this.sessaoUsuario.getUsuario().getId_Codigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR)).getSaldoLiberado().intValue();
 	result.include("saldo", saldoLiberado);
     }

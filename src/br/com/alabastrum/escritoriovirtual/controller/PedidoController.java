@@ -707,6 +707,13 @@ public class PedidoController {
 		validator.onErrorRedirectTo(this).escolherFormaDePagamento();
 		return;
 	    }
+
+	    if (Util.vazio(comprador.getCadBanco()) || Util.vazio(comprador.getCadTipoConta()) || Util.vazio(comprador.getCadAgencia()) || Util.vazio(comprador.getCadCCorrente())) {
+
+		validator.add(new ValidationMessage("Seus dados cadastrais estão incompletos. Para realizar esta ação, é necessário que todos seu cadastro esteja completo. Você deve atualizar os seus dados através do Menu: Dados Cadastrais", "Erro"));
+		validator.onErrorRedirectTo(this).escolherFormaDePagamento();
+		return;
+	    }
 	}
 
 	pedido.setCompleted(true);

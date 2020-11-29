@@ -239,7 +239,7 @@ hr {
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Nome da mãe </label>
-			<input type="text" name="usuario.nomeMae" value="${usuario.nomeMae}">
+			<input type="text" name="usuario.nomeMae" value="${usuario.nomeMae}" required="required">
 			<br>
 			<label class="labelFormulario">Nome do pai: </label>
 			<input type="text" name="usuario.nomePai" value="${usuario.nomePai}">
@@ -251,7 +251,7 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Banco: </label>
-			<input type="text" name="usuario.cadBanco" value="${usuario.cadBanco}">
+			<input type="text" name="usuario.cadBanco" value="${usuario.cadBanco}" required="required">
 			<label class="labelFormulario">Tipo de conta: </label>
 			<select name="usuario.cadTipoConta">
 				<option value="Conta corrente" <c:if test="${usuario.cadTipoConta == 'Conta corrente'}"> selected="selected" </c:if>>Conta corrente</option>
@@ -261,9 +261,9 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Nº Agência: </label>
-			<input type="text" name="usuario.cadAgencia" value="${usuario.cadAgencia}">
+			<input type="text" name="usuario.cadAgencia" value="${usuario.cadAgencia}" required="required">
 			<label class="labelFormulario">Nº da Conta: </label>
-			<input type="text" name="usuario.cadCCorrente" value="${usuario.cadCCorrente}">
+			<input type="text" name="usuario.cadCCorrente" value="${usuario.cadCCorrente}" required="required">
 		</div>
 		<div class="divFormulario">
 			<label class="labelFormulario">

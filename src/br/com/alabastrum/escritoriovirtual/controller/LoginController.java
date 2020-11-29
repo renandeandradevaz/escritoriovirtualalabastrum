@@ -214,9 +214,9 @@ public class LoginController {
 
 	colocarUsuarioNaSessao(usuarioBanco.getApelido());
 
-	result.include("sucesso", "Senha trocada com sucesso! Agora, atualize seus dados para poder continuar.");
+	result.include("sucesso", "Senha trocada com sucesso! Você já está habilitado para fazer pedidos no Escritório virtual");
 
-	result.redirectTo(AtualizacaoDadosController.class).acessarTelaAtualizacaoDados();
+	result.redirectTo(PedidoController.class).acessarTelaNovoPedido();
     }
 
     private void salvarHistoricoAcesso(Usuario usuario) {
