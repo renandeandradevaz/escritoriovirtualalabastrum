@@ -70,7 +70,14 @@ public class PedidoController {
     public void acessarTelaNovoPedido() {
 
 	if (this.sessaoUsuario.getUsuario().getId() == null) {
-	    lojaPessoal((Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_LOJA_PESSOAL));
+
+	    Object idUsuarioLojaPessoal = this.sessaoGeral.getValor(PedidoService.ID_USUARIO_LOJA_PESSOAL);
+
+	    if (Util.preenchido(idUsuarioLojaPessoal)) {
+		Usuario usuario = this.hibernateUtil.selecionar(new Usuario((Integer) idUsuarioLojaPessoal));
+		lojaPessoal(usuario.getApelido());
+	    }
+
 	    return;
 	}
 	buscarFranquias();
@@ -154,7 +161,7 @@ public class PedidoController {
 	    idCodigo = (Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_LOJA_PESSOAL);
 
 	    Franquia franquia = new Franquia();
-	    franquia.setEstqNome("VENDA ONLINE");
+	    franquia.setId_Estoque(1);
 	    franquia = this.hibernateUtil.selecionar(franquia);
 	    idFranquia = franquia.getId_Estoque();
 	}
@@ -1031,17 +1038,19 @@ public class PedidoController {
 
     @Public
     @Funcionalidade
-    @Get("/lojaPessoal/{idUsuario}")
-    public void lojaPessoal(Integer idUsuario) {
+    @Get("/lojaPessoal/{apelido}")
+    public void lojaPessoal(String apelido) {
 
-	this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_LOJA_PESSOAL, idUsuario);
-	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(idUsuario));
+	Usuario usuario = new Usuario();
+	usuario.setApelido(apelido);
+	usuario = this.hibernateUtil.selecionar(usuario);
+	this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_LOJA_PESSOAL, usuario.getId_Codigo());
 	Usuario usuarioFakeLojaPessoal = new Usuario();
 	usuarioFakeLojaPessoal.setApelido("Bem vindo à loja de " + usuario.getApelido());
 	this.sessaoUsuario.login(usuarioFakeLojaPessoal);
 
 	Franquia franquia = new Franquia();
-	franquia.setEstqNome("VENDA ONLINE");
+	franquia.setId_Estoque(1);
 	franquia = this.hibernateUtil.selecionar(franquia);
 
 	this.escolherProdutos(franquia.getId_Estoque(), usuario.getApelido(), PedidoService.RECEBER_EM_CASA, null, null);

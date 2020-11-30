@@ -205,45 +205,54 @@ h3 {
 		<br>
 	</div>
 	<div class='caixinha-home'>
+		<h3>Indicação</h3>
 		<h6>Quer indicar alguém?</h6>
 		<h6>Passe o link abaixo para a pessoa que você quer indicar. Para ela poder realizar o cadastro:</h6>
-		<input type="text" value="https://ev.dunastes.com.br/cadastro?nickname=${sessaoUsuario.usuario.apelido}" id="copylink">
+		<input type="text" value="https://ev.dunastes.com.br/cadastro?nickname=${sessaoUsuario.usuario.apelido}" id="copylinkIndicacao">
 		<br>
-		<button class="btn" onclick="copiarLink()">Copiar link</button>
+		<button class="btn" onclick="copiarLink('copylinkIndicacao')">Copiar link</button>
 	</div>
-	<script>
-		$(document).ready(function() {
-			var val = parseInt($('#percent').val());
-			var $circle = $('#svg #bar');
-
-			if (isNaN(val)) {
-				val = 100;
-			} else {
-				var r = $circle.attr('r');
-				var c = Math.PI * (r * 2);
-
-				if (val < 0) {
-					val = 0;
-				}
-				if (val > 100) {
-					val = 100;
-				}
-
-				var pct = ((100 - val) / 100) * c;
-
-				$circle.css({
-					strokeDashoffset : pct
-				});
-
-				$('#cont').attr('data-pct', val);
-			}
-		});
-
-		function copiarLink() {
-			var copyText = document.getElementById("copylink");
-			copyText.select();
-			copyText.setSelectionRange(0, 99999)
-			document.execCommand("copy");
-		}
-	</script>
+	<div class='caixinha-home'>
+		<h3>Loja pessoal</h3>
+		<h6>Quer divulgar sua loja pessoal?</h6>
+		<h6>Passe o link abaixo da sua loja pessoal para seus clientes:</h6>
+		<input type="text" value="http://localhost:8080/escritoriovirtualalabastrum/lojaPessoal/${sessaoUsuario.usuario.apelido}" id="copylinkLojaPessoal">
+		<br>
+		<button class="btn" onclick="copiarLink('copylinkLojaPessoal')">Copiar link</button>
+	</div>
 </div>
+<script>
+	$(document).ready(function() {
+		var val = parseInt($('#percent').val());
+		var $circle = $('#svg #bar');
+
+		if (isNaN(val)) {
+			val = 100;
+		} else {
+			var r = $circle.attr('r');
+			var c = Math.PI * (r * 2);
+
+			if (val < 0) {
+				val = 0;
+			}
+			if (val > 100) {
+				val = 100;
+			}
+
+			var pct = ((100 - val) / 100) * c;
+
+			$circle.css({
+				strokeDashoffset : pct
+			});
+
+			$('#cont').attr('data-pct', val);
+		}
+	});
+
+	function copiarLink(copylinkId) {
+		var copyText = document.getElementById(copylinkId);
+		copyText.select();
+		copyText.setSelectionRange(0, 99999)
+		document.execCommand("copy");
+	}
+</script>
