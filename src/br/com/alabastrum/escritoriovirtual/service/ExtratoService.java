@@ -162,7 +162,7 @@ public class ExtratoService {
 
     private boolean isHabilitadoParaBonus(Integer idCodigo, ExtratoDTO extratoDTO, Map<String, Boolean> atividadePorMesCacheMap, Map<String, Boolean> indicadosDiretosAtivosPorMesCacheMap, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMap) {
 
-	if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_CREDITO)) {
+	if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_CREDITO) || extratoDTO.getDiscriminador().equals(BonusDePrimeiraCompraService.BÔNUS_DE_PRIMEIRA_COMPRA)) {
 	    return true;
 	}
 

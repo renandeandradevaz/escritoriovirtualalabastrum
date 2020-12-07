@@ -53,9 +53,9 @@
 					<a href="<c:url value="/pedido/escolherFormaDePagamento"/>" class="btn btn-success">Escolher forma de pagamento</a>
 				</c:otherwise>
 			</c:choose>
-			<c:if test="${sessaoUsuario.usuario.id_Codigo == null}">
-				<a href="<c:url value="/pedido/informarDadosComprador"/>" class="btn btn-success">Avançar</a>
-			</c:if>
+		</c:if>
+		<c:if test="${sessaoUsuario.usuario.id_Codigo == null}">
+			<a href="<c:url value="/pedido/informarDadosComprador"/>" class="btn btn-success">Avançar</a>
 		</c:if>
 	</c:if>
 	<c:if test="${empty itensPedidoDTO}">
@@ -67,5 +67,7 @@
 	<br>
 	<br>
 	<br>
-	<a class="btn btn-danger" href="<c:url value="/pedido/cancelarPedidoAtual"/>"> Cancelar pedido atual</a>
+	<c:if test="${sessaoUsuario.usuario.id_Codigo != null}">
+		<a class="btn btn-danger" href="<c:url value="/pedido/cancelarPedidoAtual"/>"> Cancelar pedido atual</a>
+	</c:if>
 </div>
