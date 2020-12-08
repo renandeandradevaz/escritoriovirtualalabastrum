@@ -81,6 +81,15 @@ public class PedidoController {
 
 	    return;
 	}
+
+	Pedido pedido = selecionarPedidoAberto();
+	if (pedido != null && pedido.getTipo().equals(PedidoService.LOJA_PESSOAL)) {
+	    pedido.setCompleted(true);
+	    pedido.setData(new GregorianCalendar());
+	    pedido.setStatus(PedidoService.CANCELADO);
+	    hibernateUtil.salvarOuAtualizar(pedido);
+	}
+
 	buscarFranquias();
 
 	if (isPrimeiroPedido(this.sessaoUsuario.getUsuario().getId_Codigo())) {
@@ -399,6 +408,16 @@ public class PedidoController {
 
     @Funcionalidade
     public void acessarCarrinho() throws Exception {
+
+	if (this.sessaoUsuario.getUsuario().getId() != null) {
+	    Pedido pedido = selecionarPedidoAberto();
+	    if (pedido != null && pedido.getTipo().equals(PedidoService.LOJA_PESSOAL)) {
+		pedido.setCompleted(true);
+		pedido.setData(new GregorianCalendar());
+		pedido.setStatus(PedidoService.CANCELADO);
+		hibernateUtil.salvarOuAtualizar(pedido);
+	    }
+	}
 
 	List<ItemPedidoDTO> itensPedidoDTO = new ArrayList<ItemPedidoDTO>();
 
@@ -1096,6 +1115,14 @@ public class PedidoController {
 	Franquia franquia = new Franquia();
 	franquia.setId_Estoque(1);
 	franquia = this.hibernateUtil.selecionar(franquia);
+
+	Pedido pedido = selecionarPedidoAberto();
+	if (pedido != null) {
+	    pedido.setCompleted(true);
+	    pedido.setData(new GregorianCalendar());
+	    pedido.setStatus(PedidoService.CANCELADO);
+	    hibernateUtil.salvarOuAtualizar(pedido);
+	}
 
 	this.escolherProdutos(franquia.getId_Estoque(), usuario.getApelido(), PedidoService.RECEBER_EM_CASA, null, null);
 	result.forwardTo("/WEB-INF/jsp//pedido/escolherProdutos.jsp");
