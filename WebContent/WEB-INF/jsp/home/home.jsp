@@ -216,7 +216,7 @@ h3 {
 		<h3>Loja pessoal</h3>
 		<h6>Quer divulgar sua loja pessoal?</h6>
 		<h6>Passe o link abaixo da sua loja pessoal para seus clientes:</h6>
-		<input type="text" value="http://localhost:8080/escritoriovirtualalabastrum/lojaPessoal/${sessaoUsuario.usuario.apelido}" id="copylinkLojaPessoal">
+		<input type="text" value="https://ev.dunastes.com.br/lojaPessoal/${sessaoUsuario.usuario.apelido}" id="copylinkLojaPessoal">
 		<br>
 		<button class="btn" onclick="copiarLink('copylinkLojaPessoal')">Copiar link</button>
 	</div>
