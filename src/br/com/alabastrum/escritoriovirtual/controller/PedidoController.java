@@ -662,9 +662,7 @@ public class PedidoController {
 		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoOnline")) {
 			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.467")));
 
-		    }
-
-		    else {
+		    } else {
 			throw new Exception("Forma de pagamento desconhecida: " + formaDePagamento);
 		    }
 
