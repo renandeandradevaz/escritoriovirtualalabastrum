@@ -21,6 +21,7 @@ import br.com.alabastrum.escritoriovirtual.dto.ItemPedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.PedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.modelo.Bonificacao;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
 import br.com.alabastrum.escritoriovirtual.modelo.Comprador;
 import br.com.alabastrum.escritoriovirtual.modelo.Configuracao;
@@ -249,7 +250,7 @@ public class PedidoController {
 
     private String definirTipoDoPedido(Comprador comprador) {
 
-	if (comprador != null) {
+	if (comprador != null || this.sessaoUsuario.getUsuario().getId_Codigo() == null) {
 	    return PedidoService.LOJA_PESSOAL;
 	}
 
@@ -371,24 +372,27 @@ public class PedidoController {
 
     private void adicionarItemPedidoTaxaAdesao(String idProduto, Pedido pedido) {
 
-	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
-	if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
-	    if (new PedidoService(hibernateUtil).listarItensPedido(pedido).size() == 0) {
+	if (this.sessaoUsuario.getUsuario().getId() != null) {
 
-		Produto produto = hibernateUtil.selecionar(new Produto(PedidoService.PRODUTO_TAXA_ADESAO_ID));
-		ItemPedido itemPedidoTaxaAdesao = new ItemPedido();
-		itemPedidoTaxaAdesao.setPedido(pedido);
-		itemPedidoTaxaAdesao.setIdProduto(produto.getId_Produtos());
-		itemPedidoTaxaAdesao.setQuantidade(1);
+	    Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
+	    if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
+		if (new PedidoService(hibernateUtil).listarItensPedido(pedido).size() == 0) {
 
-		Object adesaoPontoDeApoio = this.sessaoGeral.getValor("adesaoPontoDeApoio");
-		if (adesaoPontoDeApoio != null && (Boolean) adesaoPontoDeApoio) {
-		    itemPedidoTaxaAdesao.setPrecoUnitario(new BigDecimal(300));
-		} else {
-		    itemPedidoTaxaAdesao.setPrecoUnitario(calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()));
+		    Produto produto = hibernateUtil.selecionar(new Produto(PedidoService.PRODUTO_TAXA_ADESAO_ID));
+		    ItemPedido itemPedidoTaxaAdesao = new ItemPedido();
+		    itemPedidoTaxaAdesao.setPedido(pedido);
+		    itemPedidoTaxaAdesao.setIdProduto(produto.getId_Produtos());
+		    itemPedidoTaxaAdesao.setQuantidade(1);
+
+		    Object adesaoPontoDeApoio = this.sessaoGeral.getValor("adesaoPontoDeApoio");
+		    if (adesaoPontoDeApoio != null && (Boolean) adesaoPontoDeApoio) {
+			itemPedidoTaxaAdesao.setPrecoUnitario(new BigDecimal(300));
+		    } else {
+			itemPedidoTaxaAdesao.setPrecoUnitario(calcularPrecoUnitarioProduto(produto.getPrdPreco_Unit()));
+		    }
+
+		    hibernateUtil.salvarOuAtualizar(itemPedidoTaxaAdesao);
 		}
-
-		hibernateUtil.salvarOuAtualizar(itemPedidoTaxaAdesao);
 	    }
 	}
     }
@@ -508,47 +512,48 @@ public class PedidoController {
 	Pedido pedido = selecionarPedidoAberto();
 	Integer valorTotal = new PedidoService(hibernateUtil).calcularTotalSemFrete(pedido).intValue();
 
-	boolean mostrarDialogoDescontos = true;
+	if (pedido.getComprador() == null) {
 
-	Object adesaoPontoDeApoio = this.sessaoGeral.getValor("adesaoPontoDeApoio");
-	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
-	Object isInativo = this.sessaoGeral.getValor("isInativo");
+	    boolean mostrarDialogoDescontos = true;
 
-	if (adesaoPontoDeApoio != null && (Boolean) adesaoPontoDeApoio) {
-	    mostrarDialogoDescontos = false;
+	    Object adesaoPontoDeApoio = this.sessaoGeral.getValor("adesaoPontoDeApoio");
+	    Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
+	    Object isInativo = this.sessaoGeral.getValor("isInativo");
 
-	    if (valorTotal < 2500) {
-		validator.add(new ValidationMessage("O valor mínimo para pedido de adesão de Ponto de apoio é de R$2500", "Erro"));
-		validator.onErrorRedirectTo(this).acessarCarrinho();
-		return;
-	    }
-	} else if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
-	    mostrarDialogoDescontos = false;
+	    if (adesaoPontoDeApoio != null && (Boolean) adesaoPontoDeApoio) {
+		mostrarDialogoDescontos = false;
 
-	    Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
-	    Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
+		if (valorTotal < 2500) {
+		    validator.add(new ValidationMessage("O valor mínimo para pedido de adesão de Ponto de apoio é de R$2500", "Erro"));
+		    validator.onErrorRedirectTo(this).acessarCarrinho();
+		    return;
+		}
+	    } else if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
+		mostrarDialogoDescontos = false;
 
-	    if (valorTotal < valorMinimoPedidoAdesao || valorTotal > valorMaximoPedidoAdesao) {
-		validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de adesão é de R$%s. E o valor máximo é de R$%s", valorMinimoPedidoAdesao, valorMaximoPedidoAdesao), "Erro"));
-		validator.onErrorRedirectTo(this).acessarCarrinho();
-		return;
-	    }
-	} else if (isInativo != null && (Boolean) isInativo) {
-	    mostrarDialogoDescontos = false;
+		Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
+		Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
 
-	    Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
-	    Integer valorMaximoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAtividade"));
+		if (valorTotal < valorMinimoPedidoAdesao || valorTotal > valorMaximoPedidoAdesao) {
+		    validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de adesão é de R$%s. E o valor máximo é de R$%s", valorMinimoPedidoAdesao, valorMaximoPedidoAdesao), "Erro"));
+		    validator.onErrorRedirectTo(this).acessarCarrinho();
+		    return;
+		}
+	    } else if (isInativo != null && (Boolean) isInativo) {
+		mostrarDialogoDescontos = false;
 
-	    if (pedido.getComprador() == null) {
+		Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
+		Integer valorMaximoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAtividade"));
+
 		if (valorTotal < valorMinimoPedidoAtividade || valorTotal > valorMaximoPedidoAtividade) {
 		    validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de atividade é de R$%s. E o valor máximo é de R$%s", valorMinimoPedidoAtividade, valorMaximoPedidoAtividade), "Erro"));
 		    validator.onErrorRedirectTo(this).acessarCarrinho();
 		    return;
 		}
 	    }
+	    result.include("mostrarDialogoDescontos", mostrarDialogoDescontos);
 	}
 
-	result.include("mostrarDialogoDescontos", mostrarDialogoDescontos);
 	result.include(PedidoService.FORMA_DE_ENTREGA, pedido.getFormaDeEntrega());
 
 	verificarPagamentoComSaldoHabilitado(pedido);
@@ -849,10 +854,7 @@ public class PedidoController {
 
 		    if (pedido != null) {
 
-			gerarArquivoCsv(pedido.getId());
-
-			pedido.setStatus(PedidoService.FINALIZADO);
-
+			pedido.setStatus(PedidoService.PAGO);
 			hibernateUtil.salvarOuAtualizar(pedido);
 
 			Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
@@ -948,6 +950,27 @@ public class PedidoController {
 		    }
 		    salvarTransferencia(valorASerDescontadoDoSaldo, pedido.getIdCodigo());
 		}
+
+		if (pedido.getTipo().equals(PedidoService.LOJA_PESSOAL)) {
+
+		    BigDecimal comissaoTotal = BigDecimal.ZERO;
+		    List<ItemPedido> itens = new PedidoService(hibernateUtil).listarItensPedido(pedido);
+		    for (ItemPedido itemPedido : itens) {
+			Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
+			if (!produto.getId_Produtos().equals(PedidoService.PRODUTO_FRETE_ID)) {
+			    Integer quantidade = itemPedido.getQuantidade();
+			    comissaoTotal = comissaoTotal.add(itemPedido.getPrecoUnitario().multiply(BigDecimal.valueOf(quantidade)).multiply(produto.getPercentualLoja().divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_HALF_UP)));
+			}
+		    }
+
+		    Bonificacao bonificacao = new Bonificacao();
+		    bonificacao.setIdCodigo(pedido.getIdCodigo());
+		    bonificacao.setData(new GregorianCalendar());
+		    bonificacao.setTipo(Bonificacao.BÔNUS_LOJA_VIRTUAL);
+		    bonificacao.setValor(comissaoTotal);
+		    hibernateUtil.salvarOuAtualizar(bonificacao);
+		}
+
 		gerarArquivoCsv(pedido.getId());
 	    }
 

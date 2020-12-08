@@ -31,6 +31,7 @@
 						<option value="Bônus Global">Bônus Global</option>
 						<option value="Bônus de Reconhecimento">Bônus de Reconhecimento</option>
 						<option value="Bônus de Desempenho">Bônus de Desempenho</option>
+						<option value="Bônus Loja Virtual">Bônus Loja Virtual</option>
 					</select>
 				</div>
 			</div>

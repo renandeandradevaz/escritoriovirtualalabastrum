@@ -28,6 +28,7 @@ public class Produto implements Entidade {
     private BigDecimal PntProduto;
     private BigDecimal PntQualificacao;
     private String periodoParaCompraDeInativos;
+    private BigDecimal percentualLoja;
 
     public Produto() {
     }
@@ -148,5 +149,13 @@ public class Produto implements Entidade {
 
     public void setPeriodoParaCompraDeInativos(String periodoParaCompraDeInativos) {
 	this.periodoParaCompraDeInativos = periodoParaCompraDeInativos;
+    }
+
+    public BigDecimal getPercentualLoja() {
+	return percentualLoja;
+    }
+
+    public void setPercentualLoja(BigDecimal percentualLoja) {
+	this.percentualLoja = percentualLoja;
     }
 }

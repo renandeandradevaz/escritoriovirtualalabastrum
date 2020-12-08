@@ -5,6 +5,7 @@ public class PesquisaRelatorioPedidosDTO {
     private String apelido;
     private String numeroPedido;
     private String status;
+    private String tipo;
     private String dataInicial;
     private String dataFinal;
     private String origem;
@@ -73,5 +74,13 @@ public class PesquisaRelatorioPedidosDTO {
 
     public void setEstado(String estado) {
 	this.estado = estado;
+    }
+
+    public String getTipo() {
+	return tipo;
+    }
+
+    public void setTipo(String tipo) {
+	this.tipo = tipo;
     }
 }

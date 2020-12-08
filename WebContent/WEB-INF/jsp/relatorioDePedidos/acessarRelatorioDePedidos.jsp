@@ -28,8 +28,21 @@
 					<select name='pesquisaRelatorioPedidosDTO.status' id='status'>
 						<option value="">TODOS</option>
 						<option value="PENDENTE">PENDENTE</option>
+						<option value="PAGO">PAGO</option>
 						<option value="FINALIZADO">FINALIZADO</option>
 						<option value="CANCELADO">CANCELADO</option>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Por tipo</label>
+				<div class="controls">
+					<select name='pesquisaRelatorioPedidosDTO.tipo' id='tipo'>
+						<option value="">TODOS</option>
+						<option value="atividade">Atividade</option>
+						<option value="adesao">Adesão</option>
+						<option value="adesao_pa">Adesão de PA</option>
+						<option value="loja_pessoal">Loja pessoal</option>
 					</select>
 				</div>
 			</div>
@@ -162,7 +175,7 @@
 						<a class="btn btn-default" href="<c:url value="/pedido/verItens/${item.pedido.id}"/>"> Detalhar </a>
 						<br>
 						<br>
-						<c:if test="${item.pedido.status == 'PENDENTE'}">
+						<c:if test="${item.pedido.status == 'PENDENTE' || item.pedido.status == 'PAGO'}">
 							<a class="btn btn-success" href="<c:url value="/pedido/alterarStatus/${item.pedido.id}/FINALIZADO"/>"> Marcar como pago e finalizar pedido </a>
 							<br>
 							<br>
@@ -189,6 +202,7 @@
 </div>
 <script>
 	$('#status').val('${pesquisaRelatorioPedidosDTO.status}');
+	$('#tipo').val('${pesquisaRelatorioPedidosDTO.tipo}');
 	$('#origem').val('${pesquisaRelatorioPedidosDTO.origem}');
 	$('#estado').val('${pesquisaRelatorioPedidosDTO.estado}');
 	$('#ordenacao').val('${pesquisaRelatorioPedidosDTO.ordenacao}');

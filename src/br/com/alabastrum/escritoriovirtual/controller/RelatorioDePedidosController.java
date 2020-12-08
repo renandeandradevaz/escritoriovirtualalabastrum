@@ -45,6 +45,7 @@ public class RelatorioDePedidosController {
 	Pedido pedidoFiltro = new Pedido();
 	pedidoFiltro.setCompleted(true);
 	pedidoFiltro.setStatus(pesquisaRelatorioPedidosDTO.getStatus());
+	pedidoFiltro.setTipo(pesquisaRelatorioPedidosDTO.getTipo());
 
 	if (Util.preenchido(pesquisaRelatorioPedidosDTO.getNumeroPedido())) {
 	    pedidoFiltro.setId(Integer.valueOf(pesquisaRelatorioPedidosDTO.getNumeroPedido()));

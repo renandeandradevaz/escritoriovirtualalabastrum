@@ -71,6 +71,7 @@ public class ExtratoService {
 	BigDecimal bonusGlobalNoMes = BigDecimal.ZERO;
 	BigDecimal bonusReconhecimentoNoMes = BigDecimal.ZERO;
 	BigDecimal bonusDesempenhoNoMes = BigDecimal.ZERO;
+	BigDecimal bonusLojaVirtualNoMes = BigDecimal.ZERO;
 
 	List<ExtratoDTO> extratoDoMes = new ArrayList<ExtratoDTO>();
 	for (ExtratoDTO extratoDTO : extratoCompleto) {
@@ -120,6 +121,10 @@ public class ExtratoService {
 		    if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_DE_DESEMPENHO)) {
 			bonusDesempenhoNoMes = bonusDesempenhoNoMes.add(extratoDTO.getValor());
 		    }
+
+		    if (extratoDTO.getDiscriminador().equals(Bonificacao.BÔNUS_LOJA_VIRTUAL)) {
+			bonusLojaVirtualNoMes = bonusLojaVirtualNoMes.add(extratoDTO.getValor());
+		    }
 		}
 	    } else if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) < 0) {
 
@@ -152,6 +157,7 @@ public class ExtratoService {
 	saldoDTO.setBonusGlobalNoMes(bonusGlobalNoMes);
 	saldoDTO.setBonusReconhecimentoNoMes(bonusReconhecimentoNoMes);
 	saldoDTO.setBonusDesempenhoNoMes(bonusDesempenhoNoMes);
+	saldoDTO.setBonusLojaVirtualNoMes(bonusLojaVirtualNoMes);
 	saldoDTO.setSaldoAnteriorAoMesPesquisado(saldoAnteriorAoMesPesquisado);
 	saldoDTO.setGanhosNoMesPesquisado(ganhosNoMesPesquisado);
 	saldoDTO.setInssNoMesPesquisado(new TarifasService().calcularInss(usuario.getDescontaInss(), ganhosNoMesPesquisado));
@@ -162,7 +168,9 @@ public class ExtratoService {
 
     private boolean isHabilitadoParaBonus(Integer idCodigo, ExtratoDTO extratoDTO, Map<String, Boolean> atividadePorMesCacheMap, Map<String, Boolean> indicadosDiretosAtivosPorMesCacheMap, TreeMap<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaMap) {
 
-	if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_CREDITO) || extratoDTO.getDiscriminador().equals(BonusDePrimeiraCompraService.BÔNUS_DE_PRIMEIRA_COMPRA)) {
+	if (extratoDTO.getDiscriminador().equals(Transferencia.TRANSFERENCIA_POR_CREDITO) //
+		|| extratoDTO.getDiscriminador().equals(BonusDePrimeiraCompraService.BÔNUS_DE_PRIMEIRA_COMPRA)//
+		|| extratoDTO.getDiscriminador().equals(Bonificacao.BÔNUS_LOJA_VIRTUAL)) {
 	    return true;
 	}
 

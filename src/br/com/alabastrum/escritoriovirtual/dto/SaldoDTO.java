@@ -24,6 +24,7 @@ public class SaldoDTO {
     private BigDecimal bonusGlobalNoMes;
     private BigDecimal bonusReconhecimentoNoMes;
     private BigDecimal bonusDesempenhoNoMes;
+    private BigDecimal bonusLojaVirtualNoMes;
 
     public Usuario getUsuario() {
 	return usuario;
@@ -159,5 +160,13 @@ public class SaldoDTO {
 
     public void setExtratoCompleto(List<ExtratoDTO> extratoCompleto) {
 	this.extratoCompleto = extratoCompleto;
+    }
+
+    public BigDecimal getBonusLojaVirtualNoMes() {
+	return bonusLojaVirtualNoMes;
+    }
+
+    public void setBonusLojaVirtualNoMes(BigDecimal bonusLojaVirtualNoMes) {
+	this.bonusLojaVirtualNoMes = bonusLojaVirtualNoMes;
     }
 }

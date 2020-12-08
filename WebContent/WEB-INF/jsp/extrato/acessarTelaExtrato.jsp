@@ -240,6 +240,19 @@
 						</form>
 					</td>
 				</tr>
+				<tr>
+					<td class="centralizado">Bônus de Loja virtual</td>
+					<td class="centralizado">
+						R$
+						<fmt:formatNumber value="${extrato.bonusLojaVirtualNoMes}" pattern="#,##0.00" />
+					</td>
+					<td>
+						<form action="<c:url value="/extrato/detalharBonificacao"/>" method="post">
+							<input type="hidden" name="bonificacao" value="Bônus Loja Virtual">
+							<button type="submit" class="btn btn-primary detalhar" onclick="this.disabled=true;this.form.submit();">Detalhar</button>
+						</form>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>

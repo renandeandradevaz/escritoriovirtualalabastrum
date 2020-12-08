@@ -27,6 +27,7 @@ public class PedidoService {
     public static final String OPCOES_DE_FRETE = "opcoesDeFrete";
     public static final String ID_USUARIO_LOJA_PESSOAL = "idUsuarioLojaPessoal";
     public static final String FINALIZADO = "FINALIZADO";
+    public static final String PAGO = "PAGO";
     public static final String PENDENTE = "PENDENTE";
     public static final String CANCELADO = "CANCELADO";
     public static final String RECEBER_EM_CASA = "receberEmCasa";
