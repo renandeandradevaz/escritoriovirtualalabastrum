@@ -193,7 +193,7 @@ public class PedidoController {
 	    pedido.setIdCodigo(idCodigo);
 	    pedido.setCompleted(false);
 	    pedido.setStatus(PedidoService.PENDENTE);
-	    pedido.setTipo(definirTipoDoPedido());
+	    pedido.setTipo(definirTipoDoPedido(pedido.getComprador()));
 	}
 
 	pedido.setFormaDeEntrega(formaDeEntrega);
@@ -247,7 +247,11 @@ public class PedidoController {
 	result.include("itensPedidoDTO", itensPedidoDTO);
     }
 
-    private String definirTipoDoPedido() {
+    private String definirTipoDoPedido(Comprador comprador) {
+
+	if (comprador != null) {
+	    return PedidoService.LOJA_PESSOAL;
+	}
 
 	Object adesaoPontoDeApoio = this.sessaoGeral.getValor("adesaoPontoDeApoio");
 	Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
@@ -405,7 +409,7 @@ public class PedidoController {
 	    this.sessaoGeral.adicionar("isPrimeiroPedido", isPrimeiroPedido(idCodigo));
 	    this.sessaoGeral.adicionar("isInativo", isInativo(idCodigo));
 
-	    pedido.setTipo(definirTipoDoPedido());
+	    pedido.setTipo(definirTipoDoPedido(pedido.getComprador()));
 	    hibernateUtil.salvarOuAtualizar(pedido);
 
 	    for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
@@ -426,8 +430,16 @@ public class PedidoController {
 	List<ItemPedido> itensPedido = new PedidoService(hibernateUtil).listarItensPedido(pedido);
 	Franquia franquia = hibernateUtil.selecionar(new Franquia(pedido.getIdFranquia()));
 	Usuario distribuidorPedido = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+	Comprador comprador = pedido.getComprador();
 
-	List<FreteResponseDTO> opcoesDeFrete = new FreteService(hibernateUtil).buscarOpcoesDeFrete(franquia.getEstqCEP(), distribuidorPedido.getCadCEP(), itensPedido);
+	String cep = "";
+
+	if (comprador != null)
+	    cep = comprador.getCep();
+	else
+	    cep = distribuidorPedido.getCadCEP();
+
+	List<FreteResponseDTO> opcoesDeFrete = new FreteService(hibernateUtil).buscarOpcoesDeFrete(franquia.getEstqCEP(), cep, itensPedido);
 	result.include(PedidoService.OPCOES_DE_FRETE, opcoesDeFrete);
 	this.sessaoGeral.adicionar(PedidoService.OPCOES_DE_FRETE, opcoesDeFrete);
     }
@@ -527,10 +539,12 @@ public class PedidoController {
 	    Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
 	    Integer valorMaximoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAtividade"));
 
-	    if (valorTotal < valorMinimoPedidoAtividade || valorTotal > valorMaximoPedidoAtividade) {
-		validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de atividade é de R$%s. E o valor máximo é de R$%s", valorMinimoPedidoAtividade, valorMaximoPedidoAtividade), "Erro"));
-		validator.onErrorRedirectTo(this).acessarCarrinho();
-		return;
+	    if (pedido.getComprador() == null) {
+		if (valorTotal < valorMinimoPedidoAtividade || valorTotal > valorMaximoPedidoAtividade) {
+		    validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de atividade é de R$%s. E o valor máximo é de R$%s", valorMinimoPedidoAtividade, valorMaximoPedidoAtividade), "Erro"));
+		    validator.onErrorRedirectTo(this).acessarCarrinho();
+		    return;
+		}
 	    }
 	}
 
@@ -545,7 +559,7 @@ public class PedidoController {
     }
 
     @Funcionalidade
-    public void salvarDadosComprador(String nome, String cpf, String email, String telefone) throws Exception {
+    public void salvarDadosComprador(String nome, String cpf, String email, String telefone, String cep, String bairro, String cidade, String uf, String endereco, String numeroEndereco, String complementoEndereco) throws Exception {
 
 	cpf = cpf.replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", "");
 	telefone = telefone.replaceAll(" ", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("-", "");
@@ -562,6 +576,14 @@ public class PedidoController {
 	comprador.setNome(nome);
 	comprador.setEmail(email);
 	comprador.setTelefone(telefone);
+	comprador.setCep(cep);
+	comprador.setBairro(bairro);
+	comprador.setCidade(cidade);
+	comprador.setUf(uf);
+	comprador.setEndereco(endereco);
+	comprador.setNumeroEndereco(numeroEndereco);
+	comprador.setComplementoEndereco(complementoEndereco);
+
 	hibernateUtil.salvarOuAtualizar(comprador);
 
 	Pedido pedido = selecionarPedidoAberto();
@@ -570,7 +592,7 @@ public class PedidoController {
 
 	this.sessaoGeral.adicionar("formaDePagamento", "pagarComBoleto");
 
-	result.forwardTo(this).concluirPedido();
+	result.forwardTo(this).escolherFormaDeEnvio();
     }
 
     private void verificarPagamentoComSaldoHabilitado(Pedido pedido) {
@@ -601,14 +623,13 @@ public class PedidoController {
 	result.include("precoFinal", precoFinal);
 
 	if (formaDePagamento.equals("pagarComSaldo")) {
-	    // result.include("tarifas", precoFinal.multiply(Constants.TARIFA_INSS));
 	    result.include("tarifas", precoFinal.multiply(BigDecimal.ZERO));
 	}
     }
 
     private void alterarValorItensPedidoDeAcordoComFormaDePagamento(Pedido pedido, String formaDePagamento) throws Exception {
 
-	String tipoDoPedido = definirTipoDoPedido();
+	String tipoDoPedido = definirTipoDoPedido(pedido.getComprador());
 
 	if (tipoDoPedido.equals(PedidoService.RECOMPRA)) {
 
@@ -755,7 +776,7 @@ public class PedidoController {
 
 	    if (formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
 
-		String urlPagamento = new PagSeguroService(hibernateUtil).gerarBoleto(pedido.getId(), new DecimalFormat("0.00").format(totalPedido), (Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())));
+		String urlPagamento = new PagSeguroService(hibernateUtil).gerarBoleto(pedido.getId(), new DecimalFormat("0.00").format(totalPedido), (Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getComprador());
 		result.include("urlPagamento", urlPagamento);
 		result.forwardTo("/WEB-INF/jsp/pedido/informacoesBoleto.jsp");
 
@@ -993,8 +1014,6 @@ public class PedidoController {
 	    Pedido pedido = hibernateUtil.selecionar(new Pedido(idPedido));
 	    SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(pedido.getIdCodigo(), Util.getTempoCorrenteAMeiaNoite().get(Calendar.MONTH), Util.getTempoCorrenteAMeiaNoite().get(Calendar.YEAR));
 	    BigDecimal saldoLiberado = saldoDTO.getSaldoLiberado();
-	    // BigDecimal valorASerDescontadoDoSaldo =
-	    // valor.add(valor.multiply(Constants.TARIFA_INSS));
 	    BigDecimal valorASerDescontadoDoSaldo = valor.add(valor.multiply(BigDecimal.ZERO));
 
 	    if (valorASerDescontadoDoSaldo.compareTo(saldoLiberado) > 0) {

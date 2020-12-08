@@ -44,11 +44,15 @@
 			</tbody>
 		</table>
 		<br>
-		<c:if test="${pedido.formaDeEntrega == 'receberEmCasa'}">
-			<h4>Endereço para entrega</h4>
+		<c:if test="${pedido.comprador != null}">
+			<h4>Obs: Pedido feito em loja pessoal. Dados do comprador abaixo:</h4>
 			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
+						<th>Nome</th>
+						<th>CPF</th>
+						<th>Email</th>
+						<th>Telefone</th>
 						<th>CEP</th>
 						<th>Bairro</th>
 						<th>Cidade</th>
@@ -60,16 +64,51 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td class="centralizado">${usuarioPedido.cadCEP}</td>
-						<td class="centralizado">${usuarioPedido.cadBairro}</td>
-						<td class="centralizado">${usuarioPedido.cadCidade}</td>
-						<td class="centralizado">${usuarioPedido.cadUF}</td>
-						<td class="centralizado">${usuarioPedido.cadEndereco}</td>
-						<td class="centralizado">${usuarioPedido.numeroEndereco}</td>
-						<td class="centralizado">${usuarioPedido.complementoEndereco}</td>
+						<td class="centralizado">${pedido.comprador.nome}</td>
+						<td class="centralizado">${pedido.comprador.cpf}</td>
+						<td class="centralizado">${pedido.comprador.email}</td>
+						<td class="centralizado">${pedido.comprador.telefone}</td>
+						<td class="centralizado">${pedido.comprador.cep}</td>
+						<td class="centralizado">${pedido.comprador.bairro}</td>
+						<td class="centralizado">${pedido.comprador.cidade}</td>
+						<td class="centralizado">${pedido.comprador.uf}</td>
+						<td class="centralizado">${pedido.comprador.endereco}</td>
+						<td class="centralizado">${pedido.comprador.numeroEndereco}</td>
+						<td class="centralizado">${pedido.comprador.complementoEndereco}</td>
 					</tr>
 				</tbody>
 			</table>
+		</c:if>
+		<br>
+		<br>
+		<c:if test="${pedido.comprador == null}">
+			<c:if test="${pedido.formaDeEntrega == 'receberEmCasa'}">
+				<h4>Endereço para entrega</h4>
+				<table class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>CEP</th>
+							<th>Bairro</th>
+							<th>Cidade</th>
+							<th>UF</th>
+							<th>Endereço</th>
+							<th>Número</th>
+							<th>Complemento</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="centralizado">${usuarioPedido.cadCEP}</td>
+							<td class="centralizado">${usuarioPedido.cadBairro}</td>
+							<td class="centralizado">${usuarioPedido.cadCidade}</td>
+							<td class="centralizado">${usuarioPedido.cadUF}</td>
+							<td class="centralizado">${usuarioPedido.cadEndereco}</td>
+							<td class="centralizado">${usuarioPedido.numeroEndereco}</td>
+							<td class="centralizado">${usuarioPedido.complementoEndereco}</td>
+						</tr>
+					</tbody>
+				</table>
+			</c:if>
 		</c:if>
 		<br>
 		<table class="table table-striped table-bordered">

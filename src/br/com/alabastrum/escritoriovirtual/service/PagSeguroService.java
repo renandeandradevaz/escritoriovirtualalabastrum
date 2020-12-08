@@ -180,7 +180,21 @@ public class PagSeguroService {
 	return response.toString();
     }
 
-    public String gerarBoleto(Integer pedidoId, String valorTotal, Usuario usuario) throws Exception {
+    public String gerarBoleto(Integer pedidoId, String valorTotal, Usuario usuario, Comprador comprador) throws Exception {
+
+	String cpf = "";
+	String nome = "";
+	String email = "";
+
+	if (comprador != null) {
+	    cpf = comprador.getCpf();
+	    nome = comprador.getNome();
+	    email = comprador.getEmail();
+	} else {
+	    cpf = usuario.getCPF();
+	    nome = usuario.getvNome();
+	    email = usuario.geteMail();
+	}
 
 	DateTime validade = new DateTime();
 	validade = validade.plusDays(7);
@@ -199,7 +213,7 @@ public class PagSeguroService {
 	conn.setDoInput(true);
 	conn.setRequestMethod("POST");
 
-	String json = "{  \n" + "	    \"notificationURL\": \"https://ev.dunastes.com.br/pedido/pagseguroNotificacao?tokenEV=" + tokenEV + "\",\n" + "	    \"reference\": \"" + pedidoId + "\",\n" + "        \"description\": \"Dunastes\",\n" + "	    \"periodicity\":\"monthly\",\n" + "	    \"firstDueDate\":\"" + dataDeValidade + "\",\n" + "	    \"numberOfPayments\":1,\n" + "	    \"amount\":\"" + valorTotal.replace(",", ".") + "\",\n" + "	    \"customer\":{  \n" + "	       \"document\":{  \n" + "	          \"type\":\"CPF\",\n" + "	          \"value\":\"" + usuario.getCPF() + "\"\n" + "	       },                          \n" + "	       \"name\":\"" + usuario.getvNome() + "\",\n" + "	       \"email\":\"" + usuario.geteMail() + "\",\n" + "	       \"phone\":{                              \n" + "	          \"areaCode\":\"21\",\n" + "	          \"number\":\"900000000\"\n" + "	       }                 \n" + "	    }    \n" + "	 }";
+	String json = "{  \n" + "	    \"notificationURL\": \"https://ev.dunastes.com.br/pedido/pagseguroNotificacao?tokenEV=" + tokenEV + "\",\n" + "	    \"reference\": \"" + pedidoId + "\",\n" + "        \"description\": \"Dunastes\",\n" + "	    \"periodicity\":\"monthly\",\n" + "	    \"firstDueDate\":\"" + dataDeValidade + "\",\n" + "	    \"numberOfPayments\":1,\n" + "	    \"amount\":\"" + valorTotal.replace(",", ".") + "\",\n" + "	    \"customer\":{  \n" + "	       \"document\":{  \n" + "	          \"type\":\"CPF\",\n" + "	          \"value\":\"" + cpf + "\"\n" + "	       },                          \n" + "	       \"name\":\"" + nome + "\",\n" + "	       \"email\":\"" + email + "\",\n" + "	       \"phone\":{                              \n" + "	          \"areaCode\":\"21\",\n" + "	          \"number\":\"900000000\"\n" + "	       }                 \n" + "	    }    \n" + "	 }";
 
 	OutputStream os = conn.getOutputStream();
 	os.write(json.getBytes("UTF-8"));

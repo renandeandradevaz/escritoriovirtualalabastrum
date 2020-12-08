@@ -34,6 +34,55 @@
 					<span style="color: grey">Ex: (21) 98316-7924</span>
 				</div>
 			</div>
+			<div class="control-group">
+				<label class="control-label">CEP</label>
+				<div class="controls">
+					<input type="text" name="cep" required="required">
+					<span style="color: grey">Ex: 25235-006</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Bairro</label>
+				<div class="controls">
+					<input type="text" name="bairro" required="required">
+					<span style="color: grey">Ex: Copacabana</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Cidade</label>
+				<div class="controls">
+					<input type="text" name="cidade" required="required">
+					<span style="color: grey">Ex: Nova Iguaçu</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Estado</label>
+				<div class="controls">
+					<input type="text" name="uf" required="required">
+					<span style="color: grey">Ex: RJ</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Endereço</label>
+				<div class="controls">
+					<input type="text" name="endereco" required="required">
+					<span style="color: grey">Ex: Rua Carlota Vasconcelos</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Número do endereço</label>
+				<div class="controls">
+					<input type="text" name="numeroEndereco" required="required">
+					<span style="color: grey">Ex: 1029</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Complemento do endereço</label>
+				<div class="controls">
+					<input type="text" name="complementoEndereco" required="required">
+					<span style="color: grey">Ex: Apartamento 504</span>
+				</div>
+			</div>
 			<button type="submit" class="btn btn-primary">Avançar</button>
 		</fieldset>
 	</form>

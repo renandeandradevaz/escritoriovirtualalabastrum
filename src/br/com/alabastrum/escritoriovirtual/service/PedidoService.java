@@ -18,6 +18,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 public class PedidoService {
 
     public static final String RECOMPRA = "recompra";
+    public static final String LOJA_PESSOAL = "loja_pessoal";
     public static final String ATIVIDADE = "atividade";
     public static final String ADESAO = "adesao";
     public static final String ADESAO_PA = "adesao_pa";
