@@ -72,7 +72,7 @@ public class PedidoController {
 
 	if (this.sessaoUsuario.getUsuario().getId() == null) {
 
-	    Object idUsuarioLojaPessoal = this.sessaoGeral.getValor(PedidoService.ID_USUARIO_LOJA_PESSOAL);
+	    Object idUsuarioLojaPessoal = this.sessaoGeral.getValor(PedidoService.ID_USUARIO_PEDIDO);
 
 	    if (Util.preenchido(idUsuarioLojaPessoal)) {
 		Usuario usuario = this.hibernateUtil.selecionar(new Usuario((Integer) idUsuarioLojaPessoal));
@@ -168,7 +168,7 @@ public class PedidoController {
 	Integer idCodigo = usuario.getId_Codigo();
 
 	if (this.sessaoUsuario.getUsuario().getId() == null) {
-	    idCodigo = (Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_LOJA_PESSOAL);
+	    idCodigo = (Integer) this.sessaoGeral.getValor(PedidoService.ID_USUARIO_PEDIDO);
 
 	    Franquia franquia = new Franquia();
 	    franquia.setId_Estoque(1);
@@ -1107,7 +1107,7 @@ public class PedidoController {
 	Usuario usuario = new Usuario();
 	usuario.setApelido(apelido);
 	usuario = this.hibernateUtil.selecionar(usuario);
-	this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_LOJA_PESSOAL, usuario.getId_Codigo());
+	this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_PEDIDO, usuario.getId_Codigo());
 	Usuario usuarioFakeLojaPessoal = new Usuario();
 	usuarioFakeLojaPessoal.setApelido("Bem vindo à loja de " + usuario.getApelido());
 	this.sessaoUsuario.login(usuarioFakeLojaPessoal);
