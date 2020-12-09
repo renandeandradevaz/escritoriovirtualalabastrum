@@ -1117,7 +1117,7 @@ public class PedidoController {
 	franquia = this.hibernateUtil.selecionar(franquia);
 
 	Pedido pedido = selecionarPedidoAberto();
-	if (pedido != null) {
+	if (pedido != null && !pedido.getTipo().equals(PedidoService.LOJA_PESSOAL)) {
 	    pedido.setCompleted(true);
 	    pedido.setData(new GregorianCalendar());
 	    pedido.setStatus(PedidoService.CANCELADO);
