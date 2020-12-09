@@ -1124,8 +1124,7 @@ public class PedidoController {
 	    hibernateUtil.salvarOuAtualizar(pedido);
 	}
 
-	this.escolherProdutos(franquia.getId_Estoque(), usuario.getApelido(), PedidoService.RECEBER_EM_CASA, null, null);
-	result.forwardTo("/WEB-INF/jsp//pedido/escolherProdutos.jsp");
+	this.escolherProdutos(franquia.getId_Estoque(), usuario.getApelido(), PedidoService.RECEBER_EM_CASA, null, true);
     }
 
     private void montarPedidosDTO(String status, Integer idCodigo) {
