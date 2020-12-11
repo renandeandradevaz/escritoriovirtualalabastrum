@@ -68,7 +68,7 @@ public class BonusGlobalRotina implements Runnable {
 		}
 
 		Integer pontuacaoGlobalCompletaDoMes = new PontuacaoService(hibernateUtil).calcularPontuacaoGlobalDeTodaEmpresa(primeiroDiaDoMes, ultimoDiaDoMes);
-		BigDecimal valorASerDivididoNoMes = new BigDecimal(pontuacaoGlobalCompletaDoMes).multiply(new BigDecimal(0.18));
+		BigDecimal valorASerDivididoNoMes = new BigDecimal(pontuacaoGlobalCompletaDoMes).multiply(new BigDecimal(0.15));
 
 		BigDecimal valorCota = valorASerDivididoNoMes.divide(new BigDecimal(quantidadeCotas), 2, BigDecimal.ROUND_HALF_UP);
 
