@@ -44,6 +44,16 @@
 		<br>
 		<br>
 		<br>
+		<c:if test="${not empty kitAdesao}">
+			<div style="border: 1px black solid; padding: 10px; max-width: 300px; border-radius: 10px">
+				<h6>De acordo com a quantidade e valores de produtos que você está adquirindo, o seu Kit de adesão atual é:</h6>
+				<h3>${kitAdesao.kit}</h3>
+				<h6>Se quiser um kit de adesão melhor, é só aumentar o valor total do pedido adquirindo mais produtos</h6>
+			</div>
+			<br>
+			<br>
+			<br>
+		</c:if>
 		<c:if test="${sessaoUsuario.usuario.id_Codigo != null}">
 			<c:choose>
 				<c:when test="${formaDeEntrega == 'receberEmCasa'}">

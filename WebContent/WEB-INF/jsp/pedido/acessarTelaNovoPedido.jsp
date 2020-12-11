@@ -32,6 +32,21 @@
 				<br>
 				<br>
 				<br>
+				<c:if test="${not empty kitsAdesao}">
+					<div style="border: 1px black solid; padding: 10px; max-width: 300px; border-radius: 10px">
+						<h6>Este é o seu primeiro pedido. Pedido de adesão. De acordo com o valor da sua primeira compra, será escolhido o tipo de kit que você terá.</h6>
+						<h6>Os kits e seus valores mínimos estão abaixo:</h6>
+						<c:forEach items="${kitsAdesao}" var="item">
+							<p>
+								${item.kit}: R$
+								<fmt:formatNumber value="${item.valor}" pattern="#,##0.00" />
+							</p>
+						</c:forEach>
+					</div>
+					<br>
+					<br>
+					<br>
+				</c:if>
 				<div style="border: 1px black solid; padding: 10px; max-width: 300px; border-radius: 10px">
 					<h6>Obs: Para receber os seus produtos em casa, é necessário que o seu endereço esteja devidamente cadastrado e revisado nos seus dados cadastrais.</h6>
 					<h6>Os seus dados para entrega são:</h6>

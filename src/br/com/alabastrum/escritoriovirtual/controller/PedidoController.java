@@ -36,6 +36,7 @@ import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
 import br.com.alabastrum.escritoriovirtual.service.EstoqueService;
 import br.com.alabastrum.escritoriovirtual.service.ExtratoService;
 import br.com.alabastrum.escritoriovirtual.service.FreteService;
+import br.com.alabastrum.escritoriovirtual.service.KitAdesaoService;
 import br.com.alabastrum.escritoriovirtual.service.PagSeguroService;
 import br.com.alabastrum.escritoriovirtual.service.PedidoService;
 import br.com.alabastrum.escritoriovirtual.service.PosicoesService;
@@ -94,6 +95,7 @@ public class PedidoController {
 
 	if (isPrimeiroPedido(this.sessaoUsuario.getUsuario().getId_Codigo())) {
 	    this.sessaoGeral.adicionar("isPrimeiroPedido", true);
+	    result.include("kitsAdesao", new KitAdesaoService(hibernateUtil).buscarKits(new GregorianCalendar()));
 	    Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
 	    Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
 	    result.include("alerta", new ValidationMessage(String.format("Você ainda não fez um pedido de adesão. Você precisa realizar este pedido para ingressar, de fato, na empresa, e poder ficar ativo este mês. Para realizar a adesão à empresa, você precisa fazer um pedido com valor mínimo de R$%s e máximo de R$%s", valorMinimoPedidoAdesao, valorMaximoPedidoAdesao), "Erro"));
@@ -439,6 +441,12 @@ public class PedidoController {
 		Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 		Integer quantidade = itemPedido.getQuantidade();
 		itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, itemPedido.getPrecoUnitario(), 0, null));
+	    }
+
+	    Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
+	    if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
+		Integer valorTotal = new PedidoService(hibernateUtil).calcularTotalSemFrete(pedido).intValue();
+		result.include("kitAdesao", new KitAdesaoService(hibernateUtil).encontrarKitPeloValor(new GregorianCalendar(), valorTotal));
 	    }
 	}
 
@@ -1012,6 +1020,11 @@ public class PedidoController {
 	textoArquivo += "id_CDA=" + pedido.getIdFranquia() + "\r\n";
 	textoArquivo += "tipo_pedido=" + pedido.getTipo() + "\r\n";
 	textoArquivo += "pedido_id=" + pedido.getId() + "\r\n";
+
+	if (pedido.getTipo().equals(PedidoService.ADESAO)) {
+	    Integer valorTotal = new PedidoService(hibernateUtil).calcularTotalSemFrete(pedido).intValue();
+	    textoArquivo += "kit_adesao=" + new KitAdesaoService(hibernateUtil).encontrarKitPeloValor(new GregorianCalendar(), valorTotal).getKit() + "\r\n";
+	}
 
 	List<ItemPedido> itensPedido = new PedidoService(hibernateUtil).listarItensPedido(pedido);
 

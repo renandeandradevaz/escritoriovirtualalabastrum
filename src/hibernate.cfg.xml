@@ -36,6 +36,7 @@
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.InformacoesFixasUsuario" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ItemPedido" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ItemPedidoFranquia" />
+		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.KitAdesao" />
       	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ParametroAtividade" />
       	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ParametroDivisaoLucro" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.ParametroIngresso" />
