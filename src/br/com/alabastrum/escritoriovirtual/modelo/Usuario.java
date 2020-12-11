@@ -76,6 +76,7 @@ public class Usuario implements Entidade {
     private String numeroCarteiraTrabalho;
     private String serieCarteiraTrabalho;
     private String ufCarteiraTrabalho;
+    private String nome_kit;
 
     @Index(name = "index_id_Codigo")
     private Integer id_Codigo;
@@ -636,5 +637,13 @@ public class Usuario implements Entidade {
 
     public void setDescontaInss(Integer descontaInss) {
 	this.descontaInss = descontaInss;
+    }
+
+    public String getNome_kit() {
+	return nome_kit;
+    }
+
+    public void setNome_kit(String nome_kit) {
+	this.nome_kit = nome_kit;
     }
 }

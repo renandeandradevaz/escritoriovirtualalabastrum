@@ -204,14 +204,16 @@ h3 {
 		<br>
 		<br>
 	</div>
-	<div class='caixinha-home'>
-		<h3>Indicação</h3>
-		<h6>Quer indicar alguém?</h6>
-		<h6>Passe o link abaixo para a pessoa que você quer indicar. Para ela poder realizar o cadastro:</h6>
-		<input type="text" value="https://ev.dunastes.com.br/cadastro?nickname=${sessaoUsuario.usuario.apelido}" id="copylinkIndicacao">
-		<br>
-		<button class="btn" onclick="copiarLink('copylinkIndicacao')">Copiar link</button>
-	</div>
+	<c:if test="${'revendedor' != fn:toLowerCase(sessaoUsuario.usuario.nome_kit)}">
+		<div class='caixinha-home'>
+			<h3>Indicação</h3>
+			<h6>Quer indicar alguém?</h6>
+			<h6>Passe o link abaixo para a pessoa que você quer indicar. Para ela poder realizar o cadastro:</h6>
+			<input type="text" value="https://ev.dunastes.com.br/cadastro?nickname=${sessaoUsuario.usuario.apelido}" id="copylinkIndicacao">
+			<br>
+			<button class="btn" onclick="copiarLink('copylinkIndicacao')">Copiar link</button>
+		</div>
+	</c:if>
 	<div class='caixinha-home'>
 		<h3>Loja pessoal</h3>
 		<h6>Quer divulgar sua loja pessoal?</h6>

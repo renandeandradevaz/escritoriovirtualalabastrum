@@ -42,13 +42,6 @@ public class ExtratoService {
 	Map<String, Boolean> indicadosDiretosAtivosPorMesCache = new HashMap<String, Boolean>();
 
 	List<ExtratoDTO> extratoCompleto = new ArrayList<ExtratoDTO>();
-	extratoCompleto.addAll(new BonusDePrimeiraCompraService(hibernateUtil).obterBonificacoesDePrimeiraCompra(idCodigo, arvoreHierarquicaMap));
-	extratoCompleto.addAll(new BonusLinearService(hibernateUtil).obterBonificacoesLineares(idCodigo, arvoreHierarquicaMap));
-	extratoCompleto.addAll(new BonusTrinarioService(hibernateUtil).obterBonificacoesTrinarias(idCodigo));
-	extratoCompleto.addAll(new BonificacoesPreProcessadasService(hibernateUtil).obterBonificacoesPreProcessadas(idCodigo));
-	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeCredito(idCodigo));
-	extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeDebito(idCodigo));
-	extratoCompleto = ordenarExtratoPorDataCrescente(extratoCompleto);
 
 	GregorianCalendar tempoCorrente = Util.getTempoCorrenteAMeiaNoite();
 
@@ -74,73 +67,85 @@ public class ExtratoService {
 	BigDecimal bonusLojaVirtualNoMes = BigDecimal.ZERO;
 
 	List<ExtratoDTO> extratoDoMes = new ArrayList<ExtratoDTO>();
-	for (ExtratoDTO extratoDTO : extratoCompleto) {
 
-	    boolean isMesPesquisado = extratoDTO.getData().get(Calendar.MONTH) == mes && extratoDTO.getData().get(Calendar.YEAR) == ano;
+	if (!"revendedor".equalsIgnoreCase(usuario.getNome_kit())) {
 
-	    BigDecimal valor = BigDecimal.ZERO;
+	    extratoCompleto.addAll(new BonusDePrimeiraCompraService(hibernateUtil).obterBonificacoesDePrimeiraCompra(idCodigo, arvoreHierarquicaMap));
+	    extratoCompleto.addAll(new BonusLinearService(hibernateUtil).obterBonificacoesLineares(idCodigo, arvoreHierarquicaMap));
+	    extratoCompleto.addAll(new BonusTrinarioService(hibernateUtil).obterBonificacoesTrinarias(idCodigo));
+	    extratoCompleto.addAll(new BonificacoesPreProcessadasService(hibernateUtil).obterBonificacoesPreProcessadas(idCodigo));
+	    extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeCredito(idCodigo));
+	    extratoCompleto.addAll(new TransferenciaService(hibernateUtil).obterTransferenciasDeDebito(idCodigo));
+	    extratoCompleto = ordenarExtratoPorDataCrescente(extratoCompleto);
 
-	    if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) > 0 && isHabilitadoParaBonus(idCodigo, extratoDTO, atividadePorMesCache, indicadosDiretosAtivosPorMesCache, arvoreHierarquicaMap)) {
+	    for (ExtratoDTO extratoDTO : extratoCompleto) {
 
-		adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
+		boolean isMesPesquisado = extratoDTO.getData().get(Calendar.MONTH) == mes && extratoDTO.getData().get(Calendar.YEAR) == ano;
 
-		valor = extratoDTO.getValor().subtract(new TarifasService().calcularInss(usuario.getDescontaInss(), extratoDTO.getValor()));
-		ganhosAteHoje = ganhosAteHoje.add(valor);
+		BigDecimal valor = BigDecimal.ZERO;
 
-		if (isMesPesquisado) {
-		    ganhosNoMesPesquisado = ganhosNoMesPesquisado.add(extratoDTO.getValor());
+		if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) > 0 && isHabilitadoParaBonus(idCodigo, extratoDTO, atividadePorMesCache, indicadosDiretosAtivosPorMesCache, arvoreHierarquicaMap)) {
 
-		    if (extratoDTO.getDiscriminador().equals(BonusDePrimeiraCompraService.BÔNUS_DE_PRIMEIRA_COMPRA)) {
-			bonusPrimeiraCompraNoMes = bonusPrimeiraCompraNoMes.add(extratoDTO.getValor());
+		    adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
+
+		    valor = extratoDTO.getValor().subtract(new TarifasService().calcularInss(usuario.getDescontaInss(), extratoDTO.getValor()));
+		    ganhosAteHoje = ganhosAteHoje.add(valor);
+
+		    if (isMesPesquisado) {
+			ganhosNoMesPesquisado = ganhosNoMesPesquisado.add(extratoDTO.getValor());
+
+			if (extratoDTO.getDiscriminador().equals(BonusDePrimeiraCompraService.BÔNUS_DE_PRIMEIRA_COMPRA)) {
+			    bonusPrimeiraCompraNoMes = bonusPrimeiraCompraNoMes.add(extratoDTO.getValor());
+			}
+
+			if (extratoDTO.getDiscriminador().equals(BonusDePrimeiraCompraService.BÔNUS_DE_ADESÃO_DE_PONTO_DE_APOIO)) {
+			    bonusDeAdesaoDePontoDeApoioNoMes = bonusDeAdesaoDePontoDeApoioNoMes.add(extratoDTO.getValor());
+			}
+
+			if (extratoDTO.getDiscriminador().equals(BonusLinearService.BÔNUS_LINEAR)) {
+			    bonusLinearNoMes = bonusLinearNoMes.add(extratoDTO.getValor());
+			}
+
+			if (extratoDTO.getDiscriminador().equals(BonusTrinarioService.BÔNUS_TRINARIO)) {
+			    bonusTrinarioNoMes = bonusTrinarioNoMes.add(extratoDTO.getValor());
+			}
+
+			if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_DE_FILA_UNICA)) {
+			    bonusFilaUnicaNoMes = bonusFilaUnicaNoMes.add(extratoDTO.getValor());
+			}
+
+			if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_GLOBAL)) {
+			    bonusGlobalNoMes = bonusGlobalNoMes.add(extratoDTO.getValor());
+			}
+
+			if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_DE_RECONHECIMENTO)) {
+			    bonusReconhecimentoNoMes = bonusReconhecimentoNoMes.add(extratoDTO.getValor());
+			}
+
+			if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_DE_DESEMPENHO)) {
+			    bonusDesempenhoNoMes = bonusDesempenhoNoMes.add(extratoDTO.getValor());
+			}
+
+			if (extratoDTO.getDiscriminador().equals(Bonificacao.BÔNUS_LOJA_VIRTUAL)) {
+			    bonusLojaVirtualNoMes = bonusLojaVirtualNoMes.add(extratoDTO.getValor());
+			}
 		    }
+		} else if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) < 0) {
 
-		    if (extratoDTO.getDiscriminador().equals(BonusDePrimeiraCompraService.BÔNUS_DE_ADESÃO_DE_PONTO_DE_APOIO)) {
-			bonusDeAdesaoDePontoDeApoioNoMes = bonusDeAdesaoDePontoDeApoioNoMes.add(extratoDTO.getValor());
-		    }
+		    adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
 
-		    if (extratoDTO.getDiscriminador().equals(BonusLinearService.BÔNUS_LINEAR)) {
-			bonusLinearNoMes = bonusLinearNoMes.add(extratoDTO.getValor());
-		    }
+		    valor = extratoDTO.getValor();
 
-		    if (extratoDTO.getDiscriminador().equals(BonusTrinarioService.BÔNUS_TRINARIO)) {
-			bonusTrinarioNoMes = bonusTrinarioNoMes.add(extratoDTO.getValor());
-		    }
-
-		    if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_DE_FILA_UNICA)) {
-			bonusFilaUnicaNoMes = bonusFilaUnicaNoMes.add(extratoDTO.getValor());
-		    }
-
-		    if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_GLOBAL)) {
-			bonusGlobalNoMes = bonusGlobalNoMes.add(extratoDTO.getValor());
-		    }
-
-		    if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_DE_RECONHECIMENTO)) {
-			bonusReconhecimentoNoMes = bonusReconhecimentoNoMes.add(extratoDTO.getValor());
-		    }
-
-		    if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_DE_DESEMPENHO)) {
-			bonusDesempenhoNoMes = bonusDesempenhoNoMes.add(extratoDTO.getValor());
-		    }
-
-		    if (extratoDTO.getDiscriminador().equals(Bonificacao.BÔNUS_LOJA_VIRTUAL)) {
-			bonusLojaVirtualNoMes = bonusLojaVirtualNoMes.add(extratoDTO.getValor());
+		    if (isMesPesquisado) {
+			gastosNoMesPesquisado = gastosNoMesPesquisado.add(valor);
 		    }
 		}
-	    } else if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) < 0) {
 
-		adicionarNoExtratoDoMes(mes, ano, extratoDoMes, extratoDTO);
+		saldoLiberado = saldoLiberado.add(valor);
 
-		valor = extratoDTO.getValor();
-
-		if (isMesPesquisado) {
-		    gastosNoMesPesquisado = gastosNoMesPesquisado.add(valor);
+		if (extratoDTO.getData().before(dataPesquisada)) {
+		    saldoAnteriorAoMesPesquisado = saldoAnteriorAoMesPesquisado.add(valor);
 		}
-	    }
-
-	    saldoLiberado = saldoLiberado.add(valor);
-
-	    if (extratoDTO.getData().before(dataPesquisada)) {
-		saldoAnteriorAoMesPesquisado = saldoAnteriorAoMesPesquisado.add(valor);
 	    }
 	}
 

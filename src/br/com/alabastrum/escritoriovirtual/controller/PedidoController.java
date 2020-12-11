@@ -93,21 +93,25 @@ public class PedidoController {
 
 	buscarFranquias();
 
-	if (isPrimeiroPedido(this.sessaoUsuario.getUsuario().getId_Codigo())) {
-	    this.sessaoGeral.adicionar("isPrimeiroPedido", true);
-	    result.include("kitsAdesao", new KitAdesaoService(hibernateUtil).buscarKits(new GregorianCalendar()));
-	    Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
-	    Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
-	    result.include("alerta", new ValidationMessage(String.format("Você ainda não fez um pedido de adesão. Você precisa realizar este pedido para ingressar, de fato, na empresa, e poder ficar ativo este mês. Para realizar a adesão à empresa, você precisa fazer um pedido com valor mínimo de R$%s e máximo de R$%s", valorMinimoPedidoAdesao, valorMaximoPedidoAdesao), "Erro"));
-	    return;
-	}
+	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(this.sessaoUsuario.getUsuario().getId_Codigo()));
+	if (!"revendedor".equalsIgnoreCase(usuario.getNome_kit())) {
 
-	if (isInativo(this.sessaoUsuario.getUsuario().getId_Codigo())) {
-	    this.sessaoGeral.adicionar("isInativo", true);
-	    Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
-	    Integer valorMaximoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAtividade"));
-	    result.include("alerta", new ValidationMessage(String.format("Você ainda não está ativo este mês. Você precisa fazer um pedido para ficar ativo. O valor mínimo do pedido de atividade é R$%s e o valor máximo é R$%s", valorMinimoPedidoAtividade, valorMaximoPedidoAtividade), "Erro"));
-	    return;
+	    if (isPrimeiroPedido(this.sessaoUsuario.getUsuario().getId_Codigo())) {
+		this.sessaoGeral.adicionar("isPrimeiroPedido", true);
+		result.include("kitsAdesao", new KitAdesaoService(hibernateUtil).buscarKits(new GregorianCalendar()));
+		Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
+		Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
+		result.include("alerta", new ValidationMessage(String.format("Você ainda não fez um pedido de adesão. Você precisa realizar este pedido para ingressar, de fato, na empresa, e poder ficar ativo este mês. Para realizar a adesão à empresa, você precisa fazer um pedido com valor mínimo de R$%s e máximo de R$%s", valorMinimoPedidoAdesao, valorMaximoPedidoAdesao), "Erro"));
+		return;
+	    }
+
+	    if (isInativo(this.sessaoUsuario.getUsuario().getId_Codigo())) {
+		this.sessaoGeral.adicionar("isInativo", true);
+		Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
+		Integer valorMaximoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAtividade"));
+		result.include("alerta", new ValidationMessage(String.format("Você ainda não está ativo este mês. Você precisa fazer um pedido para ficar ativo. O valor mínimo do pedido de atividade é R$%s e o valor máximo é R$%s", valorMinimoPedidoAtividade, valorMaximoPedidoAtividade), "Erro"));
+		return;
+	    }
 	}
     }
 
@@ -662,8 +666,9 @@ public class PedidoController {
     private void alterarValorItensPedidoDeAcordoComFormaDePagamento(Pedido pedido, String formaDePagamento) throws Exception {
 
 	String tipoDoPedido = definirTipoDoPedido(pedido.getComprador());
+	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(this.sessaoUsuario.getUsuario().getId_Codigo()));
 
-	if (tipoDoPedido.equals(PedidoService.RECOMPRA)) {
+	if (tipoDoPedido.equals(PedidoService.RECOMPRA) || "revendedor".equalsIgnoreCase(usuario.getNome_kit())) {
 
 	    for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 		Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
