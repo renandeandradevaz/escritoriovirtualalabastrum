@@ -71,6 +71,7 @@ public class ExtratoService {
 	if (!"revendedor".equalsIgnoreCase(usuario.getNome_kit())) {
 
 	    extratoCompleto.addAll(new BonusDePrimeiraCompraService(hibernateUtil).obterBonificacoesDePrimeiraCompra(idCodigo, arvoreHierarquicaMap));
+	    extratoCompleto.addAll(new BonusDePrimeiraCompraComKitsService(hibernateUtil).obterBonificacoesDePrimeiraCompraComKits(idCodigo, arvoreHierarquicaMap));
 	    extratoCompleto.addAll(new BonusLinearService(hibernateUtil).obterBonificacoesLineares(idCodigo, arvoreHierarquicaMap));
 	    extratoCompleto.addAll(new BonusTrinarioService(hibernateUtil).obterBonificacoesTrinarias(idCodigo));
 	    extratoCompleto.addAll(new BonificacoesPreProcessadasService(hibernateUtil).obterBonificacoesPreProcessadas(idCodigo));

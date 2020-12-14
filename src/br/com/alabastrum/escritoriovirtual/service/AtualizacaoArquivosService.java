@@ -22,6 +22,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.Adesao;
+import br.com.alabastrum.escritoriovirtual.modelo.BonusAdesao;
 import br.com.alabastrum.escritoriovirtual.modelo.Caixa;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
@@ -64,6 +65,7 @@ public class AtualizacaoArquivosService {
 	processarCSVCaixa();
 	processarCSVAdesao();
 	processarCSVKitAdesao();
+	processarCSVBonusAdesao();
     }
 
     public void processarArquivosPeriodoCurto() throws Exception {
@@ -251,6 +253,15 @@ public class AtualizacaoArquivosService {
 	preencherObjeto(reader, kitsAdesoes, "KitAdesao");
 	this.hibernateUtil.executarSQL("delete from kitadesao");
 	this.hibernateUtil.salvarOuAtualizar(kitsAdesoes);
+    }
+
+    private void processarCSVBonusAdesao() throws Exception {
+
+	CSVReader reader = lerArquivo("tblbonusAdesao.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
+	List<BonusAdesao> bonusAdesoes = new ArrayList<BonusAdesao>();
+	preencherObjeto(reader, bonusAdesoes, "BonusAdesao");
+	this.hibernateUtil.executarSQL("delete from bonusadesao");
+	this.hibernateUtil.salvarOuAtualizar(bonusAdesoes);
     }
 
     private CSVReader lerArquivo(String nomeCsv, String caminho) throws Exception {

@@ -25,6 +25,7 @@
       	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Adesao" />
         <mapping class="br.com.alabastrum.escritoriovirtual.modelo.BoasVindas" />
         <mapping class="br.com.alabastrum.escritoriovirtual.modelo.Bonificacao" />
+        <mapping class="br.com.alabastrum.escritoriovirtual.modelo.BonusAdesao" />
         <mapping class="br.com.alabastrum.escritoriovirtual.modelo.Caixa" />
       	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Categoria" />
       	<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Comprador" />
