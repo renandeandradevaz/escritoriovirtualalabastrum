@@ -94,14 +94,14 @@ public class BonusDePrimeiraCompraService {
 		if (tipoDeAdesao.equals(PedidoService.ADESAO)) {
 		    if (valorTotal.compareTo(new BigDecimal("120")) != -1) {
 
-			GregorianCalendar vinteDezembro2020 = new GregorianCalendar(2020, Calendar.DECEMBER, 20);
-			if (pedido.getData().before(vinteDezembro2020)) {
+			GregorianCalendar quinzeDezembro2020 = new GregorianCalendar(2020, Calendar.DECEMBER, 15);
+			if (pedido.getData().before(quinzeDezembro2020)) {
 			    extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesao(), BÔNUS_DE_PRIMEIRA_COMPRA));
 			}
-		    } else if (tipoDeAdesao.equals(PedidoService.ADESAO_PA)) {
-			if (valorTotal.compareTo(new BigDecimal("1000")) != -1) {
-			    extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesaoPA(), BÔNUS_DE_ADESÃO_DE_PONTO_DE_APOIO));
-			}
+		    }
+		} else if (tipoDeAdesao.equals(PedidoService.ADESAO_PA)) {
+		    if (valorTotal.compareTo(new BigDecimal("1000")) != -1) {
+			extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesaoPA(), BÔNUS_DE_ADESÃO_DE_PONTO_DE_APOIO));
 		    }
 		}
 	    }

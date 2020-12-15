@@ -53,8 +53,8 @@ public class BonusDePrimeiraCompraComKitsService {
 
 		    if (valorTotal.compareTo(new BigDecimal("120")) != -1) {
 
-			GregorianCalendar vinteDezembro2020 = new GregorianCalendar(2020, Calendar.DECEMBER, 20);
-			if (pedido.getData().after(vinteDezembro2020)) {
+			GregorianCalendar quinzeDezembro2020 = new GregorianCalendar(2020, Calendar.DECEMBER, 15);
+			if (pedido.getData().after(quinzeDezembro2020)) {
 
 			    BonusAdesao kitBonusDoUsuarioPrincipal = new BonusAdesaoService(hibernateUtil).buscarBonusAdesao(pedido.getData(), nivel, usuario.getNome_kit());
 
