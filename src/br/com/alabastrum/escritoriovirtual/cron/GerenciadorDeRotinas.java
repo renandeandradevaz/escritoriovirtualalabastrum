@@ -24,6 +24,7 @@ public class GerenciadorDeRotinas {
 	    new BonusReconhecimentoEDesempenhoRotina().iniciarRotina();
 	    new BonusTrinarioComCompressaoDinamicaRotina().iniciarRotina();
 	    new BonusLinearComCompressaoDinamicaRotina().iniciarRotina();
+	    new BonusDePrimeiraCompraComKitsRotina().iniciarRotina();
 	}
     }
 }

@@ -94,8 +94,8 @@ public class BonusDePrimeiraCompraService {
 		if (tipoDeAdesao.equals(PedidoService.ADESAO)) {
 		    if (valorTotal.compareTo(new BigDecimal("120")) != -1) {
 
-			GregorianCalendar quinzeDezembro2020 = new GregorianCalendar(2020, Calendar.DECEMBER, 15);
-			if (pedido.getData().before(quinzeDezembro2020)) {
+			GregorianCalendar dezesseisDezembro2020 = new GregorianCalendar(2020, Calendar.DECEMBER, 16);
+			if (pedido.getData().before(dezesseisDezembro2020)) {
 			    extratos.add(new ExtratoDTO((Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getData(), adesaoNoNivel.getBonusAdesao(), BÔNUS_DE_PRIMEIRA_COMPRA));
 			}
 		    }
