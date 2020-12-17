@@ -194,6 +194,7 @@ public class PagSeguroService {
 	}
 
 	String apiKeyPagarMe = new Configuracao().retornarConfiguracao("apiKeyPagarMe");
+	String tokenEV = new Configuracao().retornarConfiguracao("tokenEV");
 
 	URL url = new URL("https://api.pagar.me/1/transactions");
 	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -206,6 +207,7 @@ public class PagSeguroService {
 	String json = "{" //
 		+ "\"amount\":" + valorTotal.replace(",", "") + "," //
 		+ "\"api_key\":" + "\"" + apiKeyPagarMe + "\"" + "," //
+		+ "\"postback_url\":" + "\"" + "https://ev.dunastes.com.br/pedido/pagarMeNotificacao?tokenEV=" + tokenEV + "&pedidoId=" + pedidoId + "\"" + "," //
 		+ "\"payment_method\":" + "\"" + "boleto" + "\"" + "," //
 		+ "\"customer\":{" + "\"type\":" + "\"" + "individual" + "\"" + "," //
 		+ "\"country\":" + "\"" + "br" + "\"" + "," //
