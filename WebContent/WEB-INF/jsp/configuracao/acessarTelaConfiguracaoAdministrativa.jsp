@@ -82,6 +82,12 @@
 				</div>
 			</div>
 			<div class="control-group">
+				<label class="control-label"> Api key Pagar.me </label>
+				<div class="controls">
+					<input type="text" name="configuracaoAdministrativaDTO.apiKeyPagarMe" value="${configuracaoAdministrativaDTO.apiKeyPagarMe}">
+				</div>
+			</div>
+			<div class="control-group">
 				<label class="control-label"> Token EV</label>
 				<div class="controls">
 					<input type="text" name="configuracaoAdministrativaDTO.tokenEV" value="${configuracaoAdministrativaDTO.tokenEV}">

@@ -14,10 +14,13 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import com.google.gson.Gson;
+
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Public;
 import br.com.alabastrum.escritoriovirtual.dto.FreteResponseDTO;
 import br.com.alabastrum.escritoriovirtual.dto.ItemPedidoDTO;
+import br.com.alabastrum.escritoriovirtual.dto.PagarMeDTO;
 import br.com.alabastrum.escritoriovirtual.dto.PedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
@@ -918,6 +921,56 @@ public class PedidoController {
 	} else {
 	    Mail.enviarEmail("tokenEV incorreto no momento da confirmação do pedido vinda do pagSeguro", "Esperado: " + new Configuracao().retornarConfiguracao("tokenEV") + " <br> Atual: " + tokenEV);
 	    result.use(json()).from("tokenEV incorreto").serialize();
+	}
+    }
+
+    @Public
+    @Funcionalidade
+    public void pagarMeNotificacao(PagarMeDTO pagarMeDTO, String tokenEV, String pedidoId) throws Exception {
+
+	System.out.println(new Gson().toJson(pagarMeDTO));
+	System.out.println(tokenEV);
+	System.out.println(pedidoId);
+
+	if (tokenEV.equals(new Configuracao().retornarConfiguracao("tokenEV"))) {
+
+	    try {
+
+		String status = pagarMeDTO.getStatus();
+
+		if (status.equalsIgnoreCase("TESTE")) {
+
+		    Pedido pedido = hibernateUtil.selecionar(new Pedido(Integer.valueOf(pedidoId)));
+
+		    if (pedido != null) {
+
+			pedido.setStatus(PedidoService.PAGO);
+			hibernateUtil.salvarOuAtualizar(pedido);
+			Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+			Mail.enviarEmail("Pagamento confirmado", "Seu pagamento foi confirmado. Seu pedido de código " + pedidoId + " está pronto para entrega.", usuario.geteMail());
+		    }
+
+		    Mail.enviarEmail("Pagamento confirmado para o pedido: " + pedidoId, "Status: " + status);
+
+		    result.use(json()).from("Pagamento confirmado com sucesso").serialize();
+
+		} else {
+
+		    String pagamentoNaoRealizadoMessage = "Pagamento não realizado. Status não aceito. Status = " + status;
+
+		    Mail.enviarEmail(pagamentoNaoRealizadoMessage, pagamentoNaoRealizadoMessage);
+
+		    result.use(json()).from(pagamentoNaoRealizadoMessage);
+		}
+
+	    } catch (Exception e) {
+
+		String exceptionMessage = Util.getExceptionMessage(e);
+
+		Mail.enviarEmail("Exception no pagarMeNotificacao", "Exception: " + exceptionMessage);
+
+		throw new Exception(exceptionMessage);
+	    }
 	}
     }
 

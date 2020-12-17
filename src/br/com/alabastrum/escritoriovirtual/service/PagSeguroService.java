@@ -184,6 +184,63 @@ public class PagSeguroService {
 
 	String cpf = "";
 	String nome = "";
+
+	if (comprador != null) {
+	    cpf = comprador.getCpf();
+	    nome = comprador.getNome();
+	} else {
+	    cpf = usuario.getCPF();
+	    nome = usuario.getvNome();
+	}
+
+	String apiKeyPagarMe = new Configuracao().retornarConfiguracao("apiKeyPagarMe");
+
+	URL url = new URL("https://api.pagar.me/1/transactions");
+	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	conn.setConnectTimeout(30000);
+	conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+	conn.setDoOutput(true);
+	conn.setDoInput(true);
+	conn.setRequestMethod("POST");
+
+	String json = "{" //
+		+ "\"amount\":" + valorTotal.replace(",", "") + "," //
+		+ "\"api_key\":" + "\"" + apiKeyPagarMe + "\"" + "," //
+		+ "\"payment_method\":" + "\"" + "boleto" + "\"" + "," //
+		+ "\"customer\":{" + "\"type\":" + "\"" + "individual" + "\"" + "," //
+		+ "\"country\":" + "\"" + "br" + "\"" + "," //
+		+ "\"name\":" + "\"" + nome + "\"" + "," //
+		+ "\"documents\": [{" //
+		+ "\"type\": \"cpf\"," //
+		+ "\"number\":" + "\"" + cpf + "\"" //
+		+ " }]  }} ";
+
+	System.out.println(json);
+
+	OutputStream os = conn.getOutputStream();
+	os.write(json.getBytes("UTF-8"));
+	os.close();
+
+	InputStream in = new BufferedInputStream(conn.getInputStream());
+	String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
+
+	in.close();
+
+	if (!(conn.getResponseCode() == 200 || conn.getResponseCode() == 201)) {
+	    throw new Exception("Pagar.me retornou um código inesperado: " + conn.getResponseCode());
+	}
+
+	conn.disconnect();
+
+	System.out.println(result);
+
+	return result.split("\"paymentLink\":\"")[1].split("\"")[0];
+    }
+
+    public String gerarBoletoModeloAntigo(Integer pedidoId, String valorTotal, Usuario usuario, Comprador comprador) throws Exception {
+
+	String cpf = "";
+	String nome = "";
 	String email = "";
 
 	if (comprador != null) {

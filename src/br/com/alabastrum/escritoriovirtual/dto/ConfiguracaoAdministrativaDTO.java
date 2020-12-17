@@ -16,6 +16,7 @@ public class ConfiguracaoAdministrativaDTO {
     private String tokenPagseguro;
     private String tokenMelhorEnvio;
     private String tokenEV;
+    private String apiKeyPagarMe;
 
     public String getSenhaEmail() {
 	return senhaEmail;
@@ -127,5 +128,13 @@ public class ConfiguracaoAdministrativaDTO {
 
     public void setTokenMelhorEnvio(String tokenMelhorEnvio) {
 	this.tokenMelhorEnvio = tokenMelhorEnvio;
+    }
+
+    public String getApiKeyPagarMe() {
+	return apiKeyPagarMe;
+    }
+
+    public void setApiKeyPagarMe(String apiKeyPagarMe) {
+	this.apiKeyPagarMe = apiKeyPagarMe;
     }
 }
