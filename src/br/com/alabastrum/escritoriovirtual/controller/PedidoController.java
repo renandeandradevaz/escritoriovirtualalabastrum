@@ -9,12 +9,13 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.IOUtils;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-
-import com.google.gson.Gson;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Public;
@@ -926,11 +927,13 @@ public class PedidoController {
 
     @Public
     @Funcionalidade
-    public void pagarMeNotificacao(PagarMeDTO pagarMeDTO, String tokenEV, String pedidoId) throws Exception {
+    public void pagarMeNotificacao(HttpServletRequest request, String tokenEV, String pedidoId) throws Exception {
 
-	System.out.println(new Gson().toJson(pagarMeDTO));
+	System.out.println(IOUtils.toString(request.getReader()));
 	System.out.println(tokenEV);
 	System.out.println(pedidoId);
+
+	PagarMeDTO pagarMeDTO = new PagarMeDTO();
 
 	if (tokenEV.equals(new Configuracao().retornarConfiguracao("tokenEV"))) {
 
