@@ -209,6 +209,8 @@ public class PagSeguroService {
 		+ "\"api_key\":" + "\"" + apiKeyPagarMe + "\"" + "," //
 		+ "\"postback_url\":" + "\"" + "https://ev.dunastes.com.br/pedido/pagarMeNotificacao?tokenEV=" + tokenEV + "&pedidoId=" + pedidoId + "\"" + "," //
 		+ "\"payment_method\":" + "\"" + "boleto" + "\"" + "," //
+		+ "\"async\":" + "false" + "," //
+		+ "\"capture\":" + "true" + "," //
 		+ "\"customer\":{" + "\"type\":" + "\"" + "individual" + "\"" + "," //
 		+ "\"country\":" + "\"" + "br" + "\"" + "," //
 		+ "\"name\":" + "\"" + nome + "\"" + "," //
@@ -236,7 +238,7 @@ public class PagSeguroService {
 
 	System.out.println(result);
 
-	return result.split("\"paymentLink\":\"")[1].split("\"")[0];
+	return result.split("\"boleto_url\":\"")[1].split("\"")[0];
     }
 
     public String gerarBoletoModeloAntigo(Integer pedidoId, String valorTotal, Usuario usuario, Comprador comprador) throws Exception {
