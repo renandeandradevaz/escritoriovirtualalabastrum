@@ -2,17 +2,12 @@ package br.com.alabastrum.escritoriovirtual.controller;
 
 import static br.com.caelum.vraptor.view.Results.json;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Scanner;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
@@ -816,7 +811,7 @@ public class PedidoController {
 
 	    if (formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
 
-		String urlPagamento = new PagSeguroService(hibernateUtil).gerarBoletoModeloAntigo(pedido.getId(), new DecimalFormat("0.00").format(totalPedido), (Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getComprador());
+		String urlPagamento = new PagSeguroService(hibernateUtil).gerarBoleto(pedido.getId(), new DecimalFormat("0.00").format(totalPedido), (Usuario) hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo())), pedido.getComprador());
 		result.include("urlPagamento", urlPagamento);
 		result.forwardTo("/WEB-INF/jsp/pedido/informacoesBoleto.jsp");
 
@@ -926,98 +921,49 @@ public class PedidoController {
 	}
     }
 
-    private static void printRequest(HttpServletRequest httpRequest) {
-	System.out.println(" \n\n Headers");
-
-	Enumeration headerNames = httpRequest.getHeaderNames();
-	while (headerNames.hasMoreElements()) {
-	    String headerName = (String) headerNames.nextElement();
-	    System.out.println(headerName + " = " + httpRequest.getHeader(headerName));
-	}
-
-	System.out.println("\n\nParameters");
-
-	Enumeration params = httpRequest.getParameterNames();
-	while (params.hasMoreElements()) {
-	    String paramName = (String) params.nextElement();
-	    System.out.println(paramName + " = " + httpRequest.getParameter(paramName));
-	}
-
-	System.out.println("\n\n Row data");
-	System.out.println(extractPostRequestBody(httpRequest));
-    }
-
-    static String extractPostRequestBody(HttpServletRequest request) {
-	if ("POST".equalsIgnoreCase(request.getMethod())) {
-	    Scanner s = null;
-	    try {
-		s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
-	    } catch (IOException e) {
-		e.printStackTrace();
-	    }
-	    return s.hasNext() ? s.next() : "";
-	}
-	return "";
-    }
-
     @Public
     @Funcionalidade
-    public void pagarMeNotificacao(HttpServletRequest request, String tokenEV, String pedidoId) throws Exception {
+    public void pagarMeNotificacao(String tokenEV, String pedidoId, String current_status) throws Exception {
 
-	Enumeration<String> params = request.getParameterNames();
-	while (params.hasMoreElements()) {
-	    String paramName = (String) params.nextElement();
-	    System.out.println(paramName + " = " + request.getParameter(paramName));
+	String status = current_status;
+
+	if (tokenEV.equals(new Configuracao().retornarConfiguracao("tokenEV"))) {
+
+	    try {
+		if (status.equalsIgnoreCase("paid")) {
+
+		    Pedido pedido = hibernateUtil.selecionar(new Pedido(Integer.valueOf(pedidoId)));
+
+		    if (pedido != null) {
+
+			pedido.setStatus(PedidoService.PAGO);
+			hibernateUtil.salvarOuAtualizar(pedido);
+			Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+			Mail.enviarEmail("Pagamento confirmado", "Seu pagamento foi confirmado. Seu pedido de código " + pedidoId + " está pronto para entrega.", usuario.geteMail());
+		    }
+
+		    Mail.enviarEmail("Pagamento confirmado para o pedido: " + pedidoId, "Status: " + status);
+
+		    result.use(json()).from("Pagamento confirmado com sucesso").serialize();
+
+		} else {
+
+		    String pagamentoNaoRealizadoMessage = "Pagamento não realizado. Status não aceito. Status = " + status;
+
+		    Mail.enviarEmail(pagamentoNaoRealizadoMessage, pagamentoNaoRealizadoMessage);
+
+		    result.use(json()).from(pagamentoNaoRealizadoMessage);
+		}
+
+	    } catch (Exception e) {
+
+		String exceptionMessage = Util.getExceptionMessage(e);
+
+		Mail.enviarEmail("Exception no pagarMeNotificacao", "Exception: " + exceptionMessage);
+
+		throw new Exception(exceptionMessage);
+	    }
 	}
-
-	// printRequest(request);
-	System.out.println(tokenEV);
-	System.out.println(pedidoId);
-
-	result.use(json()).from("ok").serialize();
-
-//	PagarMeDTO pagarMeDTO = new PagarMeDTO();
-//
-//	if (tokenEV.equals(new Configuracao().retornarConfiguracao("tokenEV"))) {
-//
-//	    try {
-//
-//		String status = pagarMeDTO.getStatus();
-//
-//		if (status.equalsIgnoreCase("TESTE")) {
-//
-//		    Pedido pedido = hibernateUtil.selecionar(new Pedido(Integer.valueOf(pedidoId)));
-//
-//		    if (pedido != null) {
-//
-//			pedido.setStatus(PedidoService.PAGO);
-//			hibernateUtil.salvarOuAtualizar(pedido);
-//			Usuario usuario = hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
-//			Mail.enviarEmail("Pagamento confirmado", "Seu pagamento foi confirmado. Seu pedido de código " + pedidoId + " está pronto para entrega.", usuario.geteMail());
-//		    }
-//
-//		    Mail.enviarEmail("Pagamento confirmado para o pedido: " + pedidoId, "Status: " + status);
-//
-//		    result.use(json()).from("Pagamento confirmado com sucesso").serialize();
-//
-//		} else {
-//
-//		    String pagamentoNaoRealizadoMessage = "Pagamento não realizado. Status não aceito. Status = " + status;
-//
-//		    Mail.enviarEmail(pagamentoNaoRealizadoMessage, pagamentoNaoRealizadoMessage);
-//
-//		    result.use(json()).from(pagamentoNaoRealizadoMessage);
-//		}
-//
-//	    } catch (Exception e) {
-//
-//		String exceptionMessage = Util.getExceptionMessage(e);
-//
-//		Mail.enviarEmail("Exception no pagarMeNotificacao", "Exception: " + exceptionMessage);
-//
-//		throw new Exception(exceptionMessage);
-//	    }
-//	}
     }
 
     @Funcionalidade

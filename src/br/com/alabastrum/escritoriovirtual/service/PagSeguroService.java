@@ -240,15 +240,6 @@ public class PagSeguroService {
 
 	return result.split("\"boleto_url\":\"")[1].split("\"")[0];
     }
-    
-    public static void main(String[] args) throws Exception {
-	
-	
-	Usuario usuario = new Usuario();
-	usuario.setvNome("Renan Vaz");
-	usuario.setCPF("13518770705");
-	new PagSeguroService(new HibernateUtil()).gerarBoleto(1, "165,45", usuario, null)	;
-    }
 
     public String gerarBoletoModeloAntigo(Integer pedidoId, String valorTotal, Usuario usuario, Comprador comprador) throws Exception {
 
