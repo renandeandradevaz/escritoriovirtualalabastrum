@@ -2,16 +2,18 @@ package br.com.alabastrum.escritoriovirtual.controller;
 
 import static br.com.caelum.vraptor.view.Results.json;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.io.IOUtils;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -21,7 +23,6 @@ import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Public;
 import br.com.alabastrum.escritoriovirtual.dto.FreteResponseDTO;
 import br.com.alabastrum.escritoriovirtual.dto.ItemPedidoDTO;
-import br.com.alabastrum.escritoriovirtual.dto.PagarMeDTO;
 import br.com.alabastrum.escritoriovirtual.dto.PedidoDTO;
 import br.com.alabastrum.escritoriovirtual.dto.SaldoDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
@@ -925,14 +926,54 @@ public class PedidoController {
 	}
     }
 
+    private static void printRequest(HttpServletRequest httpRequest) {
+	System.out.println(" \n\n Headers");
+
+	Enumeration headerNames = httpRequest.getHeaderNames();
+	while (headerNames.hasMoreElements()) {
+	    String headerName = (String) headerNames.nextElement();
+	    System.out.println(headerName + " = " + httpRequest.getHeader(headerName));
+	}
+
+	System.out.println("\n\nParameters");
+
+	Enumeration params = httpRequest.getParameterNames();
+	while (params.hasMoreElements()) {
+	    String paramName = (String) params.nextElement();
+	    System.out.println(paramName + " = " + httpRequest.getParameter(paramName));
+	}
+
+	System.out.println("\n\n Row data");
+	System.out.println(extractPostRequestBody(httpRequest));
+    }
+
+    static String extractPostRequestBody(HttpServletRequest request) {
+	if ("POST".equalsIgnoreCase(request.getMethod())) {
+	    Scanner s = null;
+	    try {
+		s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
+	    return s.hasNext() ? s.next() : "";
+	}
+	return "";
+    }
+
     @Public
     @Funcionalidade
     public void pagarMeNotificacao(HttpServletRequest request, String tokenEV, String pedidoId) throws Exception {
 
-	System.out.println(IOUtils.toString(request.getReader()));
+	Enumeration<String> params = request.getParameterNames();
+	while (params.hasMoreElements()) {
+	    String paramName = (String) params.nextElement();
+	    System.out.println(paramName + " = " + request.getParameter(paramName));
+	}
+
+	// printRequest(request);
 	System.out.println(tokenEV);
 	System.out.println(pedidoId);
-	
+
 	result.use(json()).from("ok").serialize();
 
 //	PagarMeDTO pagarMeDTO = new PagarMeDTO();
