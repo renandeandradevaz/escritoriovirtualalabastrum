@@ -668,7 +668,7 @@ public class PedidoController {
 	String tipoDoPedido = definirTipoDoPedido(pedido.getComprador());
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(this.sessaoUsuario.getUsuario().getId_Codigo()));
 
-	if (tipoDoPedido.equals(PedidoService.RECOMPRA) || "revendedor".equalsIgnoreCase(usuario.getNome_kit())) {
+//	if (tipoDoPedido.equals(PedidoService.RECOMPRA) || "revendedor".equalsIgnoreCase(usuario.getNome_kit())) {
 
 	    for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
 		Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
@@ -708,7 +708,7 @@ public class PedidoController {
 		}
 	    }
 	}
-    }
+ //   }
 
     @Funcionalidade
     public void concluirPedido() throws Exception {
