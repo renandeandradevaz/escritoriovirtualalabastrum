@@ -338,7 +338,7 @@ public class PedidoController {
 	Object isInativo = this.sessaoGeral.getValor("isInativo");
 
 	if (this.sessaoUsuario.getUsuario().getId() == null || (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) || (isInativo != null && (Boolean) isInativo) || (adesaoPontoDeApoio != null && (Boolean) adesaoPontoDeApoio)) {
-	    return precoUnitario.multiply(new BigDecimal("2"));
+	   // return precoUnitario.multiply(new BigDecimal("2"));
 	}
 	return precoUnitario;
     }
