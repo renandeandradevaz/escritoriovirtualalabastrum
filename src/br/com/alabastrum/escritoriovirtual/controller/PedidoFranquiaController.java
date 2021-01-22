@@ -153,7 +153,7 @@ public class PedidoFranquiaController {
 	Categoria categoria = produto.obterCategoria();
 
 	if (categoria != null && !categoria.getCatNome().equalsIgnoreCase("material de apoio")) {
-	    precoUnitario = precoUnitario.subtract(precoUnitario.multiply(new BigDecimal("0.1")));
+	    precoUnitario = precoUnitario.subtract(precoUnitario.multiply(new BigDecimal("0.07")));
 	}
 	return precoUnitario;
     }
