@@ -17,14 +17,14 @@ public class GerenciadorDeRotinas {
 	    new AtualizacaoArquivosAutomaticamentePeriodoCurto().iniciarRotina();
 	    new AtualizacaoArquivosAutomaticamenteUsuarios().iniciarRotina();
 	    new CancelarPedidosPendentes().iniciarRotina();
-	    new CompressaoDeBonus().iniciarRotina();
+	    //new CompressaoDeBonus().iniciarRotina();
 	    new NotificarPedidosPagosNaoFinalizados().iniciarRotina();
 	    new BonusFilaUnicaRotina().iniciarRotina();
 	    new BonusGlobalRotina().iniciarRotina();
-	    new BonusReconhecimentoEDesempenhoRotina().iniciarRotina();
-	    new BonusTrinarioComCompressaoDinamicaRotina().iniciarRotina();
-	    new BonusLinearComCompressaoDinamicaRotina().iniciarRotina();
-	    new BonusDePrimeiraCompraComKitsRotina().iniciarRotina();
+	    //new BonusReconhecimentoEDesempenhoRotina().iniciarRotina();
+	    //new BonusTrinarioComCompressaoDinamicaRotina().iniciarRotina();
+	    //new BonusLinearComCompressaoDinamicaRotina().iniciarRotina();
+	    //new BonusDePrimeiraCompraComKitsRotina().iniciarRotina();
 	}
     }
 }
