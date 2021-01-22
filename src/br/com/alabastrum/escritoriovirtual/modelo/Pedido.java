@@ -26,6 +26,7 @@ public class Pedido implements Entidade {
     private String formaDePagamento;
     private String formaDeEntrega;
     private String empresaParaEntrega;
+    private String kitIngresso;
 
     @ManyToOne
     private Comprador comprador;
@@ -126,5 +127,13 @@ public class Pedido implements Entidade {
 
     public void setEmpresaParaEntrega(String empresaParaEntrega) {
 	this.empresaParaEntrega = empresaParaEntrega;
+    }
+
+    public String getKitIngresso() {
+	return kitIngresso;
+    }
+
+    public void setKitIngresso(String kitIngresso) {
+	this.kitIngresso = kitIngresso;
     }
 }

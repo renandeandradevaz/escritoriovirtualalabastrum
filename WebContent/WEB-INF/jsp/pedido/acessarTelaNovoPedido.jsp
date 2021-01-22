@@ -26,27 +26,25 @@
 					</c:forEach>
 				</select>
 				<br>
-				<br>
+				<c:if test="${not empty kitsAdesao}">
+					<h5>Kits e seus valores mínimos:</h5>
+					<select name='idKit'>
+						<option value="">Selecione</option>
+						<c:forEach items="${kitsAdesao}" var="item">
+							<option value="${item.id}">${item.kit}-Mínimo:R$
+								<fmt:formatNumber value="${item.valor}" pattern="#,##0.00">
+								</fmt:formatNumber>
+							</option>
+						</c:forEach>
+					</select>
+					<br>
+					<br>
+				</c:if>
 				<input type="checkbox" name='adesaoPontoDeApoio' />
 				<span>Desejo fazer uma adesão de Ponto de Apoio (Obs: Para adquirir um P.A. é necessário fazer uma compra de produtos no valor mínimo de R$2.500,00) </span>
 				<br>
 				<br>
 				<br>
-				<c:if test="${not empty kitsAdesao}">
-					<div style="border: 1px black solid; padding: 10px; max-width: 300px; border-radius: 10px">
-						<h6>Este é o seu primeiro pedido. Pedido de adesão. De acordo com o valor da sua primeira compra, será escolhido o tipo de kit que você terá.</h6>
-						<h6>Os kits e seus valores mínimos estão abaixo:</h6>
-						<c:forEach items="${kitsAdesao}" var="item">
-							<p>
-								${item.kit}: R$
-								<fmt:formatNumber value="${item.valor}" pattern="#,##0.00" />
-							</p>
-						</c:forEach>
-					</div>
-					<br>
-					<br>
-					<br>
-				</c:if>
 				<div style="border: 1px black solid; padding: 10px; max-width: 300px; border-radius: 10px">
 					<h6>Obs: Para receber os seus produtos em casa, é necessário que o seu endereço esteja devidamente cadastrado e revisado nos seus dados cadastrais.</h6>
 					<h6>Os seus dados para entrega são:</h6>

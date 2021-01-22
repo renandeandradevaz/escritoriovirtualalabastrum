@@ -27,6 +27,7 @@ import br.com.alabastrum.escritoriovirtual.modelo.Comprador;
 import br.com.alabastrum.escritoriovirtual.modelo.Configuracao;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.ItemPedido;
+import br.com.alabastrum.escritoriovirtual.modelo.KitAdesao;
 import br.com.alabastrum.escritoriovirtual.modelo.Pedido;
 import br.com.alabastrum.escritoriovirtual.modelo.Produto;
 import br.com.alabastrum.escritoriovirtual.modelo.Transferencia;
@@ -92,13 +93,13 @@ public class PedidoController {
 	}
 
 	buscarFranquias();
+	result.include("kitsAdesao", new KitAdesaoService(hibernateUtil).buscarKits(new GregorianCalendar()));
 
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(this.sessaoUsuario.getUsuario().getId_Codigo()));
 	if (!"revendedor".equalsIgnoreCase(usuario.getNome_kit())) {
 
 	    if (isPrimeiroPedido(this.sessaoUsuario.getUsuario().getId_Codigo())) {
 		this.sessaoGeral.adicionar("isPrimeiroPedido", true);
-		result.include("kitsAdesao", new KitAdesaoService(hibernateUtil).buscarKits(new GregorianCalendar()));
 		Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
 		Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
 		result.include("alerta", new ValidationMessage(String.format("Você ainda não fez um pedido de adesão. Você precisa realizar este pedido para ingressar, de fato, na empresa, e poder ficar ativo este mês. Para realizar a adesão à empresa, você precisa fazer um pedido com valor mínimo de R$%s e máximo de R$%s", valorMinimoPedidoAdesao, valorMaximoPedidoAdesao), "Erro"));
@@ -138,7 +139,7 @@ public class PedidoController {
     }
 
     @Funcionalidade
-    public void escolherProdutos(Integer idFranquia, String nickname, String formaDeEntrega, Boolean adesaoPontoDeApoio, Boolean escolherCategoriaPadrao) {
+    public void escolherProdutos(Integer idFranquia, String nickname, String formaDeEntrega, Boolean adesaoPontoDeApoio, Boolean escolherCategoriaPadrao, Integer idKit) {
 
 	if (this.sessaoUsuario.getUsuario().getDonoDeFranquia()) {
 	    formaDeEntrega = PedidoService.RECEBER_NO_PA;
@@ -189,6 +190,18 @@ public class PedidoController {
 	this.sessaoGeral.adicionar("isPrimeiroPedido", isPrimeiroPedido(idCodigo));
 	this.sessaoGeral.adicionar("isInativo", isInativo(idCodigo));
 	this.sessaoGeral.adicionar("adesaoPontoDeApoio", adesaoPontoDeApoio);
+
+	if (idKit != null) {
+	    KitAdesao kitAdesao = new KitAdesao();
+	    kitAdesao.setId(idKit);
+	    kitAdesao = this.hibernateUtil.selecionar(kitAdesao);
+	    this.sessaoGeral.adicionar("kitAdesao", kitAdesao.getKit());
+	} else {
+	    Object kitAdesao = this.sessaoGeral.getValor("kitAdesao");
+	    if (kitAdesao == null) {
+		this.sessaoGeral.adicionar("kitAdesao", usuario.getNome_kit());
+	    }
+	}
 
 	if (formaDeEntrega.equals(PedidoService.RECEBER_EM_CASA)) {
 	    idFranquia = 1;
@@ -324,7 +337,7 @@ public class PedidoController {
 	result.include("itensPedidoDTO", itensPedidoDTO);
 	result.include("totais", new PedidoService(hibernateUtil).calcularTotais(pedido));
 	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
-	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), usuario.getApelido(), pedido.getFormaDeEntrega(), (Boolean) this.sessaoGeral.getValor("adesaoPontoDeApoio"), null);
+	result.forwardTo(this).escolherProdutos(pedido.getIdFranquia(), usuario.getApelido(), pedido.getFormaDeEntrega(), (Boolean) this.sessaoGeral.getValor("adesaoPontoDeApoio"), null, null);
     }
 
     private void adicionarItemPedido(List<ItemPedidoDTO> itensPedidoDTO, Produto produto, int quantidadeEmEstoque, Integer quantidade) {
@@ -338,7 +351,7 @@ public class PedidoController {
 	Object isInativo = this.sessaoGeral.getValor("isInativo");
 
 	if (this.sessaoUsuario.getUsuario().getId() == null || (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) || (isInativo != null && (Boolean) isInativo) || (adesaoPontoDeApoio != null && (Boolean) adesaoPontoDeApoio)) {
-	   // return precoUnitario.multiply(new BigDecimal("2"));
+	    // return precoUnitario.multiply(new BigDecimal("2"));
 	}
 	return precoUnitario;
     }
@@ -447,11 +460,14 @@ public class PedidoController {
 		itensPedidoDTO.add(new ItemPedidoDTO(produto, quantidade, itemPedido.getPrecoUnitario(), 0, null));
 	    }
 
-	    Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
-	    if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
-		Integer valorTotal = new PedidoService(hibernateUtil).calcularTotalSemFrete(pedido).intValue();
-		result.include("kitAdesao", new KitAdesaoService(hibernateUtil).encontrarKitPeloValor(new GregorianCalendar(), valorTotal));
-	    }
+	    // Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
+	    // if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
+	    // Integer valorTotal = new
+	    // PedidoService(hibernateUtil).calcularTotalSemFrete(pedido).intValue();
+	    // result.include("kitAdesao", new
+	    // KitAdesaoService(hibernateUtil).encontrarKitPeloValor(new
+	    // GregorianCalendar(), valorTotal));
+	    // }
 	}
 
 	result.include("itensPedidoDTO", itensPedidoDTO);
@@ -665,50 +681,51 @@ public class PedidoController {
 
     private void alterarValorItensPedidoDeAcordoComFormaDePagamento(Pedido pedido, String formaDePagamento) throws Exception {
 
-	String tipoDoPedido = definirTipoDoPedido(pedido.getComprador());
-	Usuario usuario = this.hibernateUtil.selecionar(new Usuario(this.sessaoUsuario.getUsuario().getId_Codigo()));
+	// String tipoDoPedido = definirTipoDoPedido(pedido.getComprador());
+	// Usuario usuario = this.hibernateUtil.selecionar(new
+	// Usuario(this.sessaoUsuario.getUsuario().getId_Codigo()));
 
 //	if (tipoDoPedido.equals(PedidoService.RECOMPRA) || "revendedor".equalsIgnoreCase(usuario.getNome_kit())) {
 
-	    for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
-		Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
+	for (ItemPedido itemPedido : new PedidoService(hibernateUtil).listarItensPedido(pedido)) {
+	    Produto produto = hibernateUtil.selecionar(new Produto(itemPedido.getIdProduto()), MatchMode.EXACT);
 
-		if (!produto.getId_Produtos().equals(PedidoService.PRODUTO_FRETE_ID)) {
+	    if (!produto.getId_Produtos().equals(PedidoService.PRODUTO_FRETE_ID)) {
 
-		    BigDecimal precoUnitarioProduto = produto.getPrdPreco_Unit();
-		    BigDecimal precoUnitarioItemPedido = precoUnitarioProduto.multiply(new BigDecimal("2"));
+		BigDecimal precoUnitarioProduto = produto.getPrdPreco_Unit();
+		BigDecimal precoUnitarioItemPedido = precoUnitarioProduto.multiply(new BigDecimal("2"));
 
-		    if (formaDePagamento.equalsIgnoreCase("pagarComSaldo")) {
-			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
+		if (formaDePagamento.equalsIgnoreCase("pagarComSaldo")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
 
-		    } else if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
-			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComDinheiro")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.50")));
 
-		    } else if (formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
-			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComBoleto")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.47")));
 
-		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebitoNoPA")) {
-			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.472")));
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebitoNoPA")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.472")));
 
-		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebitoOnline")) {
-			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.472")));
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeDebitoOnline")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.472")));
 
-		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoNoPA")) {
-			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.467")));
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoNoPA")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.467")));
 
-		    } else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoOnline")) {
-			precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.467")));
+		} else if (formaDePagamento.equalsIgnoreCase("pagarComCartaoDeCreditoOnline")) {
+		    precoUnitarioItemPedido = precoUnitarioItemPedido.subtract(precoUnitarioItemPedido.multiply(new BigDecimal("0.467")));
 
-		    } else {
-			throw new Exception("Forma de pagamento desconhecida: " + formaDePagamento);
-		    }
-
-		    itemPedido.setPrecoUnitario(precoUnitarioItemPedido);
-		    this.hibernateUtil.salvarOuAtualizar(itemPedido);
+		} else {
+		    throw new Exception("Forma de pagamento desconhecida: " + formaDePagamento);
 		}
+
+		itemPedido.setPrecoUnitario(precoUnitarioItemPedido);
+		this.hibernateUtil.salvarOuAtualizar(itemPedido);
 	    }
 	}
- //   }
+    }
+    // }
 
     @Funcionalidade
     public void concluirPedido() throws Exception {
@@ -791,6 +808,11 @@ public class PedidoController {
 	    if (totalPedido.compareTo(new BigDecimal(2500)) < 0) {
 		pedido.setTipo(PedidoService.ADESAO);
 	    }
+	}
+
+	Object kitAdesao = this.sessaoGeral.getValor("kitAdesao");
+	if (kitAdesao != null && kitAdesao != "") {
+	    pedido.setKitIngresso((String) kitAdesao);
 	}
 
 	hibernateUtil.salvarOuAtualizar(pedido);
@@ -1071,9 +1093,8 @@ public class PedidoController {
 	textoArquivo += "tipo_pedido=" + pedido.getTipo() + "\r\n";
 	textoArquivo += "pedido_id=" + pedido.getId() + "\r\n";
 
-	if (pedido.getTipo().equals(PedidoService.ADESAO)) {
-	    Integer valorTotal = new PedidoService(hibernateUtil).calcularTotalSemFrete(pedido).intValue();
-	    textoArquivo += "kit_adesao=" + new KitAdesaoService(hibernateUtil).encontrarKitPeloValor(new GregorianCalendar(), valorTotal).getKit() + "\r\n";
+	if (pedido.getKitIngresso() != null && pedido.getKitIngresso() != "") {
+	    textoArquivo += "kit_adesao=" + pedido.getKitIngresso() + "\r\n";
 	}
 
 	List<ItemPedido> itensPedido = new PedidoService(hibernateUtil).listarItensPedido(pedido);
@@ -1087,6 +1108,7 @@ public class PedidoController {
 	}
 
 	ArquivoService.criarArquivoNoDisco(textoArquivo, ArquivoService.PASTA_PEDIDOS);
+
     }
 
     @Funcionalidade
@@ -1187,7 +1209,7 @@ public class PedidoController {
 	    hibernateUtil.salvarOuAtualizar(pedido);
 	}
 
-	this.escolherProdutos(franquia.getId_Estoque(), usuario.getApelido(), PedidoService.RECEBER_EM_CASA, null, true);
+	this.escolherProdutos(franquia.getId_Estoque(), usuario.getApelido(), PedidoService.RECEBER_EM_CASA, null, true, null);
     }
 
     private void montarPedidosDTO(String status, Integer idCodigo) {
