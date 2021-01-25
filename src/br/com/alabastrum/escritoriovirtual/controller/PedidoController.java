@@ -187,9 +187,16 @@ public class PedidoController {
 	    idCodigo = this.sessaoUsuario.getUsuario().getId_Codigo();
 	}
 	this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_PEDIDO, idCodigo);
-	this.sessaoGeral.adicionar("isPrimeiroPedido", isPrimeiroPedido(idCodigo));
+	boolean primeiroPedido = isPrimeiroPedido(idCodigo);
+	this.sessaoGeral.adicionar("isPrimeiroPedido", primeiroPedido);
 	this.sessaoGeral.adicionar("isInativo", isInativo(idCodigo));
 	this.sessaoGeral.adicionar("adesaoPontoDeApoio", adesaoPontoDeApoio);
+
+	if (primeiroPedido && (idKit == null || idKit.equals(0))) {
+	    validator.add(new ValidationMessage("É necessário escolher um kit de adesão para fazer o seu primeiro pedido", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
+	    return;
+	}
 
 	if (idKit != null) {
 	    KitAdesao kitAdesao = new KitAdesao();
