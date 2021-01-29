@@ -192,12 +192,6 @@ public class PedidoController {
 	this.sessaoGeral.adicionar("isInativo", isInativo(idCodigo));
 	this.sessaoGeral.adicionar("adesaoPontoDeApoio", adesaoPontoDeApoio);
 
-	if (primeiroPedido && (idKit == null || idKit.equals(0))) {
-	    validator.add(new ValidationMessage("É necessário escolher um kit de adesão para fazer o seu primeiro pedido", "Erro"));
-	    validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
-	    return;
-	}
-
 	if (idKit != null) {
 	    KitAdesao kitAdesao = new KitAdesao();
 	    kitAdesao.setId(idKit);
@@ -208,6 +202,13 @@ public class PedidoController {
 	    if (kitAdesao == null) {
 		this.sessaoGeral.adicionar("kitAdesao", usuario.getNome_kit());
 	    }
+	}
+
+	Object kitAdesao = this.sessaoGeral.getValor("kitAdesao");
+	if (primeiroPedido && (Util.vazio(kitAdesao) || "precadastro".equalsIgnoreCase((String) kitAdesao))) {
+	    validator.add(new ValidationMessage("É necessário escolher um kit de adesão para fazer o seu primeiro pedido", "Erro"));
+	    validator.onErrorRedirectTo(this).acessarTelaNovoPedido();
+	    return;
 	}
 
 	if (formaDeEntrega.equals(PedidoService.RECEBER_EM_CASA)) {
