@@ -100,17 +100,13 @@ public class PedidoController {
 
 	    if (isPrimeiroPedido(this.sessaoUsuario.getUsuario().getId_Codigo())) {
 		this.sessaoGeral.adicionar("isPrimeiroPedido", true);
-		Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
-		Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
-		result.include("alerta", new ValidationMessage(String.format("Você ainda não fez um pedido de adesão. Você precisa realizar este pedido para ingressar, de fato, na empresa, e poder ficar ativo este mês. Para realizar a adesão à empresa, você precisa fazer um pedido com valor mínimo de R$%s e máximo de R$%s", valorMinimoPedidoAdesao, valorMaximoPedidoAdesao), "Erro"));
+		result.include("alerta", new ValidationMessage("Você ainda não fez um pedido de adesão. Você precisa realizar este pedido para ingressar, de fato, na empresa, e poder ficar ativo este mês", "Erro"));
 		return;
 	    }
 
 	    if (isInativo(this.sessaoUsuario.getUsuario().getId_Codigo())) {
 		this.sessaoGeral.adicionar("isInativo", true);
-		Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
-		Integer valorMaximoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAtividade"));
-		result.include("alerta", new ValidationMessage(String.format("Você ainda não está ativo este mês. Você precisa fazer um pedido para ficar ativo. O valor mínimo do pedido de atividade é R$%s e o valor máximo é R$%s", valorMinimoPedidoAtividade, valorMaximoPedidoAtividade), "Erro"));
+		result.include("alerta", new ValidationMessage("Você ainda não está ativo este mês. Você precisa fazer um pedido para ficar ativo", "Erro"));
 		return;
 	    }
 	}
@@ -575,6 +571,11 @@ public class PedidoController {
 	    Object isPrimeiroPedido = this.sessaoGeral.getValor("isPrimeiroPedido");
 	    Object isInativo = this.sessaoGeral.getValor("isInativo");
 
+	    String kit = (String) this.sessaoGeral.getValor("kitAdesao");
+	    KitAdesao kitAdesao = new KitAdesaoService(hibernateUtil).encontrarKitPeloNome(new GregorianCalendar(), kit);
+	    Integer valorMinimoPedidoAdesao = kitAdesao.getValor().intValue();
+	    Integer valorMinimoPedidoAtividade = kitAdesao.getValor_atividade().intValue();
+
 	    if (adesaoPontoDeApoio != null && (Boolean) adesaoPontoDeApoio) {
 		mostrarDialogoDescontos = false;
 
@@ -586,22 +587,16 @@ public class PedidoController {
 	    } else if (isPrimeiroPedido != null && (Boolean) isPrimeiroPedido) {
 		mostrarDialogoDescontos = false;
 
-		Integer valorMinimoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAdesao"));
-		Integer valorMaximoPedidoAdesao = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAdesao"));
-
-		if (valorTotal < valorMinimoPedidoAdesao || valorTotal > valorMaximoPedidoAdesao) {
-		    validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de adesão é de R$%s. E o valor máximo é de R$%s", valorMinimoPedidoAdesao, valorMaximoPedidoAdesao), "Erro"));
+		if (valorTotal < valorMinimoPedidoAdesao) {
+		    validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de adesão é de R$%s", valorMinimoPedidoAdesao), "Erro"));
 		    validator.onErrorRedirectTo(this).acessarCarrinho();
 		    return;
 		}
 	    } else if (isInativo != null && (Boolean) isInativo) {
 		mostrarDialogoDescontos = false;
 
-		Integer valorMinimoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMinimoPedidoAtividade"));
-		Integer valorMaximoPedidoAtividade = Integer.valueOf(new Configuracao().retornarConfiguracao("valorMaximoPedidoAtividade"));
-
-		if (valorTotal < valorMinimoPedidoAtividade || valorTotal > valorMaximoPedidoAtividade) {
-		    validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de atividade é de R$%s. E o valor máximo é de R$%s", valorMinimoPedidoAtividade, valorMaximoPedidoAtividade), "Erro"));
+		if (valorTotal < valorMinimoPedidoAtividade) {
+		    validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de atividade é de R$%s", valorMinimoPedidoAtividade), "Erro"));
 		    validator.onErrorRedirectTo(this).acessarCarrinho();
 		    return;
 		}

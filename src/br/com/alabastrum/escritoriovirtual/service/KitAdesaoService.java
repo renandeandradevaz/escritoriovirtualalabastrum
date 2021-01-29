@@ -25,10 +25,10 @@ public class KitAdesaoService {
 	return hibernateUtil.buscar(kitAdesaoFiltro, Order.desc("valor"));
     }
 
-    public KitAdesao encontrarKitPeloValor(GregorianCalendar data, int valor) {
+    public KitAdesao encontrarKitPeloNome(GregorianCalendar data, String kit) {
 
-	for (KitAdesao kitAdesao : buscarKits(new GregorianCalendar())) {
-	    if (valor >= kitAdesao.getValor().intValue()) {
+	for (KitAdesao kitAdesao : buscarKits(data)) {
+	    if (kit.equalsIgnoreCase(kitAdesao.getKit())) {
 		return kitAdesao;
 	    }
 	}
