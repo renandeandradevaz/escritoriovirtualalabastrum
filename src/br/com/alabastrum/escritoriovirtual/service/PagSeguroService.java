@@ -219,8 +219,6 @@ public class PagSeguroService {
 		+ "\"number\":" + "\"" + cpf + "\"" //
 		+ " }]  }} ";
 
-	System.out.println(json);
-
 	OutputStream os = conn.getOutputStream();
 	os.write(json.getBytes("UTF-8"));
 	os.close();
@@ -235,8 +233,6 @@ public class PagSeguroService {
 	}
 
 	conn.disconnect();
-
-	System.out.println(result);
 
 	return result.split("\"boleto_url\":\"")[1].split("\"")[0];
     }

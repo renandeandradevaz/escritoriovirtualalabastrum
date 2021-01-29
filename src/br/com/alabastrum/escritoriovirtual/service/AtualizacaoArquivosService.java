@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -52,8 +51,6 @@ public class AtualizacaoArquivosService {
 
     public void processarArquivosPeriodoLongo() throws Exception {
 
-	System.out.println(new Date() + ". Executando metodo processarArquivosPeriodoLongo");
-
 	processarCSVPosicoes();
 	processarCSVPontuacao();
 	processarCSVParametroAtividade();
@@ -74,15 +71,11 @@ public class AtualizacaoArquivosService {
 
     public void processarArquivosPeriodoCurto() throws Exception {
 
-	System.out.println(new Date() + ". Executando metodo processarArquivosPeriodoCurto");
-
 	processarCSVRelacionamentos();
 	processarCSVQualificacao(ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_CURTO);
     }
 
     public void processarArquivoAtualizacaoUsuario() throws Exception {
-
-	System.out.println(new Date() + ". Executando metodo processarArquivoAtualizacaoUsuario");
 
 	String pasta = ArquivoService.PASTA_ATUALIZACAO_CSV_DISTRIBUIDOR;
 
@@ -101,7 +94,6 @@ public class AtualizacaoArquivosService {
 		}
 	    }
 
-	    System.out.println("Quantidade de usuários atualizados salvos: " + usuarios.size());
 	}
 
 	if (pastaAtualizacaoCSV.contains("tblQualificacoes.csv")) {

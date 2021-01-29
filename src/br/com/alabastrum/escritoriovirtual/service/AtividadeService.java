@@ -115,10 +115,6 @@ public class AtividadeService {
 	    }
 	}
 
-	System.out.println(totalPedidosPessoais.add(totalPedidosAfiliados).intValue());
-	System.out.println(faixaAtividade.getValor().intValue());
-	System.out.println();
-
 	if (totalPedidosPessoais.add(totalPedidosAfiliados).intValue() >= faixaAtividade.getValor().intValue()) {
 	    return true;
 	}
@@ -127,11 +123,7 @@ public class AtividadeService {
 
     private FaixaAtividade encontrarFaixaAtividade(Integer codigo, GregorianCalendar data) {
 
-	System.out.println("codigo do usuário logado: " + codigo);
-
 	Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompleta = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(codigo, "id_lider");
-
-	System.out.println("a arvore contem o usuário logado: " + arvoreHierarquicaCompleta.containsKey(codigo));
 
 	int tamanhoDaArvore = arvoreHierarquicaCompleta.size();
 

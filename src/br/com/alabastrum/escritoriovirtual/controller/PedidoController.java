@@ -887,12 +887,11 @@ public class PedidoController {
 
 	    try {
 
-		System.out.println("Pagseguro XML: " + xml);
+		
 
 		String status = xml.split("<status>")[1].split("</status>")[0];
 
 		if (status.equals("1")) {
-		    System.out.println("Boleto recem criado com status 1. xml: " + xml);
 		    result.use(json()).from("Boleto recem criado com status 1").serialize();
 		    return;
 		}

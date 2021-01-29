@@ -47,7 +47,6 @@ public class AtualizacaoArquivosAutomaticamentePeriodoCurto implements Runnable 
 
     public void iniciarRotina() {
 
-	System.out.println(new Date() + ". Iniciando rotina AtualizacaoArquivosAutomaticamentePeriodoCurto");
 
 	AtualizacaoArquivosAutomaticamentePeriodoCurto task = new AtualizacaoArquivosAutomaticamentePeriodoCurto();
 
