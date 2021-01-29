@@ -12,6 +12,8 @@ import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
 @Entity
 public class KitAdesao implements Entidade {
 
+    public static final String AFILIADO = "afiliado";
+
     @Id
     @GeneratedValue
     private Integer id;
