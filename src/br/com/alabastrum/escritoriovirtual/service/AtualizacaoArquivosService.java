@@ -25,6 +25,8 @@ import br.com.alabastrum.escritoriovirtual.modelo.Adesao;
 import br.com.alabastrum.escritoriovirtual.modelo.BonusAdesao;
 import br.com.alabastrum.escritoriovirtual.modelo.Caixa;
 import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
+import br.com.alabastrum.escritoriovirtual.modelo.FaixaAtividade;
+import br.com.alabastrum.escritoriovirtual.modelo.FaixaBonusAtividade;
 import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
 import br.com.alabastrum.escritoriovirtual.modelo.KitAdesao;
 import br.com.alabastrum.escritoriovirtual.modelo.ParametroAtividade;
@@ -66,6 +68,8 @@ public class AtualizacaoArquivosService {
 	processarCSVAdesao();
 	processarCSVKitAdesao();
 	processarCSVBonusAdesao();
+	processarCSVFaixaAtividade();
+	processarCSVFaixaBonusAtividade();
     }
 
     public void processarArquivosPeriodoCurto() throws Exception {
@@ -262,6 +266,24 @@ public class AtualizacaoArquivosService {
 	preencherObjeto(reader, bonusAdesoes, "BonusAdesao");
 	this.hibernateUtil.executarSQL("delete from bonusadesao");
 	this.hibernateUtil.salvarOuAtualizar(bonusAdesoes);
+    }
+
+    private void processarCSVFaixaAtividade() throws Exception {
+
+	CSVReader reader = lerArquivo("tblFaixaAtividade.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
+	List<FaixaAtividade> faixasAtividades = new ArrayList<FaixaAtividade>();
+	preencherObjeto(reader, faixasAtividades, "FaixaAtividade");
+	this.hibernateUtil.executarSQL("delete from faixaatividade");
+	this.hibernateUtil.salvarOuAtualizar(faixasAtividades);
+    }
+
+    private void processarCSVFaixaBonusAtividade() throws Exception {
+
+	CSVReader reader = lerArquivo("tblFaixaBonusAtividade.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
+	List<FaixaBonusAtividade> faixasBonusAtividades = new ArrayList<FaixaBonusAtividade>();
+	preencherObjeto(reader, faixasBonusAtividades, "FaixaBonusAtividade");
+	this.hibernateUtil.executarSQL("delete from faixabonusatividade");
+	this.hibernateUtil.salvarOuAtualizar(faixasBonusAtividades);
     }
 
     private CSVReader lerArquivo(String nomeCsv, String caminho) throws Exception {

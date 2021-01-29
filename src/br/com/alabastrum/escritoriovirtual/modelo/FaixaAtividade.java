@@ -10,16 +10,16 @@ import javax.persistence.Id;
 import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
 
 @Entity
-public class KitAdesao implements Entidade {
+public class FaixaAtividade implements Entidade {
 
     @Id
     @GeneratedValue
     private Integer id;
 
-    private String kit;
     private GregorianCalendar data_referencia;
     private BigDecimal valor;
-    private BigDecimal valor_atividade;
+    private BigDecimal min_pessoas;
+    private BigDecimal max_pessoas;
 
     public Integer getId() {
 	return id;
@@ -27,14 +27,6 @@ public class KitAdesao implements Entidade {
 
     public void setId(Integer id) {
 	this.id = id;
-    }
-
-    public String getKit() {
-	return kit;
-    }
-
-    public void setKit(String kit) {
-	this.kit = kit;
     }
 
     public GregorianCalendar getData_referencia() {
@@ -53,11 +45,19 @@ public class KitAdesao implements Entidade {
 	this.valor = valor;
     }
 
-    public BigDecimal getValor_atividade() {
-	return valor_atividade;
+    public BigDecimal getMin_pessoas() {
+	return min_pessoas;
     }
 
-    public void setValor_atividade(BigDecimal valor_atividade) {
-	this.valor_atividade = valor_atividade;
+    public void setMin_pessoas(BigDecimal min_pessoas) {
+	this.min_pessoas = min_pessoas;
+    }
+
+    public BigDecimal getMax_pessoas() {
+	return max_pessoas;
+    }
+
+    public void setMax_pessoas(BigDecimal max_pessoas) {
+	this.max_pessoas = max_pessoas;
     }
 }

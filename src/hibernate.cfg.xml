@@ -32,6 +32,8 @@
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Configuracao" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.DadosFake" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Estoque" />
+		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.FaixaAtividade" />
+		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.FaixaBonusAtividade" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.Franquia" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.HistoricoAcesso" />
 		<mapping class="br.com.alabastrum.escritoriovirtual.modelo.InformacoesFixasUsuario" />
