@@ -49,7 +49,7 @@ public class BonusDeAtivacaoRotina implements Runnable {
 		Integer idCodigo = usuario.getId_Codigo();
 		Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompletaPorIdLider = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(idCodigo, "id_lider");
 		int distribuidoresDiretosAtivos = encontrarQuantidadeDeDistribuidoresDiretosAtivos(ontem, idCodigo);
-		List<FaixaBonusAtividade> faixasBonusAtividadeValidas = encontrarFaixasBonusAtividadeValidas(idCodigo, ontem, distribuidoresDiretosAtivos, arvoreHierarquicaCompletaPorIdLider);
+		List<FaixaBonusAtividade> faixasBonusAtividadeValidas = encontrarFaixasBonusAtividadeValidas(idCodigo, primeiroDiaDoMes, distribuidoresDiretosAtivos, arvoreHierarquicaCompletaPorIdLider);
 		Map<Integer, List<ArvoreHierarquicaDTO>> arvoreAgrupadaPorNivel = agruparArvorePorNivel(arvoreHierarquicaCompletaPorIdLider);
 
 		if (faixasBonusAtividadeValidas.size() > 0) {
@@ -71,7 +71,7 @@ public class BonusDeAtivacaoRotina implements Runnable {
 
 				Map<Integer, ArvoreHierarquicaDTO> arvoreNivel1 = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(distribuidorDaRede.getUsuario().getId_Codigo(), 1);
 				for (Entry<Integer, ArvoreHierarquicaDTO> arvoreEntry : arvoreNivel1.entrySet()) {
-				    if (arvoreEntry.getValue().getUsuario().getNome_kit().equalsIgnoreCase(KitAdesao.AFILIADO)) {
+				    if (KitAdesao.AFILIADO.equalsIgnoreCase(arvoreEntry.getValue().getUsuario().getNome_kit())) {
 					BigDecimal pontuacaoDoAfiliado = calcularPontuacaoPorPessoa(primeiroDiaDoMes, ultimoDiaDoMes, arvoreEntry.getValue().getUsuario().getId_Codigo());
 					pontuacaoPorNivel = pontuacaoPorNivel.add(pontuacaoDoAfiliado);
 				    }

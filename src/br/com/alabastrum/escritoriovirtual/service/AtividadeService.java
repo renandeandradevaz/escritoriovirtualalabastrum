@@ -108,7 +108,7 @@ public class AtividadeService {
 	Map<Integer, ArvoreHierarquicaDTO> arvoreNivel1 = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaAteNivelEspecifico(codigo, 1);
 
 	for (Entry<Integer, ArvoreHierarquicaDTO> arvoreEntry : arvoreNivel1.entrySet()) {
-	    if (arvoreEntry.getValue().getUsuario().getNome_kit().equalsIgnoreCase(KitAdesao.AFILIADO)) {
+	    if (KitAdesao.AFILIADO.equalsIgnoreCase(arvoreEntry.getValue().getUsuario().getNome_kit())) {
 		for (Pedido pedido : new PedidoService(hibernateUtil).getPedidosDoDistribuidor(arvoreEntry.getValue().getUsuario().getId_Codigo(), dataInicial, dataFinal)) {
 		    totalPedidosAfiliados = totalPedidosAfiliados.add(new PedidoService(hibernateUtil).calcularTotalSemFrete(pedido));
 		}
