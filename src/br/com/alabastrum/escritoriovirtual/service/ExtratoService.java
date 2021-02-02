@@ -62,6 +62,7 @@ public class ExtratoService {
 	BigDecimal bonusTrinarioNoMes = BigDecimal.ZERO;
 	BigDecimal bonusFilaUnicaNoMes = BigDecimal.ZERO;
 	BigDecimal bonusGlobalNoMes = BigDecimal.ZERO;
+	BigDecimal bonusDeAtivacaoNoMes = BigDecimal.ZERO;
 	BigDecimal bonusReconhecimentoNoMes = BigDecimal.ZERO;
 	BigDecimal bonusDesempenhoNoMes = BigDecimal.ZERO;
 	BigDecimal bonusLojaVirtualNoMes = BigDecimal.ZERO;
@@ -129,6 +130,10 @@ public class ExtratoService {
 			if (extratoDTO.getDiscriminador().equals(Bonificacao.BÔNUS_LOJA_VIRTUAL)) {
 			    bonusLojaVirtualNoMes = bonusLojaVirtualNoMes.add(extratoDTO.getValor());
 			}
+
+			if (extratoDTO.getDiscriminador().equals(Bonificacao.BONUS_DE_ATIVACAO)) {
+			    bonusDeAtivacaoNoMes = bonusDeAtivacaoNoMes.add(extratoDTO.getValor());
+			}
 		    }
 		} else if (extratoDTO.getValor().compareTo(BigDecimal.ZERO) < 0) {
 
@@ -160,6 +165,7 @@ public class ExtratoService {
 	saldoDTO.setBonusTrinarioNoMes(bonusTrinarioNoMes);
 	saldoDTO.setBonusFilaUnicaNoMes(bonusFilaUnicaNoMes);
 	saldoDTO.setBonusGlobalNoMes(bonusGlobalNoMes);
+	saldoDTO.setBonusDeAtivacaoNoMes(bonusDeAtivacaoNoMes);
 	saldoDTO.setBonusReconhecimentoNoMes(bonusReconhecimentoNoMes);
 	saldoDTO.setBonusDesempenhoNoMes(bonusDesempenhoNoMes);
 	saldoDTO.setBonusLojaVirtualNoMes(bonusLojaVirtualNoMes);

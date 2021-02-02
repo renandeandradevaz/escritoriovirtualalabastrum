@@ -22,6 +22,7 @@ public class SaldoDTO {
     private BigDecimal bonusTrinarioNoMes;
     private BigDecimal bonusFilaUnicaNoMes;
     private BigDecimal bonusGlobalNoMes;
+    private BigDecimal bonusDeAtivacaoNoMes;
     private BigDecimal bonusReconhecimentoNoMes;
     private BigDecimal bonusDesempenhoNoMes;
     private BigDecimal bonusLojaVirtualNoMes;
@@ -168,5 +169,13 @@ public class SaldoDTO {
 
     public void setBonusLojaVirtualNoMes(BigDecimal bonusLojaVirtualNoMes) {
 	this.bonusLojaVirtualNoMes = bonusLojaVirtualNoMes;
+    }
+
+    public BigDecimal getBonusDeAtivacaoNoMes() {
+	return bonusDeAtivacaoNoMes;
+    }
+
+    public void setBonusDeAtivacaoNoMes(BigDecimal bonusDeAtivacaoNoMes) {
+	this.bonusDeAtivacaoNoMes = bonusDeAtivacaoNoMes;
     }
 }
