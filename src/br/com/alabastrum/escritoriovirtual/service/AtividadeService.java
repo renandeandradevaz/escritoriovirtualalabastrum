@@ -41,7 +41,7 @@ public class AtividadeService {
 	GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(data);
 	GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(data);
 
-	GregorianCalendar primeiroFevereiro2021 = new GregorianCalendar(2021, Calendar.FEBRUARY, 1);
+	GregorianCalendar primeiroFevereiro2021 = new GregorianCalendar(2021, Calendar.MARCH, 1);
 	if (data.before(primeiroFevereiro2021)) {
 	    return isAtivoVersaoAntiga(codigo, primeiroDiaDoMes, ultimoDiaDoMes);
 	}
