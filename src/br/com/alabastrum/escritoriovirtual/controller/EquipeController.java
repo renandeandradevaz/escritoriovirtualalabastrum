@@ -46,6 +46,9 @@ public class EquipeController {
 	    pesquisaEquipeDTO = new PesquisaEquipeDTO();
 	}
 
+	arvoreHierarquica = filtrarPorNome(arvoreHierarquica, pesquisaEquipeDTO.getNome());
+	arvoreHierarquica = filtrarPorEmail(arvoreHierarquica, pesquisaEquipeDTO.getEmail());
+	arvoreHierarquica = filtrarPorCpf(arvoreHierarquica, pesquisaEquipeDTO.getCpf());
 	arvoreHierarquica = filtrarPorApelido(arvoreHierarquica, pesquisaEquipeDTO.getApelido());
 	arvoreHierarquica = filtrarPorNivel(arvoreHierarquica, pesquisaEquipeDTO.getNivel());
 	arvoreHierarquica = filtrarPorPosicao(arvoreHierarquica, pesquisaEquipeDTO.getPosicao());
@@ -98,6 +101,54 @@ public class EquipeController {
 	if (Util.preenchido(apelidoFiltro)) {
 	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
 		if (arvoreHierarquicaDTO.getUsuario().getApelido().equalsIgnoreCase(apelidoFiltro.replaceAll(" ", ""))) {
+		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
+		}
+	    }
+	    return arvoreHierarquicaFiltrada;
+	}
+	return arvoreHierarquica;
+    }
+
+    private Collection<ArvoreHierarquicaDTO> filtrarPorNome(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, String nomeFiltro) {
+
+	List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+
+	if (Util.preenchido(nomeFiltro)) {
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+		if (arvoreHierarquicaDTO.getUsuario().getvNome().toLowerCase().contains(nomeFiltro.toLowerCase())) {
+		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
+		}
+	    }
+	    return arvoreHierarquicaFiltrada;
+	}
+	return arvoreHierarquica;
+    }
+
+    private Collection<ArvoreHierarquicaDTO> filtrarPorEmail(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, String emailFiltro) {
+
+	List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+
+	if (Util.preenchido(emailFiltro)) {
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+		if (arvoreHierarquicaDTO.getUsuario().geteMail().toLowerCase().contains(emailFiltro.toLowerCase())) {
+		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
+		}
+	    }
+	    return arvoreHierarquicaFiltrada;
+	}
+	return arvoreHierarquica;
+    }
+
+    private Collection<ArvoreHierarquicaDTO> filtrarPorCpf(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, String cpfFiltro) {
+
+	List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+
+	if (Util.preenchido(cpfFiltro)) {
+
+	    cpfFiltro = cpfFiltro.replaceAll(" ", "").replaceAll("\\.", "").replaceAll("-", "");
+
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+		if (arvoreHierarquicaDTO.getUsuario().getCPF().toLowerCase().contains(cpfFiltro.toLowerCase())) {
 		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
 		}
 	    }

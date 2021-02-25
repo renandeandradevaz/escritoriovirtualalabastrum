@@ -116,7 +116,7 @@ hr {
 			<input type="text" required="required" name="preCadastro.CPF" value="${preCadastro.CPF}" onBlur="Verifica_campo_CPF(this)">
 		</div>
 		<div class="corClara divFormulario">
-			<label class="labelFormulario">Telefone celular / Whatsapp: </label>
+			<label class="labelFormulario">Telefone celular / Whatsapp (OBRIGATÓRIO PREENCHIMENTO DE DDD + TELEFONE): </label>
 			<input type="text" required="required" style="width: 100px" name="preCadastro.cadCelular" value="${preCadastro.cadCelular}">
 		</div>
 		<div class="corMedia divFormulario">

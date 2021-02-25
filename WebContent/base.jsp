@@ -33,13 +33,15 @@
 			<div></div>
 			<h3 class="menu-accordion" onclick="goTo('<c:url value="/atualizacaoDados/acessarTelaAtualizacaoDados"/>')">Dados Cadastrais</h3>
 			<div></div>
-			<h3 class="menu-accordion has-child">Redes</h3>
-			<div>
-				<a href="<c:url value="/equipe/acessarTelaEquipe"/>" class="submenu-accordion"> Equipe </a>
-				<a href="<c:url value="/matriz/acessarTelaMatrizMultilevel"/>" class="submenu-accordion"> Matriz Multilevel</a>
-				<a href="<c:url value="/matriz/acessarTelaMatrizTrinaria"/>" class="submenu-accordion"> Matriz Trinária</a>
-				<a href="<c:url value="/pontosDeEquipe/acessarTelaPontosDeEquipe"/>" class="submenu-accordion"> Pontos de Equipe</a>
-			</div>
+			<c:if test="${sessaoUsuario.usuario.nome_kit == 'distribuidor'}">
+				<h3 class="menu-accordion has-child">Redes</h3>
+				<div>
+					<a href="<c:url value="/equipe/acessarTelaEquipe"/>" class="submenu-accordion"> Equipe </a>
+					<a href="<c:url value="/matriz/acessarTelaMatrizMultilevel"/>" class="submenu-accordion"> Matriz Multilevel</a>
+					<a href="<c:url value="/matriz/acessarTelaMatrizTrinaria"/>" class="submenu-accordion"> Matriz Trinária</a>
+					<a href="<c:url value="/pontosDeEquipe/acessarTelaPontosDeEquipe"/>" class="submenu-accordion"> Pontos de Equipe</a>
+				</div>
+			</c:if>
 			<h3 class="menu-accordion has-child">Pedidos</h3>
 			<div>
 				<a href="<c:url value="/pedido/acessarTelaNovoPedido"/>" class="submenu-accordion"> Produtos </a>
@@ -50,11 +52,13 @@
 					<a href="<c:url value="/pedidoFranquia/pedidosFranquia"/>" class="submenu-accordion"> Pedidos para Estoque </a>
 				</c:if>
 			</div>
-			<h3 class="menu-accordion has-child">Financeiro</h3>
-			<div>
-				<a href="<c:url value="/extrato/acessarTelaExtrato"/>" class="submenu-accordion"> Extrato </a>
-				<a href="<c:url value="/solicitacaoSaque/acessarTelaSolicitacaoSaque"/>" class="submenu-accordion"> Solicitar Saque </a>
-			</div>
+			<c:if test="${sessaoUsuario.usuario.nome_kit == 'distribuidor'}">
+				<h3 class="menu-accordion has-child">Financeiro</h3>
+				<div>
+					<a href="<c:url value="/extrato/acessarTelaExtrato"/>" class="submenu-accordion"> Extrato </a>
+					<a href="<c:url value="/solicitacaoSaque/acessarTelaSolicitacaoSaque"/>" class="submenu-accordion"> Solicitar Saque </a>
+				</div>
+			</c:if>
 			<h3 class="menu-accordion has-child">Downloads</h3>
 			<div>
 				<a href="<c:url value="/download/downloads"/>" class="submenu-accordion"> Downloads </a>

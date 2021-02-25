@@ -16,6 +16,24 @@
 					<input type="text" name="pesquisaEquipeDTO.apelido" value="${pesquisaEquipeDTO.apelido}">
 				</div>
 			</div>
+			<div class="control-group" style="margin-top: 5px;">
+				<label class="control-label">Por nome</label>
+				<div class="controls">
+					<input type="text" name="pesquisaEquipeDTO.nome" value="${pesquisaEquipeDTO.nome}">
+				</div>
+			</div>
+			<div class="control-group" style="margin-top: 5px;">
+				<label class="control-label">Por email</label>
+				<div class="controls">
+					<input type="text" name="pesquisaEquipeDTO.email" value="${pesquisaEquipeDTO.email}">
+				</div>
+			</div>
+			<div class="control-group" style="margin-top: 5px;">
+				<label class="control-label">Por CPF</label>
+				<div class="controls">
+					<input type="text" name="pesquisaEquipeDTO.cpf" value="${pesquisaEquipeDTO.cpf}">
+				</div>
+			</div>
 			<div class="control-group">
 				<label class="control-label">Por nível</label>
 				<div class="controls">

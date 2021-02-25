@@ -97,13 +97,13 @@ hr {
 			<input type="text" class="data" name="usuario.dt_Nasc" value="${usuario.dt_Nasc}" required="required">
 			<br>
 			<label class="labelFormulario">Município de nascimento: </label>
-			<input type="text" class="data" name="usuario.municipioNascimento" value="${usuario.municipioNascimento}" required="required">
+			<input type="text" class="data" name="usuario.municipioNascimento" value="${usuario.municipioNascimento}">
 			<br>
 			<label class="labelFormulario">Estado de nascimento: </label>
-			<input type="text" class="data" name="usuario.estadoNascimento" value="${usuario.estadoNascimento}" required="required">
+			<input type="text" class="data" name="usuario.estadoNascimento" value="${usuario.estadoNascimento}">
 			<br>
 			<label class="labelFormulario">País de nascimento: </label>
-			<input type="text" class="data" name="usuario.paisNascimento" value="${usuario.paisNascimento}" required="required">
+			<input type="text" class="data" name="usuario.paisNascimento" value="${usuario.paisNascimento}">
 			<br>
 			<label class="labelFormulario">Sexo: </label>
 			<select name="usuario.cadSexo">
@@ -120,34 +120,34 @@ hr {
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario"> Cor/Raça: </label>
-			<input type="text" name="usuario.corRaca" value="${usuario.corRaca}" required="required">
+			<input type="text" name="usuario.corRaca" value="${usuario.corRaca}">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario"> Grau de instrução: </label>
-			<input type="text" name="usuario.grauInstrucao" value="${usuario.grauInstrucao}" required="required">
+			<input type="text" name="usuario.grauInstrucao" value="${usuario.grauInstrucao}">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario"> RG: </label>
-			<input type="text" name="usuario.cadRG" value="${usuario.cadRG}" required="required">
+			<input type="text" name="usuario.cadRG" value="${usuario.cadRG}">
 			<br>
 			<label class="labelFormulario"> Emissor: </label>
-			<input type="text" name="usuario.cadOrgaoExpedidor" value="${usuario.cadOrgaoExpedidor}" required="required">
+			<input type="text" name="usuario.cadOrgaoExpedidor" value="${usuario.cadOrgaoExpedidor}">
 			<br>
 			<label class="labelFormulario"> Estado Emissor: </label>
-			<input type="text" name="usuario.estadoEmissor" value="${usuario.estadoEmissor}" required="required">
+			<input type="text" name="usuario.estadoEmissor" value="${usuario.estadoEmissor}">
 			<br>
 			<label class="labelFormulario"> Data de expedição (dd/mm/yyyy): </label>
-			<input type="text" name="usuario.dataExpedicao" value="${usuario.dataExpedicao}" required="required">
+			<input type="text" name="usuario.dataExpedicao" value="${usuario.dataExpedicao}">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario"> Número da carteira de trabalho: </label>
-			<input type="text" name="usuario.numeroCarteiraTrabalho" value="${usuario.numeroCarteiraTrabalho}" required="required">
+			<input type="text" name="usuario.numeroCarteiraTrabalho" value="${usuario.numeroCarteiraTrabalho}">
 			<br>
 			<label class="labelFormulario"> Série da carteira de trabalho: </label>
-			<input type="text" name="usuario.serieCarteiraTrabalho" value="${usuario.serieCarteiraTrabalho}" required="required">
+			<input type="text" name="usuario.serieCarteiraTrabalho" value="${usuario.serieCarteiraTrabalho}">
 			<br>
 			<label class="labelFormulario"> UF da carteira de trabalho: </label>
-			<input type="text" name="usuario.ufCarteiraTrabalho" value="${usuario.ufCarteiraTrabalho}" required="required">
+			<input type="text" name="usuario.ufCarteiraTrabalho" value="${usuario.ufCarteiraTrabalho}">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">CEP: </label>
@@ -163,7 +163,7 @@ hr {
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Complemento do endereço: </label>
-			<input type="text" name="usuario.complementoEndereco" value="${usuario.complementoEndereco}" required="required">
+			<input type="text" name="usuario.complementoEndereco" value="${usuario.complementoEndereco}">
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Bairro: </label>
@@ -206,7 +206,7 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Tel. resid.: </label>
-			<input type="text" name="usuario.tel" value="${usuario.tel}" required="required">
+			<input type="text" name="usuario.tel" value="${usuario.tel}">
 			<label class="labelFormulario">Tel. Cel.: </label>
 			<input type="text" name="usuario.cadCelular" value="${usuario.cadCelular}" required="required">
 		</div>
@@ -239,7 +239,7 @@ hr {
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Nome da mãe </label>
-			<input type="text" name="usuario.nomeMae" value="${usuario.nomeMae}" required="required">
+			<input type="text" name="usuario.nomeMae" value="${usuario.nomeMae}">
 			<br>
 			<label class="labelFormulario">Nome do pai: </label>
 			<input type="text" name="usuario.nomePai" value="${usuario.nomePai}">
@@ -251,7 +251,7 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Banco: </label>
-			<input type="text" name="usuario.cadBanco" value="${usuario.cadBanco}" required="required">
+			<input type="text" name="usuario.cadBanco" value="${usuario.cadBanco}">
 			<label class="labelFormulario">Tipo de conta: </label>
 			<select name="usuario.cadTipoConta">
 				<option value="Conta corrente" <c:if test="${usuario.cadTipoConta == 'Conta corrente'}"> selected="selected" </c:if>>Conta corrente</option>
@@ -261,9 +261,9 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Nº Agência: </label>
-			<input type="text" name="usuario.cadAgencia" value="${usuario.cadAgencia}" required="required">
+			<input type="text" name="usuario.cadAgencia" value="${usuario.cadAgencia}">
 			<label class="labelFormulario">Nº da Conta: </label>
-			<input type="text" name="usuario.cadCCorrente" value="${usuario.cadCCorrente}" required="required">
+			<input type="text" name="usuario.cadCCorrente" value="${usuario.cadCCorrente}">
 		</div>
 		<div class="divFormulario">
 			<label class="labelFormulario">
@@ -310,15 +310,15 @@ hr {
 			<label class="labelFormulario">Nº da Conta: </label>
 			<input type="text" name="usuario.contaPessoaJuridicaBancoEspecifico" value="${usuario.contaPessoaJuridicaBancoEspecifico}">
 		</div>
-		<div class="corClara divFormulario" style="margin: 5%; border: 1px solid black;">
-			<h5>Após finalizar a atualização dos seus dados aqui no Escritório virtual, você deve enviar as fotos dos seus documentos.</h5>
-			<h5>Para enviar, basta acessar o link abaixo e preencher todos os campos do formulário.</h5>
-			<br>
-			<br>
-			<a href="http://miguelprado.com.br">CLIQUE AQUI PARA ENVIAR SUA DOCUMENTAÇÃO</a>
-			<br>
-			<br>
-		</div>
+		<!-- 		<div class="corClara divFormulario" style="margin: 5%; border: 1px solid black;"> -->
+		<!-- 			<h5>Após finalizar a atualização dos seus dados aqui no Escritório virtual, você deve enviar as fotos dos seus documentos.</h5> -->
+		<!-- 			<h5>Para enviar, basta acessar o link abaixo e preencher todos os campos do formulário.</h5> -->
+		<!-- 			<br> -->
+		<!-- 			<br> -->
+		<!-- 			<a href="https://dunastes.com.br">CLIQUE AQUI PARA ENVIAR SUA DOCUMENTAÇÃO</a> -->
+		<!-- 			<br> -->
+		<!-- 			<br> -->
+		<!-- 		</div> -->
 		<div style="margin-top: 20px; margin-left: 20px">
 			<button type="submit" class="btn btn-primary">Enviar</button>
 			<a class="btn btn-danger" href="<c:url value="/home/home"/>"> Cancelar </a>

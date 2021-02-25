@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
+import br.com.alabastrum.escritoriovirtual.modelo.KitAdesao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
 import br.com.alabastrum.escritoriovirtual.service.HierarquiaService;
@@ -78,5 +79,11 @@ public class HomeController {
 	result.include("ativos", ativos);
 	result.include("inativos", inativos);
 
+	if (KitAdesao.DISTRIBUIDOR.equalsIgnoreCase(usuarioLogado.getNome_kit())) {
+	    result.include("nicknameIndicacao", usuarioLogado.getApelido());
+	} else {
+	    Usuario usuarioIndicante = this.hibernateUtil.selecionar(new Usuario(usuarioLogado.getId_Indicante()));
+	    result.include("nicknameIndicacao", usuarioIndicante.getApelido());
+	}
     }
 }

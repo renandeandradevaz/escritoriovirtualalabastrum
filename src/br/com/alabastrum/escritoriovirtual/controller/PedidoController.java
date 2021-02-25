@@ -593,12 +593,18 @@ public class PedidoController {
 		    return;
 		}
 	    } else if (isInativo != null && (Boolean) isInativo) {
-		mostrarDialogoDescontos = false;
 
-		if (valorTotal < valorMinimoPedidoAtividade) {
-		    validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de atividade é de R$%s", valorMinimoPedidoAtividade), "Erro"));
-		    validator.onErrorRedirectTo(this).acessarCarrinho();
-		    return;
+		Usuario usuario = this.hibernateUtil.selecionar(new Usuario(pedido.getIdCodigo()));
+
+		if (KitAdesao.DISTRIBUIDOR.equalsIgnoreCase(usuario.getNome_kit())) {
+
+		    mostrarDialogoDescontos = false;
+
+		    if (valorTotal < valorMinimoPedidoAtividade) {
+			validator.add(new ValidationMessage(String.format("O valor mínimo para pedido de atividade é de R$%s", valorMinimoPedidoAtividade), "Erro"));
+			validator.onErrorRedirectTo(this).acessarCarrinho();
+			return;
+		    }
 		}
 	    }
 	    result.include("mostrarDialogoDescontos", mostrarDialogoDescontos);
@@ -795,11 +801,19 @@ public class PedidoController {
 		return;
 	    }
 
-	    if (Util.vazio(comprador.getCadBanco()) || Util.vazio(comprador.getCadTipoConta()) || Util.vazio(comprador.getCadAgencia()) || Util.vazio(comprador.getCadCCorrente())) {
+	    if (KitAdesao.DISTRIBUIDOR.equalsIgnoreCase(comprador.getNome_kit())) {
+		if (Util.vazio(comprador.getCadBanco()) || Util.vazio(comprador.getCadTipoConta()) || Util.vazio(comprador.getCadAgencia()) || Util.vazio(comprador.getCadCCorrente())) {
 
-		validator.add(new ValidationMessage("Seus dados cadastrais estão incompletos. Para realizar esta ação, é necessário que todos seu cadastro esteja completo. Você deve atualizar os seus dados através do Menu: Dados Cadastrais", "Erro"));
-		validator.onErrorRedirectTo(this).escolherFormaDePagamento();
-		return;
+		    validator.add(new ValidationMessage("Seus dados cadastrais estão incompletos. Para realizar esta ação, é necessário que todos seu cadastro esteja completo. Você deve atualizar os seus dados através do Menu: Dados Cadastrais", "Erro"));
+		    validator.onErrorRedirectTo(this).escolherFormaDePagamento();
+		    return;
+		}
+	    } else {
+		if (Util.vazio(comprador.getCadEndereco()) || Util.vazio(comprador.getNumeroEndereco()) || Util.vazio(comprador.getCadBairro()) || Util.vazio(comprador.getCadCidade()) || Util.vazio(comprador.getCadUF())) {
+		    validator.add(new ValidationMessage("Seu endereço está incompleto.Para realizar esta ação, é necessário que seu endereço e telefone estejam completos no cadastro. O telefone celular/whatsapp precisa estar preenchido com DDD + NUMERO. Você deve atualizar os seus dados através do Menu: Dados Cadastrais", "Erro"));
+		    validator.onErrorRedirectTo(this).escolherFormaDePagamento();
+		    return;
+		}
 	    }
 	}
 
@@ -886,8 +900,6 @@ public class PedidoController {
 	    String xml = new PagSeguroService(hibernateUtil).consultarTransacao(notificationCode);
 
 	    try {
-
-		
 
 		String status = xml.split("<status>")[1].split("</status>")[0];
 
