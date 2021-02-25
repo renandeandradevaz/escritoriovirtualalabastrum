@@ -198,12 +198,12 @@ h3 {
 		<br>
 		<h5>Total abaixo: ${totalAbaixoFilaUnica}</h5>
 	</div>
-	<div class='caixinha-home'>
-		<br>
-		<a href="http://miguelprado.com.br">CLIQUE AQUI PARA ENVIAR SUA DOCUMENTAÇÃO</a>
-		<br>
-		<br>
-	</div>
+<!-- 	<div class='caixinha-home'> -->
+<!-- 		<br> -->
+<!-- 		<a href="http://miguelprado.com.br">CLIQUE AQUI PARA ENVIAR SUA DOCUMENTAÇÃO</a> -->
+<!-- 		<br> -->
+<!-- 		<br> -->
+<!-- 	</div> -->
 	<c:if test="${'revendedor' != fn:toLowerCase(sessaoUsuario.usuario.nome_kit)}">
 		<div class='caixinha-home'>
 			<h3>Indicação</h3>
