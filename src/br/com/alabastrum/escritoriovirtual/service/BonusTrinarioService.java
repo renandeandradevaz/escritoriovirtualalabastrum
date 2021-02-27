@@ -54,6 +54,16 @@ public class BonusTrinarioService {
 	    }
 	}
 
+	System.out.println("=============== BONUS TRINARIO ===============");
+
+	for (ExtratoDTO extrato : extratos) {
+	    System.out.println(extrato.getData().get(Calendar.MONTH));
+	    System.out.println(extrato.getValor());
+	    System.out.println();
+	}
+
+	System.out.println("=============== BONUS TRINARIO ===============");
+
 	return extratos;
     }
 }
