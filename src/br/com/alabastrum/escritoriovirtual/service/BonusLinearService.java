@@ -59,16 +59,6 @@ public class BonusLinearService {
 	    }
 	}
 
-	System.out.println("=============== BONUS LINEAR ===============");
-
-	for (ExtratoDTO extrato : extratos) {
-	    System.out.println(extrato.getData().get(Calendar.MONTH));
-	    System.out.println(extrato.getValor());
-	    System.out.println();
-	}
-
-	System.out.println("=============== BONUS LINEAR ===============");
-
 	return extratos;
     }
 }

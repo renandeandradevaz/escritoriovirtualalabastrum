@@ -1,6 +1,5 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -43,9 +42,9 @@ public class SaldoGeralController {
 	for (Usuario usuario : usuarios) {
 	    SaldoDTO saldoDTO = new ExtratoService(hibernateUtil).gerarSaldoEExtrato(usuario.getId_Codigo(), mes, ano);
 	    saldoDTO.setUsuario(usuario);
-	    //if (saldoDTO.getSaldoLiberado().compareTo(BigDecimal.ZERO) > 0) {
+	    if (saldoDTO.getSaldoLiberado().intValue() != 0) {
 		saldos.add(saldoDTO);
-	    //}
+	    }
 	}
 
 	Collections.sort(saldos, new Comparator<SaldoDTO>() {

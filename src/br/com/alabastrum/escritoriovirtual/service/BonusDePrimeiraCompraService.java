@@ -70,16 +70,6 @@ public class BonusDePrimeiraCompraService {
 	    }
 	}
 
-	System.out.println("=============== BONUS DE PRIMEIRA COMPRA ===============");
-
-	for (ExtratoDTO extrato : extratos) {
-	    System.out.println(extrato.getData().get(Calendar.MONTH));
-	    System.out.println(extrato.getValor());
-	    System.out.println();
-	}
-
-	System.out.println("=============== BONUS DE PRIMEIRA COMPRA ===============");
-
 	return extratos;
     }
 
@@ -102,7 +92,8 @@ public class BonusDePrimeiraCompraService {
 		BigDecimal valorTotal = pedidoDTO.getValorTotal();
 
 		if (tipoDeAdesao.equals(PedidoService.ADESAO)) {
-		    if (valorTotal.compareTo(new BigDecimal("120")) != -1) {
+
+		    if (valorTotal.intValue() > 100) {
 
 			GregorianCalendar dezesseisDezembro2020 = new GregorianCalendar(2020, Calendar.DECEMBER, 16);
 			if (pedido.getData().before(dezesseisDezembro2020)) {
