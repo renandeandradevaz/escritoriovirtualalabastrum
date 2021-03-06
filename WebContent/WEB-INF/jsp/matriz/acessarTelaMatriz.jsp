@@ -18,9 +18,6 @@
 				<td class="centralizado">5</td>
 				<td class="centralizado">6</td>
 				<td class="centralizado">7</td>
-				<td class="centralizado">8</td>
-				<td class="centralizado">9</td>
-				<td class="centralizado">10</td>
 			</tr>
 			<tr>
 				<td class="centralizado">
@@ -33,9 +30,6 @@
 				<td class="centralizado">243</td>
 				<td class="centralizado">729</td>
 				<td class="centralizado">2187</td>
-				<td class="centralizado">6561</td>
-				<td class="centralizado">19683</td>
-				<td class="centralizado">59049</td>
 			</tr>
 			<tr>
 				<td class="centralizado">

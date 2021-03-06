@@ -47,7 +47,7 @@ public class MatrizController {
 	    result.include("quantidadesExistentes", new MatrizService().calcularQuantidadesExistentes(arvoreHierarquicaCompleta));
 	}
 
-	result.include("nomeMatriz", "Matriz Trinária");
+	result.include("nomeMatriz", "Matriz 5x7");
 	result.include("tipoDeMatriz", "Trinaria");
 	result.forwardTo("/WEB-INF/jsp//matriz/acessarTelaMatriz.jsp");
     }
