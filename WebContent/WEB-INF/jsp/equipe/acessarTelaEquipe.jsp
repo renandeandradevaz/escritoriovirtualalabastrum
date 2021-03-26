@@ -72,6 +72,16 @@
 				</div>
 			</div>
 			<div class="control-group">
+				<label class="control-label">Por kit de ingresso</label>
+				<div class="controls">
+					<select id='kitIngresso' name="pesquisaEquipeDTO.kitIngresso">
+						<option value="">Selecione</option>
+						<option value="afiliado">afiliado</option>
+						<option value="distribuidor">distribuidor</option>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
 				<label class="control-label">Ativos</label>
 				<div class="controls">
 					<select id='ativos' name="pesquisaEquipeDTO.ativos">
@@ -141,4 +151,5 @@
 	$('#ativos').val('${pesquisaEquipeDTO.ativos}');
 	$('#mesAniversario').val('${pesquisaEquipeDTO.mesAniversario}');
 	$('#pagosEPendentes').val('${pesquisaEquipeDTO.pagosEPendentes}');
+	$('#kitIngresso').val('${pesquisaEquipeDTO.kitIngresso}');
 </script>

@@ -1,6 +1,7 @@
 package br.com.alabastrum.escritoriovirtual.service;
 
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.hibernate.criterion.MatchMode;
 
@@ -61,5 +62,11 @@ public class PosicoesService {
 	filtro.setNome(nome);
 	filtro.setData_referencia(Util.getPrimeiroDiaDoMes(data));
 	return this.hibernateUtil.selecionar(filtro);
+    }
+
+    public List<Posicao> obterPosicesNoMes(GregorianCalendar data) {
+	Posicao filtro = new Posicao();
+	filtro.setData_referencia(Util.getPrimeiroDiaDoMes(data));
+	return this.hibernateUtil.buscar(filtro);
     }
 }

@@ -23,13 +23,13 @@
 				<td class="centralizado">
 					<b>Previsto </b>
 				</td>
-				<td class="centralizado">3</td>
-				<td class="centralizado">9</td>
-				<td class="centralizado">27</td>
-				<td class="centralizado">81</td>
-				<td class="centralizado">243</td>
-				<td class="centralizado">729</td>
-				<td class="centralizado">2187</td>
+				<td class="centralizado">5</td>
+				<td class="centralizado">25</td>
+				<td class="centralizado">125</td>
+				<td class="centralizado">625</td>
+				<td class="centralizado">3125</td>
+				<td class="centralizado">15625</td>
+				<td class="centralizado">78125</td>
 			</tr>
 			<tr>
 				<td class="centralizado">

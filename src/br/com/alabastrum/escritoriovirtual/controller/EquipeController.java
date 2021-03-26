@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
@@ -11,10 +12,10 @@ import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
 import br.com.alabastrum.escritoriovirtual.dto.EquipeDTO;
 import br.com.alabastrum.escritoriovirtual.dto.PesquisaEquipeDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
-import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
 import br.com.alabastrum.escritoriovirtual.service.HierarquiaService;
+import br.com.alabastrum.escritoriovirtual.service.PosicoesService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Resource;
@@ -52,6 +53,7 @@ public class EquipeController {
 	arvoreHierarquica = filtrarPorApelido(arvoreHierarquica, pesquisaEquipeDTO.getApelido());
 	arvoreHierarquica = filtrarPorNivel(arvoreHierarquica, pesquisaEquipeDTO.getNivel());
 	arvoreHierarquica = filtrarPorPosicao(arvoreHierarquica, pesquisaEquipeDTO.getPosicao());
+	arvoreHierarquica = filtrarPorKitIngresso(arvoreHierarquica, pesquisaEquipeDTO.getKitIngresso());
 	arvoreHierarquica = filtrarPorApenasIndicados(arvoreHierarquica, pesquisaEquipeDTO.getApenasIndicados());
 	arvoreHierarquica = filtrarPorAtividade(arvoreHierarquica, pesquisaEquipeDTO.getAtivos());
 	arvoreHierarquica = filtrarPorMesAniversario(arvoreHierarquica, pesquisaEquipeDTO.getMesAniversario());
@@ -60,7 +62,7 @@ public class EquipeController {
 
 	result.include("totalCadastros", totalCadastros);
 	result.include("pesquisa", pesquisa);
-	result.include("posicoes", hibernateUtil.buscar(new Posicao()));
+	result.include("posicoes", new PosicoesService(hibernateUtil).obterPosicesNoMes(new GregorianCalendar()));
 	result.include("pesquisaEquipeDTO", pesquisaEquipeDTO);
 	result.include("equipe", equipe);
     }
@@ -181,6 +183,22 @@ public class EquipeController {
 
 	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
 		if (arvoreHierarquicaDTO.getUsuario().getPosAtual().equals(posicaoFiltro)) {
+		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
+		}
+	    }
+	    return arvoreHierarquicaFiltrada;
+	}
+	return arvoreHierarquica;
+    }
+
+    private Collection<ArvoreHierarquicaDTO> filtrarPorKitIngresso(Collection<ArvoreHierarquicaDTO> arvoreHierarquica, String kitIngressoFiltro) {
+
+	if (Util.preenchido(kitIngressoFiltro)) {
+
+	    List<ArvoreHierarquicaDTO> arvoreHierarquicaFiltrada = new ArrayList<ArvoreHierarquicaDTO>();
+
+	    for (ArvoreHierarquicaDTO arvoreHierarquicaDTO : arvoreHierarquica) {
+		if (kitIngressoFiltro.equalsIgnoreCase(arvoreHierarquicaDTO.getUsuario().getNome_kit())) {
 		    arvoreHierarquicaFiltrada.add(arvoreHierarquicaDTO);
 		}
 	    }

@@ -21,11 +21,10 @@ public class GerenciadorDeRotinas {
 	    new BonusFilaUnicaRotina().iniciarRotina();
 	    new BonusGlobalRotina().iniciarRotina();
 	    new BonusDeAtivacaoRotina().iniciarRotina();
-	    // new CompressaoDeBonus().iniciarRotina();
-	    // new BonusReconhecimentoEDesempenhoRotina().iniciarRotina();
-	    // new BonusTrinarioComCompressaoDinamicaRotina().iniciarRotina();
-	    // new BonusLinearComCompressaoDinamicaRotina().iniciarRotina();
-	    // new BonusDePrimeiraCompraComKitsRotina().iniciarRotina();
+	    new BonusReconhecimentoEDesempenhoRotina().iniciarRotina();
+	    new BonusTrinarioComCompressaoDinamicaRotina().iniciarRotina();
+	    new BonusLinearComCompressaoDinamicaRotina().iniciarRotina();
+	    new BonusDePrimeiraCompraComKitsRotina().iniciarRotina();
 	}
     }
 }

@@ -108,7 +108,7 @@ hr {
 			<input type="text" name="preCadastro.vnome" value="${preCadastro.vNome}" required="required">
 		</div>
 		<div class="corClara divFormulario">
-			<label class="labelFormulario">Data nasc.: </label>
+			<label class="labelFormulario">Data de nascimento: </label>
 			<input required="required" type="text" class="data" style="width: 100px" name="preCadastro.dt_Nasc" value="${preCadastro.dt_Nasc}" onkeypress="mascaraData( this, event )">
 		</div>
 		<div class="corMedia divFormulario">
@@ -117,11 +117,67 @@ hr {
 		</div>
 		<div class="corClara divFormulario">
 			<label class="labelFormulario">Telefone celular / Whatsapp (OBRIGATÓRIO PREENCHIMENTO DE DDD + TELEFONE): </label>
-			<input type="text" required="required" style="width: 100px" name="preCadastro.cadCelular" value="${preCadastro.cadCelular}">
+			<br>
+			<input type="text" required="required" style="width: 100px" name="preCadastro.cadCelular" value="${preCadastro.cadCelular}" pattern=".{11,}" required title="Preencher telefone com DDD">
 		</div>
 		<div class="corMedia divFormulario">
 			<label class="labelFormulario">Email: </label>
 			<input type="text" name="preCadastro.email" value="${preCadastro.eMail}" required="required">
+		</div>
+		<div class="corClara divFormulario">
+			<label class="labelFormulario">CEP: </label>
+			<input type="text" name="preCadastro.cadCEP" value="${preCadastro.cadCEP}" required="required">
+		</div>
+		<div class="corMedia divFormulario">
+			<label class="labelFormulario">End. Resid.: </label>
+			<input type="text" name="preCadastro.cadEndereco" value="${preCadastro.cadEndereco}" required="required">
+		</div>
+		<div class="corMedia divFormulario">
+			<label class="labelFormulario">Número do endereço: </label>
+			<input type="text" name="preCadastro.numeroEndereco" value="${preCadastro.numeroEndereco}" required="required">
+		</div>
+		<div class="corMedia divFormulario">
+			<label class="labelFormulario">Complemento do endereço: </label>
+			<input type="text" name="preCadastro.complementoEndereco" value="${preCadastro.complementoEndereco}">
+		</div>
+		<div class="corClara divFormulario">
+			<label class="labelFormulario">Bairro: </label>
+			<input type="text" name="preCadastro.cadBairro" value="${preCadastro.cadBairro}" required="required">
+		</div>
+		<div class="corMedia divFormulario">
+			<label class="labelFormulario">Cidade: </label>
+			<input type="text" name="preCadastro.cadCidade" value="${preCadastro.cadCidade}" required="required">
+			<br>
+			<label class="labelFormulario">Estado: </label>
+			<select id='uf' name="preCadastro.cadUF">
+				<option value="AC">Acre</option>
+				<option value="AL">Alagoas</option>
+				<option value="AP">Amapá</option>
+				<option value="AM">Amazonas</option>
+				<option value="BA">Bahia</option>
+				<option value="CE">Ceará</option>
+				<option value="DF">Distrito Federal</option>
+				<option value="ES">Espirito Santo</option>
+				<option value="GO">Goiás</option>
+				<option value="MA">Maranhão</option>
+				<option value="MT">Mato Grosso</option>
+				<option value="MS">Mato Grosso do Sul</option>
+				<option value="MG">Minas Gerais</option>
+				<option value="PA">Pará</option>
+				<option value="PB">Paraiba</option>
+				<option value="PR">Paraná</option>
+				<option value="PE">Pernambuco</option>
+				<option value="PI">Piauí</option>
+				<option value="RJ">Rio de Janeiro</option>
+				<option value="RN">Rio Grande do Norte</option>
+				<option value="RS">Rio Grande do Sul</option>
+				<option value="RO">Rondônia</option>
+				<option value="RR">Roraima</option>
+				<option value="SC">Santa Catarina</option>
+				<option value="SP">São Paulo</option>
+				<option value="SE">Sergipe</option>
+				<option value="TO">Tocantis</option>
+			</select>
 		</div>
 		<div style="margin-top: 20px; margin-left: 20px">
 			<button type="submit" class="btn btn-primary">Enviar</button>

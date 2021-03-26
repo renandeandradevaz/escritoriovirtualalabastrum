@@ -1,4 +1,6 @@
 <%@ include file="/base.jsp"%>
+<link rel="stylesheet" type="text/css" href="http://kenwheeler.github.io/slick/slick/slick.css" />
+<link rel="stylesheet" type="text/css" href="http://kenwheeler.github.io/slick/slick/slick-theme.css" />
 <style>
 #svg circle {
 	stroke-dashoffset: 0;
@@ -68,7 +70,26 @@ h3 {
 </style>
 <div class="fundo-branco">
 	<br>
-	<img class="banner-home" style="max-width: 500px; margin: 3%;" src="<c:url value="/downloadArquivo/banner-home.jpg"/>">
+	<div class="carrossel">
+		<div>
+			<img class="banner-home" style="max-width: 500px; margin: 3%;" src="<c:url value="/downloadArquivo/carrossel-imagem-1.jpg"/>" />
+		</div>
+		<div>
+			<img class="banner-home" style="max-width: 500px; margin: 3%;" src="<c:url value="/downloadArquivo/carrossel-imagem-2.jpg"/>" />
+		</div>
+		<div>
+			<img class="banner-home" style="max-width: 500px; margin: 3%;" src="<c:url value="/downloadArquivo/carrossel-imagem-3.jpg"/>" />
+		</div>
+		<div>
+			<img class="banner-home" style="max-width: 500px; margin: 3%;" src="<c:url value="/downloadArquivo/carrossel-imagem-4.jpg"/>" />
+		</div>
+		<div>
+			<img class="banner-home" style="max-width: 500px; margin: 3%;" src="<c:url value="/downloadArquivo/carrossel-imagem-5.jpg"/>" />
+		</div>
+		<div>
+			<img class="banner-home" style="max-width: 500px; margin: 3%;" src="<c:url value="/downloadArquivo/carrossel-imagem-6.jpg"/>" />
+		</div>
+	</div>
 	<br>
 	<div class='caixinha-home' style="text-align: center;">
 		<h3>Reconhecimento</h3>
@@ -147,7 +168,7 @@ h3 {
 	</div>
 	<c:if test="${not empty quantidadesExistentes}">
 		<div class='caixinha-home'>
-			<h3>Trinário</h3>
+			<h3>Matriz 5x7</h3>
 			<br>
 			<div>
 				<table class="table table-striped table-bordered">
@@ -162,24 +183,18 @@ h3 {
 						<td class="centralizado">5</td>
 						<td class="centralizado">6</td>
 						<td class="centralizado">7</td>
-						<td class="centralizado">8</td>
-						<td class="centralizado">9</td>
-						<td class="centralizado">10</td>
 					</tr>
 					<tr>
 						<td class="centralizado">
 							<b>Previsto </b>
 						</td>
-						<td class="centralizado">3</td>
-						<td class="centralizado">9</td>
-						<td class="centralizado">27</td>
-						<td class="centralizado">81</td>
-						<td class="centralizado">243</td>
-						<td class="centralizado">729</td>
-						<td class="centralizado">2187</td>
-						<td class="centralizado">6561</td>
-						<td class="centralizado">19683</td>
-						<td class="centralizado">59049</td>
+						<td class="centralizado">5</td>
+						<td class="centralizado">25</td>
+						<td class="centralizado">125</td>
+						<td class="centralizado">625</td>
+						<td class="centralizado">3125</td>
+						<td class="centralizado">15625</td>
+						<td class="centralizado">78125</td>
 					</tr>
 					<tr>
 						<td class="centralizado">
@@ -198,12 +213,12 @@ h3 {
 		<br>
 		<h5>Total abaixo: ${totalAbaixoFilaUnica}</h5>
 	</div>
-<!-- 	<div class='caixinha-home'> -->
-<!-- 		<br> -->
-<!-- 		<a href="http://miguelprado.com.br">CLIQUE AQUI PARA ENVIAR SUA DOCUMENTAÇÃO</a> -->
-<!-- 		<br> -->
-<!-- 		<br> -->
-<!-- 	</div> -->
+	<!-- 	<div class='caixinha-home'> -->
+	<!-- 		<br> -->
+	<!-- 		<a href="http://miguelprado.com.br">CLIQUE AQUI PARA ENVIAR SUA DOCUMENTAÇÃO</a> -->
+	<!-- 		<br> -->
+	<!-- 		<br> -->
+	<!-- 	</div> -->
 	<c:if test="${'revendedor' != fn:toLowerCase(sessaoUsuario.usuario.nome_kit)}">
 		<div class='caixinha-home'>
 			<h3>Indicação</h3>
@@ -225,6 +240,14 @@ h3 {
 </div>
 <script>
 	$(document).ready(function() {
+
+		$('.carrossel').slick({
+			slidesToShow : 1,
+			slidesToScroll : 1,
+			autoplay : true,
+			autoplaySpeed : 2000,
+		});
+
 		var val = parseInt($('#percent').val());
 		var $circle = $('#svg #bar');
 
@@ -258,3 +281,4 @@ h3 {
 		document.execCommand("copy");
 	}
 </script>
+<script type="text/javascript" src="http://kenwheeler.github.io/slick/slick/slick.js"></script>

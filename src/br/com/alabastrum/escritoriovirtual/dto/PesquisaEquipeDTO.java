@@ -12,6 +12,7 @@ public class PesquisaEquipeDTO {
     private Boolean ativos;
     private String mesAniversario;
     private String pagosEPendentes;
+    private String kitIngresso;
 
     public String getApelido() {
 	return apelido;
@@ -91,5 +92,13 @@ public class PesquisaEquipeDTO {
 
     public void setCpf(String cpf) {
 	this.cpf = cpf;
+    }
+
+    public String getKitIngresso() {
+	return kitIngresso;
+    }
+
+    public void setKitIngresso(String kitIngresso) {
+	this.kitIngresso = kitIngresso;
     }
 }
