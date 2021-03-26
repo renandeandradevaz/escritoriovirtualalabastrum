@@ -168,7 +168,7 @@ hr {
 				<option value="PR">Paraná</option>
 				<option value="PE">Pernambuco</option>
 				<option value="PI">Piauí</option>
-				<option value="RJ">Rio de Janeiro</option>
+				<option value="RJ" selected="selected">Rio de Janeiro</option>
 				<option value="RN">Rio Grande do Norte</option>
 				<option value="RS">Rio Grande do Sul</option>
 				<option value="RO">Rondônia</option>
