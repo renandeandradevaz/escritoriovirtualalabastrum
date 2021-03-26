@@ -1,6 +1,4 @@
 <%@ include file="/base.jsp"%>
-<link rel="stylesheet" type="text/css" href="http://kenwheeler.github.io/slick/slick/slick.css" />
-<link rel="stylesheet" type="text/css" href="http://kenwheeler.github.io/slick/slick/slick-theme.css" />
 <style>
 #svg circle {
 	stroke-dashoffset: 0;
@@ -281,4 +279,3 @@ h3 {
 		document.execCommand("copy");
 	}
 </script>
-<script type="text/javascript" src="http://kenwheeler.github.io/slick/slick/slick.js"></script>

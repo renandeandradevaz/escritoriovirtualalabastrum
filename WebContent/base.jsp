@@ -14,12 +14,16 @@
 <link type="text/css" href="<c:url value="/css/estilo.css?ver=5"/>" rel="stylesheet" />
 <link type="text/css" href="<c:url value="/css/jquery-ui-1.9.2.custom.min.css"/>" rel="stylesheet" />
 <link type="text/css" href="<c:url value="/css/menu-accordion.css"/>" rel="stylesheet" />
+<link type="text/css" href="<c:url value="/css/menu-accordion.css"/>" rel="stylesheet" />
+<link type="text/css" href="<c:url value="/css/slick.css"/>" rel="stylesheet" />
+<link type="text/css" href="<c:url value="/css/slick-theme.css"/>" rel="stylesheet" />
 <script type="text/javascript" src="<c:url value="/js/jquery-1.8.3.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/js/jquery-ui-1.9.2.custom.min.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/js/jquery.collapse.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/js/jquery.collapse_storage.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/js/jquery.collapse_cookie_storage.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/js/my-scripts.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/js/slick.js"/>"></script>
 </head>
 <body>
 	<div class="topo">
