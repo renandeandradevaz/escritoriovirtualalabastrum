@@ -36,7 +36,7 @@
 			<div></div>
 			<h3 class="menu-accordion" onclick="goTo('<c:url value="/atualizacaoDados/acessarTelaAtualizacaoDados"/>')">Dados Cadastrais</h3>
 			<div></div>
-			<c:if test="${sessaoUsuario.usuario.nome_kit == 'distribuidor'}">
+			<c:if test="${sessaoUsuario.usuario.nome_kit == 'distribuidor' && sessaoUsuario.ativo}">
 				<h3 class="menu-accordion has-child">Redes</h3>
 				<div>
 					<a href="<c:url value="/equipe/acessarTelaEquipe"/>" class="submenu-accordion"> Equipe </a>
@@ -55,7 +55,7 @@
 					<a href="<c:url value="/pedidoFranquia/pedidosFranquia"/>" class="submenu-accordion"> Pedidos para Estoque </a>
 				</c:if>
 			</div>
-			<c:if test="${sessaoUsuario.usuario.nome_kit == 'distribuidor'}">
+			<c:if test="${sessaoUsuario.usuario.nome_kit == 'distribuidor' && sessaoUsuario.ativo}">
 				<h3 class="menu-accordion has-child">Financeiro</h3>
 				<div>
 					<a href="<c:url value="/extrato/acessarTelaExtrato"/>" class="submenu-accordion"> Extrato </a>

@@ -50,7 +50,7 @@ public class AssumirIdentidadeController {
 
 	usuario.setInformacoesFixasUsuario(new InformacoesFixasUsuario());
 	usuario.getInformacoesFixasUsuario().setAdministrador(true);
-	this.sessaoUsuario.login(usuario);
+	this.sessaoUsuario.login(usuario, true);
 
 	result.forwardTo(HomeController.class).home();
     }

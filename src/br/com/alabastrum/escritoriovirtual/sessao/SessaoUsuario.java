@@ -8,18 +8,28 @@ import br.com.caelum.vraptor.ioc.SessionScoped;
 @SessionScoped
 public class SessaoUsuario {
 
-	private Usuario usuario;
+    private Usuario usuario;
+    private boolean ativo;
 
-	public Usuario getUsuario() {
-		return usuario;
-	}
+    public Usuario getUsuario() {
+	return usuario;
+    }
 
-	public void login(Usuario usuario) {
-		this.usuario = usuario;
-	}
+    public void login(Usuario usuario, boolean ativo) {
+	this.usuario = usuario;
+	this.ativo = ativo;
+    }
 
-	public void logout() {
-		this.usuario = null;
-	}
+    public void logout() {
+	this.usuario = null;
+    }
+
+    public boolean isAtivo() {
+	return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+	this.ativo = ativo;
+    }
 
 }

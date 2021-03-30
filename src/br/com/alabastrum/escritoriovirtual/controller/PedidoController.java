@@ -1209,7 +1209,7 @@ public class PedidoController {
 	this.sessaoGeral.adicionar(PedidoService.ID_USUARIO_PEDIDO, usuario.getId_Codigo());
 	Usuario usuarioFakeLojaPessoal = new Usuario();
 	usuarioFakeLojaPessoal.setApelido("Bem vindo à loja de " + usuario.getApelido());
-	this.sessaoUsuario.login(usuarioFakeLojaPessoal);
+	this.sessaoUsuario.login(usuarioFakeLojaPessoal, false);
 
 	Franquia franquia = new Franquia();
 	franquia.setId_Estoque(1);

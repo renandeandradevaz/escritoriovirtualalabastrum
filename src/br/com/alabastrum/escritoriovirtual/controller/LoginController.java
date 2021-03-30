@@ -9,6 +9,7 @@ import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.HistoricoAcesso;
 import br.com.alabastrum.escritoriovirtual.modelo.InformacoesFixasUsuario;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
+import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoGeral;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.alabastrum.escritoriovirtual.util.GeradorDeMd5;
@@ -62,7 +63,7 @@ public class LoginController {
 
 	    usuario.setInformacoesFixasUsuario(new InformacoesFixasUsuario());
 	    usuario.getInformacoesFixasUsuario().setAdministrador(true);
-	    this.sessaoUsuario.login(usuario);
+	    this.sessaoUsuario.login(usuario, true);
 	    result.redirectTo(AssumirIdentidadeController.class).acessarTelaAssumirIdentidade();
 	    return;
 	}
@@ -115,7 +116,7 @@ public class LoginController {
 	usuario.setApelido(apelido);
 	usuario = this.hibernateUtil.selecionar(usuario, MatchMode.EXACT);
 	usuario.setInformacoesFixasUsuario(usuario.obterInformacoesFixasUsuario());
-	this.sessaoUsuario.login(usuario);
+	this.sessaoUsuario.login(usuario, new AtividadeService(hibernateUtil).isAtivo(usuario.getId_Codigo()));
     }
 
     @Public
