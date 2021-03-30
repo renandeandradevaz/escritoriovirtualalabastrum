@@ -5,6 +5,7 @@ import org.hibernate.criterion.MatchMode;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Funcionalidade;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.InformacoesFixasUsuario;
+import br.com.alabastrum.escritoriovirtual.modelo.KitAdesao;
 import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.sessao.SessaoUsuario;
 import br.com.caelum.vraptor.Resource;
@@ -50,6 +51,7 @@ public class AssumirIdentidadeController {
 
 	usuario.setInformacoesFixasUsuario(new InformacoesFixasUsuario());
 	usuario.getInformacoesFixasUsuario().setAdministrador(true);
+	usuario.setNome_kit(KitAdesao.DISTRIBUIDOR);
 	this.sessaoUsuario.login(usuario, true);
 
 	result.forwardTo(HomeController.class).home();
