@@ -1,2 +1,5 @@
 *.class
 classes/
+.idea/
+escritoriovirtualalabastrum.iml
+escritoriovirtualalabastrum.war
