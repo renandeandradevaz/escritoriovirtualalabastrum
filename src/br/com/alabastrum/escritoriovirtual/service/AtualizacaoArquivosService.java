@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.alabastrum.escritoriovirtual.modelo.*;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -20,24 +21,6 @@ import org.joda.time.format.DateTimeFormatter;
 import au.com.bytecode.opencsv.CSVReader;
 import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
-import br.com.alabastrum.escritoriovirtual.modelo.Adesao;
-import br.com.alabastrum.escritoriovirtual.modelo.BonusAdesao;
-import br.com.alabastrum.escritoriovirtual.modelo.Caixa;
-import br.com.alabastrum.escritoriovirtual.modelo.Categoria;
-import br.com.alabastrum.escritoriovirtual.modelo.FaixaAtividade;
-import br.com.alabastrum.escritoriovirtual.modelo.FaixaBonusAtividade;
-import br.com.alabastrum.escritoriovirtual.modelo.Franquia;
-import br.com.alabastrum.escritoriovirtual.modelo.KitAdesao;
-import br.com.alabastrum.escritoriovirtual.modelo.ParametroAtividade;
-import br.com.alabastrum.escritoriovirtual.modelo.ParametroDivisaoLucro;
-import br.com.alabastrum.escritoriovirtual.modelo.ParametroUnilevel;
-import br.com.alabastrum.escritoriovirtual.modelo.ParametroVip;
-import br.com.alabastrum.escritoriovirtual.modelo.Pontuacao;
-import br.com.alabastrum.escritoriovirtual.modelo.Posicao;
-import br.com.alabastrum.escritoriovirtual.modelo.Produto;
-import br.com.alabastrum.escritoriovirtual.modelo.Qualificacao;
-import br.com.alabastrum.escritoriovirtual.modelo.ReceitaDivisaoLucro;
-import br.com.alabastrum.escritoriovirtual.modelo.Usuario;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 
 public class AtualizacaoArquivosService {
@@ -67,6 +50,7 @@ public class AtualizacaoArquivosService {
 	processarCSVBonusAdesao();
 	processarCSVFaixaAtividade();
 	processarCSVFaixaBonusAtividade();
+	processarCSVMovimentacaoDeRede();
     }
 
     public void processarArquivosPeriodoCurto() throws Exception {
@@ -277,6 +261,15 @@ public class AtualizacaoArquivosService {
 	this.hibernateUtil.executarSQL("delete from faixabonusatividade");
 	this.hibernateUtil.salvarOuAtualizar(faixasBonusAtividades);
     }
+
+	private void processarCSVMovimentacaoDeRede() throws Exception {
+
+		CSVReader reader = lerArquivo("tblMovimentacaoRede.csv", ArquivoService.PASTA_ATUALIZACAO_CSV_PERIODO_LONGO);
+		List<MovimentacaoRede> movimentacaoRedes = new ArrayList<MovimentacaoRede>();
+		preencherObjeto(reader, movimentacaoRedes, "MovimentacaoRede");
+		this.hibernateUtil.executarSQL("delete from movimentacaorede");
+		this.hibernateUtil.salvarOuAtualizar(movimentacaoRedes);
+	}
 
     private CSVReader lerArquivo(String nomeCsv, String caminho) throws Exception {
 

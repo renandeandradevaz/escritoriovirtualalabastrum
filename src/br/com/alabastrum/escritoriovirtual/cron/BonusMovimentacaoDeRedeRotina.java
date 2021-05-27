@@ -42,7 +42,11 @@ public class BonusMovimentacaoDeRedeRotina implements Runnable {
 					totalPedidosPessoais = totalPedidosPessoais.add(new PedidoService(hibernateUtil).calcularTotalSemFrete(pedido));
 				}
 
+				MovimentacaoRede movimentacaoRede =  new MovimentacaoDeRedeService(hibernateUtil).buscarMovimentacaoRede(ontem, arvoreHierarquicaEntry.getValue().getNivel());
 
+				if(movimentacaoRede != null){
+					totalBonificacao = totalBonificacao.add(totalPedidosPessoais).multiply(movimentacaoRede.getPorcentagem().divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_HALF_UP));
+				}
 			}
 	    }
 	} catch (Exception e) {
