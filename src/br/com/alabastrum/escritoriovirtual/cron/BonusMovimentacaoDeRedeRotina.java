@@ -3,10 +3,7 @@ package br.com.alabastrum.escritoriovirtual.cron;
 import br.com.alabastrum.escritoriovirtual.dto.ArvoreHierarquicaDTO;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.*;
-import br.com.alabastrum.escritoriovirtual.service.AtividadeService;
-import br.com.alabastrum.escritoriovirtual.service.BonificacoesPreProcessadasService;
-import br.com.alabastrum.escritoriovirtual.service.HierarquiaService;
-import br.com.alabastrum.escritoriovirtual.service.PontuacaoService;
+import br.com.alabastrum.escritoriovirtual.service.*;
 import br.com.alabastrum.escritoriovirtual.util.Mail;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import it.sauronsoftware.cron4j.Scheduler;
@@ -36,8 +33,17 @@ public class BonusMovimentacaoDeRedeRotina implements Runnable {
 	    for (Usuario usuario : usuariosHabilitados) {
 
 		Integer idCodigo = usuario.getId_Codigo();
-		Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompletaPorIdLider = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(idCodigo, "id_lider");
+		BigDecimal totalBonificacao = BigDecimal.ZERO;
 
+		Map<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaCompletaPorIdLider = new HierarquiaService(hibernateUtil).obterArvoreHierarquicaTodosOsNiveis(idCodigo, "id_lider");
+			for (Entry<Integer, ArvoreHierarquicaDTO> arvoreHierarquicaEntry : arvoreHierarquicaCompletaPorIdLider.entrySet()) {
+				BigDecimal totalPedidosPessoais = BigDecimal.ZERO;
+				for (Pedido pedido : new PedidoService(hibernateUtil).getPedidosDoDistribuidor(arvoreHierarquicaEntry.getValue().getUsuario().getId_Codigo(), primeiroDiaDoMes, ultimoDiaDoMes)) {
+					totalPedidosPessoais = totalPedidosPessoais.add(new PedidoService(hibernateUtil).calcularTotalSemFrete(pedido));
+				}
+
+
+			}
 	    }
 	} catch (Exception e) {
 
