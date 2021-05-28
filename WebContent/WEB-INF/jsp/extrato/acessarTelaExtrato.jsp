@@ -228,6 +228,19 @@
 					</td>
 				</tr>
 				<tr>
+                    <td class="centralizado">Bônus Movimentação de Rede</td>
+                    <td class="centralizado">
+                        R$
+                        <fmt:formatNumber value="${extrato.bonusMovimentacaoDeRedeNoMes}" pattern="#,##0.00" />
+                    </td>
+                    <td>
+                        <form action="<c:url value="/extrato/detalharBonificacao"/>" method="post">
+                            <input type="hidden" name="bonificacao" value="Bônus Movimentação de Rede">
+                            <button type="submit" class="btn btn-primary detalhar" onclick="this.disabled=true;this.form.submit();">Detalhar</button>
+                        </form>
+                    </td>
+                </tr>
+				<tr>
 					<td class="centralizado">Bônus de Reconhecimento</td>
 					<td class="centralizado">
 						R$
