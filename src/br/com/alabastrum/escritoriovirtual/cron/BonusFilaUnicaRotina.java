@@ -24,7 +24,7 @@ public class BonusFilaUnicaRotina implements Runnable {
         try {
 
             GregorianCalendar ontem = new GregorianCalendar();
-            ontem.add(Calendar.DATE, -2);
+            ontem.add(Calendar.DATE, -3);
             GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(ontem);
             GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(ontem);
 
@@ -61,7 +61,7 @@ public class BonusFilaUnicaRotina implements Runnable {
 
     private List<Usuario> buscarUsuariosHabilitados(HibernateUtil hibernateUtil, GregorianCalendar ontem) {
 
-        Integer pontuacaoMinima = new PosicoesService(hibernateUtil).obterPosicaoPorNome("OURO", ontem).getPontuacao();
+        Integer pontuacaoMinima = new PosicoesService(hibernateUtil).obterPosicaoPorNome("LÍDER EXECUTIVO", ontem).getPontuacao();
 
         List<Usuario> usuariosHabilitados = new ArrayList<Usuario>();
 
@@ -89,7 +89,7 @@ public class BonusFilaUnicaRotina implements Runnable {
 
         Scheduler scheduler = new Scheduler();
 
-        scheduler.schedule("30 3 2 * *", task);
+        scheduler.schedule("30 3 3 * *", task);
 
         scheduler.start();
     }
