@@ -33,7 +33,7 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 	try {
 
 	    GregorianCalendar ontem = new GregorianCalendar();
-	    ontem.add(Calendar.DATE, -1);
+	    ontem.add(Calendar.DATE, -2);
 	    GregorianCalendar primeiroDiaDoMes = Util.getPrimeiroDiaDoMes(ontem);
 	    GregorianCalendar ultimoDiaDoMes = Util.getUltimoDiaDoMes(ontem);
 
@@ -119,7 +119,7 @@ public class BonusReconhecimentoEDesempenhoRotina implements Runnable {
 
 	Scheduler scheduler = new Scheduler();
 
-	scheduler.schedule("30 5 1 * *", task);
+	scheduler.schedule("30 5 2 * *", task);
 
 	scheduler.start();
     }
