@@ -6,14 +6,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TÃ­tulo aqui</title>
+<title>Título aqui</title>
 <link type="text/css" href="<c:url value="/css/estilo-qualquer.css"/>" rel="stylesheet" />
 <script type="text/javascript" src="<c:url value="/js/javascript-qualquer.js"/>"></script>
 </head>
 <body>
 	<div>
 		<c:if test="${empty cartaoVisita}">
-			<form action="<c:url value="/cartaoVisita/salvarCartaoVisita"/>" method="post">
+			<form action="<c:url value="/cartao-visita/salvarCartaoVisita"/>" method="post">
 				<input type="hidden" name="cartaoVisita.codigo" value="${codigo}" />
 				<label>Nome</label>
 				<br>
