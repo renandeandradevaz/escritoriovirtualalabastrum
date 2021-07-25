@@ -73,17 +73,17 @@
 			<br>
 			<h5>Email: ${cartaoVisita.email}</h5>
 			<br>
-			<a href="${cartaoVisita.site}"> Site pessoal</a>
+			<a href="//${cartaoVisita.site}"> Site pessoal</a>
 			<br>
-			<a href="${cartaoVisita.facebook}"> Facebook</a>
+			<a href="//${cartaoVisita.facebook}"> Facebook</a>
 			<br>
-			<a href="${cartaoVisita.instagram}"> Instagram</a>
+			<a href="//${cartaoVisita.instagram}"> Instagram</a>
 			<br>
-			<a href="${cartaoVisita.twitter}"> Twitter</a>
+			<a href="//${cartaoVisita.twitter}"> Twitter</a>
 			<br>
-			<a href="${cartaoVisita.tiktok}"> Tiktok</a>
+			<a href="//${cartaoVisita.tiktok}"> Tiktok</a>
 			<br>
-			<a href="${cartaoVisita.linkCadastro}"> Link de cadastro</a>
+			<a href="//${cartaoVisita.linkCadastro}"> Link de cadastro</a>
 			<br>
 			<br>
 			<br>
