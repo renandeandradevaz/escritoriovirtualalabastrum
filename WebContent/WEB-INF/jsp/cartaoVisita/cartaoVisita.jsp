@@ -68,7 +68,7 @@
 			<br>
 			<br>
 			<br>
-			<input id="qrcodeurl" type="hidden" value="https://ev.dunastes.com.br/cartao-visita/${cartaoVisita.codigo}" />
+			<input id="qrcodeurl" type="hidden" value="http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" />
 			<div id="qrcodebox" style="width: 300px"></div>
 			<br>
 			<br>
