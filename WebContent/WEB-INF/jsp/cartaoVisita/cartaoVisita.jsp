@@ -8,7 +8,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Título aqui</title>
 <link type="text/css" href="<c:url value="/css/estilo-qualquer.css"/>" rel="stylesheet" />
-<script type="text/javascript" src="<c:url value="/js/javascript-qualquer.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/js/jquery-1.8.3.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/js/qrcode.min.js"/>"></script>
 </head>
 <body>
 	<div>
@@ -67,6 +68,11 @@
 			<br>
 			<br>
 			<br>
+			<input id="qrcodeurl" type="hidden" value="https://ev.dunastes.com.br/cartao-visita/${cartaoVisita.codigo}" />
+			<div id="qrcodebox" style="width: 200px"></div>
+			<br>
+			<br>
+			<br>
 			<h3>${cartaoVisita.nome}</h3>
 			<br>
 			<h5>Telefone / Whatsapp / Telegram: ${cartaoVisita.telefone}</h5>
@@ -89,3 +95,18 @@
 			<br>
 		</c:if>
 	</div>
+	<script type="text/javascript">
+		var qrcode = new QRCode(document.getElementById("qrcodebox"), {
+			width : 100,
+			height : 100
+		});
+
+		function makeCode() {
+			var elText = document.getElementById("qrcodeurl");
+			qrcode.makeCode(elText.value);
+		}
+
+		makeCode();
+	</script>
+</body>
+</html>
