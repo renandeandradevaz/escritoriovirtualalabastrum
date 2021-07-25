@@ -3,6 +3,7 @@ package br.com.alabastrum.escritoriovirtual.controller;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Public;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.CartaoVisita;
+import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Resource;
@@ -32,7 +33,20 @@ public class CartaoVisitaController {
 	@Public
 	@Post("/cartao-visita/salvarCartaoVisita")
 	public void salvarCartaoVisita(CartaoVisita cartaoVisita) {
-		this.hibernateUtil.salvarOuAtualizar(cartaoVisita);
+
+		CartaoVisita cartaoVisitaFiltro = new CartaoVisita();
+		cartaoVisitaFiltro.setCodigo(cartaoVisita.getCodigo());
+		if (this.hibernateUtil.contar(cartaoVisitaFiltro).equals(0)) {
+
+			cartaoVisita.setSite(Util.removeHttp(cartaoVisita.getSite()));
+			cartaoVisita.setFacebook(Util.removeHttp(cartaoVisita.getFacebook()));
+			cartaoVisita.setInstagram(Util.removeHttp(cartaoVisita.getInstagram()));
+			cartaoVisita.setTwitter(Util.removeHttp(cartaoVisita.getTwitter()));
+			cartaoVisita.setTiktok(Util.removeHttp(cartaoVisita.getTiktok()));
+			cartaoVisita.setLinkCadastro(Util.removeHttp(cartaoVisita.getLinkCadastro()));
+			this.hibernateUtil.salvarOuAtualizar(cartaoVisita);
+		}
+
 		result.redirectTo(this).cartaoVisita(cartaoVisita.getCodigo());
 	}
 }
