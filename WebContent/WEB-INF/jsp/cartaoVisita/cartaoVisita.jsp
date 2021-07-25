@@ -69,7 +69,7 @@
 			<br>
 			<br>
 			<input id="qrcodeurl" type="hidden" value="https://ev.dunastes.com.br/cartao-visita/${cartaoVisita.codigo}" />
-			<div id="qrcodebox" style="width: 500px"></div>
+			<div id="qrcodebox" style="width: 300px"></div>
 			<br>
 			<br>
 			<br>
@@ -97,8 +97,8 @@
 	</div>
 	<script type="text/javascript">
 		var qrcode = new QRCode(document.getElementById("qrcodebox"), {
-			width : 500,
-			height : 500
+			width : 300,
+			height : 300
 		});
 
 		function makeCode() {
