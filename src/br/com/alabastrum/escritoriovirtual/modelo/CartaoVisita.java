@@ -1,114 +1,118 @@
 package br.com.alabastrum.escritoriovirtual.modelo;
 
-import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.Index;
+
+import br.com.alabastrum.escritoriovirtual.hibernate.Entidade;
+
 @Entity
 public class CartaoVisita implements Entidade {
 
-    @Id
-    @GeneratedValue
-    private Integer id;
+	@Id
+	@GeneratedValue
+	private Integer id;
 
-    private String codigo;
-    private String nome;
-    private String telefone;
-    private String email;
-    private String site;
-    private String facebook;
-    private String instagram;
-    private String twitter;
-    private String tiktok;
-    private String linkCadastro;
+	@Index(name = "index_cartaovisita_codigo")
+	private String codigo;
 
-    public String getCodigo() {
-        return codigo;
-    }
+	private String nome;
+	private String telefone;
+	private String email;
+	private String site;
+	private String facebook;
+	private String instagram;
+	private String twitter;
+	private String tiktok;
+	private String linkCadastro;
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
+	public String getCodigo() {
+		return codigo;
+	}
 
-    public Integer getId() {
-        return id;
-    }
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public String getNome() {
-        return nome;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+	public String getNome() {
+		return nome;
+	}
 
-    public String getTelefone() {
-        return telefone;
-    }
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
+	public String getTelefone() {
+		return telefone;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getSite() {
-        return site;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setSite(String site) {
-        this.site = site;
-    }
+	public String getSite() {
+		return site;
+	}
 
-    public String getFacebook() {
-        return facebook;
-    }
+	public void setSite(String site) {
+		this.site = site;
+	}
 
-    public void setFacebook(String facebook) {
-        this.facebook = facebook;
-    }
+	public String getFacebook() {
+		return facebook;
+	}
 
-    public String getInstagram() {
-        return instagram;
-    }
+	public void setFacebook(String facebook) {
+		this.facebook = facebook;
+	}
 
-    public void setInstagram(String instagram) {
-        this.instagram = instagram;
-    }
+	public String getInstagram() {
+		return instagram;
+	}
 
-    public String getTwitter() {
-        return twitter;
-    }
+	public void setInstagram(String instagram) {
+		this.instagram = instagram;
+	}
 
-    public void setTwitter(String twitter) {
-        this.twitter = twitter;
-    }
+	public String getTwitter() {
+		return twitter;
+	}
 
-    public String getTiktok() {
-        return tiktok;
-    }
+	public void setTwitter(String twitter) {
+		this.twitter = twitter;
+	}
 
-    public void setTiktok(String tiktok) {
-        this.tiktok = tiktok;
-    }
+	public String getTiktok() {
+		return tiktok;
+	}
 
-    public String getLinkCadastro() {
-        return linkCadastro;
-    }
+	public void setTiktok(String tiktok) {
+		this.tiktok = tiktok;
+	}
 
-    public void setLinkCadastro(String linkCadastro) {
-        this.linkCadastro = linkCadastro;
-    }
+	public String getLinkCadastro() {
+		return linkCadastro;
+	}
+
+	public void setLinkCadastro(String linkCadastro) {
+		this.linkCadastro = linkCadastro;
+	}
 }
