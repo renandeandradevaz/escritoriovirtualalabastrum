@@ -7,6 +7,8 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import br.com.alabastrum.escritoriovirtual.util.Util;
 
+// teste
+
 public class TagSimNao extends TagSupport {
 
 	private static final long serialVersionUID = -9149033488270695019L;
