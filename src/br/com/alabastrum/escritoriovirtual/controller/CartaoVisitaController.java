@@ -39,11 +39,21 @@ public class CartaoVisitaController {
 		if (this.hibernateUtil.contar(cartaoVisitaFiltro).equals(0)) {
 
 			cartaoVisita.setSite(Util.removeHttp(cartaoVisita.getSite()));
+			cartaoVisita.setCatalogo(Util.removeHttp(cartaoVisita.getCatalogo()));
 			cartaoVisita.setFacebook(Util.removeHttp(cartaoVisita.getFacebook()));
 			cartaoVisita.setInstagram(Util.removeHttp(cartaoVisita.getInstagram()));
 			cartaoVisita.setTwitter(Util.removeHttp(cartaoVisita.getTwitter()));
+			cartaoVisita.setYoutube(Util.removeHttp(cartaoVisita.getYoutube()));
 			cartaoVisita.setTiktok(Util.removeHttp(cartaoVisita.getTiktok()));
+			cartaoVisita.setLinkedin(Util.removeHttp(cartaoVisita.getLinkedin()));
 			cartaoVisita.setLinkCadastro(Util.removeHttp(cartaoVisita.getLinkCadastro()));
+
+			cartaoVisita.setWhatsapp(cartaoVisita.getWhatsapp().replaceAll(" ", "").replaceAll("-", "")
+					.replaceAll("(", "").replaceAll(")", ""));
+			cartaoVisita
+					.setWhatsapp(cartaoVisita.getWhatsapp().startsWith("55") ? cartaoVisita.getWhatsapp().substring(2)
+							: cartaoVisita.getWhatsapp());
+
 			this.hibernateUtil.salvarOuAtualizar(cartaoVisita);
 		}
 

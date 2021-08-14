@@ -19,22 +19,23 @@ public class CartaoVisita implements Entidade {
 	private String codigo;
 
 	private String nome;
-	private String telefone;
-	private String email;
+	private String celular;
+	private String telefoneFixo;
+	private String enderecoComercial;
+	private String cargo;
+	private String frase;
 	private String site;
+	private String pix;
+	private String catalogo;
+	private String whatsapp;
+	private String telegram;
 	private String facebook;
 	private String instagram;
 	private String twitter;
+	private String youtube;
 	private String tiktok;
+	private String linkedin;
 	private String linkCadastro;
-
-	public String getCodigo() {
-		return codigo;
-	}
-
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
 
 	public Integer getId() {
 		return id;
@@ -42,6 +43,14 @@ public class CartaoVisita implements Entidade {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 
 	public String getNome() {
@@ -52,20 +61,44 @@ public class CartaoVisita implements Entidade {
 		this.nome = nome;
 	}
 
-	public String getTelefone() {
-		return telefone;
+	public String getCelular() {
+		return celular;
 	}
 
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
+	public void setCelular(String celular) {
+		this.celular = celular;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getTelefoneFixo() {
+		return telefoneFixo;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setTelefoneFixo(String telefoneFixo) {
+		this.telefoneFixo = telefoneFixo;
+	}
+
+	public String getEnderecoComercial() {
+		return enderecoComercial;
+	}
+
+	public void setEnderecoComercial(String enderecoComercial) {
+		this.enderecoComercial = enderecoComercial;
+	}
+
+	public String getCargo() {
+		return cargo;
+	}
+
+	public void setCargo(String cargo) {
+		this.cargo = cargo;
+	}
+
+	public String getFrase() {
+		return frase;
+	}
+
+	public void setFrase(String frase) {
+		this.frase = frase;
 	}
 
 	public String getSite() {
@@ -74,6 +107,38 @@ public class CartaoVisita implements Entidade {
 
 	public void setSite(String site) {
 		this.site = site;
+	}
+
+	public String getPix() {
+		return pix;
+	}
+
+	public void setPix(String pix) {
+		this.pix = pix;
+	}
+
+	public String getCatalogo() {
+		return catalogo;
+	}
+
+	public void setCatalogo(String catalogo) {
+		this.catalogo = catalogo;
+	}
+
+	public String getWhatsapp() {
+		return whatsapp;
+	}
+
+	public void setWhatsapp(String whatsapp) {
+		this.whatsapp = whatsapp;
+	}
+
+	public String getTelegram() {
+		return telegram;
+	}
+
+	public void setTelegram(String telegram) {
+		this.telegram = telegram;
 	}
 
 	public String getFacebook() {
@@ -100,12 +165,28 @@ public class CartaoVisita implements Entidade {
 		this.twitter = twitter;
 	}
 
+	public String getYoutube() {
+		return youtube;
+	}
+
+	public void setYoutube(String youtube) {
+		this.youtube = youtube;
+	}
+
 	public String getTiktok() {
 		return tiktok;
 	}
 
 	public void setTiktok(String tiktok) {
 		this.tiktok = tiktok;
+	}
+
+	public String getLinkedin() {
+		return linkedin;
+	}
+
+	public void setLinkedin(String linkedin) {
+		this.linkedin = linkedin;
 	}
 
 	public String getLinkCadastro() {
