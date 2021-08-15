@@ -259,7 +259,7 @@ body {
 		margin: 0 auto;
 		display: flex;
 		justify-content: center;
-		border-radius: 200px;
+		/* 		border-radius: 200px; */
 		border: 10px solid #fff;
 		box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
 	}
@@ -451,7 +451,15 @@ body {
 
 
 
+
+
+
+
 		
+
+
+
+
 
 
 
@@ -614,7 +622,7 @@ body {
 		justify-content: center;
 		width: 9rem;
 		height: 9rem;
-		border-radius: 150px;
+		/* 		border-radius: 150px; */
 		border: 5px solid #fff;
 		overflow: hidden;
 		box-shadow: 0px 0px 9px #888;
@@ -816,7 +824,11 @@ body {
 				<p>
 					<img style="width: 5%; position: relative; top: 7px; margin-right: 10px" src="<c:url value="/css/images/user.png"/>" />${cartaoVisita.nome}</p>
 				<h3 class="p2">
-					<img style="width: 4%; position: relative; top: 2px; margin-right: 10px;" src="<c:url value="/css/images/ligar.png"/>" />${cartaoVisita.celular}</h3>
+					<a href="tel:${cartaoVisita.celular}">
+						<img style="width: 4%; position: relative; top: 2px; margin-right: 10px;" src="<c:url value="/css/images/ligar.png"/>" />
+						${cartaoVisita.celular}
+					</a>
+				</h3>
 				<h3 class="p3">${cartaoVisita.cargo}</h3>
 				<h3 class="p4">${cartaoVisita.frase}</h3>
 			</div>
@@ -849,7 +861,7 @@ body {
 					<img class="icones" src="<c:url value="/css/images/tiktok.png"/>" />
 				</a>
 				<a href="//${cartaoVisita.linkedin}">
-					<img class="icones" src="<c:url value="/css/images/linkedin.png"/>" />
+					<img class="icones" src="<c:url value="/css/images/linkedin.jpg"/>" />
 				</a>
 				<a href="//${cartaoVisita.catalogo}">
 					<img class="icones" src="<c:url value="/css/images/catalogo.png"/>" />
@@ -871,9 +883,6 @@ body {
 				</a>
 				<a href="https://twitter.com/DunastesOficial">
 					<img class="icones2" src="<c:url value="/css/images/twitter_1.png"/>"></img>
-				</a>
-				<a href="https://www.tiktok.com/@dunastesoficial?">
-					<img class="icones2" src="<c:url value="/css/images/tiktok_2.png"/>"></img>
 				</a>
 				<a href="https://www.tiktok.com/@dunastesoficial?">
 					<img class="icones2" src="<c:url value="/css/images/tiktok_2.png"/>"></img>
