@@ -5,7 +5,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
 <title>DNT Connection</title>
 <script type="text/javascript" src="<c:url value="/js/jquery-1.8.3.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/js/qrcode.min.js"/>"></script>
@@ -448,7 +448,13 @@ body {
 
 
 
+
+
+
 		
+
+
+
 
 
 
@@ -745,10 +751,10 @@ body {
 					<input type="text" name="cartaoVisita.nome" placeholder="Seu nome...">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.celular" placeholder="Celular...">
+					<input type="text" name="cartaoVisita.celular" placeholder="Celular com DDD...">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.telefoneFixo" placeholder="Tel Fixo...">
+					<input type="text" name="cartaoVisita.telefoneFixo" placeholder="Tel Fixo com DDD...">
 				</div>
 				<div class="input-field">
 					<input type="text" name="cartaoVisita.enderecoComercial" placeholder="Endereço comercial...">
@@ -769,10 +775,10 @@ body {
 					<input type="text" name="cartaoVisita.catalogo" placeholder="Catálogo Virtual">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.whatsapp" placeholder="Seu WhatsApp..">
+					<input type="text" name="cartaoVisita.whatsapp" placeholder="Seu WhatsApp com DDD..">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.telegram" placeholder="Seu Telegram...">
+					<input type="text" name="cartaoVisita.telegram" placeholder="Seu Telegram com DDD...">
 				</div>
 				<div class="input-field">
 					<input type="text" name="cartaoVisita.facebook" placeholder="Seu Facebook/">

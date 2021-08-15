@@ -49,7 +49,7 @@ public class CartaoVisitaController {
 			cartaoVisita.setLinkCadastro(Util.removeHttp(cartaoVisita.getLinkCadastro()));
 
 			cartaoVisita.setWhatsapp(cartaoVisita.getWhatsapp().replaceAll(" ", "").replaceAll("-", "")
-					.replaceAll("(", "").replaceAll(")", ""));
+					.replaceAll("\\(", "").replaceAll("\\)", ""));
 			cartaoVisita
 					.setWhatsapp(cartaoVisita.getWhatsapp().startsWith("55") ? cartaoVisita.getWhatsapp().substring(2)
 							: cartaoVisita.getWhatsapp());
