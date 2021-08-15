@@ -455,7 +455,11 @@ body {
 
 
 
+
+
 		
+
+
 
 
 
@@ -816,6 +820,9 @@ body {
 	<c:if test="${not empty cartaoVisita}">
 		<div class="containerCor"></div>
 		<div class="container">
+			<a href="whatsapp://send?text=http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" data-action="share/whatsapp/share" target="_blank">
+				<img class="compartilhar" src="<c:url value="/css/images/compartilhar.png"/>"></img>
+			</a>
 			<div class="foto-usuario">
 				<input id="qrcodeurl" type="hidden" value="http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" />
 				<div id="qrcodebox" style="width: 300px"></div>
