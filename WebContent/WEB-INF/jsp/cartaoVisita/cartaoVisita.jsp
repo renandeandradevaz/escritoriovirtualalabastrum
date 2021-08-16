@@ -457,7 +457,27 @@ body {
 
 
 
+
+
+
+
+
+
+
+
+
+
 		
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -769,6 +789,9 @@ body {
 					<input type="text" name="cartaoVisita.telefoneFixo" placeholder="Tel Fixo com DDD...">
 				</div>
 				<div class="input-field">
+					<input type="text" name="cartaoVisita.email" placeholder="Email...">
+				</div>
+				<div class="input-field">
 					<input type="text" name="cartaoVisita.enderecoComercial" placeholder="Endereço comercial...">
 				</div>
 				<div class="input-field">
@@ -778,10 +801,7 @@ body {
 					<input type="text" name="cartaoVisita.frase" placeholder="Frase de Status...">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.site" placeholder="Seu site...">
-				</div>
-				<div class="input-field">
-					<input type="text" name="cartaoVisita.pix" placeholder="Seu Pix...">
+					<input type="text" name="cartaoVisita.pix" placeholder="Seu Pix (CPF, Telefone, etc)">
 				</div>
 				<div class="input-field">
 					<input type="text" name="cartaoVisita.catalogo" placeholder="Catálogo Virtual">
@@ -790,28 +810,31 @@ body {
 					<input type="text" name="cartaoVisita.whatsapp" placeholder="Seu WhatsApp com DDD..">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.telegram" placeholder="Seu Telegram com DDD...">
+					<input type="text" name="cartaoVisita.telegram" placeholder="Username do telegram">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.facebook" placeholder="Seu Facebook/">
+					<input type="text" name="cartaoVisita.site" placeholder="Seu site: https:// ...">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.instagram" placeholder="Seu Instagram/">
+					<input type="text" name="cartaoVisita.facebook" placeholder="Seu Facebook: https:// ...">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.twitter" placeholder="Seu Twitter/">
+					<input type="text" name="cartaoVisita.instagram" placeholder="Seu Instagram: https:// ...">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.youtube" placeholder="Seu Youtube/">
+					<input type="text" name="cartaoVisita.twitter" placeholder="Seu Twitter: https:// ...">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.tiktok" placeholder="Seu Tik Tok/">
+					<input type="text" name="cartaoVisita.youtube" placeholder="Seu Youtube: https:// ...">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.linkedin" placeholder="Seu Linkedin/">
+					<input type="text" name="cartaoVisita.tiktok" placeholder="Seu Tik Tok: https:// ...">
 				</div>
 				<div class="input-field">
-					<input type="text" name="cartaoVisita.linkCadastro" placeholder="Link de Cadastro Dunastes...">
+					<input type="text" name="cartaoVisita.linkedin" placeholder="Seu Linkedin: https:// ...">
+				</div>
+				<div class="input-field">
+					<input type="text" name="cartaoVisita.linkCadastro" placeholder="Link de Cadastro Dunastes: https:// ...">
 				</div>
 				<input type="submit" class="submit" value="Cadastrar" onclick="this.disabled=true;this.form.submit();">
 			</form>
@@ -836,7 +859,9 @@ body {
 						${cartaoVisita.celular}
 					</a>
 				</h3>
-				<h3 class="p3">${cartaoVisita.cargo}</h3>
+				<h3 class="p3">Cargo: ${cartaoVisita.cargo}</h3>
+				<h3 class="p3">Email: ${cartaoVisita.email}</h3>
+				<h3 class="p3">Pix: ${cartaoVisita.pix}</h3>
 				<h3 class="p4">${cartaoVisita.frase}</h3>
 			</div>
 			<div id="i" class="box-icones">
@@ -851,6 +876,9 @@ body {
 				</a>
 				<a href="https://api.whatsapp.com/send?phone=55${cartaoVisita.whatsapp}">
 					<img class="icones" src="<c:url value="/css/images/whatsapp.png"/>" />
+				</a>
+				<a href="https://telegram.me/${cartaoVisita.telegram}">
+					<img class="icones" src="<c:url value="/css/images/telegram2.png"/>" />
 				</a>
 				<a href="//${cartaoVisita.facebook}">
 					<img class="icones" src="<c:url value="/css/images/facebook.png"/>" />
@@ -904,6 +932,9 @@ body {
 					<img class="icones2" src="<c:url value="/css/images/youtube_1.png"/>"></img>
 				</a>
 			</div>
+			<a href="<c:url value="/cartao-visita/downloadVcard/${cartaoVisita.codigo}"/>">
+				<h3 class="salvar">Salvar contato no telefone</h3>
+			</a>
 		</div>
 	</c:if>
 	<script type="text/javascript">

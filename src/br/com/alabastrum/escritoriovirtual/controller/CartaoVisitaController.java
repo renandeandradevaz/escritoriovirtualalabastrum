@@ -1,5 +1,9 @@
 package br.com.alabastrum.escritoriovirtual.controller;
 
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
+
 import br.com.alabastrum.escritoriovirtual.anotacoes.Public;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.CartaoVisita;
@@ -54,9 +58,31 @@ public class CartaoVisitaController {
 					.setWhatsapp(cartaoVisita.getWhatsapp().startsWith("55") ? cartaoVisita.getWhatsapp().substring(2)
 							: cartaoVisita.getWhatsapp());
 
+			cartaoVisita.setCelular(cartaoVisita.getCelular().replaceAll(" ", "").replaceAll("-", "")
+					.replaceAll("\\(", "").replaceAll("\\)", ""));
+			cartaoVisita.setCelular(cartaoVisita.getCelular().startsWith("55") ? cartaoVisita.getCelular().substring(2)
+					: cartaoVisita.getCelular());
+
 			this.hibernateUtil.salvarOuAtualizar(cartaoVisita);
 		}
 
 		result.redirectTo(this).cartaoVisita(cartaoVisita.getCodigo());
+	}
+
+	@Public
+	@Get("/cartao-visita/downloadVcard/{codigo}")
+	public File downloadVcard(String codigo) throws Exception {
+
+		CartaoVisita cartaoVisita = new CartaoVisita();
+		cartaoVisita.setCodigo(codigo);
+		cartaoVisita = this.hibernateUtil.selecionar(cartaoVisita);
+
+		String vcfContentFile = "BEGIN:VCARD\n" + "VERSION:3.0\n" + "N:" + cartaoVisita.getNome() + "\n" + "FN:"
+				+ cartaoVisita.getNome() + "\n" + "TEL;TYPE=WORK,MSG:+55" + cartaoVisita.getCelular() + "\n"
+				+ "END:VCARD";
+
+		FileUtils.writeStringToFile(new File("/tmp/" + codigo + ".vcf"), vcfContentFile);
+
+		return new File("/tmp/" + codigo + ".vcf");
 	}
 }

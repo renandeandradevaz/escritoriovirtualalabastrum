@@ -36,6 +36,7 @@ public class CartaoVisita implements Entidade {
 	private String tiktok;
 	private String linkedin;
 	private String linkCadastro;
+	private String email;
 
 	public Integer getId() {
 		return id;
@@ -195,5 +196,13 @@ public class CartaoVisita implements Entidade {
 
 	public void setLinkCadastro(String linkCadastro) {
 		this.linkCadastro = linkCadastro;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }
