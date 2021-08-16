@@ -12,6 +12,8 @@ import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.interceptor.download.ByteArrayDownload;
+import br.com.caelum.vraptor.interceptor.download.Download;
 
 @Resource
 public class CartaoVisitaController {
@@ -71,7 +73,7 @@ public class CartaoVisitaController {
 
 	@Public
 	@Get("/cartao-visita/downloadVcard/{codigo}")
-	public File downloadVcard(String codigo) throws Exception {
+	public Download downloadVcard(String codigo) throws Exception {
 
 		CartaoVisita cartaoVisita = new CartaoVisita();
 		cartaoVisita.setCodigo(codigo);
@@ -83,6 +85,7 @@ public class CartaoVisitaController {
 
 		FileUtils.writeStringToFile(new File("/tmp/" + codigo + ".vcf"), vcfContentFile);
 
-		return new File("/tmp/" + codigo + ".vcf");
+		return new ByteArrayDownload(FileUtils.readFileToByteArray(new File("/tmp/" + codigo + ".vcf")), "text/vcard",
+				codigo + ".vcf");
 	}
 }
