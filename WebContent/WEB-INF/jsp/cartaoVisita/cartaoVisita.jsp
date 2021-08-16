@@ -467,7 +467,9 @@ body {
 
 
 
+
 		
+
 
 
 
@@ -932,7 +934,7 @@ body {
 					<img class="icones2" src="<c:url value="/css/images/youtube_1.png"/>"></img>
 				</a>
 			</div>
-			<a href="<c:url value="/cartao-visita/downloadVcard/${cartaoVisita.codigo}"/>">
+			<a download="download" href="<c:url value="/cartao-visita/downloadVcard/${cartaoVisita.codigo}"/>">
 				<h3 class="salvar">Salvar contato no telefone</h3>
 			</a>
 		</div>
