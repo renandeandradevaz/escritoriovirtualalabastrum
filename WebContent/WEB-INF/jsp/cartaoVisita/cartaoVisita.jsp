@@ -690,7 +690,8 @@ body {
 				<input type="hidden" name="cartaoVisita.codigo" value="${codigo}" />
 				<div class="input-field">
 					<p>Selecione uma foto:</p>
-					<input type="file" name="foto">
+					<input type="file" name="foto"> <br>
+					<br>
 				</div>
 				<div class="input-field">
 					<input type="text" name="cartaoVisita.nome" placeholder="Seu nome...">
@@ -811,8 +812,8 @@ body {
 	</c:if>
 	<script type="text/javascript">
 		var qrcode = new QRCode(document.getElementById("qrcodebox"), {
-			width : 300,
-			height : 300
+			width : 100,
+			height : 100
 		});
 
 		function makeCode() {
