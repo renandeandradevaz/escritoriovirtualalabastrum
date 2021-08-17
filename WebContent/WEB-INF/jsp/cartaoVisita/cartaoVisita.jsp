@@ -810,32 +810,38 @@ body {
 			</a>
 		</div>
 	</c:if>
-	<script type="text/javascript">
-		var qrcode = new QRCode(document.getElementById("qrcodebox"), {
-			width : 150,
-			height : 150
-		});
-
-		function makeCode() {
-			var elText = document.getElementById("qrcodeurl");
-			qrcode.makeCode(elText.value);
-		}
-
-		makeCode();
-
-		$(document).ready(function() {
-			$('#form-cartao-visita').on('submit', function() {
-				
-			alert(this.files[0].size);
-				
-				if (this.files[0].size > 1000000) {
-					alert("O tamanho da foto não pode ser maior do que 1mb");
-					return false;
-				}
-				return true;
+	<c:if test="${not empty cartaoVisita}">
+		<script type="text/javascript">
+			var qrcode = new QRCode(document.getElementById("qrcodebox"), {
+				width : 150,
+				height : 150
 			});
-		});
-	</script>
+
+			function makeCode() {
+				var elText = document.getElementById("qrcodeurl");
+				qrcode.makeCode(elText.value);
+			}
+
+			makeCode();
+		</script>
+	</c:if>
+	<c:if test="${empty cartaoVisita}">
+		<script type="text/javascript">
+			$(document).ready(function() {
+				alert("document is ready");
+				$('#form-cartao-visita').on('submit', function() {
+					console.log("entrou no submit");
+					alert("entrou no submit");
+					alert(this.files[0].size);
+					if (this.files[0].size > 1000000) {
+						alert("O tamanho da foto não pode ser maior do que 1mb");
+						return false;
+					}
+					return true;
+				});
+			});
+		</script>
+	</c:if>
 	<img class="modelo" src="<c:url value="/css/images/tema1.png"/>" />
 </body>
 </html>
