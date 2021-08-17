@@ -761,7 +761,7 @@ body {
 			<div class="foto-usuario">
 				<img src="http://dntconnection.com.br/cartao-visita/downloadFoto/${cartaoVisita.codigo}" />
 			</div>
-			<div style="width: 50%; margin: 0 auto;">
+			<div>
 				<input id="qrcodeurl" type="hidden" value="http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" />
 				<div id="qrcodebox" style="width: 150px"></div>
 			</div>
@@ -827,15 +827,20 @@ body {
 	</c:if>
 	<c:if test="${empty cartaoVisita}">
 		<script type="text/javascript">
-			$(document).ready(function() {
-				$('#form-cartao-visita').on('submit', function() {
-					if ($("#foto")[0].files[0].size > 1000000) {
-						alert("O tamanho da foto não pode ser maior do que 1mb");
-						return false;
-					}
-					return true;
-				});
-			});
+			$(document)
+					.ready(
+							function() {
+								$('#form-cartao-visita')
+										.on(
+												'submit',
+												function() {
+													if ($("#foto")[0].files[0].size > 1000000) {
+														alert("O tamanho da foto não pode ser maior do que 1mb");
+														return false;
+													}
+													return true;
+												});
+							});
 		</script>
 	</c:if>
 	<img class="modelo" src="<c:url value="/css/images/tema1.png"/>" />
