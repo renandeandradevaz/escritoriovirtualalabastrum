@@ -763,11 +763,9 @@ body {
 			</div>
 			<div>
 				<input id="qrcodeurl" type="hidden" value="http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" />
-				<div id="qrcodebox" style="width: 100px"></div>
+				<div id="qrcodebox" style="width: 150px"></div>
 			</div>
-			<br>
-			<br>
-			<br>
+			<br> <br> <br>
 			<div class="Nome-tel">
 				<p>
 					<img style="width: 5%; margin-right: 10px" src="<c:url value="/css/images/user.png"/>" />${cartaoVisita.nome}</p>
@@ -814,8 +812,8 @@ body {
 	</c:if>
 	<script type="text/javascript">
 		var qrcode = new QRCode(document.getElementById("qrcodebox"), {
-			width : 100,
-			height : 100
+			width : 150,
+			height : 150
 		});
 
 		function makeCode() {
