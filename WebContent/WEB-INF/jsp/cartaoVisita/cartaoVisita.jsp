@@ -686,10 +686,10 @@ body {
 		<div class="container">
 			<img class="logo" src="<c:url value="/css/images/Dunastes_logo.png"/>" />
 			<h1>Informe seus dados</h1>
-			<form action="<c:url value="/cartao-visita/salvarCartaoVisita"/>" method="post" enctype="multipart/form-data">
+			<form id='form-cartao-visita' action="<c:url value="/cartao-visita/salvarCartaoVisita"/>" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="cartaoVisita.codigo" value="${codigo}" />
 				<div class="input-field">
-					<p>Selecione uma foto:</p>
+					<p>Selecione uma foto (Máximo de 1mb):</p>
 					<input type="file" name="foto"> <br> <br>
 				</div>
 				<div class="input-field">
@@ -749,7 +749,7 @@ body {
 				<div class="input-field">
 					<input type="text" name="cartaoVisita.linkCadastro" placeholder="Link de Cadastro Dunastes: https:// ...">
 				</div>
-				<input type="submit" class="submit" value="Cadastrar" onclick="this.disabled=true;this.form.submit();">
+				<input type="submit" class="submit" value="Cadastrar">
 			</form>
 		</div>
 	</c:if>
@@ -761,7 +761,7 @@ body {
 			<div class="foto-usuario">
 				<img src="http://dntconnection.com.br/cartao-visita/downloadFoto/${cartaoVisita.codigo}" />
 			</div>
-			<div>
+			<div style="width: 50%; margin: 0 auto;">
 				<input id="qrcodeurl" type="hidden" value="http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" />
 				<div id="qrcodebox" style="width: 150px"></div>
 			</div>
@@ -822,6 +822,16 @@ body {
 		}
 
 		makeCode();
+
+		$(document).ready(function() {
+			$('#form-cartao-visita').on('submit', function() {
+				if (this.files[0].size > 1000000) {
+					alert("O tamanho da foto não pode ser maior do que 1mb");
+					return false;
+				}
+				return true;
+			});
+		});
 	</script>
 	<img class="modelo" src="<c:url value="/css/images/tema1.png"/>" />
 </body>
