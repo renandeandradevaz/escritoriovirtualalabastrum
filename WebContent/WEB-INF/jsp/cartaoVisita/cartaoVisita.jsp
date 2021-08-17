@@ -251,7 +251,7 @@ body {
 		width: 21em;
 		height: 21em;
 		/*overflow:hidden;*/
-		/*border-radius: 200px;*/
+		border-radius: 200px;
 		/*border: 1px solid red;*/
 	}
 	.foto-usuario img {
@@ -259,7 +259,7 @@ body {
 		margin: 0 auto;
 		display: flex;
 		justify-content: center;
-		/* 		border-radius: 200px; */
+		border-radius: 200px;
 		border: 10px solid #fff;
 		box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
 	}
@@ -423,105 +423,6 @@ body {
 }
 
 }
-*
-/
-
-/*desktop*/
-/********* Inidio - juste da largura do container quando redimensionado ao minimo ****************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @media ( max-width : 767px) {
 	.container {
 		/*border: 1px solid red;*/
@@ -863,10 +764,12 @@ body {
 	<c:if test="${not empty cartaoVisita}">
 		<div class="containerCor"></div>
 		<div class="container">
-			<a href="whatsapp://send?text=http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" data-action="share/whatsapp/share" target="_blank">
-				<img class="compartilhar" src="<c:url value="/css/images/compartilhar.png"/>"></img>
+			<a href="whatsapp://send?text=http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" data-action="share/whatsapp/share" target="_blank"> <img class="compartilhar" src="<c:url value="/css/images/compartilhar.png"/>"></img>
 			</a>
 			<div class="foto-usuario">
+				<img src="http://dntconnection.com.br/cartao-visita/downloadFoto/${cartaoVisita.codigo}" />
+			</div>
+			<div>
 				<input id="qrcodeurl" type="hidden" value="http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" />
 				<div id="qrcodebox" style="width: 300px"></div>
 			</div>
@@ -875,9 +778,7 @@ body {
 					<img style="width: 5%; position: relative; top: 7px; margin-right: 10px" src="<c:url value="/css/images/user.png"/>" />${cartaoVisita.nome}</p>
 				<h3 class="p3">${cartaoVisita.cargo}</h3>
 				<h3 class="p2">
-					<a href="tel:${cartaoVisita.celular}">
-						<img style="width: 4%; position: relative; top: 2px; margin-right: 10px;" src="<c:url value="/css/images/ligar.png"/>" />
-						${cartaoVisita.celular}
+					<a href="tel:${cartaoVisita.celular}"> <img style="width: 4%; position: relative; top: 2px; margin-right: 10px;" src="<c:url value="/css/images/ligar.png"/>" /> ${cartaoVisita.celular}
 					</a>
 				</h3>
 				<h3 class="p3">Email: ${cartaoVisita.email}</h3>
@@ -885,71 +786,30 @@ body {
 				<h3 class="p4">${cartaoVisita.frase}</h3>
 			</div>
 			<div id="i" class="box-icones">
-				<a href="//${cartaoVisita.site}">
-					<img class="icones" src="<c:url value="/css/images/site.png"/>" />
-				</a>
-				<a href="tel:${cartaoVisita.celular}">
-					<img class="icones" src="<c:url value="/css/images/tel.png"/>" />
-				</a>
-				<a href="https://www.google.com/search?q=${cartaoVisita.enderecoComercial}">
-					<img class="icones" src="<c:url value="/css/images/endereco2.png"/>" />
-				</a>
-				<a href="https://api.whatsapp.com/send?phone=55${cartaoVisita.whatsapp}">
-					<img class="icones" src="<c:url value="/css/images/whatsapp.png"/>" />
-				</a>
-				<a href="https://telegram.me/${cartaoVisita.telegram}">
-					<img class="icones" src="<c:url value="/css/images/telegram2.png"/>" />
-				</a>
-				<a href="//${cartaoVisita.facebook}">
-					<img class="icones" src="<c:url value="/css/images/facebook.png"/>" />
-				</a>
-				<a href="//${cartaoVisita.instagram}">
-					<img class="icones" src="<c:url value="/css/images/instagram.png"/>" />
-				</a>
-				<a href="//${cartaoVisita.twitter}">
-					<img class="icones" src="<c:url value="/css/images/twitter.png"/>" />
-				</a>
-				<a href="//${cartaoVisita.youtube}">
-					<img class="icones" src="<c:url value="/css/images/youtube.png"/>" />
-				</a>
-				<a href="//${cartaoVisita.tiktok}">
-					<img class="icones" src="<c:url value="/css/images/tiktok.png"/>" />
-				</a>
-				<a href="//${cartaoVisita.linkedin}">
-					<img class="icones" src="<c:url value="/css/images/linkedin.jpg"/>" />
-				</a>
-				<a href="//${cartaoVisita.catalogo}">
-					<img class="icones" src="<c:url value="/css/images/catalogo.png"/>" />
-				</a>
-				<a href="//${cartaoVisita.linkCadastro}">
-					<img class="icones" src="<c:url value="/css/images/DNT-diamante1.png"/>" />
+				<a href="//${cartaoVisita.site}"> <img class="icones" src="<c:url value="/css/images/site.png"/>" />
+				</a> <a href="tel:${cartaoVisita.celular}"> <img class="icones" src="<c:url value="/css/images/tel.png"/>" />
+				</a> <a href="https://www.google.com/search?q=${cartaoVisita.enderecoComercial}"> <img class="icones" src="<c:url value="/css/images/endereco2.png"/>" />
+				</a> <a href="https://api.whatsapp.com/send?phone=55${cartaoVisita.whatsapp}"> <img class="icones" src="<c:url value="/css/images/whatsapp.png"/>" />
+				</a> <a href="https://telegram.me/${cartaoVisita.telegram}"> <img class="icones" src="<c:url value="/css/images/telegram2.png"/>" />
+				</a> <a href="//${cartaoVisita.facebook}"> <img class="icones" src="<c:url value="/css/images/facebook.png"/>" />
+				</a> <a href="//${cartaoVisita.instagram}"> <img class="icones" src="<c:url value="/css/images/instagram.png"/>" />
+				</a> <a href="//${cartaoVisita.twitter}"> <img class="icones" src="<c:url value="/css/images/twitter.png"/>" />
+				</a> <a href="//${cartaoVisita.youtube}"> <img class="icones" src="<c:url value="/css/images/youtube.png"/>" />
+				</a> <a href="//${cartaoVisita.tiktok}"> <img class="icones" src="<c:url value="/css/images/tiktok.png"/>" />
+				</a> <a href="//${cartaoVisita.linkedin}"> <img class="icones" src="<c:url value="/css/images/linkedin.jpg"/>" />
+				</a> <a href="//${cartaoVisita.catalogo}"> <img class="icones" src="<c:url value="/css/images/catalogo.png"/>" />
+				</a> <a href="//${cartaoVisita.linkCadastro}"> <img class="icones" src="<c:url value="/css/images/DNT-diamante1.png"/>" />
 				</a>
 			</div>
 			<div id="i" class="box-icones2">
-				<img class="logoDNT" src="<c:url value="/css/images/Dunastes_logo.png"/>" />
-				<a href="https://dunastes.com.br/home">
-					<img class="icones2" src="<c:url value="/css/images/site_1.png"/>"></img>
-				</a>
-				<a href="https://api.whatsapp.com/send?phone=552132830966">
-					<img class="icones2" src="<c:url value="/css/images/whatsapp_1.png"/>"></img>
-				</a>
-				<a href="https://www.instagram.com/dunastesoficial">
-					<img class="icones2" src="<c:url value="/css/images/instagram_1.png"/>"></img>
-				</a>
-				<a href="https://twitter.com/DunastesOficial">
-					<img class="icones2" src="<c:url value="/css/images/twitter_1.png"/>"></img>
-				</a>
-				<a href="https://www.tiktok.com/@dunastesoficial?">
-					<img class="icones2" src="<c:url value="/css/images/tiktok_2.png"/>"></img>
-				</a>
-				<a href="https://www.facebook.com/dnt.dunastes">
-					<img class="icones2" src="<c:url value="/css/images/FACE_1.png"/>"></img>
-				</a>
-				<a href="https://www.youtube.com/c/DunastesOficial">
-					<img class="icones2" src="<c:url value="/css/images/youtube_1.png"/>"></img>
-				</a>
-				<a href="https://www.youtube.com/c/AlessandroSchimanski">
-					<img class="icones2" src="<c:url value="/css/images/youtube_1.png"/>"></img>
+				<img class="logoDNT" src="<c:url value="/css/images/Dunastes_logo.png"/>" /> <a href="https://dunastes.com.br/home"> <img class="icones2" src="<c:url value="/css/images/site_1.png"/>"></img>
+				</a> <a href="https://api.whatsapp.com/send?phone=552132830966"> <img class="icones2" src="<c:url value="/css/images/whatsapp_1.png"/>"></img>
+				</a> <a href="https://www.instagram.com/dunastesoficial"> <img class="icones2" src="<c:url value="/css/images/instagram_1.png"/>"></img>
+				</a> <a href="https://twitter.com/DunastesOficial"> <img class="icones2" src="<c:url value="/css/images/twitter_1.png"/>"></img>
+				</a> <a href="https://www.tiktok.com/@dunastesoficial?"> <img class="icones2" src="<c:url value="/css/images/tiktok_2.png"/>"></img>
+				</a> <a href="https://www.facebook.com/dnt.dunastes"> <img class="icones2" src="<c:url value="/css/images/FACE_1.png"/>"></img>
+				</a> <a href="https://www.youtube.com/c/DunastesOficial"> <img class="icones2" src="<c:url value="/css/images/youtube_1.png"/>"></img>
+				</a> <a href="https://www.youtube.com/c/AlessandroSchimanski"> <img class="icones2" src="<c:url value="/css/images/youtube_1.png"/>"></img>
 				</a>
 			</div>
 			<a download="download" href="<c:url value="/cartao-visita/downloadVcard/${cartaoVisita.codigo}"/>">

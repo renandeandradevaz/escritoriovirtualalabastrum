@@ -9,6 +9,7 @@ import org.apache.commons.io.IOUtils;
 import br.com.alabastrum.escritoriovirtual.anotacoes.Public;
 import br.com.alabastrum.escritoriovirtual.hibernate.HibernateUtil;
 import br.com.alabastrum.escritoriovirtual.modelo.CartaoVisita;
+import br.com.alabastrum.escritoriovirtual.service.ArquivoService;
 import br.com.alabastrum.escritoriovirtual.util.Util;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Post;
@@ -75,6 +76,18 @@ public class CartaoVisitaController {
 		}
 
 		result.redirectTo(this).cartaoVisita(cartaoVisita.getCodigo());
+	}
+
+	@Public
+	@Get("/cartao-visita/downloadFoto/{codigo}")
+	public File downloadFoto(String codigo) {
+
+		File file = new File("/dnt-connection-fotos", codigo);
+
+		if (file.exists()) {
+			return file;
+		}
+		return new File(ArquivoService.PASTA_IMAGEM_PRODUTOS + "imagem-nao-disponivel.jpg");
 	}
 
 	@Public
