@@ -690,7 +690,7 @@ body {
 				<input type="hidden" name="cartaoVisita.codigo" value="${codigo}" />
 				<div class="input-field">
 					<p>Selecione uma foto (Máximo de 1mb):</p>
-					<input  type="file" name="foto" id='foto'> <br> <br>
+					<input type="file" name="foto" id="foto"> <br> <br>
 				</div>
 				<div class="input-field">
 					<input type="text" name="cartaoVisita.nome" placeholder="Seu nome...">
@@ -832,13 +832,13 @@ body {
 				$('#form-cartao-visita').on('submit', function() {
 					console.log("entrou no submit");
 					alert("entrou no submit");
-					alert($('#foto').files);
+					alert($('#foto').size);
 					return false;
-// 					if (this.files[0].size > 1000000) {
-// 						alert("O tamanho da foto não pode ser maior do que 1mb");
-// 						return false;
-// 					}
-// 					return true;
+					// 					if (this.files[0].size > 1000000) {
+					// 						alert("O tamanho da foto não pode ser maior do que 1mb");
+					// 						return false;
+					// 					}
+					// 					return true;
 				});
 			});
 		</script>
