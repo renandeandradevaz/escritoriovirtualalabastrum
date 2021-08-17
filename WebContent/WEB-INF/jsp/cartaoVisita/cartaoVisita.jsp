@@ -690,8 +690,7 @@ body {
 				<input type="hidden" name="cartaoVisita.codigo" value="${codigo}" />
 				<div class="input-field">
 					<p>Selecione uma foto:</p>
-					<input type="file" name="foto"> <br>
-					<br>
+					<input type="file" name="foto"> <br> <br>
 				</div>
 				<div class="input-field">
 					<input type="text" name="cartaoVisita.nome" placeholder="Seu nome...">
@@ -766,12 +765,15 @@ body {
 				<input id="qrcodeurl" type="hidden" value="http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" />
 				<div id="qrcodebox" style="width: 100px"></div>
 			</div>
+			<br>
+			<br>
+			<br>
 			<div class="Nome-tel">
 				<p>
-					<img style="width: 5%; position: relative; top: 7px; margin-right: 10px" src="<c:url value="/css/images/user.png"/>" />${cartaoVisita.nome}</p>
+					<img style="width: 5%; margin-right: 10px" src="<c:url value="/css/images/user.png"/>" />${cartaoVisita.nome}</p>
 				<h3 class="p3">${cartaoVisita.cargo}</h3>
 				<h3 class="p2">
-					<a href="tel:${cartaoVisita.celular}"> <img style="width: 4%; position: relative; top: 2px; margin-right: 10px;" src="<c:url value="/css/images/ligar.png"/>" /> ${cartaoVisita.celular}
+					<a href="tel:${cartaoVisita.celular}"> <img style="width: 4%; margin-right: 10px;" src="<c:url value="/css/images/ligar.png"/>" /> ${cartaoVisita.celular}
 					</a>
 				</h3>
 				<h3 class="p3">Email: ${cartaoVisita.email}</h3>
