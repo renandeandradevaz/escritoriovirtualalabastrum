@@ -865,7 +865,7 @@ body {
 				</h3>
 				<h3 class="p3">${cartaoVisita.cargo}</h3>
 				<h3 class="p3">Email: ${cartaoVisita.email}</h3>
-				<h3 class="p3">Pix: ${cartaoVisita.pix}</h3>
+<%-- 				<h3 class="p3">Pix: ${cartaoVisita.pix}</h3> --%>
 				<h3 class="p4">${cartaoVisita.frase}</h3>
 			</div>
 			<div id="i" class="box-icones">
