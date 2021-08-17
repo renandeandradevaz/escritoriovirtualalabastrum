@@ -471,7 +471,15 @@ body {
 
 
 
+
+
+
+
 		
+
+
+
+
 
 
 
@@ -785,8 +793,12 @@ body {
 		<div class="container">
 			<img class="logo" src="<c:url value="/css/images/Dunastes_logo.png"/>" />
 			<h1>Informe seus dados</h1>
-			<form action="<c:url value="/cartao-visita/salvarCartaoVisita"/>" method="post">
+			<form action="<c:url value="/cartao-visita/salvarCartaoVisita"/>" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="cartaoVisita.codigo" value="${codigo}" />
+				<div class="input-field">
+					<p>Selecione uma foto:</p>
+					<input type="file" name="foto">
+				</div>
 				<div class="input-field">
 					<input type="text" name="cartaoVisita.nome" placeholder="Seu nome...">
 				</div>
