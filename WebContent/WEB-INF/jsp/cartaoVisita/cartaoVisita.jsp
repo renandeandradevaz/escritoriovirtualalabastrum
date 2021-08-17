@@ -469,7 +469,11 @@ body {
 
 
 
+
+
 		
+
+
 
 
 
@@ -857,15 +861,15 @@ body {
 			<div class="Nome-tel">
 				<p>
 					<img style="width: 5%; position: relative; top: 7px; margin-right: 10px" src="<c:url value="/css/images/user.png"/>" />${cartaoVisita.nome}</p>
+				<h3 class="p3">${cartaoVisita.cargo}</h3>
 				<h3 class="p2">
 					<a href="tel:${cartaoVisita.celular}">
 						<img style="width: 4%; position: relative; top: 2px; margin-right: 10px;" src="<c:url value="/css/images/ligar.png"/>" />
 						${cartaoVisita.celular}
 					</a>
 				</h3>
-				<h3 class="p3">${cartaoVisita.cargo}</h3>
 				<h3 class="p3">Email: ${cartaoVisita.email}</h3>
-<%-- 				<h3 class="p3">Pix: ${cartaoVisita.pix}</h3> --%>
+				<%-- 				<h3 class="p3">Pix: ${cartaoVisita.pix}</h3> --%>
 				<h3 class="p4">${cartaoVisita.frase}</h3>
 			</div>
 			<div id="i" class="box-icones">
