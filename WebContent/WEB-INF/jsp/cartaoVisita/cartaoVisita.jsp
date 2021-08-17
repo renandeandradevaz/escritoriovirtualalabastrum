@@ -264,32 +264,24 @@ body {
 		box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
 	}
 	.Nome-tel p {
-		position: relative;
-		top: 20px;
 		text-align: center;
 		color: bloack;
 		font-size: 38pt;
 		font-weight: 700;
 	}
 	.Nome-tel .p2 {
-		position: relative;
-		top: 15px;
 		font-size: 52px;
 		font-weight: 400;
 		text-align: center;
 		cursor: pointer;
 	}
 	.Nome-tel .p3 {
-		position: relative;
-		top: 15px;
 		font-size: 40px;
 		margin-bottom: 25px;
 		font-weight: 400;
 		text-align: center;
 	}
 	.Nome-tel .p4 {
-		position: relative;
-		top: 15px;
 		margin-bottom: 25px;
 		font-size: 45px;
 		font-weight: 400;
@@ -563,7 +555,7 @@ body {
 		justify-content: center;
 		width: 9rem;
 		height: 9rem;
-		/* 		border-radius: 150px; */
+		border-radius: 150px;
 		border: 5px solid #fff;
 		overflow: hidden;
 		box-shadow: 0px 0px 9px #888;
@@ -771,7 +763,7 @@ body {
 			</div>
 			<div>
 				<input id="qrcodeurl" type="hidden" value="http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" />
-				<div id="qrcodebox" style="width: 300px"></div>
+				<div id="qrcodebox" style="width: 100px"></div>
 			</div>
 			<div class="Nome-tel">
 				<p>
