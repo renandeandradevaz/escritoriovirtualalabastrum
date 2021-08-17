@@ -832,13 +832,12 @@ body {
 				$('#form-cartao-visita').on('submit', function() {
 					console.log("entrou no submit");
 					alert("entrou no submit");
-					alert($('#foto').size);
-					return false;
-					// 					if (this.files[0].size > 1000000) {
-					// 						alert("O tamanho da foto não pode ser maior do que 1mb");
-					// 						return false;
-					// 					}
-					// 					return true;
+					alert($("#foto")[0].files[0].size;);
+					if (this.files[0].size > 1000000) {
+						alert("O tamanho da foto não pode ser maior do que 1mb");
+						return false;
+					}
+					return true;
 				});
 			});
 		</script>
