@@ -69,8 +69,10 @@ public class CartaoVisitaController {
 			cartaoVisita.setCelular(cartaoVisita.getCelular().startsWith("55") ? cartaoVisita.getCelular().substring(2)
 					: cartaoVisita.getCelular());
 
-			File fotoSalva = new File("/dnt-connection-fotos", cartaoVisita.getCodigo());
-			IOUtils.copyLarge(foto.getFile(), new FileOutputStream(fotoSalva));
+			if (foto != null) {
+				File fotoSalva = new File("/dnt-connection-fotos", cartaoVisita.getCodigo());
+				IOUtils.copyLarge(foto.getFile(), new FileOutputStream(fotoSalva));
+			}
 
 			this.hibernateUtil.salvarOuAtualizar(cartaoVisita);
 		}

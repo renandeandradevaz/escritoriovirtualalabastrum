@@ -828,7 +828,6 @@ body {
 	<c:if test="${empty cartaoVisita}">
 		<script type="text/javascript">
 			$(document).ready(function() {
-				alert("document is ready");
 				$('#form-cartao-visita').on('submit', function() {
 					if ($("#foto")[0].files[0].size > 1000000) {
 						alert("O tamanho da foto não pode ser maior do que 1mb");
