@@ -758,14 +758,13 @@ body {
 		<div class="container">
 			<a href="whatsapp://send?text=http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" data-action="share/whatsapp/share" target="_blank"> <img class="compartilhar" src="<c:url value="/css/images/compartilhar.png"/>"></img>
 			</a>
-			<div class="foto-usuario">
-				<img src="http://dntconnection.com.br/cartao-visita/downloadFoto/${cartaoVisita.codigo}" />
-			</div>
 			<div>
 				<input id="qrcodeurl" type="hidden" value="http://dntconnection.com.br/cartao-visita/${cartaoVisita.codigo}" />
 				<div id="qrcodebox" style="width: 150px"></div>
 			</div>
-			<br> <br> <br>
+			<div class="foto-usuario">
+				<img src="http://dntconnection.com.br/cartao-visita/downloadFoto/${cartaoVisita.codigo}" />
+			</div>
 			<div class="Nome-tel">
 				<p>
 					<img style="width: 5%; margin-right: 10px" src="<c:url value="/css/images/user.png"/>" />${cartaoVisita.nome}</p>
