@@ -236,14 +236,14 @@ body {
 		position: relative;
 		right: -820px;
 		padding-top: 15px;
-		top: 20px;
+		top: 100px;
 		width: 2rem; /*border: 1px solid cyan; */
 		width: 5em;
 	}
 	/*.compartilhar{ position: relative; right: -850px; top: 40px; width: 50px;}*/
 	.foto-usuario {
 		position: relative;
-		top: 20px;
+		/* 		top: 20px; */
 		margin: 0 auto;
 		/*display: flex;  
 		justify-content: center;
@@ -765,6 +765,7 @@ body {
 			<div class="foto-usuario">
 				<img src="http://dntconnection.com.br/cartao-visita/downloadFoto/${cartaoVisita.codigo}" />
 			</div>
+			<br>
 			<div class="Nome-tel">
 				<p>
 					<img style="width: 5%; margin-right: 10px" src="<c:url value="/css/images/user.png"/>" />${cartaoVisita.nome}</p>
