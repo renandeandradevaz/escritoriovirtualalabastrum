@@ -262,6 +262,7 @@ body {
 		border-radius: 200px;
 		border: 10px solid #fff;
 		box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+		max-height: 350px;
 	}
 	.Nome-tel p {
 		text-align: center;
