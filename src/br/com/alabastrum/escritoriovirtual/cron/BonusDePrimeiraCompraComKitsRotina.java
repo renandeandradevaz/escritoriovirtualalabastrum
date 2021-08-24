@@ -67,7 +67,7 @@ public class BonusDePrimeiraCompraComKitsRotina implements Runnable {
 			    PedidoDTO pedidoDTO = new PedidoService(hibernateUtil).calcularTotais(pedido);
 			    BigDecimal valorTotal = pedidoDTO.getValorTotal();
 
-			    if (valorTotal.compareTo(new BigDecimal("120")) != -1) {
+			    if (valorTotal.compareTo(new BigDecimal("50")) != -1) {
 
 				BonusAdesao kitBonusDoUsuarioPrincipal = new BonusAdesaoService(hibernateUtil).buscarBonusAdesao(pedido.getData(), nivel, usuario.getNome_kit());
 
