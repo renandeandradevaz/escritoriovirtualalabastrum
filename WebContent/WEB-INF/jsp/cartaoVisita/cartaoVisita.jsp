@@ -781,7 +781,7 @@ body {
 			</div>
 			<div id="i" class="box-icones">
 				<a href="//${cartaoVisita.site}"> <img class="icones" src="<c:url value="/css/images/site.png"/>" />
-				</a> <a href="tel:${cartaoVisita.celular}"> <img class="icones" src="<c:url value="/css/images/tel.png"/>" />
+				</a> <a href="tel:${cartaoVisita.telefoneFixo}"> <img class="icones" src="<c:url value="/css/images/tel.png"/>" />
 				</a> <a href="https://www.google.com/search?q=${cartaoVisita.enderecoComercial}"> <img class="icones" src="<c:url value="/css/images/endereco2.png"/>" />
 				</a> <a href="https://api.whatsapp.com/send?phone=55${cartaoVisita.whatsapp}"> <img class="icones" src="<c:url value="/css/images/whatsapp.png"/>" />
 				</a> <a href="https://telegram.me/${cartaoVisita.telegram}"> <img class="icones" src="<c:url value="/css/images/telegram2.png"/>" />
