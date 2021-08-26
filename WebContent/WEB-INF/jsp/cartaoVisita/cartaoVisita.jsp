@@ -690,8 +690,8 @@ body {
 			<form id='form-cartao-visita' action="<c:url value="/cartao-visita/salvarCartaoVisita"/>" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="cartaoVisita.codigo" value="${codigo}" />
 				<div class="input-field">
-					<p style="font-size: 20px;">Selecione uma foto (Máximo de 500kb):</p>
-					<input style="font-size: 20px;" type="file" name="foto" id="foto"> <br> <br>
+					<p style="font-size: 25px;">Selecione uma foto (Máximo de 500kb):</p>
+					<input style="font-size: 25px;" type="file" name="foto" id="foto"> <br> <br>
 				</div>
 				<div class="input-field">
 					<input type="text" name="cartaoVisita.nome" placeholder="Seu nome...">
