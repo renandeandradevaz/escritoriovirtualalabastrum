@@ -690,8 +690,8 @@ body {
 			<form id='form-cartao-visita' action="<c:url value="/cartao-visita/salvarCartaoVisita"/>" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="cartaoVisita.codigo" value="${codigo}" />
 				<div class="input-field">
-					<p>Selecione uma foto (Máximo de 1mb):</p>
-					<input type="file" name="foto" id="foto"> <br> <br>
+					<p style="font-size: 20px;">Selecione uma foto (Máximo de 500kb):</p>
+					<input style="font-size: 20px;" type="file" name="foto" id="foto"> <br> <br>
 				</div>
 				<div class="input-field">
 					<input type="text" name="cartaoVisita.nome" placeholder="Seu nome...">
@@ -775,7 +775,7 @@ body {
 					<a href="tel:${cartaoVisita.celular}"> <img style="width: 4%; margin-right: 10px;" src="<c:url value="/css/images/ligar.png"/>" /> ${cartaoVisita.celular}
 					</a>
 				</h3>
-				<h3 class="p3">Email: ${cartaoVisita.email}</h3>
+				<h3 style="font-size: 30px" class="p3">Email: ${cartaoVisita.email}</h3>
 				<%-- 				<h3 class="p3">Pix: ${cartaoVisita.pix}</h3> --%>
 				<h3 class="p4">${cartaoVisita.frase}</h3>
 			</div>
@@ -835,8 +835,8 @@ body {
 										.on(
 												'submit',
 												function() {
-													if ($("#foto")[0].files[0].size > 1000000) {
-														alert("O tamanho da foto não pode ser maior do que 1mb");
+													if ($("#foto")[0].files[0].size > 500000) {
+														alert("O tamanho da foto não pode ser maior do que 500kb");
 														return false;
 													}
 													return true;
